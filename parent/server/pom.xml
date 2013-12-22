@@ -134,21 +134,42 @@
 				<version>2.3</version>
 				<executions>
 					<execution>
+						<id>QueryWS</id>
 						<goals>
 							<goal>wsgen</goal>
 						</goals>
+						<configuration>
+							<sei>ch.infbr5.sentinel.server.ws.SentinelQueryService</sei>
+							<genWsdl>true</genWsdl>
+							<keep>true</keep>
+						</configuration>
 					</execution>
+					
+					<execution>
+						<id>JournalWS</id>
+						<goals>
+							<goal>wsgen</goal>
+						</goals>
+						<configuration>
+							<sei>ch.infbr5.sentinel.server.ws.JournalService</sei>
+							<genWsdl>true</genWsdl>
+							<keep>true</keep>
+						</configuration>
+					</execution>
+					
+					<execution>
+						<id>ConfigWS</id>
+						<goals>
+							<goal>wsgen</goal>
+						</goals>
+						<configuration>
+							<sei>ch.infbr5.sentinel.server.ws.admin.ConfigurationQueryService</sei>
+							<genWsdl>true</genWsdl>
+							<keep>true</keep>
+						</configuration>
+					</execution>
+					
 				</executions>
-
-				<configuration>
-					<sei>ch.infbr5.sentinel.server.ws.SentinelQueryService</sei>
-					<sei>ch.infbr5.sentinel.server.ws.JournalService</sei>
-					<sei>ch.infbr5.sentinel.server.ws.admin.ConfigurationQueryService</sei>
-
-
-					<genWsdl>true</genWsdl>
-					<keep>true</keep>
-				</configuration>
 
 
 				<dependencies>

@@ -38,29 +38,19 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
+				<groupId>org.jvnet.jax-ws-commons</groupId>
 				<artifactId>jaxws-maven-plugin</artifactId>
-				<version>1.12</version>
+				<version>2.3</version>
 				<executions>
 					<execution>
-						<phase>generate-sources</phase>
 						<goals>
 							<goal>wsimport</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<wsdlUrls>
-						<wsdlUrl>
-							http://localhost:8080/services?wsdl
-						</wsdlUrl>
-						<wsdlUrl>
-							http://localhost:8080/configurations?wsdl
-						</wsdlUrl>
-						<wsdlUrl>
-							http://localhost:8080/journal?wsdl
-						</wsdlUrl>
-					</wsdlUrls>
+				<configuration>			 
+				    <wsdlDirectory>${basedir}/../server/target/generated-sources/wsdl</wsdlDirectory>
+				    <wsdlLocation>http://example.com/mywebservices/*</wsdlLocation>
 					<packageName>ch.infbr5.sentinel.client.wsgen</packageName>
 				</configuration>
 			</plugin>
@@ -112,6 +102,25 @@
 										</artifactId>
 										<versionRange>
 											[1.12,)
+										</versionRange>
+										<goals>
+											<goal>wsimport</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.jvnet.jax-ws-commons
+										</groupId>
+										<artifactId>
+											jaxws-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.3,)
 										</versionRange>
 										<goals>
 											<goal>wsimport</goal>
