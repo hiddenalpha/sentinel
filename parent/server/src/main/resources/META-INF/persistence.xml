@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="sentinel" transaction-type="RESOURCE_LOCAL">
+		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+
+		<class>ch.infbr5.sentinel.server.model.Person</class>
+		<class>ch.infbr5.sentinel.server.model.Einheit</class>
+		<class>ch.infbr5.sentinel.server.model.Ausweis</class>
+		<class>ch.infbr5.sentinel.server.model.AusweisBox</class>
+		<class>ch.infbr5.sentinel.server.model.Zone</class>
+		<class>ch.infbr5.sentinel.server.model.ZonenPraesenz</class>
+		<class>ch.infbr5.sentinel.server.model.Checkpoint</class>
+		<class>ch.infbr5.sentinel.server.model.Zutrittsregel</class>
+		<class>ch.infbr5.sentinel.server.model.LogEintrag</class>
+		<class>ch.infbr5.sentinel.server.model.ConfigurationValue</class>
+		<class>ch.infbr5.sentinel.server.model.PrintJob</class>
+
+		<properties>
+			<property name="openjpa.BrokerFactory" value="org.apache.openjpa.jdbc.kernel.JDBCBrokerFactory" />
+			<property name="javax.persistence.jdbc.user" value="sentinel" />
+			<property name="javax.persistence.jdbc.password" value="pwd" />
+
+			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
+			<property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO" />
+			<!-- <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/> -->
+		</properties>
+	</persistence-unit>
+</persistence>
