@@ -8,6 +8,7 @@
 	<modules>
 		<module>client</module>
 		<module>server</module>
+		<module>wsdl</module>
 	</modules>
 
 	<build>

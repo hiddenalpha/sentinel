@@ -1,0 +1,1 @@
+only generated wsdl from server project

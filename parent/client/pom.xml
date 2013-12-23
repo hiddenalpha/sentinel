@@ -6,6 +6,7 @@
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+	
 	<artifactId>client</artifactId>
 
 	<properties>
@@ -14,12 +15,19 @@
 
 
 	<dependencies>
+	
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wsdl</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.media</groupId>
 			<artifactId>jmf</artifactId>
 			<version>2.1.1e</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -27,6 +35,7 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout</artifactId>
@@ -37,6 +46,33 @@
 
 	<build>
 		<plugins>
+		
+			<!-- extract WSDL and XSD from dependency jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+									<artifactId>wsdl</artifactId>
+									<version>${project.version}</version>
+                                    <outputDirectory>${project.build.directory}/wsdl</outputDirectory>
+                                    <includes>**\/*.xsd, **\/*.wsdl</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+		
 			<plugin>
 				<groupId>org.jvnet.jax-ws-commons</groupId>
 				<artifactId>jaxws-maven-plugin</artifactId>
@@ -49,7 +85,7 @@
 					</execution>
 				</executions>
 				<configuration>			 
-				    <wsdlDirectory>${basedir}/../server/target/generated-sources/wsdl</wsdlDirectory>
+				    <wsdlDirectory>${project.build.directory}/wsdl/META-INF/wsdl</wsdlDirectory>
 				    <wsdlLocation>http://example.com/mywebservices/*</wsdlLocation>
 					<packageName>ch.infbr5.sentinel.client.wsgen</packageName>
 				</configuration>
@@ -124,6 +160,25 @@
 										</versionRange>
 										<goals>
 											<goal>wsimport</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.1,)
+										</versionRange>
+										<goals>
+											<goal>unpack</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
