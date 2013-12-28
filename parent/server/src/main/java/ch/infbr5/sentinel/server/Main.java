@@ -62,8 +62,8 @@ public class Main {
 			String ip = line.getOptionValue("ipAddress", "0.0.0.0");
 			log.info("listening on ".concat(ip));
 
-			EntityManagerHelper.setDebugMode(debugMode);
-			sentinelServer = new ServerControl(debugMode);
+			
+			sentinelServer = new ServerControl(debugMode,false);
 
 			// Shutdown Hook installieren
 			Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -78,7 +78,7 @@ public class Main {
 			log.info("trying to start server ...");
 			sentinelServer.start(ip);
 			log.info("server is running.");
-
+			
 			// warten bis Server beendet ist
 			while (sentinelServer.isRunning()) {
 				try {
@@ -88,6 +88,8 @@ public class Main {
 					e.printStackTrace();
 				}
 			}
+			
+			System.exit(0);
 
 		} catch (ParseException exp) {
 			// oops, something went wrong

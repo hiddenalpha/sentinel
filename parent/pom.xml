@@ -9,6 +9,7 @@
 		<module>client</module>
 		<module>server</module>
 		<module>wsdl</module>
+		<module>integrationTests</module>
 	</modules>
 
 	<build>

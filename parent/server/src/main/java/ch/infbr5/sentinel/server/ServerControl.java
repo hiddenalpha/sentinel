@@ -6,15 +6,12 @@ import javax.xml.ws.Endpoint;
 
 import org.apache.derby.drda.NetworkServerControl;
 
+import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.ws.JournalService;
 import ch.infbr5.sentinel.server.ws.SentinelQueryService;
 import ch.infbr5.sentinel.server.ws.admin.ConfigurationQueryService;
 
-import com.sun.net.httpserver.HttpsServer;
-
 public class ServerControl {
-
-	HttpsServer httpsServer;
 
 	private Endpoint servicesEndpoint;
 	private Endpoint configurationEndpoint;
@@ -24,7 +21,9 @@ public class ServerControl {
 
 	private NetworkServerControl databaseServer;
 
-	public ServerControl(boolean debugMode) {
+	public ServerControl(boolean debugMode, boolean inMemoryMode) {
+		EntityManagerHelper.setDebugMode(debugMode);
+		EntityManagerHelper.setInMemoryMode(inMemoryMode);
 	}
 
 	public void start(String ip) {
@@ -40,8 +39,8 @@ public class ServerControl {
 	}
 
 	public void stop() {
-		this.stopWebServces();
 		this.stopDerby();
+		this.stopWebServces();
 		running = false;
 	}
 
@@ -69,8 +68,9 @@ public class ServerControl {
 
 			this.servicesEndpoint = Endpoint.publish("http://" + thisIpAddress
 					+ ":8080/services", new SentinelQueryService());
-			this.configurationEndpoint = Endpoint.publish("http://" + thisIpAddress
-					+ ":8080/configuration", new ConfigurationQueryService());
+			this.configurationEndpoint = Endpoint.publish("http://"
+					+ thisIpAddress + ":8080/configuration",
+					new ConfigurationQueryService());
 			this.journalEndpoint = Endpoint.publish("http://" + thisIpAddress
 					+ ":8080/journal", new JournalService());
 
@@ -81,21 +81,26 @@ public class ServerControl {
 	}
 
 	private void stopDerby() {
+
 		try {
+			EntityManagerHelper.close();
 			this.databaseServer.shutdown();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+			
 	}
 
 	private void stopWebServces() {
-		this.servicesEndpoint.stop();
-		this.configurationEndpoint.stop();
-		this.journalEndpoint.stop();
 
-		if (this.httpsServer != null) {
-			this.httpsServer.stop(0);
+		try {
+			this.servicesEndpoint.stop();
+			this.configurationEndpoint.stop();
+			this.journalEndpoint.stop();
+		} catch (NullPointerException e) {
+			// Bug in JAX-WS - nix zu tun.
+
 		}
 
 	}

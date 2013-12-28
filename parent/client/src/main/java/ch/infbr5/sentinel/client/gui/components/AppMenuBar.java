@@ -90,6 +90,7 @@ public class AppMenuBar extends JMenuBar {
 		this.add(menu);
 
 		JMenuItem menuItem = new JMenuItem("Manuelle Auswahl", KeyEvent.VK_F6);
+		menuItem.setName(CMD_DISPLAY_PERSON_SELECTION_DLG);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6,
 				ActionEvent.ALT_MASK));
 		menuItem.setActionCommand(CMD_DISPLAY_PERSON_SELECTION_DLG);
