@@ -1,8 +1,6 @@
 package ch.infbr5.sentinel.client;
 
-import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

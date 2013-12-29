@@ -6,7 +6,6 @@ import java.util.ListIterator;
 
 import ch.infbr5.sentinel.client.gui.components.journal.old.JournalChangeListener;
 import ch.infbr5.sentinel.client.gui.components.journal.old.JournalChangedEvent;
-import ch.infbr5.sentinel.client.util.ServiceHelper;
 
 public class JournalEintragLoggerImpl implements JournalEintragLogger {
 

@@ -1,6 +1,5 @@
 package ch.infbr5.sentinel.client.logging;
 
-import ch.infbr5.sentinel.client.wsgen.JournalService;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -8,6 +7,7 @@ import javax.xml.ws.WebServiceException;
 
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
+import ch.infbr5.sentinel.client.wsgen.JournalService;
 
 public class LoggingServerHandler extends Handler {
 

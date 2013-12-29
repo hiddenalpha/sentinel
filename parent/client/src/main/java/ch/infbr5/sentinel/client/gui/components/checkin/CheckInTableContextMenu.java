@@ -9,10 +9,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
-import ch.infbr5.sentinel.client.AdminstrationFrame;
-import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
-import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
-
 public class CheckInTableContextMenu extends MouseAdapter implements ActionListener {
 
 	private static final String CMD_CHECKOUT = "CMD_CHECKOUT";

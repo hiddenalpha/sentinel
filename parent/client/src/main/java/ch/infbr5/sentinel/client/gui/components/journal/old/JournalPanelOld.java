@@ -11,8 +11,6 @@ import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 
-import ch.infbr5.sentinel.client.gui.components.journal.old.TableDataChangeListener;
-
 import net.miginfocom.swing.MigLayout;
 
 public class JournalPanelOld extends JPanel implements TableDataChangeListener {
