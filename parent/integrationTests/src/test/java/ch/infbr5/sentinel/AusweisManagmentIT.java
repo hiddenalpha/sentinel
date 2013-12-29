@@ -65,10 +65,10 @@ public class AusweisManagmentIT {
 		adminWindow.button(EinheitenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
 		adminWindow.textBox("Name").enterText("Test Einheit");
 		adminWindow.textBox("RGB Color Gs Vb").enterText("000000");
-		adminWindow.textBox("RGB Color Trp Kö").enterText("99BB11");
+		adminWindow.textBox("RGB Color Trp K").enterText("99BB11");
 		adminWindow.textBox("RGB Color Einh").enterText("FFFFFF");
 		adminWindow.textBox("Text Gs Vb").enterText("123");
-		adminWindow.textBox("Text Trp Kö").enterText("abc");
+		adminWindow.textBox("Text Trp K").enterText("abc");
 		adminWindow.textBox("Text Einh").enterText("d");
 
 		adminWindow.button(EinheitenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();

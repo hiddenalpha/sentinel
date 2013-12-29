@@ -98,10 +98,10 @@ public class EinheitenConfigPanel extends
 
 			fieldName = createField("Name");
 			fieldRgbColorGsVb = createField("RGB Color Gs Vb");
-			fieldRgbColorTrpK = createField("RGB Color Trp Kö");
+			fieldRgbColorTrpK = createField("RGB Color Trp K");
 			fieldRgbColorEinh = createField("RGB Color Einh");
 			fieldTextGsVb = createField("Text Gs Vb");
-			fieldTextTrpK = createField("Text Trp Kö");
+			fieldTextTrpK = createField("Text Trp K");
 			fieldTextEinh = createField("Text Einh");
 		}
 
