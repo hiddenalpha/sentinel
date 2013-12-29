@@ -37,10 +37,9 @@ public abstract class AbstractAdminDetailPanel<T> extends JPanel {
 	}
 	
 	protected JTextField createField(String fieldCaption, String regex) {
-		JTextField field = new JTextField();
-		
 		add(SwingHelper.createLabel(fieldCaption), "gap para");
-		field = SwingHelper.createTextField(30, regex);
+		JTextField field = SwingHelper.createTextField(30, regex);
+		field.setName(fieldCaption);
 		add(field, "span, growx");
 		
 		return field;

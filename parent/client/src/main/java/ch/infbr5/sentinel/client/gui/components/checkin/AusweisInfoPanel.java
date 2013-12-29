@@ -17,6 +17,7 @@ import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
 
 public class AusweisInfoPanel extends JPanel implements CheckInChangeListener, ImageChangeListener, ActionListener {
 
+	public static final String LABEL_STATUS_TEXT = "LABEL_STATUS_TEXT";
 	/**
 	 * 
 	 */
@@ -80,6 +81,7 @@ public class AusweisInfoPanel extends JPanel implements CheckInChangeListener, I
 		this.add(this.fotoLabel);
 
 		this.statusTextLabel = new JLabel(this.model.getMessageText(), SwingConstants.CENTER);
+		this.statusTextLabel.setName(LABEL_STATUS_TEXT);
 		this.add(this.statusTextLabel, BorderLayout.SOUTH);
 
 		this.model.addCheckInChangedListener(this);

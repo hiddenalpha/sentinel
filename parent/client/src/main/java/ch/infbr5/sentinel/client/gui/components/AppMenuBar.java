@@ -104,20 +104,8 @@ public class AppMenuBar extends JMenuBar {
 		menu.getAccessibleContext().setAccessibleDescription("Start");
 		this.add(menu);
 
-		// this.enableAdminItem = new JMenuItem("Admin-Modus aktivieren");
-		// this.enableAdminItem.getAccessibleContext().setAccessibleDescription("Admin-Modus aktivieren");
-		// this.enableAdminItem.setActionCommand("ENABLE_ADMIN_MODE");
-		// this.enableAdminItem.addActionListener(startMenuListener);
-		// menu.add(this.enableAdminItem);
-		//
-		// this.disableAdminItem = new JMenuItem("Admin-Modus beenden");
-		// this.disableAdminItem.getAccessibleContext().setAccessibleDescription("Admin-Modus beenden");
-		// this.disableAdminItem.setActionCommand("DISABLE_ADMIN_MODE");
-		// this.disableAdminItem.addActionListener(startMenuListener);
-		// menu.add(this.disableAdminItem);
-		// this.disableAdminItem.setVisible(false);
-		//
 		propertiesItem = new JMenuItem("Einstellungen", KeyEvent.VK_E);
+		propertiesItem.setName(CMD_EINSTELLUNGEN);
 		propertiesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
 				ActionEvent.ALT_MASK));
 		propertiesItem.getAccessibleContext().setAccessibleDescription(
@@ -126,15 +114,8 @@ public class AppMenuBar extends JMenuBar {
 		propertiesItem.addActionListener(startMenuListener);
 		menu.add(propertiesItem);
 
-		// JMenuItem logoutItem = new JMenuItem("Logout", KeyEvent.VK_L);
-		// logoutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
-		// ActionEvent.ALT_MASK));
-		// logoutItem.getAccessibleContext().setAccessibleDescription("Logout");
-		// logoutItem.setActionCommand("LOGOUT");
-		// logoutItem.addActionListener(startMenuListener);
-		// menu.add(logoutItem);
-
 		JMenuItem beendenItem = new JMenuItem("Beenden", KeyEvent.VK_B);
+		beendenItem.setName(CMD_EXIT);
 		beendenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
 				ActionEvent.ALT_MASK));
 		beendenItem.getAccessibleContext().setAccessibleDescription("Beenden");

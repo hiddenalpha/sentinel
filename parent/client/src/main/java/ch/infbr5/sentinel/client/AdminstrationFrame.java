@@ -17,6 +17,9 @@ import ch.infbr5.sentinel.client.gui.components.configuration.ZoneConfigPanel;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 
 public class AdminstrationFrame extends JFrame {
+	
+	public static final String FRAME_NAME = "AdministraionFrameTabbedPane";
+	public static final String TABBED_PANE_NAME = "AdministraionFrameTabbedPane";
 
 	/**
 	 * 
@@ -42,7 +45,10 @@ public class AdminstrationFrame extends JFrame {
 	
 	private void initComponents() {
 		
+		setName(FRAME_NAME);
+		
 		tabbedPane = new JTabbedPane();
+		tabbedPane.setName(TABBED_PANE_NAME);
 		tabbedPane.addChangeListener(new ChangeListener() {
 			
 			@Override

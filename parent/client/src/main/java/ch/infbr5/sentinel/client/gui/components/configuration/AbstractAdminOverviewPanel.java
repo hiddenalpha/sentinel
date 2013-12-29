@@ -37,6 +37,16 @@ import net.miginfocom.swing.MigLayout;
 public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 		ListSelectionListener, ActionListener {
 
+	public static final String BUTTON_ADMINPANEL_CANCEL = "ADMINPANEL_CANCEL";
+
+	public static final String BUTTON_ADMINPANEL_DELETE = "ADMINPANEL_DELETE";
+
+	public static final String BUTTON_ADMINPANEL_SAVE = "ADMINPANEL_SAVE";
+
+	public static final String BUTTON_ADMINPANEL_EDIT = "ADMINPANEL_EDIT";
+
+	public static final String BUTTON_ADMINPANEL_NEW = "ADMINPANEL_NEW";
+
 	/**
 	 * 
 	 */
@@ -105,7 +115,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("ADMINPANEL_SAVE")) {
+		if (e.getActionCommand().equals(BUTTON_ADMINPANEL_SAVE)) {
 			boolean isValid = true;
 			// TODO
 			// validieren
@@ -129,10 +139,10 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 						"Die eingegebenen Daten sind nicht gültig.",
 						"Validierung", JOptionPane.CANCEL_OPTION);
 			}
-		} else if (e.getActionCommand().equals("ADMINPANEL_NEW")) {
+		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_NEW)) {
 			details.setDataRecord(model.getNewDataRecord());
 			setEditable(true);
-		} else if (e.getActionCommand().equals("ADMINPANEL_CANCEL")) {
+		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_CANCEL)) {
 			setEditable(false);
 			if (table.getSelectedRow() >= 0) {
 				int modelRow = table.convertRowIndexToModel(table
@@ -141,13 +151,13 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 			} else {
 				details.clearFieldValues();
 			}
-		} else if (e.getActionCommand().equals("ADMINPANEL_DELETE")) {
+		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_DELETE)) {
 			if (isRowSelected()) {
 				model.removeDataRecord(details.getDataRecord());
 				setEditable(false);
 				details.setDataRecord(null);
 			}
-		} else if (e.getActionCommand().equals("ADMINPANEL_EDIT")) {
+		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_EDIT)) {
 			if (isRowSelected()) {
 				int modelRow = table.convertRowIndexToModel(table
 						.getSelectedRow());
@@ -396,28 +406,33 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 
 	private void createButtons() {
 		newButton = new JButton("Neu");
+		newButton.setName(BUTTON_ADMINPANEL_NEW);
 		newButton.addActionListener(this);
-		newButton.setActionCommand("ADMINPANEL_NEW");
+		newButton.setActionCommand(BUTTON_ADMINPANEL_NEW);
 		add(newButton);
 
 		editButton = new JButton("Bearbeiten");
+		editButton.setName(BUTTON_ADMINPANEL_EDIT);
 		editButton.addActionListener(this);
-		editButton.setActionCommand("ADMINPANEL_EDIT");
+		editButton.setActionCommand(BUTTON_ADMINPANEL_EDIT);
 		add(editButton);
 
 		saveButton = new JButton("Speichern");
+		saveButton.setName(BUTTON_ADMINPANEL_SAVE);
 		saveButton.addActionListener(this);
-		saveButton.setActionCommand("ADMINPANEL_SAVE");
+		saveButton.setActionCommand(BUTTON_ADMINPANEL_SAVE);
 		add(saveButton);
 
 		deleteButton = new JButton("Löschen");
+		deleteButton.setName(BUTTON_ADMINPANEL_DELETE);
 		deleteButton.addActionListener(this);
-		deleteButton.setActionCommand("ADMINPANEL_DELETE");
+		deleteButton.setActionCommand(BUTTON_ADMINPANEL_DELETE);
 		add(deleteButton);
 
 		cancelButton = new JButton("Abbrechen");
+		cancelButton.setName(BUTTON_ADMINPANEL_CANCEL);
 		cancelButton.addActionListener(this);
-		cancelButton.setActionCommand("ADMINPANEL_CANCEL");
+		cancelButton.setActionCommand(BUTTON_ADMINPANEL_CANCEL);
 		add(cancelButton);
 	}
 

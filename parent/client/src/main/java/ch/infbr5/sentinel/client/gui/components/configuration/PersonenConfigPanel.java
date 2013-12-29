@@ -45,6 +45,7 @@ import ch.infbr5.sentinel.client.wsgen.PersonDetails;
 
 public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetails> {
 
+	public static final String BUTTON_NEUER_AUSWEIS = "BUTTON_NEUER_AUSWEIS";
 	/**
 	 * 
 	 */
@@ -218,7 +219,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 		private JButton getNeuerAusweisButton() {
 			if (neuerAusweisButton == null) {
 				neuerAusweisButton = new JButton("Neuer Ausweis");
-
+				neuerAusweisButton.setName(BUTTON_NEUER_AUSWEIS);
 				neuerAusweisButton.setAction(getAbstractActionNeuerAusweis());
 			}
 
