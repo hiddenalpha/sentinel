@@ -244,7 +244,7 @@ public class PrintConfigPanel extends
 			if (response != null) {
 				PrintJobDetails job = response.getPrintJobDetails().get(0);
 				byte[] pdf = job.getPdf();
-				DesktopHelper.openFile(job.getPintJobFile(), pdf);
+				DesktopHelper.openPdfFile(job.getPintJobFile(), pdf);
 			}
 		}
 
