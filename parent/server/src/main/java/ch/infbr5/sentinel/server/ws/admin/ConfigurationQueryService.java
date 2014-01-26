@@ -29,6 +29,7 @@ import ch.infbr5.sentinel.server.model.Zone;
 import ch.infbr5.sentinel.server.print.IdentityCardRenderer;
 import ch.infbr5.sentinel.server.print.PdfAusweisBoxInventar;
 import ch.infbr5.sentinel.server.print.PdfAusweisListe;
+import ch.infbr5.sentinel.server.utils.FileHelper;
 import ch.infbr5.sentinel.server.ws.CheckpointDetails;
 import ch.infbr5.sentinel.server.ws.ConfigurationDetails;
 import ch.infbr5.sentinel.server.ws.EinheitDetails;
@@ -516,6 +517,16 @@ public class ConfigurationQueryService {
 	@WebMethod
 	public boolean importConfigData(byte[] data, String password) {
 		return true;
+	}
+
+	@WebMethod
+	public boolean importAusweisVorlage(byte[] data) {
+		return FileHelper.saveAsFile(FileHelper.FILE_AUSWEISVORLAGE_JPG, data);
+	}
+
+	@WebMethod
+	public boolean importWasserzeichen(byte[] data) {
+		return FileHelper.saveAsFile(FileHelper.FILE_WASSERZEICHEN_PNG, data);
 	}
 
 	@WebMethod

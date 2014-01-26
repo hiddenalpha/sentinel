@@ -25,6 +25,8 @@ public class AppMenuBar extends JMenuBar {
 	public static final String CMD_IMPORT_FOTO = "FOTO_IMPORT";
 	public static final String CMD_IMPORT_PISADATA_BESTAND = "IMPORT_PISADATA_BESTAND";
 	public static final String CMD_IMPORT_PISADATA_EINR = "IMPORT_PISADATA_EINR";
+	public static final String CMD_IMPORT_AUSWEISVORLAGE = "CMD_IMPORT_AUSWEISVORLAGE";
+	public static final String CMD_IMPORT_WASSERZEICHEN = "CMD_IMPORT_WASSERZEICHEN";
 	/**
 	 * 
 	 */
@@ -72,6 +74,14 @@ public class AppMenuBar extends JMenuBar {
 
 		addItem("Configuration importieren", adminMenu, startMenuListener,
 				CMD_IMPORT_CONFIG, adminMode );
+		
+		this.adminMenu.addSeparator();
+		
+		addItem("Ausweisvorlage importieren", adminMenu, startMenuListener,
+				CMD_IMPORT_AUSWEISVORLAGE, adminMode );
+
+		addItem("Wasserzeichen importieren", adminMenu, startMenuListener,
+				CMD_IMPORT_WASSERZEICHEN, adminMode );
 	}
 
 	private void addItem(String text, JMenu menu, ActionListener listener,

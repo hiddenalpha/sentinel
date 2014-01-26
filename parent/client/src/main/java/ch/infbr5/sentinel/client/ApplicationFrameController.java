@@ -66,6 +66,14 @@ public class ApplicationFrameController implements WindowListener, ActionListene
 				new FileUpAndDownload(appFrame).importPisaData(false);
 				break;
 				
+			case AppMenuBar.CMD_IMPORT_AUSWEISVORLAGE:
+				new FileUpAndDownload(appFrame).importAusweisvorlage();
+				break;
+				
+			case AppMenuBar.CMD_IMPORT_WASSERZEICHEN:
+				new FileUpAndDownload(appFrame).importWasserzeichen();
+				break;
+				
 			case AppMenuBar.CMD_IMPORT_FOTO:
 				new BulkFotoImporter(appFrame).importFotos();
 				break;

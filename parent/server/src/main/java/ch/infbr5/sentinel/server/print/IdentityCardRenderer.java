@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -22,6 +24,7 @@ import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Person;
+import ch.infbr5.sentinel.server.utils.FileHelper;
 import ch.infbr5.sentinel.server.utils.RgbStringHelper;
 
 import com.google.zxing.BarcodeFormat;
@@ -299,17 +302,35 @@ public class IdentityCardRenderer extends PrintingDocument {
 	private void addBackgroundImage(PdfContentByte cb, int offsetWidth, int offsetHeight, Person person)
 			throws BadElementException, IOException, DocumentException {
 
-		Jpeg image = new Jpeg(IdentityCardRenderer.class.getResource("/images/AusweisVorlage.jpg"));
+		Jpeg image = getAusweisVorlage();
 		float width = (float) (image.getWidth() / 2.8);
 		float height = (float) (image.getHeight() / 2.8);
 		cb.addImage(image, width, 0, 0, height, offsetWidth - 7, offsetHeight - 8);
+	}
+
+	private Jpeg getAusweisVorlage() throws BadElementException, IOException {
+		File f = new File(FileHelper.FILE_AUSWEISVORLAGE_JPG);
+		if(f.exists()) {
+			return new Jpeg(f.toURI().toURL());
+		} else {
+			return new Jpeg(IdentityCardRenderer.class.getResource("/images/AusweisVorlage.jpg"));
+		}
+	}
+	
+	private BufferedImage getWasserzeichen() throws IOException {
+		File f = new File(FileHelper.FILE_WASSERZEICHEN_PNG);
+		if(f.exists()) {
+			return ImageIO.read(f.toURI().toURL());
+		} else {
+			return ImageIO.read(IdentityCardRenderer.class.getResource("/images/emblem.png"));
+		}
 	}
 
 	private ByteArrayOutputStream modifyImage(BufferedImage pic, int nofBoxGelb) throws IOException {
 
 		BufferedImage boxGelb = ImageIO.read(IdentityCardRenderer.class.getResource("/images/box_gelb.jpg"));
 
-		BufferedImage watermark = ImageIO.read(IdentityCardRenderer.class.getResource("/images/emblem.png"));
+		BufferedImage watermark = getWasserzeichen();
 		java.awt.Image watermarkScale = watermark.getScaledInstance(watermark.getWidth() * pic.getWidth() / 300,
 				watermark.getHeight() * pic.getHeight() / 400, java.awt.Image.SCALE_DEFAULT);
 

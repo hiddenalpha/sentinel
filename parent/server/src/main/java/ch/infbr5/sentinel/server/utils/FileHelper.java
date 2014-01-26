@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileHelper {
+	
+	public static final String FILE_WASSERZEICHEN_PNG = "Wasserzeichen.png";
+	public static final String FILE_AUSWEISVORLAGE_JPG = "AusweisVorlage.jpg";
 
 	public static byte[] getAsByteArray(String filename) throws IOException {
 		File file = new File(filename);
