@@ -70,7 +70,8 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public void updateEinheit(@WebParam(name = "EinheitDetails") EinheitDetails details) {
+	public void updateEinheit(
+			@WebParam(name = "EinheitDetails") EinheitDetails details) {
 		Einheit einheit = null;
 		if ((details.getId() != null) && (details.getId() > 0)) {
 			einheit = QueryHelper.getEinheitById(details.getId());
@@ -138,6 +139,9 @@ public class ConfigurationQueryService {
 			PersonDetails personDetail = new PersonDetails();
 
 			personDetail.setId(person.getId());
+			if (person.getValidAusweis() != null) {
+				personDetail.setBarcode(person.getValidAusweis().getBarcode());
+			}
 			personDetail.setName(person.getName());
 			personDetail.setVorname(person.getVorname());
 			personDetail.setAhvNr(person.getAhvNr());
@@ -147,7 +151,8 @@ public class ConfigurationQueryService {
 
 			Einheit einheit = person.getEinheit();
 			personDetail.setEinheitId(einheit != null ? einheit.getId() : -1);
-			personDetail.setEinheitText(einheit != null ? einheit.getName() : "");
+			personDetail.setEinheitText(einheit != null ? einheit.getName()
+					: "");
 			personDetail.setFunktion(person.getFunktion());
 			personDetail.setGeburtsdatum(person.getGeburtsdatum());
 			Grad grad = person.getGrad();
@@ -189,10 +194,10 @@ public class ConfigurationQueryService {
 			personDetail.setGrad(grad != null ? grad.toString() : "");
 
 			personenDetails[0] = personDetail;
-			
+
 		} else {
 			personenDetails = new PersonDetails[0];
-			
+
 		}
 
 		ConfigurationResponse response = new ConfigurationResponse();
@@ -208,7 +213,8 @@ public class ConfigurationQueryService {
 			person = QueryHelper.getPerson(pd.getId());
 		}
 		if (person == null) {
-			person = ObjectFactory.createPerson(null, null, null, null, null, null, null);
+			person = ObjectFactory.createPerson(null, null, null, null, null,
+					null, null);
 		}
 
 		person.setName(pd.getName());
@@ -242,7 +248,8 @@ public class ConfigurationQueryService {
 	public ConfigurationResponse getCheckpoints() {
 		List<Checkpoint> checkpoints = QueryHelper.getCheckpoints();
 
-		CheckpointDetails[] checkpointsDetails = new CheckpointDetails[checkpoints.size()];
+		CheckpointDetails[] checkpointsDetails = new CheckpointDetails[checkpoints
+				.size()];
 		for (int i = 0; i < checkpoints.size(); i++) {
 			Checkpoint checkpoint = checkpoints.get(i);
 
@@ -261,7 +268,8 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public void updateCheckpoint(@WebParam(name = "CheckpointDetails") CheckpointDetails cd) {
+	public void updateCheckpoint(
+			@WebParam(name = "CheckpointDetails") CheckpointDetails cd) {
 		Checkpoint checkpoint = null;
 		if ((cd.getId() != null) && (cd.getId() > 0)) {
 			checkpoint = QueryHelper.getCheckpoint(cd.getId());
@@ -275,7 +283,8 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public boolean removeCheckpoint(@WebParam(name = "checkpointId") Long checkpointId) {
+	public boolean removeCheckpoint(
+			@WebParam(name = "checkpointId") Long checkpointId) {
 		if ((checkpointId != null) && (checkpointId > 0)) {
 			Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
 			if (checkpoint != null) {
@@ -293,7 +302,8 @@ public class ConfigurationQueryService {
 			config = QueryHelper.getConfigurationValueById(c.getId());
 		}
 		if (config == null) {
-			config = ObjectFactory.createConfigurationValue(c.getKey(), c.getStringValue(), c.getLongValue(), c.getValidFor());
+			config = ObjectFactory.createConfigurationValue(c.getKey(),
+					c.getStringValue(), c.getLongValue(), c.getValidFor());
 		} else {
 			config.setKey(c.getKey());
 			config.setValidFor(c.getValidFor());
@@ -305,12 +315,14 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public ConfigurationResponse getConfigurationValue(@WebParam(name = "checkpointId") Long checkpointId,
+	public ConfigurationResponse getConfigurationValue(
+			@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "key") String key) {
 
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		List<ConfigurationValue> configurationValues = QueryHelper.findConfigurationValue(key);
+		List<ConfigurationValue> configurationValues = QueryHelper
+				.findConfigurationValue(key);
 		List<ConfigurationDetails> temp = new ArrayList<ConfigurationDetails>();
 
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
@@ -320,13 +332,16 @@ public class ConfigurationQueryService {
 				String regex = configurationValues.get(i).getValidFor();
 				// Falls Config für den Checkpoint gültig ist
 				if ((regex != null) && (checkpoint != null)) {
-					if (regex.equals("") || (isValidRegex(regex) && checkpoint.getName().matches(regex))) {
+					if (regex.equals("")
+							|| (isValidRegex(regex) && checkpoint.getName()
+									.matches(regex))) {
 						temp.add(convert(configurationValues.get(i)));
 					}
 				}
 			}
 
-			response.setConfigurationDetails(temp.toArray(new ConfigurationDetails[0]));
+			response.setConfigurationDetails(temp
+					.toArray(new ConfigurationDetails[0]));
 		} else {
 			response.setConfigurationDetails(new ConfigurationDetails[0]);
 		}
@@ -335,10 +350,12 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public ConfigurationResponse getGlobalConfigurationValue(@WebParam(name = "key") String key) {
+	public ConfigurationResponse getGlobalConfigurationValue(
+			@WebParam(name = "key") String key) {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		List<ConfigurationValue> configurationValues = QueryHelper.findConfigurationValue(key);
+		List<ConfigurationValue> configurationValues = QueryHelper
+				.findConfigurationValue(key);
 		ConfigurationDetails cds[] = new ConfigurationDetails[1];
 		if (configurationValues.size() > 0) {
 			cds[0] = convert(configurationValues.get(0));
@@ -350,9 +367,11 @@ public class ConfigurationQueryService {
 	@WebMethod
 	public ConfigurationResponse getConfigurationValues() {
 
-		List<ConfigurationValue> configurationValues = QueryHelper.getConfigurationValues();
+		List<ConfigurationValue> configurationValues = QueryHelper
+				.getConfigurationValues();
 
-		ConfigurationDetails[] configurationDetails = new ConfigurationDetails[configurationValues.size()];
+		ConfigurationDetails[] configurationDetails = new ConfigurationDetails[configurationValues
+				.size()];
 		for (int i = 0; i < configurationValues.size(); i++) {
 			configurationDetails[i] = convert(configurationValues.get(i));
 		}
@@ -361,11 +380,13 @@ public class ConfigurationQueryService {
 		response.setConfigurationDetails(configurationDetails);
 		return response;
 	}
-	
+
 	@WebMethod
-	public boolean removeConfiguration(@WebParam(name = "configurationId") Long configurationId) {
+	public boolean removeConfiguration(
+			@WebParam(name = "configurationId") Long configurationId) {
 		if ((configurationId != null) && (configurationId > 0)) {
-			ConfigurationValue config = QueryHelper.getConfigurationValueById(configurationId);
+			ConfigurationValue config = QueryHelper
+					.getConfigurationValueById(configurationId);
 			if (config != null) {
 				EntityManagerHelper.getEntityManager().remove(config);
 				return true;
@@ -379,7 +400,8 @@ public class ConfigurationQueryService {
 
 		List<PrintJob> printJobs = QueryHelper.getPrintJobs();
 
-		PrintJobDetails[] printJobDetails = new PrintJobDetails[printJobs.size()];
+		PrintJobDetails[] printJobDetails = new PrintJobDetails[printJobs
+				.size()];
 		for (int i = 0; i < printJobs.size(); i++) {
 			printJobDetails[i] = convert(printJobs.get(i));
 		}
@@ -418,11 +440,13 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public ConfigurationResponse printAusweisListe(boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
+	public ConfigurationResponse printAusweisListe(boolean nurMitAusweis,
+			boolean nachEinheit, String einheitName) {
 		PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisListe ausweisList = new PdfAusweisListe(nurMitAusweis, nachEinheit, einheitName);
+		PdfAusweisListe ausweisList = new PdfAusweisListe(nurMitAusweis,
+				nachEinheit, einheitName);
 		PrintJob job = ausweisList.print();
 		printJobDetails[0] = convert(job);
 
@@ -431,13 +455,14 @@ public class ConfigurationQueryService {
 		response.setPrintJobDetails(printJobDetails);
 		return response;
 	}
-	
+
 	@WebMethod
 	public ConfigurationResponse printAusweisboxInventar(String einheitName) {
 		PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(einheitName);
+		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(
+				einheitName);
 		PrintJob job = ausweisBoxListen.print();
 		printJobDetails[0] = convert(job);
 
@@ -487,7 +512,7 @@ public class ConfigurationQueryService {
 			return false;
 		}
 	}
-	
+
 	@WebMethod
 	public boolean importConfigData(byte[] data, String password) {
 		return true;

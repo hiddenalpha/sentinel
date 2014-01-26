@@ -72,7 +72,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private final String[] headerNames = { "Grad", "Name", "Vorname", "Einheit" };
+		private final String[] headerNames = { "Grad", "Name", "Vorname", "Funktion", "Ausweis", "Einheit" };
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
@@ -83,6 +83,10 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			} else if (columnIndex == 2) {
 				return getDataRecord(rowIndex).getVorname();
 			} else if (columnIndex == 3) {
+				return getDataRecord(rowIndex).getFunktion();
+			} else if (columnIndex == 4) {
+				return getDataRecord(rowIndex).getBarcode();
+			} else if (columnIndex == 5) {
 				return getDataRecord(rowIndex).getEinheitText();
 			}
 

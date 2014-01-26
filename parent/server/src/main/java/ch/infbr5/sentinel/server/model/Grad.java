@@ -2,10 +2,14 @@ package ch.infbr5.sentinel.server.model;
 
 public enum Grad {
 
-	REKR("Rekr"), SDT("Sdt"), GFR("Gfr"), OBGFR("Obgfr"), KPL("Kpl"), WM("Wm"), OBWM("Obwm"), FW("Fw"), FOUR("Four"), HPTFW(
-			"Hptfw"), ADJ("Adj Uof"), STABSADJ("Stabsadj"), HPTADJ("Hptadj"), CHEFADJ("Chefadj"), LT("Lt"), OBLT("Oblt"), HPTM(
-			"Hptm"), HPTM_IGST("Hptm i Gst"), MAJ("Maj"), MAJ_IGST("Maj i Gst"), OBERSTLT("Oberstlt"), OBERSTLT_IGST(
-			"Oberstlt i Gst"), OBERST("Oberst"), OBERST_IGST("Oberst i Gst"), BR("Br"), DIV("Div"), KKDT("KKdt");
+	REKR("Rekr"), SDT("Sdt"), GFR("Gfr"), OBGFR("Obgfr"), KPL("Kpl"), WM("Wm"), OBWM(
+			"Obwm"), FW("Fw"), FOUR("Four"), HPTFW("Hptfw"), ADJ("Adj Uof"), STABSADJ(
+			"Stabsadj"), HPTADJ("Hptadj"), CHEFADJ("Chefadj"), LT("Lt"), OBLT(
+			"Oblt"), FACHOF("Fachof"), HPTM("Hptm"), HPTM_IGST("Hptm i Gst"), MAJ(
+			"Maj"), MAJ_IGST("Maj i Gst"), OBERSTLT("Oberstlt"), OBERSTLT_IGST(
+			"Oberstlt i Gst"), OBERST("Oberst"), OBERST_IGST("Oberst i Gst"), BR(
+			"Br"), DIV("Div"), KKDT("KKdt"), REGIERUNGSRAT("Regierungsrat"), BUNDESRAT(
+			"Bundesrat"), OHNE("-");
 
 	public static Grad getGrad(String gradtext) {
 
@@ -20,7 +24,8 @@ public enum Grad {
 					}
 					// sonst geht auch HPTM Asg
 				} else {
-					if (gradtext.toLowerCase().startsWith(g.toString().toLowerCase())) {
+					if (gradtext.toLowerCase().startsWith(
+							g.toString().toLowerCase())) {
 						return g;
 					}
 				}

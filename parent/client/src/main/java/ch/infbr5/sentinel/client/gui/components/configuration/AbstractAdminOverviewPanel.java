@@ -179,7 +179,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 
 		leftPanel = new JPanel();
 		leftPanel.setLayout(new MigLayout("", "[fill, grow]",
-				"[fill, grow][grow][fill, grow]"));
+				"[fill, grow][10][fill]"));
 		add(leftPanel, "spany, top");
 		leftPanel.add(scroll, "wrap");
 
