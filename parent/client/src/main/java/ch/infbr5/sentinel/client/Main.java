@@ -17,21 +17,23 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		Logger log = Logger.getLogger(Main.class.getName()); 
-		log.setLevel(Level.ALL); 
-		log.info("initializing - trying to load configuration file ..."); 
-		 
-		try { 
-		    InputStream configFile = Main.class.getResourceAsStream("/META-INF/logging.properites"); 
-		    LogManager.getLogManager().readConfiguration(configFile);
-		} catch (IOException ex) 
-		{ 
-		    System.out.println("WARNING: Could not open configuration file"); 
-		    System.out.println("WARNING: Logging not configured (console output only)"); 
-		} 
-		log.info("starting myApp");
-		
+
+		Logger log = Logger.getLogger(Main.class.getName());
+		log.setLevel(Level.ALL);
+		log.info("initializing - trying to load configuration file ...");
+
+		try {
+			InputStream configFile = Main.class
+					.getResourceAsStream("/META-INF/logging.properites");
+			LogManager.getLogManager().readConfiguration(configFile);
+		} catch (IOException ex) {
+			System.out.println("WARNING: Could not open configuration file");
+			System.out
+					.println("WARNING: Logging not configured (console output only)");
+		}
+		log.info("starting Sentinel Client Version "
+				+ Version.get().getVersion() + " ("
+				+ Version.get().getBuildTimestamp() + ")");
 
 		// Schedule a job for the event dispatch thread:
 		// creating and showing this application's GUI.

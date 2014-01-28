@@ -3,7 +3,7 @@
   <parent>
     <groupId>ch.infbr5.sentinel</groupId>
     <artifactId>parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${sentinel-version}</version>
   </parent>
   <artifactId>wsdl</artifactId>
   

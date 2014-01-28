@@ -3,7 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.infbr5.sentinel</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${sentinel-version}</version>
+
+	<properties>
+		<sentinel-version>0.7.0-SNAPSHOT</sentinel-version>
+	</properties>
+	
 	<packaging>pom</packaging>
 	<modules>
 		<module>client</module>

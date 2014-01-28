@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>ch.infbr5.sentinel</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${sentinel-version}</version>
 	</parent>
 	<artifactId>server</artifactId>
 
@@ -192,6 +192,10 @@
 							<addClasspath>true</addClasspath>
 							<mainClass>ch.infbr5.sentinel.server.Main</mainClass>
 						</manifest>
+						<manifestEntries>
+								<Implementation-Version>${project.version}</Implementation-Version>
+								<BuildTimestamp>${maven.build.timestamp}</BuildTimestamp>
+						</manifestEntries>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>

@@ -20,7 +20,6 @@ public class Main {
 
 	private static ServerControl sentinelServer;
 	private static Logger log;
-	
 
 	/**
 	 * @param args
@@ -29,21 +28,25 @@ public class Main {
 
 		log = Logger.getLogger(Main.class.getName());
 		log.setLevel(Level.ALL);
-		log.info(System.getProperty("java.vendor")+ " " + System.getProperty("java.version"));
+		log.info(System.getProperty("java.vendor") + " "
+				+ System.getProperty("java.version"));
 		log.info("initializing - trying to load configuration file ...");
 		try {
-			InputStream configFile = Main.class.getResourceAsStream("/META-INF/logging.properites");
+			InputStream configFile = Main.class
+					.getResourceAsStream("/META-INF/logging.properites");
 			LogManager.getLogManager().readConfiguration(configFile);
 		} catch (IOException ex) {
 			System.out.println("WARNING: Could not open configuration file");
-			System.out.println("WARNING: Logging not configured (console output only)");
+			System.out
+					.println("WARNING: Logging not configured (console output only)");
 		}
 		log.info("trying to start server ...");
 
 		boolean debugMode = false;
 
 		Options options = new Options();
-		Option ipAddress = OptionBuilder.withArgName("ip").hasArg().withDescription("Server IpAdress").create("ipAddress");
+		Option ipAddress = OptionBuilder.withArgName("ip").hasArg()
+				.withDescription("Server IpAdress").create("ipAddress");
 		Option debug = new Option("debug", "print debugging information");
 
 		options.addOption(ipAddress);
@@ -62,8 +65,7 @@ public class Main {
 			String ip = line.getOptionValue("ipAddress", "0.0.0.0");
 			log.info("listening on ".concat(ip));
 
-			
-			sentinelServer = new ServerControl(debugMode,false);
+			sentinelServer = new ServerControl(debugMode, false);
 
 			// Shutdown Hook installieren
 			Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -77,8 +79,10 @@ public class Main {
 			// Server starten
 			log.info("trying to start server ...");
 			sentinelServer.start(ip);
-			log.info("server is running.");
-			
+			log.info("Sentienl server version " + Version.get().getVersion()
+					+ " (" + Version.get().getBuildTimestamp()
+					+ ") is running.");
+
 			// warten bis Server beendet ist
 			while (sentinelServer.isRunning()) {
 				try {
@@ -88,7 +92,7 @@ public class Main {
 					e.printStackTrace();
 				}
 			}
-			
+
 			System.exit(0);
 
 		} catch (ParseException exp) {

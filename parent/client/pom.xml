@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>ch.infbr5.sentinel</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${sentinel-version}</version>
 	</parent>
-	
+
 	<artifactId>client</artifactId>
 
 	<properties>
@@ -15,14 +15,14 @@
 
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>wsdl</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.media</groupId>
 			<artifactId>jmf</artifactId>
@@ -35,7 +35,7 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
@@ -45,33 +45,33 @@
 
 	<build>
 		<plugins>
-		
+
 			<!-- extract WSDL and XSD from dependency jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${project.groupId}</groupId>
 									<artifactId>wsdl</artifactId>
 									<version>${project.version}</version>
-                                    <outputDirectory>${project.build.directory}/wsdl</outputDirectory>
-                                    <includes>**\/*.xsd, **\/*.wsdl</includes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-		
+									<outputDirectory>${project.build.directory}/wsdl</outputDirectory>
+									<includes>**\/*.xsd, **\/*.wsdl</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.jvnet.jax-ws-commons</groupId>
 				<artifactId>jaxws-maven-plugin</artifactId>
@@ -83,9 +83,9 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>			 
-				    <wsdlDirectory>${project.build.directory}/wsdl/META-INF/wsdl</wsdlDirectory>
-				    <wsdlLocation>http://example.com/mywebservices/*</wsdlLocation>
+				<configuration>
+					<wsdlDirectory>${project.build.directory}/wsdl/META-INF/wsdl</wsdlDirectory>
+					<wsdlLocation>http://example.com/mywebservices/*</wsdlLocation>
 					<packageName>ch.infbr5.sentinel.client.wsgen</packageName>
 				</configuration>
 			</plugin>
@@ -99,6 +99,10 @@
 							<addClasspath>true</addClasspath>
 							<mainClass>ch.infbr5.sentinel.client.Main</mainClass>
 						</manifest>
+						<manifestEntries>
+								<Implementation-Version>${project.version}</Implementation-Version>
+								<BuildTimestamp>${maven.build.timestamp}</BuildTimestamp>
+						</manifestEntries>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -114,6 +118,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 
 		<pluginManagement>

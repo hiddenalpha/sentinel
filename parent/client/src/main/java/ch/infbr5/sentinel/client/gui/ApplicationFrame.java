@@ -15,6 +15,7 @@ import ch.infbr5.sentinel.client.ApplicationFrameController;
 import ch.infbr5.sentinel.client.ApplicationModel;
 import ch.infbr5.sentinel.client.ApplicationModelImpl;
 import ch.infbr5.sentinel.client.StartupHandler;
+import ch.infbr5.sentinel.client.Version;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.checkin.AusweisInfoPanel;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModel;
@@ -59,7 +60,8 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 	public ApplicationFrame() {
 		applicationFrameModel = new ApplicationModelImpl();
 
-		windowListener = new ApplicationFrameController(applicationFrameModel, this);
+		windowListener = new ApplicationFrameController(applicationFrameModel,
+				this);
 		this.addWindowListener(windowListener);
 
 		this.startupHandler = new StartupHandler(applicationFrameModel, this);
@@ -107,12 +109,16 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		this.setSize(1024, 900);
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Sentinel - <VERSION> - " + ConfigurationHelper.getCheckpointName());
+		this.setTitle("Sentinel - " + Version.get().getVersion() + " ("
+				+ Version.get().getBuildTimestamp() + ") - "
+				+ ConfigurationHelper.getCheckpointName());
 
-		this.getContentPane().setLayout(new MigLayout("", "[fill, grow][fill, grow]", "[50%, fill][50%, grow]"));
+		this.getContentPane().setLayout(
+				new MigLayout("", "[fill, grow][fill, grow]",
+						"[50%, fill][50%, grow]"));
 
-		checkInModel = new CheckInModelImpl(ConfigurationLocalHelper.getConfig().getCheckpointId(), this.journalEintragLogger,
-				this);
+		checkInModel = new CheckInModelImpl(ConfigurationLocalHelper
+				.getConfig().getCheckpointId(), this.journalEintragLogger, this);
 		checkInTabbedPanel = new CheckInTabbedPanels(checkInModel);
 
 		this.add(checkInTabbedPanel, "cell 0 0 1 2 growy");
@@ -130,17 +136,21 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		}
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		JournalModel journalModel = new JournalModelImpl(this.journalEintragLogger, ConfigurationLocalHelper.getConfig()
-				.getCheckpointId());
+		JournalModel journalModel = new JournalModelImpl(
+				this.journalEintragLogger, ConfigurationLocalHelper.getConfig()
+						.getCheckpointId());
 
 		// tabbedPane.add(new JournalPanelOld(journalModel));
 		tabbedPane.add(new JournalPanel(), "Journal");
 		tabbedPane.add(new JournalNewMessagePanel(), "Neue Meldung erfassen");
 		this.add(tabbedPane, "cell 1 1");
 
-		ActionListener operatorEntryDialog = new OperatorEntryDialogListener(this, this.journalEintragLogger, checkInModel);
+		ActionListener operatorEntryDialog = new OperatorEntryDialogListener(
+				this, this.journalEintragLogger, checkInModel);
 
-		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper.getConfig().isAdminMode(), ConfigurationLocalHelper.getConfig().isSuperuserMode());
+		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper
+				.getConfig().isAdminMode(), ConfigurationLocalHelper
+				.getConfig().isSuperuserMode());
 
 		setJMenuBar(this.menuBar);
 
@@ -148,7 +158,8 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 	}
 
 	private void initializeJournalLogger() {
-		this.journalEintragLogger = new JournalEintragLoggerImpl(ConfigurationLocalHelper.getConfig().getCheckpointId(),
+		this.journalEintragLogger = new JournalEintragLoggerImpl(
+				ConfigurationLocalHelper.getConfig().getCheckpointId(),
 				this.applicationFrameModel.getOperatorName());
 	}
 
