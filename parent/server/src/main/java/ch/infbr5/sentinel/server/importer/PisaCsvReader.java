@@ -97,7 +97,11 @@ public class PisaCsvReader {
 						if (isKompletteEinheit) {
 							e = findEinheit(nextLine[einheit]);
 						} else {
-							e = findEinheit("GAST");
+							if (hasEinheit(nextLine[einheit])) {
+								e = findEinheit(nextLine[einheit]);
+							} else {
+								e = findEinheit("GAST");
+							}
 						}
 						p = QueryHelper.createPerson(e, nextLine[ahvNr],
 								Grad.getGrad(nextLine[grad]), nextLine[name],
@@ -154,7 +158,11 @@ public class PisaCsvReader {
 					if (isKompletteEinheit) {
 						e = findEinheit(nextLine[einheit]);
 					} else {
-						e = findEinheit("GAST");
+						if (hasEinheit(nextLine[einheit])) {
+							e = findEinheit(nextLine[einheit]);
+						} else {
+							e = findEinheit("GAST");
+						}
 					}
 					p.setEinheit(e);
 					createNewAusweis = true;
@@ -245,6 +253,11 @@ public class PisaCsvReader {
 			EntityManagerHelper.getEntityManager().persist(e);
 		}
 		return e;
+	}
+
+	private boolean hasEinheit(String name) {
+		Einheit e = QueryHelper.getEinheit(name);
+		return (e != null);
 	}
 
 	private int findColumn(String[] headerLine, String pattern) {
