@@ -1,12 +1,12 @@
 package ch.infbr5.sentinel;
 
+import static org.fest.swing.data.TableCell.row;
+
 import java.util.regex.Pattern;
 
-import org.apache.derby.tools.sysinfo;
-import org.fest.swing.core.BasicRobot;
-import org.fest.swing.core.Robot;
 import org.fest.swing.finder.WindowFinder;
 import org.fest.swing.fixture.FrameFixture;
+import org.fest.swing.fixture.JTableCellFixture;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,6 +16,7 @@ import org.junit.Test;
 import ch.infbr5.sentinel.client.AdminstrationFrame;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.checkin.AusweisInfoPanel;
+import ch.infbr5.sentinel.client.gui.components.configuration.ConfigurationValuePanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.EinheitenConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.PersonenConfigPanel;
 import ch.infbr5.sentinel.testutils.Helper;
@@ -52,6 +53,26 @@ public class AusweisManagmentIT {
 		window.menuItem(AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG).click();
 		window.optionPane().requireWarningMessage();
 		window.dialog().button().click();
+	}
+	
+	@Test
+	public void test_ConfigruationErfassen() {
+		window.menuItem(AppMenuBar.CMD_EINSTELLUNGEN).click();
+		
+		FrameFixture adminWindow = WindowFinder.findFrame(
+				AdminstrationFrame.FRAME_NAME).using(window.robot);
+
+		adminWindow.tabbedPane().selectTab("Configuration");
+		adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_NEW).click();
+		adminWindow.textBox("Key").enterText("AnzahlPersonen");
+		adminWindow.textBox("String Value").enterText("23");
+		adminWindow.textBox("Long Value").enterText("24");
+		
+		adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_SAVE).click();
+		
+		adminWindow.table().requireCellValue(row(6).column(0), "AnzahlPersonen");
+		adminWindow.table().requireCellValue(row(6).column(1), "23");
+		
 	}
 
 	@Test
