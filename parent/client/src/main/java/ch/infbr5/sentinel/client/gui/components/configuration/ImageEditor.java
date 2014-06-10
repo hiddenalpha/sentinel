@@ -66,6 +66,11 @@ public class ImageEditor extends javax.swing.JDialog {
 
 	public void setImage(BufferedImage image) {
 		this.image = image;
+		if (image != null) {
+			imageSaveButton.setEnabled(true);
+			imageCutButton.setEnabled(true);
+			imageRotateButton.setEnabled(true);
+		}
 		initCropper(image);
 	}
 
@@ -119,10 +124,7 @@ public class ImageEditor extends javax.swing.JDialog {
 
 						try {
 							image = ImageIO.read(file);
-							imageSaveButton.setEnabled(true);
-							imageCutButton.setEnabled(true);
-							imageRotateButton.setEnabled(true);
-							initCropper(image);
+							setImage(image);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

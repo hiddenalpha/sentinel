@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -256,7 +257,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 		private void openEditImagePanel() {
 			imageEditor = new ImageEditor(parentFrame);
 			imageEditor.setResizable(false);
-			imageEditor.setVisible(true);
+			
 
 			imageEditor.addWindowListener(new WindowListener() {
 
@@ -298,6 +299,14 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 				public void windowActivated(WindowEvent arg0) {
 				}
 			});
+			
+			// Prüfen ob der Benutzer ein eigenes Bild hat und entsprechend in den imageEditor laden.
+			BufferedImage image = ImageCreator.createImage(data.getImageId());
+			if (image != null) {
+				imageEditor.setImage(image);
+			}
+			
+			imageEditor.setVisible(true);
 		}
 
 		private List<EinheitDetailsClient> copyEinheitModel(List<EinheitDetails> einheitDetails) {
