@@ -167,7 +167,6 @@ abstract class PersonenDataImporter {
 			DataRow dataRow = new DataRow(dataLine, columnMappings);
 				
 			// Person in Datenbank suchen. Dann erzeugen oder aktualisieren.
-			// TODO Stimmt das wirklich bezüglich neuer ausweis?
 			Person person = PersistenceUtil.findPerson(dataRow);
 			if (person == null) {
 				Einheit einheit = PersistenceUtil.createEinheitKompletterBestand(dataRow.getValue(PersonenAttribute.Einheit), isKompletterBestand());
@@ -189,13 +188,14 @@ abstract class PersonenDataImporter {
 				person.setEinheit(einheit);
 				
 				// Neuen Ausweis erstellen
+				// Es wird nur ein neuer Ausweis ausgestellt wenn die Person bereits einen gültigen Ausweis hatte
 				if (createNewAusweis) {
 					Ausweis oldAusweis = person.getValidAusweis();
 					if (oldAusweis != null) {
 						PersistenceUtil.deactivateAusweis(oldAusweis);
+						QueryHelper.createAusweis(person.getId());
+						log.info("[" + logOld + "] to [" + person.toString() + "]");
 					}
-					QueryHelper.createAusweis(person.getId());
-					log.info("[" + logOld + "] to [" + person.toString() + "]");
 				}
 			}
 			
