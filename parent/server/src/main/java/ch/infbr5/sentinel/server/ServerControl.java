@@ -10,13 +10,15 @@ import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.ws.JournalService;
 import ch.infbr5.sentinel.server.ws.SentinelQueryService;
 import ch.infbr5.sentinel.server.ws.admin.ConfigurationQueryService;
+import ch.infbr5.sentinel.server.ws.importer.PersonenImporterService;
 
 public class ServerControl {
 
 	private Endpoint servicesEndpoint;
 	private Endpoint configurationEndpoint;
 	private Endpoint journalEndpoint;
-
+	private Endpoint personenImporterEndpoint;
+	
 	private boolean running = true;
 
 	private NetworkServerControl databaseServer;
@@ -73,6 +75,8 @@ public class ServerControl {
 					new ConfigurationQueryService());
 			this.journalEndpoint = Endpoint.publish("http://" + thisIpAddress
 					+ ":8080/journal", new JournalService());
+			this.personenImporterEndpoint = Endpoint.publish("http://" + thisIpAddress
+					+ ":8080/personenImporter", new PersonenImporterService());
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -98,6 +102,7 @@ public class ServerControl {
 			this.servicesEndpoint.stop();
 			this.configurationEndpoint.stop();
 			this.journalEndpoint.stop();
+			this.personenImporterEndpoint.stop();
 		} catch (NullPointerException e) {
 			// Bug in JAX-WS - nix zu tun.
 

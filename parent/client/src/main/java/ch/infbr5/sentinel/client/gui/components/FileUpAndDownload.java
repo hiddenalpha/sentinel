@@ -12,7 +12,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import ch.infbr5.sentinel.client.gui.components.importer.PersonenImportMappingDialog;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
+import ch.infbr5.sentinel.client.wsgen.ColumnMappingResponse;
 
 public class FileUpAndDownload {
 
@@ -81,21 +83,11 @@ public class FileUpAndDownload {
 
 			byte[] data = loadFile(filename);
 
-			boolean result = ServiceHelper.getConfigurationsService()
-					.importPisaData(data, isKompletterBestand);
+			String sessionKey = ServiceHelper.getPersonenImporterService().initiatImport((new File(filename)).getName(), data, isKompletterBestand);
+			ColumnMappingResponse response = ServiceHelper.getPersonenImporterService().getColumnMappings(sessionKey);
 
-			if (result) {
-				JOptionPane.showMessageDialog(null,
-						"Die Datei wurde gespeichert.",
-						"Pisadaten importieren", JOptionPane.OK_OPTION);
-			} else {
-				JOptionPane
-						.showMessageDialog(
-								null,
-								"Die Datei konnte nicht erfolgreich gespeichert werden.",
-								"Pisadaten importieren",
-								JOptionPane.CANCEL_OPTION);
-			}
+			PersonenImportMappingDialog dialog = new PersonenImportMappingDialog(frame, sessionKey, response);
+			dialog.show();
 		}
 
 	}

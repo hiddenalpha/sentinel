@@ -9,6 +9,8 @@ import ch.infbr5.sentinel.client.wsgen.ConfigurationQueryService;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationQueryServiceService;
 import ch.infbr5.sentinel.client.wsgen.JournalService;
 import ch.infbr5.sentinel.client.wsgen.JournalServiceService;
+import ch.infbr5.sentinel.client.wsgen.PersonenImporterService;
+import ch.infbr5.sentinel.client.wsgen.PersonenImporterServiceService;
 import ch.infbr5.sentinel.client.wsgen.SentinelQueryService;
 import ch.infbr5.sentinel.client.wsgen.SentinelQueryServiceService;
 
@@ -17,6 +19,7 @@ public class ServiceHelper {
 	private static SentinelQueryService service;
 	private static ConfigurationQueryService configuration;
 	private static JournalService journal;
+	private static PersonenImporterService personenImporter;
 
 	public static ConfigurationQueryService getConfigurationsService() {
 		// not working when queryservice is not initialized with endpoint address$
@@ -35,6 +38,12 @@ public class ServiceHelper {
 
 		return ServiceHelper.service;
 	}
+	
+	public static PersonenImporterService getPersonenImporterService() {
+		// not working when queryservice is not initialized with endpoint address
+
+		return personenImporter;
+	}
 
 	public static void setEndpointAddress(String address) throws MalformedURLException{
 		if(ServiceHelper.service==null) {
@@ -47,6 +56,10 @@ public class ServiceHelper {
 
 		if(ServiceHelper.configuration==null) {
 			ServiceHelper.configuration = new ConfigurationQueryServiceService(new URL(address + "/configurations?wsdl"),new QName("http://ws.sentinel.infbr5.ch/", "ConfigurationQueryServiceService")).getConfigurationQueryServicePort();
+		}
+		
+		if (personenImporter == null) {
+			personenImporter = new PersonenImporterServiceService(new URL(address + "/personenImporter?wsdl"),new QName("http://ws.sentinel.infbr5.ch/", "PersonenImporterServiceService")).getPersonenImporterServicePort();
 		}
 	}
 }

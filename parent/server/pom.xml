@@ -169,6 +169,18 @@
 						</configuration>
 					</execution>
 					
+					<execution>
+						<id>PersonenImportWS</id>
+						<goals>
+							<goal>wsgen</goal>
+						</goals>
+						<configuration>
+							<sei>ch.infbr5.sentinel.server.ws.importer.PersonenImporterService</sei>
+							<genWsdl>true</genWsdl>
+							<keep>true</keep>
+						</configuration>
+					</execution>
+					
 				</executions>
 
 

@@ -17,7 +17,6 @@ import ch.infbr5.sentinel.server.db.PdfStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.exporter.AusweisDatenWriter;
 import ch.infbr5.sentinel.server.importer.AusweisDatenReader;
-import ch.infbr5.sentinel.server.importer.PisaCsvReader;
 import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.Einheit;
@@ -496,17 +495,6 @@ public class ConfigurationQueryService {
 	public boolean importPersonData(byte[] data, String password) {
 		AusweisDatenReader reader = new AusweisDatenReader(data, password);
 		if (reader.isValidPassword()) {
-			reader.read();
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	@WebMethod
-	public boolean importPisaData(byte[] data, boolean isKompletteEinheit) {
-		PisaCsvReader reader = new PisaCsvReader(data, isKompletteEinheit);
-		if (reader.isFileValid()) {
 			reader.read();
 			return true;
 		} else {

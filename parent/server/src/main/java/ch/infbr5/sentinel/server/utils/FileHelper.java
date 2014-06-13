@@ -52,6 +52,11 @@ public class FileHelper {
 			return false;
 		}
 	}
+	
+	public static String getExtension(String filename) {
+		int lastIndexOfPoint = filename.lastIndexOf(".");
+		return filename.substring(lastIndexOfPoint + 1); 
+	}
 
 	private static void createParentDirectoryIfRequired(String filename) {
 		File fileHelper = new File(filename);

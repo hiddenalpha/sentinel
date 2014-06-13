@@ -14,8 +14,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import ch.infbr5.sentinel.server.db.EntityManagerHelper;
-
 public class Main {
 
 	private static ServerControl sentinelServer;
