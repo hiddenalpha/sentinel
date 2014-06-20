@@ -46,6 +46,10 @@ public class ImageStore {
 		// create file object
 		File file = new File(ImageStore.createFilename(ahvNr));
 
+		if (!file.exists()) {
+			return null;
+		}
+		
 		try {
 			// create FileInputStream object
 			FileInputStream fin = new FileInputStream(file);

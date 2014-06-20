@@ -426,12 +426,12 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public ConfigurationResponse printAusweise() {
-		PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 		ConfigurationResponse response = new ConfigurationResponse();
 
 		IdentityCardRenderer renderer = new IdentityCardRenderer();
 		PrintJob job = renderer.print();
 		if (job != null) {
+			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 			printJobDetails[0] = convert(job);
 			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
 			response.setPrintJobDetails(printJobDetails);
@@ -440,35 +440,34 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public ConfigurationResponse printAusweisListe(boolean nurMitAusweis,
-			boolean nachEinheit, String einheitName) {
-		PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
+	public ConfigurationResponse printAusweisListe(boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisListe ausweisList = new PdfAusweisListe(nurMitAusweis,
-				nachEinheit, einheitName);
+		PdfAusweisListe ausweisList = new PdfAusweisListe(nurMitAusweis, nachEinheit, einheitName);
 		PrintJob job = ausweisList.print();
-		printJobDetails[0] = convert(job);
-
-		printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
-
-		response.setPrintJobDetails(printJobDetails);
+		if (job != null) {
+			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
+			printJobDetails[0] = convert(job);
+			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
+			response.setPrintJobDetails(printJobDetails);
+		}
+		
 		return response;
 	}
 
 	@WebMethod
 	public ConfigurationResponse printAusweisboxInventar(String einheitName) {
-		PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(
-				einheitName);
+		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(einheitName);
 		PrintJob job = ausweisBoxListen.print();
-		printJobDetails[0] = convert(job);
-
-		printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
-
-		response.setPrintJobDetails(printJobDetails);
+		if (job != null) {
+			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
+			printJobDetails[0] = convert(job);
+			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
+			response.setPrintJobDetails(printJobDetails);
+		}
+		
 		return response;
 	}
 

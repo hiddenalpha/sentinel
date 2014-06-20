@@ -2,7 +2,6 @@ package ch.infbr5.sentinel.server.print;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import ch.infbr5.sentinel.server.db.ImageStore;
@@ -59,10 +58,14 @@ public class PdfAusweisListe extends PrintingDocument {
 
 		List<Person> personen = QueryHelper.getPersonen(nurMitAusweis, nachEinheit, einheitName);
 
+		if (personen.isEmpty()) {
+			return null;
+		}
+		
 		Document document = new Document();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			PdfWriter writer = PdfWriter.getInstance(document, out);
+			PdfWriter.getInstance(document, out);
 			document.open();
 
 			// Tabellen Layout
@@ -71,8 +74,7 @@ public class PdfAusweisListe extends PrintingDocument {
 			table.setTotalWidth(columnWidth);
 			table.setLockedWidth(true);
 
-			for (Iterator<Person> iterator = personen.iterator(); iterator.hasNext();) {
-				Person person = iterator.next();
+			for (Person person : personen) {
 				// Spalte 1 --- Foto ---
 				Image imgJpeg;
 				byte[] bild = ImageStore.loadJpegImage(person.getAhvNr());

@@ -6,7 +6,6 @@ import java.util.List;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Person;
 
-import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -40,14 +39,17 @@ public class PdfAusweisBoxInventar extends PrintingDocument {
 	@Override
 	protected byte[] renderPdf() {
 
-		List<Person> personen = QueryHelper
-				.getPersonen(true, true, einheitName);
+		List<Person> personen = QueryHelper.getPersonen(true, true, einheitName);
 
+		if (personen.isEmpty()) {
+			return null;
+		}
+		
 		Document document = new Document();
 		document.setPageSize(PageSize.A4.rotate());
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			PdfWriter writer = PdfWriter.getInstance(document, out);
+			PdfWriter.getInstance(document, out);
 			document.open();
 
 			int seiten = ((personen.size() - 1) / NOF_SLOTS_IN_BOX) + 1;
