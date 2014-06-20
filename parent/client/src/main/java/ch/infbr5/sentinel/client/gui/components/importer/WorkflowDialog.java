@@ -27,7 +27,7 @@ public class WorkflowDialog {
 	
 	private List<WorkflowStep> workflowSteps = new ArrayList<>();
 	
-	private List<JPanel> workflowStepPanels = new ArrayList<>();
+	private List<JPanel> panelsWorkflowSteps = new ArrayList<>();
 	
 	private JPanel panelWorkflowSteps;
 	
@@ -75,7 +75,7 @@ public class WorkflowDialog {
 			panel.setPreferredSize(new Dimension(200, 40));
 			panel.setBorder(BorderFactory.createLineBorder(Color.black));
 			panel.add(lbl, "gaptop 1");
-			workflowStepPanels.add(panel);
+			panelsWorkflowSteps.add(panel);
 			panelWorkflowSteps.add(panel, "wrap");
 			i++;
 		}
@@ -247,7 +247,7 @@ public class WorkflowDialog {
 	}
 	
 	private void updatePanelWorkflowSteps() {
-		for (JPanel panel : workflowStepPanels) {
+		for (JPanel panel : panelsWorkflowSteps) {
 			panel.setBackground(null);
 		}
 		JPanel panel = getCurrentWorkflowStepPanel();
@@ -258,7 +258,7 @@ public class WorkflowDialog {
 	}
 	
 	private JPanel getCurrentWorkflowStepPanel() {
-		return workflowStepPanels.get(indexCurrentWorkflowStep);
+		return panelsWorkflowSteps.get(indexCurrentWorkflowStep);
 	}
 	
 	private void changeToSmaller(JLabel label) {
