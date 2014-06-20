@@ -86,6 +86,11 @@ abstract class PersonenDataImporter {
 	 */
 	abstract void forceClose();
 	
+	/**
+	 * Gibt die Anzahl Daten Zeilen zurück.
+	 * 
+	 * @return Anzahl Daten Zeilen.
+	 */
 	abstract int getCountDataLines();
 	
 	protected String getFilenameData() {
@@ -136,23 +141,27 @@ abstract class PersonenDataImporter {
 
 		// Alle Attribute durchlaufen
 		for (PersonenAttribute attribute : map.keySet()) {
+			
+			// Mögliche Kolonen für Attribut auf Basis der Daten
+			List<PersonenImportColumn> possibleColumns = calculatePossibleColumns(attribute);
+			
+			// Auf Basis des Headers die Kolone suchen
 			String[] patterns = map.get(attribute);
-
-			// Die MappingColumn suchen und entsprechend ablegen.
 			PersonenImportColumn columnToMap = null;
 			for (String pattern : patterns) {
 				if (columnToMap == null) {
 					columnToMap = findColumn(pattern, attribute);
 				}
 			}
-			PersonenImportColumnMapping	mappingColumn = new PersonenImportColumnMapping(attribute, columnToMap);
-			List<PersonenImportColumn> possibleColumns = calculatePossibleColumns(attribute);
-			mappingColumn.setPossibleColumns(possibleColumns.toArray(new PersonenImportColumn[possibleColumns.size()]));
 			
+			// Prüfen ob die Header Kolone in der mögliche Kolone enthalten ist
 			if (!possibleColumns.contains(columnToMap)) {
-				mappingColumn.setColumn(null);
+				columnToMap = null;
 			}
-			
+		
+			// Mapping erstellen
+			PersonenImportColumnMapping	mappingColumn = new PersonenImportColumnMapping(attribute, columnToMap);
+			mappingColumn.setPossibleColumns(possibleColumns.toArray(new PersonenImportColumn[possibleColumns.size()]));
 			getColumnMappings().add(mappingColumn);
 		}
 
@@ -161,6 +170,7 @@ abstract class PersonenDataImporter {
 	
 	/**
 	 * Berechnet die möglichen Spalten für das entsprechende Attribute. Es wertet die ersten 10 Datensätze aus.
+	 * 
 	 * @param attribute Attribut
 	 * @return Mögliche Spalten.
 	 */
@@ -236,6 +246,9 @@ abstract class PersonenDataImporter {
 	 * @return True falls gültig, anderenfalls false.
 	 */
 	public boolean isValidImportData() {
+		if (fileHasMinimalRequirements() != null) {
+			return false; 
+		}
 		for (PersonenAttribute attribute : PersonenAttribute.values()) {
 			boolean found = false;
 			for (PersonenImportColumnMapping mapping : columnMappings) {

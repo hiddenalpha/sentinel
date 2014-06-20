@@ -8,6 +8,10 @@ import ch.infbr5.sentinel.server.utils.DateHelper;
 public class ValidationRules {
 
 	public static boolean isValidGeburtstag(String string) {
+		if (string == null) {
+			return false;
+		}
+		
 		 // fix Ahv Nr sind keine Geburtstage
 		if (isValidAhvNr(string)) {
 			return false;
@@ -23,6 +27,10 @@ public class ValidationRules {
 	}
 	
 	public static boolean isValidGrad(String string) {
+		if (string == null) {
+			return false;
+		}
+		
 		if (Grad.getGrad(string) == null) {
 			return false;
 		}
@@ -35,6 +43,10 @@ public class ValidationRules {
 	
 	public static boolean isValidAhvNr(String nr) {
 		int checksum = 0;
+		
+		if (nr == null) {
+			return false;
+		}
 
 		if (nr.length() != 16)
 			return false;

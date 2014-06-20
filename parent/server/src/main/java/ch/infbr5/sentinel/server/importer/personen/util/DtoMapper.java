@@ -7,20 +7,20 @@ import ch.infbr5.sentinel.server.ws.PersonDetails;
 
 public class DtoMapper {
 
-	public static PersonDetails toPersonDetails(Person from) {
+	public static PersonDetails toPersonDetails(Person source) {
 		PersonDetails target = new PersonDetails();
-		target.setAhvNr(from.getAhvNr());
-		target.setName(from.getName());
-		target.setFunktion(from.getFunktion());
-		target.setGeburtsdatum(from.getGeburtsdatum());
-		target.setId(from.getId());
-		target.setVorname(from.getVorname());
+		target.setAhvNr(source.getAhvNr());
+		target.setName(source.getName());
+		target.setFunktion(source.getFunktion());
+		target.setGeburtsdatum(source.getGeburtsdatum());
+		target.setId(source.getId());
+		target.setVorname(source.getVorname());
 		
-		Einheit einheit = from.getEinheit();
+		Einheit einheit = source.getEinheit();
 		target.setEinheitId(einheit != null ? einheit.getId() : -1);
-		target.setEinheitText(einheit.getName());
+		target.setEinheitText(einheit != null ? einheit.getName() : "");
 		
-		Grad grad = from.getGrad();
+		Grad grad = source.getGrad();
 		target.setGrad(grad != null ? grad.toString() : "");
 
 		return target;

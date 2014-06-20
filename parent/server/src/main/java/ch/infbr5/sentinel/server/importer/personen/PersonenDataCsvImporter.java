@@ -24,8 +24,8 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 			headerline = reader.readNext();
 			closeReader();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 		return headerline;
 	}
@@ -37,10 +37,9 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 			reader.readNext(); // Header Line
 			return reader.readNext();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		} 
-		return null;
 	}
 	
 	@Override
@@ -52,10 +51,9 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 			}
 			return dataLine;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		} 
-		return null;
 	}
 	
 	private void openReader() throws UnsupportedEncodingException, FileNotFoundException {
@@ -77,8 +75,8 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 			size = reader.readAll().size() - 1;
 			closeReader();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 		
 		return size;
@@ -89,8 +87,7 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 		try {
 			closeReader();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); // doesnt matter
 		}
 	}
 

@@ -10,17 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.util.WorkbookUtil;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 class PersonenDataExcelImporter extends PersonenDataImporter {
 
@@ -100,15 +95,13 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 	
 	private Sheet getSheet() {
 		try {
-			
 			file = new FileInputStream(new File(getFilenameData()));
 			Workbook workbook = WorkbookFactory.create(file);
 			return workbook.getSheetAt(0);
 		} catch (IOException | InvalidFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
-		return null;
 	}
 	
 	private void close() {
@@ -116,7 +109,7 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 			try {
 				file.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				e.printStackTrace(); // doesn't matter
 			}
 		}
 	}
