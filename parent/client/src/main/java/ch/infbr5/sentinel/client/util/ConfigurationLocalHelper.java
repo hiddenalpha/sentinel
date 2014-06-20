@@ -84,6 +84,15 @@ public class ConfigurationLocalHelper {
 		applicationProps.setProperty("ServerHostname", host);
 		saveProperites();
 	}
+	
+	public String getFileChooserLastPath() {
+		return applicationProps.getProperty("FileChooserLastPath");
+	}
+	
+	public void setFileChooserLastPath(String path) {
+		applicationProps.setProperty("FileChooserLastPath", path);
+		saveProperites();
+	}
 
 	public String getServerPortnumber() {
 		return applicationProps.getProperty("ServerPortnumber");

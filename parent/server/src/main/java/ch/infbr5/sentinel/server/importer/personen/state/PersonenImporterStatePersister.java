@@ -12,9 +12,8 @@ public class PersonenImporterStatePersister {
 	
 	private String file;
 	
-	public PersonenImporterStatePersister(String sessionKey) {
-		file = "import/" + sessionKey + "-state" + ".xml";
-		
+	public PersonenImporterStatePersister(String file) {
+		this.file = file;
 		if ((new File(file)).exists()) {
 			XStream xStream = new XStream();
 			state = (PersonenImporterState) xStream.fromXML(new File(file));
@@ -31,6 +30,11 @@ public class PersonenImporterStatePersister {
 		XStream xStream = new XStream();
 		String xml = xStream.toXML(state);
 		FileHelper.saveAsFile(file, xml.getBytes());
+	}
+
+	public void remove() {
+		File f = new File(file);
+		f.delete();
 	}
 	
 }

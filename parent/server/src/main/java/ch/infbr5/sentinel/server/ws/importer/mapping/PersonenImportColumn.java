@@ -1,16 +1,16 @@
-package ch.infbr5.sentinel.server.ws.importer;
+package ch.infbr5.sentinel.server.ws.importer.mapping;
 
-public class Column {
+public class PersonenImportColumn {
 
 	private int index;
 	
 	private String name;
 	
-	public Column() {
+	public PersonenImportColumn() {
 		
 	}
 	
-	public Column(int index, String name) {
+	public PersonenImportColumn(int index, String name) {
 		this.index = index;
 		this.name = name;
 	}

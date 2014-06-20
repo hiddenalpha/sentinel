@@ -68,5 +68,30 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 			reader.close();
 		}
 	}
+	
+	@Override
+	public int getCountDataLines() {
+		int size = 0;
+		try {
+			openReader();
+			size = reader.readAll().size() - 1;
+			closeReader();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return size;
+	}
+
+	@Override
+	void forceClose() {
+		try {
+			closeReader();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

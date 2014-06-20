@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import ch.infbr5.sentinel.server.importer.personen.state.PersonenImporterState;
-import ch.infbr5.sentinel.server.ws.importer.MappingPersonenAttributeToColumn;
+import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumnMapping;
 
 public class XStreamTest {
 

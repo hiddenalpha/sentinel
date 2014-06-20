@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.server.ws.importer;
+package ch.infbr5.sentinel.server.ws.importer.mapping;
 
 public enum PersonenAttribute {
 

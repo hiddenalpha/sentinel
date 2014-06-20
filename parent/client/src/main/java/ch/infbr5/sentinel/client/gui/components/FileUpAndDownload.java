@@ -6,15 +6,17 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ch.infbr5.sentinel.client.gui.components.importer.PersonenImportMappingDialog;
+import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
-import ch.infbr5.sentinel.client.wsgen.ColumnMappingResponse;
 
 public class FileUpAndDownload {
 
@@ -71,23 +73,6 @@ public class FileUpAndDownload {
 								"Die Datei konnte nicht erfolgreich gespeichert werden.",
 								"Import", JOptionPane.CANCEL_OPTION);
 			}
-		}
-
-	}
-
-	public void importPisaData(boolean isKompletterBestand) {
-		String filename = showFileDialog(frame, "Pisadaten importieren", "\\.",
-				"*.csv", FileDialog.LOAD);
-
-		if (filename != null) {
-
-			byte[] data = loadFile(filename);
-
-			String sessionKey = ServiceHelper.getPersonenImporterService().initiatImport((new File(filename)).getName(), data, isKompletterBestand);
-			ColumnMappingResponse response = ServiceHelper.getPersonenImporterService().getColumnMappings(sessionKey);
-
-			PersonenImportMappingDialog dialog = new PersonenImportMappingDialog(frame, sessionKey, response);
-			dialog.show();
 		}
 
 	}
@@ -253,12 +238,33 @@ public class FileUpAndDownload {
 		fd.setDirectory(defDir);
 		fd.setLocation(50, 50);
 		fd.setVisible(true);
-
+		
 		if ((fd.getDirectory() != null) && (fd.getFile() != null)) {
 			return fd.getDirectory().concat(fd.getFile());
 		} else {
 			return null;
 		}
+	}
+	
+	public File showJFileChooser(String[] extensions) {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Datendateien", extensions);
+		fileChooser.setFileFilter(filter);
+		
+		String currentDir = ConfigurationLocalHelper.getConfig().getFileChooserLastPath();
+		if (currentDir == null || "".equals(currentDir)) {
+			currentDir = "\\.";
+		}
+		
+		fileChooser.setCurrentDirectory(new File(currentDir));
+		fileChooser.setVisible(true);
+		fileChooser.showOpenDialog(frame);
+		File selectedFile = fileChooser.getSelectedFile();
+		if (selectedFile != null) {
+			ConfigurationLocalHelper.getConfig().setFileChooserLastPath(selectedFile.getParent());
+		}
+		
+		return selectedFile;
 	}
 
 }

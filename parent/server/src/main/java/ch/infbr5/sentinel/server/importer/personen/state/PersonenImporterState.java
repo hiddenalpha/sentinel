@@ -1,17 +1,28 @@
 package ch.infbr5.sentinel.server.importer.personen.state;
 
-import ch.infbr5.sentinel.server.ws.importer.Column;
-import ch.infbr5.sentinel.server.ws.importer.MappingPersonenAttributeToColumn;
+import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumn;
+import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumnMapping;
+import ch.infbr5.sentinel.server.ws.importer.modification.ModificationDto;
 
 public class PersonenImporterState {
 
+	private boolean isKompletterBestand;
+	
 	private String filenameData;
 
-	private Column[] columns;
+	private PersonenImportColumn[] columns;
 
-	private MappingPersonenAttributeToColumn[] mappingColumns;
+	private PersonenImportColumnMapping[] mappingColumns;
+	
+	private ModificationDto modification;
 
-	private boolean isKompletterBestand;
+	public ModificationDto getModifications() {
+		return modification;
+	}
+
+	public void setModifications(ModificationDto modification) {
+		this.modification = modification;
+	}
 	
 	public boolean isKompletterBestand() {
 		return isKompletterBestand;
@@ -29,20 +40,23 @@ public class PersonenImporterState {
 		return filenameData;
 	}
 
-	public void setMappingColumns(
-			MappingPersonenAttributeToColumn[] mappingColumns) {
+	public void setColumnMappings(
+			PersonenImportColumnMapping[] mappingColumns) {
 		this.mappingColumns = mappingColumns;
 	}
 
-	public MappingPersonenAttributeToColumn[] getMappingColumns() {
+	public PersonenImportColumnMapping[] getColumnMappings() {
+		if (mappingColumns == null) {
+			mappingColumns = new PersonenImportColumnMapping[0];
+		}
 		return mappingColumns;
 	}
 
-	public void setColumns(Column[] columns) {
+	public void setColumns(PersonenImportColumn[] columns) {
 		this.columns = columns;
 	}
 
-	public Column[] getColumns() {
+	public PersonenImportColumn[] getColumns() {
 		return columns;
 	}
 

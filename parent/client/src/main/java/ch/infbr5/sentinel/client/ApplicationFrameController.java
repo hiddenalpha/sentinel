@@ -9,6 +9,7 @@ import ch.infbr5.sentinel.client.gui.ApplicationFrame;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.BulkFotoImporter;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
+import ch.infbr5.sentinel.client.gui.components.importer.PersonenImportDialog;
 
 public class ApplicationFrameController implements WindowListener, ActionListener {
 	private final ApplicationModel applicationFrameModel;
@@ -59,11 +60,11 @@ public class ApplicationFrameController implements WindowListener, ActionListene
 				break;
 				
 			case AppMenuBar.CMD_IMPORT_PISADATA_BESTAND:
-				new FileUpAndDownload(appFrame).importPisaData(true);
+				new PersonenImportDialog(appFrame, true).show();
 				break;
 				
 			case AppMenuBar.CMD_IMPORT_PISADATA_EINR:
-				new FileUpAndDownload(appFrame).importPisaData(false);
+				new PersonenImportDialog(appFrame, false).show();
 				break;
 				
 			case AppMenuBar.CMD_IMPORT_AUSWEISVORLAGE:

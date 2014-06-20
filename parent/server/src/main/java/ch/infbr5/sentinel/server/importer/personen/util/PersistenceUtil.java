@@ -1,8 +1,6 @@
-package ch.infbr5.sentinel.server.importer.personen;
+package ch.infbr5.sentinel.server.importer.personen.util;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.QueryHelper;
@@ -11,9 +9,10 @@ import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Grad;
 import ch.infbr5.sentinel.server.model.ObjectFactory;
 import ch.infbr5.sentinel.server.model.Person;
-import ch.infbr5.sentinel.server.ws.importer.PersonenAttribute;
+import ch.infbr5.sentinel.server.ws.PersonDetails;
+import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenAttribute;
 
-class PersistenceUtil {
+public class PersistenceUtil {
 
 	private static String NAME_EINHEIT_ARCHIV = "_Archiv_";
 
@@ -32,20 +31,20 @@ class PersistenceUtil {
 	/**
 	 * Erzeugt auf jedenfall die Person.
 	 * 
-	 * @param dataRow
-	 *            DataRow.
+	 * @param personDetails
+	 *            PersonDetails.
 	 * @param einheit
 	 *            Einheit.
 	 * @return Person.
 	 */
-	public static Person createPerson(DataRow dataRow, Einheit einheit) {
+	public static Person createPerson(PersonDetails personDetails, Einheit einheit) {
 		return QueryHelper.createPerson(einheit,
-				dataRow.getValue(PersonenAttribute.AHVNr),
-				Grad.getGrad(dataRow.getValue(PersonenAttribute.Grad)),
-				dataRow.getValue(PersonenAttribute.Name),
-				dataRow.getValue(PersonenAttribute.Vorname),
-				dataRow.getGeburtstag(),
-				dataRow.getValue(PersonenAttribute.Funktion));
+				personDetails.getAhvNr(),
+				Grad.getGrad(personDetails.getGrad()),
+				personDetails.getName(),
+				personDetails.getVorname(),
+				personDetails.getGeburtsdatum(),
+				personDetails.getFunktion());
 	}
 
 
@@ -54,14 +53,22 @@ class PersistenceUtil {
 	 * 
 	 * Zuerst wird mit der AHVNr gesucht. Falls keine Person gefunden wird, wird mit Name, Vorname und Geburtsdatum gearbeitet.
 	 * 
-	 * @param DataRow Datensatz
+	 * @param PersonDetails personDetaills
 	 * @return Person, falls eine gefunden wurde, anderenfalls keine.
 	 */
+	public static Person findPerson(PersonDetails personDetail) {
+		Person p = QueryHelper.getPerson(personDetail.getAhvNr());
+		if (p == null) {
+			// Ich finde das nicht so schlau...?!
+			p = QueryHelper.getPerson(personDetail.getName(), personDetail.getVorname(), personDetail.getGeburtsdatum());
+		}
+		return p;
+	}
+	
 	public static Person findPerson(DataRow dataRow) {
 		Person p = QueryHelper.getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
 		if (p == null) {
-				p = QueryHelper.getPerson(dataRow.getValue(PersonenAttribute.Name), dataRow.getValue(PersonenAttribute.Vorname),
-						dataRow.getGeburtstag());
+			p = QueryHelper.getPerson(dataRow.getValue(PersonenAttribute.Name), dataRow.getValue(PersonenAttribute.Vorname), dataRow.getGeburtstag());
 		}
 		return p;
 	}
@@ -163,20 +170,15 @@ class PersistenceUtil {
 		return einheit;
 	}
 	
-	// TODO Pascal fragen ob das wirklich so ist...
-	public static void archiveOldPersonsAndDeactivateAusweis(Set<Person> importedPersonen, Set<Einheit> importedEinheiten) {
-		List<Person> personen = QueryHelper.getPersonen();
-		Einheit archivEinheit = PersistenceUtil.getArchivEinheit();
-
-		for (Person p : personen) {
-			if (!importedPersonen.contains(p)) { // Falls in der neuen Liste die Person nicht drin ist
-				if ((p.getEinheit() != null) && (importedEinheiten.contains(p.getEinheit()))) { // Falls die Einheit in der neuen Liste drin ist.
-					p.setEinheit(archivEinheit);
-					PersistenceUtil.removeValidAusweis(p);
-				}
-			}
-
-		}
+	public static void updatePerson(Person person, PersonDetails details, boolean isKompletterBestand) {
+		person.setAhvNr(details.getAhvNr());
+		person.setName(details.getName());
+		person.setVorname(details.getVorname());
+		person.setFunktion(details.getFunktion());
+		person.setGrad(Grad.getGrad(details.getGrad()));
+		person.setGeburtsdatum(details.getGeburtsdatum());
+		Einheit einheit = PersistenceUtil.createEinheitKompletterBestand(details.getEinheitText(), isKompletterBestand);
+		person.setEinheit(einheit);
 	}
-
+	
 }
