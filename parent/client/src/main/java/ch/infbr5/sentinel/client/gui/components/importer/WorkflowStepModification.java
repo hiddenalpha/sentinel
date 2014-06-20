@@ -101,7 +101,9 @@ public class WorkflowStepModification extends WorkflowStep {
 	@Override
 	public void finishNext() {
 		for (JCheckBox ckbox : checkboxes.keySet()) {
-			if (!ckbox.isSelected()) {
+			if (ckbox.isSelected()) {
+				checkboxes.get(ckbox).setToModify(true);
+			} else {
 				checkboxes.get(ckbox).setToModify(false);
 			}
 		}
@@ -116,7 +118,6 @@ public class WorkflowStepModification extends WorkflowStep {
 	private JPanel createPanel(JLabel label, Modification modification, boolean isSelected, boolean enabled) {
 		JPanel panel = new JPanel(new MigLayout());
 		panel.setBorder(BorderFactory.createLineBorder(Color.black));
-		//panel.setPreferredSize(new Dimension(400, (int) panel.getPreferredSize().getHeight()));
 		
 		JCheckBox checkbox = new JCheckBox();
 		checkbox.setSelected(isSelected);
