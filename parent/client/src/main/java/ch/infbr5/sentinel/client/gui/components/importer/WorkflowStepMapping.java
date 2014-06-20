@@ -107,7 +107,11 @@ public class WorkflowStepMapping extends WorkflowStep {
 	@Override
 	public void abort() {
 		if (getData().getSessionKey() != null) {
-			ServiceHelper.getPersonenImporterService().abortImport(getData().getSessionKey());
+			try {
+				ServiceHelper.getPersonenImporterService().abortImport(getData().getSessionKey());
+			} catch (RuntimeException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

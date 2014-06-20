@@ -108,7 +108,11 @@ public class WorkflowStepFile extends WorkflowStep {
 	@Override
 	public void abort() {
 		if (sessionKey != null) {
-			ServiceHelper.getPersonenImporterService().abortImport(sessionKey);
+			try {
+				ServiceHelper.getPersonenImporterService().abortImport(sessionKey);
+			} catch (RuntimeException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
