@@ -11,15 +11,17 @@ public abstract class PrintingDocument {
 
 	public PrintJob print() {
 		byte[] data = renderPdf();
-		long timestamp = Calendar.getInstance().getTimeInMillis();
-		String name = getFileName() + "_" + String.valueOf(timestamp);
+		if (data != null) {
+			long timestamp = Calendar.getInstance().getTimeInMillis();
+			String name = getFileName() + "_" + String.valueOf(timestamp);
 
-		PdfStore.savaPdfFile(name, data);
+			PdfStore.savaPdfFile(name, data);
 
-		PrintJob pj = ObjectFactory.createPrintJob(toString(), name);
-		EntityManagerHelper.getEntityManager().persist(pj);
-		
-		return pj;
+			PrintJob pj = ObjectFactory.createPrintJob(toString(), name);
+			EntityManagerHelper.getEntityManager().persist(pj);
+			return pj;
+		}
+		return null;
 	}
 
 //	public PdfPCell addTextCell(String text, boolean withBorder) {

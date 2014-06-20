@@ -431,11 +431,11 @@ public class ConfigurationQueryService {
 
 		IdentityCardRenderer renderer = new IdentityCardRenderer();
 		PrintJob job = renderer.print();
-		printJobDetails[0] = convert(job);
-
-		printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
-
-		response.setPrintJobDetails(printJobDetails);
+		if (job != null) {
+			printJobDetails[0] = convert(job);
+			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
+			response.setPrintJobDetails(printJobDetails);
+		}
 		return response;
 	}
 

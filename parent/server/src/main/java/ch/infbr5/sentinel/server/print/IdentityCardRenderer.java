@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -60,69 +59,70 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 		List<Ausweis> ausweise = QueryHelper.findAusweiseZumDrucken();
 
-		try {
-
-			int offsetX = 50;
-			int offsetY = 40;
-
-			int counter = 0;
-
-			Rectangle A4_quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
-			Document document = new Document(A4_quer);
-
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			PdfWriter writer = PdfWriter.getInstance(document, out);
-			document.open();
-			PdfContentByte cb = writer.getDirectContent();
-
-			String password = "";
-			List<ConfigurationValue> passwordList = QueryHelper.findConfigurationValue("IdentityCardPassword");
-			if (passwordList.size() > 0) {
-				password = passwordList.get(0).getStringValue();
+		if (!ausweise.isEmpty()) {
+			try {
+	
+				int offsetX = 50;
+				int offsetY = 40;
+	
+				int counter = 0;
+	
+				Rectangle A4_quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
+				Document document = new Document(A4_quer);
+	
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				PdfWriter writer = PdfWriter.getInstance(document, out);
+				document.open();
+				PdfContentByte cb = writer.getDirectContent();
+	
+				String password = "";
+				List<ConfigurationValue> passwordList = QueryHelper.findConfigurationValue("IdentityCardPassword");
+				if (passwordList.size() > 0) {
+					password = passwordList.get(0).getStringValue();
+				}
+	
+				for (Iterator<Ausweis> iterator = ausweise.iterator(); iterator.hasNext();) {
+					Ausweis ausweis = iterator.next();
+					counter++;
+	
+					if (counter % 4 == 1)
+						printAusweis(offsetX, offsetY + 270, cb, ausweis, password);
+					if (counter % 4 == 2)
+						printAusweis(offsetX + 400, offsetY + 270, cb, ausweis, password);
+					if (counter % 4 == 3)
+						printAusweis(offsetX, offsetY, cb, ausweis, password);
+					if (counter % 4 == 0)
+						printAusweis(offsetX + 400, offsetY, cb, ausweis, password);
+	
+					if (counter % 4 == 0)
+						neueSeite(document);
+	
+					ausweis.setErstellt(true);
+					EntityManagerHelper.getEntityManager().persist(ausweis);
+	
+				}
+	
+				document.close();
+				return out.toByteArray();
+	
+			} catch (BadElementException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+	
 			}
-
-			for (Iterator<Ausweis> iterator = ausweise.iterator(); iterator.hasNext();) {
-				Ausweis ausweis = iterator.next();
-				counter++;
-
-				if (counter % 4 == 1)
-					printAusweis(offsetX, offsetY + 270, cb, ausweis, password);
-				if (counter % 4 == 2)
-					printAusweis(offsetX + 400, offsetY + 270, cb, ausweis, password);
-				if (counter % 4 == 3)
-					printAusweis(offsetX, offsetY, cb, ausweis, password);
-				if (counter % 4 == 0)
-					printAusweis(offsetX + 400, offsetY, cb, ausweis, password);
-
-				if (counter % 4 == 0)
-					neueSeite(document);
-
-				ausweis.setErstellt(true);
-				EntityManagerHelper.getEntityManager().persist(ausweis);
-
-			}
-
-			document.close();
-			return out.toByteArray();
-
-		} catch (BadElementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-		} finally {
-
 		}
+		
 		return null;
-
 	}
 
 	private void neueSeite(Document document) throws DocumentException {
@@ -146,7 +146,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 		BaseFont bfBold = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-		BaseFont bfSign = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+		//BaseFont bfSign = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 
 		dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		printText(offsetX + 6, offsetY + 200, cb, bfBold, 11, person.getVorname().concat(" ".concat(person.getName())));

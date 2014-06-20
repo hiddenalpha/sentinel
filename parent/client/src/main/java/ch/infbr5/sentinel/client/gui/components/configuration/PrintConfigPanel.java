@@ -242,9 +242,15 @@ public class PrintConfigPanel extends
 			}
 
 			if (response != null) {
-				PrintJobDetails job = response.getPrintJobDetails().get(0);
-				byte[] pdf = job.getPdf();
-				DesktopHelper.openPdfFile(job.getPintJobFile(), pdf);
+				if (response.getPrintJobDetails() != null && response.getPrintJobDetails().size() > 0) {
+					PrintJobDetails job = response.getPrintJobDetails().get(0);
+					byte[] pdf = job.getPdf();
+					DesktopHelper.openPdfFile(job.getPintJobFile(), pdf);
+				} else {
+					JOptionPane.showMessageDialog(null,
+							"Keine ausstehende Daten zum Drucken.",
+							"Keine Daten", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		}
 
