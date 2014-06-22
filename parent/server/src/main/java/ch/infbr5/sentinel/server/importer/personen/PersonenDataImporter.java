@@ -304,9 +304,9 @@ abstract class PersonenDataImporter {
 						
 						// Neuen Ausweis erstellen
 						// Es wird nur ein neuer Ausweis ausgestellt, wenn sich Attribute unterscheiden 
-						// und wenn die Person bereits einen gÃ¼ltigen Ausweis hatte.
+						// und wenn die Person bereits einen gültigen Ausweis hatte.
 						boolean modUpdatePersonAndNewAusweis = false;
-						if (dataRow.wirdNeuerAusweisBenÃ¶tigt(person)) {
+						if (dataRow.wirdNeuerAusweisBenötigt(person)) {
 							Ausweis oldAusweis = person.getValidAusweis();
 							if (oldAusweis != null) {
 								ModificationUpdatePersonAndNewAusweis mod = new ModificationUpdatePersonAndNewAusweis();
