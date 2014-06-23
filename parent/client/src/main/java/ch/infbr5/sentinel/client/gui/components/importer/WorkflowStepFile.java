@@ -46,7 +46,7 @@ public class WorkflowStepFile extends WorkflowStep {
 	
 	@Override
 	public String getUserInfo() {
-		return "Wählen Sie die zu importierende Datei aus. Es sind nur CVS, XLS und XLSX Dateien erlaubt. Die Datei muss eine Überschrift haben, 7 Spalten besitzen und Daten beinhalten.";
+		return "Wählen Sie die zu importierende Datei aus. Es sind nur CSV, XLS und XLSX Dateien erlaubt. Die Datei muss eine Überschrift haben, 7 Spalten besitzen und Daten beinhalten.";
 	}
 
 	@Override
