@@ -89,7 +89,7 @@ public class PersistenceUtil {
 	}
 
 	/**
-	 * Deaktiviert den Ausweis. Dannach ist der Ausweis nicht mehr gÃ¼ltig.
+	 * Deaktiviert den Ausweis. Dannach ist der Ausweis nicht mehr gültig.
 	 * 
 	 * @param ausweis
 	 *            Ausweis
@@ -131,7 +131,7 @@ public class PersistenceUtil {
 	}
 
 	/**
-	 * PrÃ¼ft ob die Einheit mit diesem Namen existiert.
+	 * Prüft ob die Einheit mit diesem Namen existiert.
 	 * 
 	 * @param name
 	 *            Name der Einheit
@@ -143,7 +143,7 @@ public class PersistenceUtil {
 	}
 
 	/**
-	 * Gibt die Einheit zum Namen zurÃ¼ck. Falls die Einheit nicht existiert wird
+	 * Gibt die Einheit zum Namen zurück. Falls die Einheit nicht existiert wird
 	 * sie erzeugt.
 	 * 
 	 * @param einheitName

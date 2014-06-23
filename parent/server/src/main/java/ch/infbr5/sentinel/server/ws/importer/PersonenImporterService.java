@@ -126,7 +126,7 @@ public class PersonenImporterService {
 			cleanup(sessionKey);
 			return true;
 		} else {
-			log.warning("Daten konnten nicht importiert werden, da der Import ungÃ¼ltig ist.");
+			log.warning("Daten konnten nicht importiert werden, da der Import ungültig ist.");
 			return false;
 		}
 	}

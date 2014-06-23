@@ -44,11 +44,11 @@ public class DataRow {
 	}
 	
 	/**
-	 * PrÃ¼ft ob der Datensatz gÃ¼ltig ist.
+	 * Prüft ob der Datensatz gültig ist.
 	 * 
 	 * Valid bedeutet:
 	 * - Alle Attribute vorhanden und nicht leer oder null
-	 * - Geburtsdatum, AHV-Nur, Grad in einem gÃ¼ltigen Format.
+	 * - Geburtsdatum, AHV-Nur, Grad in einem gültigen Format.
 	 * 
 	 * @return True, falls ja, anderenfalls nein.
 	 */
@@ -77,17 +77,17 @@ public class DataRow {
 		
 		str = this.getValue(PersonenAttribute.AHVNr);
 		if (!ValidationRules.isValidString(str) || !ValidationRules.isValidAhvNr(str)) {
-			return "AHVNr nicht gesetzt oder nicht gÃ¼ltig ("+ str +").";
+			return "AHVNr nicht gesetzt oder nicht gültig ("+ str +").";
 		}
 		
 		str = this.getValue(PersonenAttribute.Geburtstag);
 		if (!ValidationRules.isValidString(str) || !ValidationRules.isValidGeburtstag(str)) {
-			return "Geburtstag nicht gesetzt oder nicht gÃ¼ltig ("+ str +").";
+			return "Geburtstag nicht gesetzt oder nicht gültig ("+ str +").";
 		}
 		
 		str = this.getValue(PersonenAttribute.Grad);
 		if (!ValidationRules.isValidString(str) || !ValidationRules.isValidGrad(str)) {
-			return "Grad nicht gesetzt oder nicht gÃ¼ltig ("+ str +").";
+			return "Grad nicht gesetzt oder nicht gültig ("+ str +").";
 		}
 		
 		return errorMessage;
@@ -103,12 +103,12 @@ public class DataRow {
 	}
 	
 	/**
-	 * Berechnet ob ein neue Ausweis benÃ¶tigt wird. Der Abgleich wird zwischen dem Datensatz und der Ã¼bergebenen Person gemacht.
+	 * Berechnet ob ein neue Ausweis benötigt wird. Der Abgleich wird zwischen dem Datensatz und der übergebenen Person gemacht.
 	 * 
-	 * Momentan ist der Fall so, dass es einen Ausweis benÃ¶tigt, sobald sich irgendein PersonenAttribut geÃ¤ndert hat.
+	 * Momentan ist der Fall so, dass es einen Ausweis benötigt, sobald sich irgendein PersonenAttribut geändert hat.
 	 * 
 	 * @param oldPerson Alte Personendaten.
-	 * @return True, falls ein neuer Ausweis benÃ¶tigt wird, anderenfalls false.
+	 * @return True, falls ein neuer Ausweis benötigt wird, anderenfalls false.
 	 */
 	public boolean wirdNeuerAusweisBenötigt(Person oldPerson) {
 		return hasDiffs(oldPerson);
