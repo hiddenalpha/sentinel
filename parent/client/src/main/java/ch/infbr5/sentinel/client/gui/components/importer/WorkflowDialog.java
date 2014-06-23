@@ -96,7 +96,7 @@ public class WorkflowDialog {
 	
 	private void createPanelNavigation() {
 		panelNavigation = new JPanel(new MigLayout("fillx,insets 10"));
-		btnPrev = new JButton("ZurÃ¼ck");
+		btnPrev = new JButton("Zurück");
 		btnPrev.setEnabled(false);
 		btnPrev.addActionListener(new ActionListener() {
 			

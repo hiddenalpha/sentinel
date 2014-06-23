@@ -51,8 +51,8 @@ public class WorkflowStepMapping extends WorkflowStep {
 	
 	@Override
 	public String getUserInfo() {
-		return "Sie kÃ¶nnen nun die Spalten den Personenattributen zuordnen. Es wird eine mÃ¶gliche Zu"
-				+ "ordnung vorgegeben. Es ist nicht erlaubt keine Zuordnung zu definieren oder die selbe Spalte fÃ¼r mehrere Attribute zu verwenden.";
+		return "Sie können nun die Spalten den Personenattributen zuordnen. Es wird eine mögliche Zu"
+				+ "ordnung vorgegeben. Es ist nicht erlaubt keine Zuordnung zu definieren oder die selbe Spalte für mehrere Attribute zu verwenden.";
 	}
 
 	@Override

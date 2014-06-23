@@ -38,13 +38,13 @@ public class WorkflowStepModification extends WorkflowStep {
 
 	@Override
 	public String getName() {
-		return "Ã„nderungen";
+		return "Änderungen";
 	}
 	
 	@Override
 	public String getUserInfo() {
-		return "Hier sind alle Ã„nderungen aufgelistet. Jede Ã„nderung kann deaktiviert werden, so wird diese im"
-				+ " Import nicht berÃ¼cksichtigt.";
+		return "Hier sind alle Änderungen aufgelistet. Jede Änderung kann deaktiviert werden, so wird diese im"
+				+ " Import nicht berücksichtigt.";
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class WorkflowStepModification extends WorkflowStep {
 		}
 		
 		if (!hasMods) {
-			panel.add(new JLabel("Dieser Import bringt keine Ã„nderungen mit sich."));
+			panel.add(new JLabel("Dieser Import bringt keine Änderungen mit sich."));
 		}
 			
 		return panel;
@@ -149,7 +149,7 @@ public class WorkflowStepModification extends WorkflowStep {
 	}
 	
 	private JPanel createPanelModification(ModificationError mod) {
-		return createPanel(createLabel("Fehlerhafter Datensatz (Datensatz wird nicht berÃ¼cksichtigt)", mod.getPersonDetails(), "<br/><b>Fehler</b>:<br />" + mod.getErrorMessage()), mod, false, false);
+		return createPanel(createLabel("Fehlerhafter Datensatz (Datensatz wird nicht berücksichtigt)", mod.getPersonDetails(), "<br/><b>Fehler</b>:<br />" + mod.getErrorMessage()), mod, false, false);
 	}
 	
 	private JPanel createPanelModification(ModificationArchivePerson mod) {
@@ -157,11 +157,11 @@ public class WorkflowStepModification extends WorkflowStep {
 	}
 	
 	private JPanel createPanelModification(ModificationUpdatePersonAndNewAusweis mod) {
-		return createPanel(createLabel("Person aktualisieren und neuer Ausweis", mod.getPersonDetailsOld(), "<br /><b>Ã„nderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true); 
+		return createPanel(createLabel("Person aktualisieren und neuer Ausweis", mod.getPersonDetailsOld(), "<br /><b>Änderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true); 
 	}
 	
 	private JPanel createPanelModification(ModificationUpdatePerson mod) {
-		return createPanel(createLabel("Person aktualisieren", mod.getPersonDetailsNew(), "<br /><b>Ã„nderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true);
+		return createPanel(createLabel("Person aktualisieren", mod.getPersonDetailsNew(), "<br /><b>Änderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true);
 	}
 	
 	private String personString(PersonDetails person) {

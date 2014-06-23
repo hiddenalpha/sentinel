@@ -30,14 +30,14 @@ public class WorkflowStepImport extends WorkflowStep {
 	@Override
 	public String getUserInfo() {
 		return "Zu sehen ist eine Zusammenfassung, was beim Klick auf Weiter gemacht wird. "
-				+ "Beispiel: Person aktualisieren 5/6 bedeutet, dass 5 von 6 Personen-Aktualisierungen durchgefÃ¼hrt werden.";
+				+ "Beispiel: Person aktualisieren 5/6 bedeutet, dass 5 von 6 Personen-Aktualisierungen durchgeführt werden.";
 	}
 
 	@Override
 	public JPanel getPanel() {
 			panel = new JPanel(new MigLayout());
 			
-			StringBuilder builder = new StringBuilder("<html><b>Folgende Ã„nderungen werden gemacht:</b>");
+			StringBuilder builder = new StringBuilder("<html><b>Folgende Änderungen werden gemacht:</b>");
 			
 			builder.append("<br /><br />Neue Personen erfassen ");
 			builder.append(getSizeToModify(dto.getModificationNewPersons()));
@@ -59,7 +59,7 @@ public class WorkflowStepImport extends WorkflowStep {
 			builder.append("/");
 			builder.append(dto.getModificationArchivePersons().size());
 			
-			builder.append("<br /><br />Nicht berÃ¼cksichtigte DatensÃ¤tze ");
+			builder.append("<br /><br />Nicht berücksichtigte Datensätze ");
 			builder.append(dto.getModificationErrors().size());
 			
 			builder.append("</html>");
