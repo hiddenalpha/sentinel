@@ -58,10 +58,10 @@ public class WorkflowStepFile extends WorkflowStep {
 			StringArray array = ServiceHelper.getPersonenImporterService().getSupportedExtensions();
 			allowedExtensions = array.getItem().toArray(new String[array.getItem().size()]);
 			
-			lblInfo = new JLabel("<html>Nachfolgend k√∂nnen Sie eine Datei mit <b>Personendaten</b> ausw√§hlen:</html>");
-			lblFilename = new JLabel("<html><b>Datei:</b> keine Datei ausgew√§hlt</html>");
+			lblInfo = new JLabel("<html>Nachfolgend kˆnnen Sie eine Datei mit <b>Personendaten</b> ausw‰hlen:</html>");
+			lblFilename = new JLabel("<html><b>Datei:</b> keine Datei ausgew‰hlt</html>");
 			
-			btnOpenFile = new JButton("Datei ausw√§hlen");
+			btnOpenFile = new JButton("Datei ausw‰hlen");
 			btnOpenFile.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

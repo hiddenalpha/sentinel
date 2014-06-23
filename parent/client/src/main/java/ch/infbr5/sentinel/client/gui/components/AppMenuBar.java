@@ -61,7 +61,7 @@ public class AppMenuBar extends JMenuBar {
 
 		addItem("Pisadaten importieren (Bestandesliste)", adminMenu, startMenuListener,
 				CMD_IMPORT_PISADATA_BESTAND, adminMode );
-		addItem("Pisadaten importieren (EinrÃ¼ckungsliste)", adminMenu, startMenuListener,
+		addItem("Pisadaten importieren (Einrückungsliste)", adminMenu, startMenuListener,
 				CMD_IMPORT_PISADATA_EINR, adminMode );
 		this.adminMenu.addSeparator();
 
@@ -158,7 +158,7 @@ public class AppMenuBar extends JMenuBar {
 			this.revalidate();
 		} else {
 			JOptionPane.showMessageDialog(this,
-					"Adminpasswort stimmt nicht Ã¼berein.",
+					"Adminpasswort stimmt nicht überein.",
 					"Adminpasswort falsch", JOptionPane.WARNING_MESSAGE);
 		}
 	}

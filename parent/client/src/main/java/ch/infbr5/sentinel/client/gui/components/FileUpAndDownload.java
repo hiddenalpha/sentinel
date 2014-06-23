@@ -117,7 +117,7 @@ public class FileUpAndDownload {
 					JOptionPane
 							.showMessageDialog(
 									null,
-									"Das Bild hat nicht die geforderte GrÃ¶sse von 1000 x 743 Pixel!",
+									"Das Bild hat nicht die geforderte Grösse von 1000 x 743 Pixel!",
 									"Ausweisvorlage importieren",
 									JOptionPane.CANCEL_OPTION);
 				}
@@ -173,7 +173,7 @@ public class FileUpAndDownload {
 					JOptionPane
 							.showMessageDialog(
 									null,
-									"Das Wasserzeichen hat nicht die geforderte GrÃ¶sse von 116 x 125 Pixel!",
+									"Das Wasserzeichen hat nicht die geforderte Grösse von 116 x 125 Pixel!",
 									"Wasserzeichen importieren",
 									JOptionPane.CANCEL_OPTION);
 				}
