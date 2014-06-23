@@ -120,7 +120,7 @@ public class PrintConfigPanel extends
 			dateiname = createField("Dateiname");
 			dateiname.setEditable(false);
 
-			pdfOeffnenButton = new JButton("PDF Ã¶ffnen");
+			pdfOeffnenButton = new JButton("PDF öffnen");
 			pdfOeffnenButton.addActionListener(this);
 			pdfOeffnenButton.setActionCommand(CMD_BUTTON_PDF_OEFFNEN);
 			this.add(SwingHelper.createLabel(""), "gap para");
