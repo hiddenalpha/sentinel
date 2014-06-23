@@ -57,7 +57,7 @@ abstract class PersonenDataImporter {
 	}
 
 	/**
-	 * Gibt die Header Line als String Array zurÃ¼ck. HinterlÃ¤sst keine offenen
+	 * Gibt die Header Line als String Array zurück. Hinterlässt keine offenen
 	 * Ressourcen.
 	 * 
 	 * @return Header Informationen.
@@ -65,7 +65,7 @@ abstract class PersonenDataImporter {
 	abstract String[] getHeaderLine();
 
 	/**
-	 * Ã–ffnet die Datei und liest die erste Datenzeile ein. Die Datei wird nicht
+	 * Öffnet die Datei und liest die erste Datenzeile ein. Die Datei wird nicht
 	 * geschlossen. In Kombination mit getNextDataLine().
 	 * 
 	 * @return Erste Datenzeile.
@@ -73,7 +73,7 @@ abstract class PersonenDataImporter {
 	abstract String[] getFirstDataLine();
 
 	/**
-	 * Gibt die nÃ¤chste Datenzeile zurÃ¼ck. Nachdem getFirstDataLine aufgerufen
+	 * Gibt die nächste Datenzeile zurück. Nachdem getFirstDataLine aufgerufen
 	 * wurde. Schliesst die Datei erst wieder nachdem die letzte Zeile erreicht
 	 * wurde.
 	 * 
@@ -87,7 +87,7 @@ abstract class PersonenDataImporter {
 	abstract void forceClose();
 	
 	/**
-	 * Gibt die Anzahl Daten Zeilen zurÃ¼ck.
+	 * Gibt die Anzahl Daten Zeilen zurück.
 	 * 
 	 * @return Anzahl Daten Zeilen.
 	 */
@@ -122,7 +122,7 @@ abstract class PersonenDataImporter {
 	}
 
 	/**
-	 * Evaluiert die SpaltenÃ¼berschriften zu den Personenattributen.
+	 * Evaluiert die Spaltenüberschriften zu den Personenattributen.
 	 * 
 	 * @return Column Mapping.
 	 */
@@ -169,10 +169,10 @@ abstract class PersonenDataImporter {
 	}
 	
 	/**
-	 * Berechnet die mÃ¶glichen Spalten fÃ¼r das entsprechende Attribute. Es wertet die ersten 10 DatensÃ¤tze aus.
+	 * Berechnet die möglichen Spalten für das entsprechende Attribute. Es wertet die ersten 10 Datensätze aus.
 	 * 
 	 * @param attribute Attribut
-	 * @return MÃ¶gliche Spalten.
+	 * @return Mögliche Spalten.
 	 */
 	private List<PersonenImportColumn> calculatePossibleColumns(PersonenAttribute attribute) {
 		List<PersonenImportColumn> columnProduct = new ArrayList<>();
@@ -190,7 +190,7 @@ abstract class PersonenDataImporter {
 		
 		for (int r = 0; r < dataLinesToAnalyze; r++) {
 			for (int s = 0; s < dataline.length; s++) {
-				// Zur nÃ¤chsten Spalte springen, falls es keine Kolone dafÃ¼r gibt
+				// Zur nächsten Spalte springen, falls es keine Kolone dafür gibt
 				if (this.columns.size() <= s) {
 					continue;
 				}
@@ -228,7 +228,7 @@ abstract class PersonenDataImporter {
 		}
 		forceClose();
 		
-		// PrÃ¼ft ob die Kolone mind. ein vordefiniertes Mal vorhanden ist.
+		// Prüft ob die Kolone mind. ein vordefiniertes Mal vorhanden ist.
 		List<PersonenImportColumn> effectiveListe = new ArrayList<>();
 		for (PersonenImportColumn c : this.columns) {
 			if (Collections.frequency(columnProduct, c) >= countOfMatchingLines) {
@@ -240,10 +240,10 @@ abstract class PersonenDataImporter {
 	}
 
 	/**
-	 * PrÃ¼ft ob der Import gÃ¼ltig ist. Er ist gÃ¼ltig wenn fÃ¼r jedes
+	 * Prüft ob der Import gültig ist. Er ist gültig wenn fürr jedes
 	 * Personenattribut ein Spaltenmapping existiert.
 	 * 
-	 * @return True falls gÃ¼ltig, anderenfalls false.
+	 * @return True falls gültig, anderenfalls false.
 	 */
 	public boolean isValidImportData() {
 		if (fileHasMinimalRequirements() != null) {
@@ -259,7 +259,7 @@ abstract class PersonenDataImporter {
 				}
 			}
 			if (!found) {
-				log.warning("Import ungÃ¼ltig: Kein Mapping fÃ¼r das Attribute " + attribute + ".");
+				log.warning("Import ungültig: Kein Mapping für das Attribute " + attribute + ".");
 				return false;
 			}
 		}
@@ -269,7 +269,7 @@ abstract class PersonenDataImporter {
 	public ModificationDto calculateModifications() {
 		
 		if (!isValidImportData()) {
-			throw new IllegalStateException("Der Import ist nicht gÃ¼ltig daher kÃ¶nnen die Modifikatione nicht berechnet werden.");
+			throw new IllegalStateException("Der Import ist nicht gültig daher können die Modifikatione nicht berechnet werden.");
 		}
 		
 		Set<String> personenAHVNrs = new HashSet<>();
@@ -402,13 +402,13 @@ abstract class PersonenDataImporter {
 	}
 	
 	/**
-	 * Import die Daten. Darf nur ausgefÃ¼hrt werden wenn isValidImportData()
+	 * Import die Daten. Darf nur ausgeführt werden wenn isValidImportData()
 	 * true ist.
 	 */
 	public void importData() {
 
 		if (!isValidImportData()) {
-			throw new IllegalStateException("Der Import ist nicht gÃ¼ltig.");
+			throw new IllegalStateException("Der Import ist nicht gültig.");
 		}
 		
 		for (ModificationNewPerson mod : modifcationDto.getModificationNewPersons()) {

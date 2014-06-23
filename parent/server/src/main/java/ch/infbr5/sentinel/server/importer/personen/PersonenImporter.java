@@ -20,14 +20,14 @@ public class PersonenImporter {
 		} else if ("xls".equals(extension) || "xlsx".equals(extension)) {
 			importer = new PersonenDataExcelImporter(filenameData, isKompletterBestand);
 		} else {
-			throw new IllegalArgumentException("Datei Extension wird nicht unterstÃ¼tzt.");
+			throw new IllegalArgumentException("Datei Extension wird nicht unterstützt.");
 		}
 	}
 
 	/**
-	 * PrÃ¼ft ob der Import gÃ¼ltig ist.
+	 * Prüft ob der Import gültig ist.
 	 * 
-	 * @return True, falls der Import gÃ¼ltig ist, anderenfalls false.
+	 * @return True, falls der Import gültig ist, anderenfalls false.
 	 */
 	public boolean isValidImportData() {
 		return importer.isValidImportData();
@@ -38,7 +38,7 @@ public class PersonenImporter {
 	}
 
 	/**
-	 * Importiert die Daten ins System. Jedoch nur wenn der Import gÃ¼ltig ist.
+	 * Importiert die Daten ins System. Jedoch nur wenn der Import gpltig ist.
 	 */
 	public void importData() {
 		if (isValidImportData()) {
@@ -47,10 +47,10 @@ public class PersonenImporter {
 	}
 	
 	/**
-	 * Versucht ein mÃ¶gliches Mapping herzustellen. Falls noch kein Mapping vorliegt wird so inital eins gesetzt.
+	 * Versucht ein mögliches Mapping herzustellen. Falls noch kein Mapping vorliegt wird so inital eins gesetzt.
 	 * Liegt bereits ein Mapping vor, dann wird versucht dieses zu optimieren.
 	 * 
-	 * @return Liefert das neue Mapping Konstrukt zurÃ¼ck.
+	 * @return Liefert das neue Mapping Konstrukt zurück.
 	 */
 	public List<PersonenImportColumnMapping> calculateColumnMappings() {
 		return importer.calculateColumnMappings();
@@ -65,7 +65,7 @@ public class PersonenImporter {
 	}
 	
 	/**
-	 * Gibt die komplette Liste aller Spalten zurÃ¼ck.
+	 * Gibt die komplette Liste aller Spalten zurück.
 	 * @return Liste aller Spalten.
 	 */
 	public List<PersonenImportColumn> getColumns() {
