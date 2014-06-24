@@ -421,7 +421,6 @@ abstract class PersonenDataImporter {
 		for (ModificationUpdatePerson mod : modifcationDto.getModificationUpdatePersons()) {
 			if (mod.isToModify()) {
 				Person person = PersistenceUtil.findPerson(mod.getPersonDetailsOld());
-				System.out.println(mod.getPersonDetailsNew().getName()); // TODO REMOVE
 				PersistenceUtil.updatePerson(person, mod.getPersonDetailsNew(), isKompletterBestand());
 			}
 		}

@@ -18,7 +18,6 @@ import ch.infbr5.sentinel.server.ws.importer.mapping.ColumnMappingResponse;
 import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumn;
 import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumnMapping;
 import ch.infbr5.sentinel.server.ws.importer.modification.ModificationDto;
-import ch.infbr5.sentinel.server.ws.importer.modification.ModificationUpdatePerson;
 
 import com.google.common.collect.Lists;
 
@@ -113,16 +112,8 @@ public class PersonenImporterService {
 	@WebMethod
 	public void setModifications(@WebParam(name = "sessionKey") String sessionKey, @WebParam(name = "modificationDto") ModificationDto modificationDto) {
 		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		for (ModificationUpdatePerson p : modificationDto.getModificationUpdatePersons()) {
-			System.out.println(p.getPersonDetailsNew().getName());
-		}
 		persister.getState().setModifications(modificationDto);
 		persister.save();
-
-		PersonenImporterStatePersister persister2 = createPersister(sessionKey);
-		for (ModificationUpdatePerson p : persister2.getState().getModifications().getModificationUpdatePersons()) {
-			System.out.println(p.getPersonDetailsNew().getName());
-		}
 	}
 
 	@WebMethod
