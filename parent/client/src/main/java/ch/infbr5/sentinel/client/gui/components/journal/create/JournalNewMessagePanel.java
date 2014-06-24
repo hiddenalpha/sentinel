@@ -1,10 +1,15 @@
 package ch.infbr5.sentinel.client.gui.components.journal.create;
 
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.ComboBoxModel;
@@ -16,14 +21,16 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.SpinnerDateModel;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.gui.util.SwingHelper;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
-import ch.infbr5.sentinel.client.util.Formater;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
@@ -51,6 +58,10 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 
 	private DefaultListModel<JournalGefechtsMeldung> model;
 
+	private JSpinner dateSpinner;
+
+	private JButton btnDateUpdate;
+
 	public JournalNewMessagePanel(DefaultListModel<JournalGefechtsMeldung> model) {
 		this.model = model;
 
@@ -59,12 +70,27 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		SwingHelper.addSeparator(this, "Gefechtsmeldung");
 
 		add(SwingHelper.createLabel("Zeitpunkt"), "gap para");
-		add(SwingHelper.createLabel(Formater.formatWithTime(new Date())), "span, growx");
+
+		dateSpinner = new JSpinner( new SpinnerDateModel() );
+		dateSpinner.setEditor(new JSpinner.DateEditor(dateSpinner, "dd.MM.yyyy HH:mm"));
+		dateSpinner.setValue(new Date());
+		add(dateSpinner);
+
+		btnDateUpdate = new JButton("Aktualisieren");
+		btnDateUpdate.setSize(20, 10);
+		btnDateUpdate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dateSpinner.setValue(new Date());
+			}
+		});
+		add(btnDateUpdate, "wrap");
 
 		add(SwingHelper.createLabel("Wer/Was/Wie/Wo"), "gap para");
 		txtAreaWerWasWieWo = SwingHelper.createTextArea(7, 20);
 		txtAreaWerWasWieWo.setLineWrap(true);
 		txtAreaWerWasWieWo.setWrapStyleWord(true);
+		patch(txtAreaWerWasWieWo);
 		JScrollPane scrollPane = new JScrollPane(txtAreaWerWasWieWo);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		add(scrollPane, "span, growx");
@@ -73,6 +99,7 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		txtAreaMassnahmen = SwingHelper.createTextArea(7, 20);
 		txtAreaMassnahmen.setLineWrap(true);
 		txtAreaMassnahmen.setWrapStyleWord(true);
+		patch(txtAreaMassnahmen);
 		JScrollPane scrollPane2 = new JScrollPane(txtAreaMassnahmen);
 		scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		add(scrollPane2, "span, growx");
@@ -118,7 +145,7 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 
 				try {
 					GregorianCalendar c = new GregorianCalendar();
-					c.setTime(new Date());
+					c.setTime((Date) dateSpinner.getValue());
 					meldung.setZeitpunktMeldungsEingang(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
 				} catch (DatatypeConfigurationException e1) {
 					// TODO Auto-generated catch block
@@ -149,6 +176,7 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		txtAreaWerWasWieWo.setText("");
 		ckbStatus.setSelected(false);
 		cmbMeldungIstFuer.setSelectedItem(emptyItem);
+		dateSpinner.setValue(new Date());
 	}
 
 	private String isDataValid() {
@@ -160,6 +188,14 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		}
 		return null;
 	}
+
+	    public static void patch(Component c) {
+	        Set<KeyStroke>
+	        strokes = new HashSet<KeyStroke>(Arrays.asList(KeyStroke.getKeyStroke("pressed TAB")));
+	        c.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, strokes);
+	        strokes = new HashSet<KeyStroke>(Arrays.asList(KeyStroke.getKeyStroke("shift pressed TAB")));
+	        c.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, strokes);
+	    }
 
 	class CmbItemPerson {
 
@@ -185,5 +221,7 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		}
 		return items;
 	}
+
+
 
 }
