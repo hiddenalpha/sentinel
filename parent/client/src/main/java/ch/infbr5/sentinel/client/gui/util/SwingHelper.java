@@ -15,6 +15,10 @@ import javax.swing.text.AbstractDocument;
 
 public class SwingHelper {
 
+	public static final Color COLOR_RED = new Color(250,128,114);
+
+	public static final Color COLOR_GREEN = new Color(102,255,102);
+
 	private static final Color LABEL_COLOR = new Color(0, 70, 213);;
 
 	public static void addSeparator(JPanel panel, String text) {
@@ -32,7 +36,7 @@ public class SwingHelper {
 	public static JLabel createLabel(String text, int align) {
 		final JLabel b = new JLabel(text, align);
 		configureActiveComponent(b);
-		
+
 		return b;
 	}
 
@@ -51,7 +55,7 @@ public class SwingHelper {
 	public static JTextField createTextField(String text, String regex) {
 		return createTextField(text, 0, regex);
 	}
-	
+
 	public static JTextField createTextField(String text, int cols, String regex) {
 		final JTextField b = new JTextField(text, cols);
 		if (regex.equalsIgnoreCase("[ahvnr]")) {
@@ -77,7 +81,7 @@ public class SwingHelper {
 	public static JCheckBox createCheckBox() {
 		final JCheckBox c = new JCheckBox();
 		configureActiveComponent(c);
-		
+
 		return c;
 	}
 

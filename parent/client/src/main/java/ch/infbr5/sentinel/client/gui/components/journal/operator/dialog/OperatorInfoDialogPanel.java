@@ -1,28 +1,25 @@
 package ch.infbr5.sentinel.client.gui.components.journal.operator.dialog;
 
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import ch.infbr5.sentinel.client.wsgen.OperatorEintrag;
+import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
 
 public class OperatorInfoDialogPanel extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public OperatorInfoDialogPanel(OperatorEintrag operatorEintrag) {
+	public OperatorInfoDialogPanel(JournalBewegungsMeldung operatorEintrag) {
 
 		this.setLayout(new MigLayout("wrap 2", "[min!]10px[150px]", ""));
 
 		this.initializeComponents(operatorEintrag);
 	}
 
-	private void initializeComponents(OperatorEintrag operatorEintrag) {
-		this.add(new JLabel("Aktion:"));
+	private void initializeComponents(JournalBewegungsMeldung operatorEintrag) {
+		/*this.add(new JLabel("Aktion:"));
 		JTextField actionTextField = new JTextField(operatorEintrag.getAction());
 		actionTextField.setEditable(false);
 		this.add(actionTextField, "growx");
@@ -46,6 +43,6 @@ public class OperatorInfoDialogPanel extends JPanel {
 		this.add(new JLabel("Erfasser:"));
 		JTextField creatorTextField = new JTextField(operatorEintrag.getCreator());
 		creatorTextField.setEditable(false);
-		this.add(creatorTextField, "growx");
+		this.add(creatorTextField, "growx");*/
 	}
 }

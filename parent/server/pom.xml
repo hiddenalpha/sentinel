@@ -166,7 +166,7 @@
 							<goal>wsgen</goal>
 						</goals>
 						<configuration>
-							<sei>ch.infbr5.sentinel.server.ws.JournalService</sei>
+							<sei>ch.infbr5.sentinel.server.ws.journal.JournalService</sei>
 							<genWsdl>true</genWsdl>
 							<keep>true</keep>
 						</configuration>

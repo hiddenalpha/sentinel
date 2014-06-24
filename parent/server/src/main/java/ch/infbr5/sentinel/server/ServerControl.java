@@ -7,10 +7,10 @@ import javax.xml.ws.Endpoint;
 import org.apache.derby.drda.NetworkServerControl;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
-import ch.infbr5.sentinel.server.ws.JournalService;
 import ch.infbr5.sentinel.server.ws.SentinelQueryService;
 import ch.infbr5.sentinel.server.ws.admin.ConfigurationQueryService;
 import ch.infbr5.sentinel.server.ws.importer.PersonenImporterService;
+import ch.infbr5.sentinel.server.ws.journal.JournalService;
 
 public class ServerControl {
 

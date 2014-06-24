@@ -12,10 +12,14 @@
 		<class>ch.infbr5.sentinel.server.model.Zone</class>
 		<class>ch.infbr5.sentinel.server.model.ZonenPraesenz</class>
 		<class>ch.infbr5.sentinel.server.model.Checkpoint</class>
-		<class>ch.infbr5.sentinel.server.model.Zutrittsregel</class>
-		<class>ch.infbr5.sentinel.server.model.LogEintrag</class>
+		<class>ch.infbr5.sentinel.server.model.Zutrittsregel</class>		
 		<class>ch.infbr5.sentinel.server.model.ConfigurationValue</class>
 		<class>ch.infbr5.sentinel.server.model.PrintJob</class>
+		
+		<class>ch.infbr5.sentinel.server.model.journal.JournalEintrag</class>
+		<class>ch.infbr5.sentinel.server.model.journal.BewegungsMeldung</class>
+		<class>ch.infbr5.sentinel.server.model.journal.SystemMeldung</class>
+		<class>ch.infbr5.sentinel.server.model.journal.GefechtsMeldung</class>
 
 		<properties>
 			<property name="openjpa.BrokerFactory" value="org.apache.openjpa.jdbc.kernel.JDBCBrokerFactory" />

@@ -11,11 +11,11 @@ import au.com.bytecode.opencsv.CSVReader;
 class PersonenDataCsvImporter extends PersonenDataImporter {
 
 	private CSVReader reader;
-	
+
 	public PersonenDataCsvImporter(String filenameData, boolean isKompletteEinheit) {
 		super(filenameData, isKompletteEinheit);
 	}
-	
+
 	@Override
 	public String[] getHeaderLine() {
 		String[] headerline = { };
@@ -29,7 +29,7 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 		}
 		return headerline;
 	}
-	
+
 	@Override
 	public String[] getFirstDataLine() {
 		try {
@@ -39,9 +39,9 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
-		} 
+		}
 	}
-	
+
 	@Override
 	public String[] getNextDataLine() {
 		try {
@@ -53,20 +53,20 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
-		} 
+		}
 	}
-	
+
 	private void openReader() throws UnsupportedEncodingException, FileNotFoundException {
 		reader = new CSVReader(new InputStreamReader(new FileInputStream(
 				getFilenameData()), "ISO-8859-1"), ';', '"');
 	}
-	
+
 	private void closeReader() throws IOException {
 		if (reader != null) {
 			reader.close();
 		}
 	}
-	
+
 	@Override
 	public int getCountDataLines() {
 		int size = 0;
@@ -78,7 +78,7 @@ class PersonenDataCsvImporter extends PersonenDataImporter {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
-		
+
 		return size;
 	}
 

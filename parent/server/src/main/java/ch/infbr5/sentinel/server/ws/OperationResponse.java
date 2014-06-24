@@ -1,6 +1,7 @@
 package ch.infbr5.sentinel.server.ws;
 
-import ch.infbr5.sentinel.server.model.journal.OperatorEintrag;
+import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
+import ch.infbr5.sentinel.server.ws.journal.JournalGefechtsMeldung;
 
 public class OperationResponse {
 
@@ -14,7 +15,7 @@ public class OperationResponse {
 	private Long counterUrlaub;
 	private Long counterAngemeldet;
 
-	private OperatorEintrag personTriggerEintrag;
+	private JournalGefechtsMeldung personTriggerEintrag;
 
 	public Long getCounterAngemeldet() {
 		return this.counterAngemeldet;
@@ -44,7 +45,7 @@ public class OperationResponse {
 		return this.personDetails;
 	}
 
-	public OperatorEintrag getPersonTriggerEintrag() {
+	public JournalGefechtsMeldung getPersonTriggerEintrag() {
 		return this.personTriggerEintrag;
 	}
 
@@ -80,7 +81,7 @@ public class OperationResponse {
 		this.personDetails = personDetails;
 	}
 
-	public void setPersonTriggerEintrag(OperatorEintrag operatorEintrag) {
+	public void setPersonTriggerEintrag(JournalGefechtsMeldung operatorEintrag) {
 		this.personTriggerEintrag = operatorEintrag;
 	}
 

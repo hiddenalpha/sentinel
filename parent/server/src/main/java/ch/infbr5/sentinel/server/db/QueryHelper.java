@@ -16,19 +16,21 @@ import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Grad;
-import ch.infbr5.sentinel.server.model.LogEintrag;
 import ch.infbr5.sentinel.server.model.ObjectFactory;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.model.PraesenzStatus;
 import ch.infbr5.sentinel.server.model.PrintJob;
 import ch.infbr5.sentinel.server.model.Zone;
 import ch.infbr5.sentinel.server.model.ZonenPraesenz;
-import ch.infbr5.sentinel.server.model.journal.OperatorEintrag;
+import ch.infbr5.sentinel.server.model.journal.BewegungsMeldung;
+import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
+import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
+
+import com.google.common.collect.Lists;
 
 public class QueryHelper {
 
-	private static Logger logger = Logger
-			.getLogger(QueryHelper.class.getName());
+	private static Logger logger = Logger.getLogger(QueryHelper.class.getName());
 
 	public static String createUniqueBarcode(int len, String prefix) {
 		String barcode;
@@ -278,7 +280,7 @@ public class QueryHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<LogEintrag> getLogEintraege(long checkpointId,
+	public static List<SystemMeldung> getSystemMeldungen(long checkpointId,
 			int maxResult) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		Query q = em.createNamedQuery("findLogEintrag");
@@ -303,12 +305,11 @@ public class QueryHelper {
 		return ausweis != null;
 	}
 
-	public static boolean updateOperatorEintrag(OperatorEintrag operatorEintrag) {
+	/*public static boolean updateOperatorEintrag(GefechtsMeldung operatorEintrag) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		boolean transactionDone = true;
 		try {
-			OperatorEintrag operatorEintragX = em.find(OperatorEintrag.class,
-					operatorEintrag.getId());
+			GefechtsMeldung operatorEintragX = em.find(GefechtsMeldung.class, operatorEintrag.getId());
 			operatorEintragX.setAction(operatorEintrag.getAction());
 			operatorEintragX.setCause(operatorEintrag.getCause());
 			operatorEintragX.setCreator(operatorEintrag.getCreator());
@@ -321,7 +322,7 @@ public class QueryHelper {
 		}
 
 		return transactionDone;
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
 	public static List<ConfigurationValue> findConfigurationValue(String key) {
@@ -408,6 +409,21 @@ public class QueryHelper {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		Query q = em.createNamedQuery(Zone.GET_ZONEN_VALUE);
 
+		return q.getResultList();
+	}
+
+	public static List<BewegungsMeldung> getBewegungsMeldungen(long checkpointId,
+			int i) {
+		// TODO Auto-generated method stub
+		return Lists.newArrayList();
+	}
+
+	public static List<GefechtsMeldung> getGefechtsMeldungen(long checkpointId,
+			int maxResult) {
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		Query q = em.createNamedQuery("findGefechtsMeldungen");
+		q.setParameter("checkpointId", checkpointId);
+		q.setMaxResults(maxResult);
 		return q.getResultList();
 	}
 

@@ -13,6 +13,7 @@ import javax.xml.ws.soap.MTOM;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
+import ch.infbr5.sentinel.server.mapper.Mapper;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.ObjectFactory;
@@ -37,7 +38,7 @@ public class SentinelQueryService {
 				PraesenzStatus.ABGEMELDET);
 
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
-		
+
 		this.setPersonTriggerEintragIfAvailable(barcode, response);
 
 		return response;
@@ -140,6 +141,19 @@ public class SentinelQueryService {
 		OperationResponse response = new OperationResponse();
 		response.setPersonDetails(personenDetails);
 
+		return response;
+	}
+
+	@WebMethod
+	public OperationResponse getAllePersonen() {
+		List<Person> personen = QueryHelper.getPersonen();
+		PersonDetails[] details = new PersonDetails[personen.size()];
+		int i = 0;
+		for (Person p : personen) {
+			details[i++] = Mapper.mapPersonToPersonDetails().apply(p);
+		}
+		OperationResponse response = new OperationResponse();
+		response.setPersonDetails(details);
 		return response;
 	}
 

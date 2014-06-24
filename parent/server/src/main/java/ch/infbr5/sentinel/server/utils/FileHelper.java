@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileHelper {
-	
+
 	public static final String FILE_WASSERZEICHEN_PNG = "Wasserzeichen.png";
 	public static final String FILE_AUSWEISVORLAGE_JPG = "AusweisVorlage.jpg";
 
@@ -42,6 +42,7 @@ public class FileHelper {
 				createParentDirectoryIfRequired(filename);
 
 				FileOutputStream fos = new FileOutputStream(filename);
+
 				fos.write(data);
 				fos.close();
 			}
@@ -52,10 +53,10 @@ public class FileHelper {
 			return false;
 		}
 	}
-	
+
 	public static String getExtension(String filename) {
 		int lastIndexOfPoint = filename.lastIndexOf(".");
-		return filename.substring(lastIndexOfPoint + 1); 
+		return filename.substring(lastIndexOfPoint + 1);
 	}
 
 	private static void createParentDirectoryIfRequired(String filename) {

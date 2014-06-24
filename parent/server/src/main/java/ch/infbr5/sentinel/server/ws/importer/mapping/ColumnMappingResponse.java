@@ -3,7 +3,7 @@ package ch.infbr5.sentinel.server.ws.importer.mapping;
 public class ColumnMappingResponse {
 
 	private PersonenImportColumn[] columns;
-	
+
 	private PersonenImportColumnMapping[] mappings;
 
 	public PersonenImportColumn[] getColumns() {
@@ -21,5 +21,5 @@ public class ColumnMappingResponse {
 	public void setMappings(PersonenImportColumnMapping[] mappings) {
 		this.mappings = mappings;
 	}
-	
+
 }

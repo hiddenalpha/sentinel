@@ -7,13 +7,13 @@ import ch.infbr5.sentinel.server.ws.importer.modification.ModificationDto;
 public class PersonenImporterState {
 
 	private boolean isKompletterBestand;
-	
+
 	private String filenameData;
 
 	private PersonenImportColumn[] columns;
 
 	private PersonenImportColumnMapping[] mappingColumns;
-	
+
 	private ModificationDto modification;
 
 	public ModificationDto getModifications() {
@@ -23,7 +23,7 @@ public class PersonenImporterState {
 	public void setModifications(ModificationDto modification) {
 		this.modification = modification;
 	}
-	
+
 	public boolean isKompletterBestand() {
 		return isKompletterBestand;
 	}

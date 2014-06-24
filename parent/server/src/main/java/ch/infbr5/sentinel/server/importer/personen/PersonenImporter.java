@@ -10,7 +10,7 @@ import ch.infbr5.sentinel.server.ws.importer.modification.ModificationDto;
 public class PersonenImporter {
 
 	public static final String[] SUPPORTED_EXTENSIONS = {"csv", "xls", "xlsx"};
-	
+
 	private PersonenDataImporter importer;
 
 	public PersonenImporter(String filenameData, boolean isKompletterBestand) {
@@ -26,13 +26,13 @@ public class PersonenImporter {
 
 	/**
 	 * Prüft ob der Import gültig ist.
-	 * 
+	 *
 	 * @return True, falls der Import gültig ist, anderenfalls false.
 	 */
 	public boolean isValidImportData() {
 		return importer.isValidImportData();
 	}
-	
+
 	public String fileHasMinimalRequirements() {
 		return importer.fileHasMinimalRequirements();
 	}
@@ -45,25 +45,25 @@ public class PersonenImporter {
 			importer.importData();
 		}
 	}
-	
+
 	/**
 	 * Versucht ein mögliches Mapping herzustellen. Falls noch kein Mapping vorliegt wird so inital eins gesetzt.
 	 * Liegt bereits ein Mapping vor, dann wird versucht dieses zu optimieren.
-	 * 
+	 *
 	 * @return Liefert das neue Mapping Konstrukt zurück.
 	 */
 	public List<PersonenImportColumnMapping> calculateColumnMappings() {
 		return importer.calculateColumnMappings();
 	}
-	
+
 	public List<PersonenImportColumnMapping> getColumnMappings() {
 		return importer.getColumnMappings();
 	}
-	
+
 	public void setColumnMappings(List<PersonenImportColumnMapping> columnMappings) {
 		importer.setColumnMappings(columnMappings);
 	}
-	
+
 	/**
 	 * Gibt die komplette Liste aller Spalten zurück.
 	 * @return Liste aller Spalten.
@@ -71,11 +71,11 @@ public class PersonenImporter {
 	public List<PersonenImportColumn> getColumns() {
 		return importer.getColumns();
 	}
-	
+
 	public boolean isKompletterBestand() {
 		return importer.isKompletterBestand();
 	}
-	
+
 	public String getFilenameData() {
 		return importer.getFilenameData();
 	}
@@ -83,7 +83,7 @@ public class PersonenImporter {
 	public ModificationDto calculateModifications() {
 		return importer.calculateModifications();
 	}
-	
+
 	public ModificationDto getModifications() {
 		return importer.getModifications();
 	}
@@ -91,5 +91,5 @@ public class PersonenImporter {
 	public void setModifications(ModificationDto dto) {
 		importer.setModifications(dto);
 	}
-	
+
 }

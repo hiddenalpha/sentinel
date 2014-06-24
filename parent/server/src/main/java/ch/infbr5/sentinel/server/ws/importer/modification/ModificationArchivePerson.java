@@ -13,5 +13,5 @@ public class ModificationArchivePerson extends Modification {
 	public void setPersonDetails(PersonDetails personDetails) {
 		this.personDetails = personDetails;
 	}
-	
+
 }

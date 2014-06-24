@@ -90,6 +90,4 @@ public class ZonenPraesenz {
 		this.zone = zone;
 	}
 
-
-
 }

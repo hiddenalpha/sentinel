@@ -4,13 +4,13 @@ package ch.infbr5.sentinel.server.ws.importer.modification;
 public class ModificationDto extends Modification {
 
 	private ModificationNewPerson[] modificationNewPersons;
-	
+
 	private ModificationUpdatePerson[] modificationUpdatePersons;
-	
+
 	private ModificationArchivePerson[] modificationArchivePersons;
-	
+
 	private ModificationUpdatePersonAndNewAusweis[] modificationNewAusweise;
-	
+
 	private ModificationError[] modificationErrors;
 
 	public ModificationError[] getModificationErrors() {
@@ -47,7 +47,7 @@ public class ModificationDto extends Modification {
 			ModificationNewPerson[] modificationNewPersons) {
 		this.modificationNewPersons = modificationNewPersons;
 	}
-	
+
 	public ModificationUpdatePerson[] getModificationUpdatePersons() {
 		if (modificationUpdatePersons == null) {
 			modificationUpdatePersons = new ModificationUpdatePerson[0];
@@ -59,7 +59,7 @@ public class ModificationDto extends Modification {
 			ModificationUpdatePerson[] modificationUpdatePersons) {
 		this.modificationUpdatePersons = modificationUpdatePersons;
 	}
-	
+
 	public ModificationArchivePerson[] getModificationArchivePersons() {
 		if (modificationArchivePersons == null) {
 			modificationArchivePersons = new ModificationArchivePerson[0];
@@ -71,12 +71,12 @@ public class ModificationDto extends Modification {
 			ModificationArchivePerson[] modificationArchivePersons) {
 		this.modificationArchivePersons = modificationArchivePersons;
 	}
-	
+
 	public boolean hasModifications() {
 		if (getModificationArchivePersons().length == 0 && getModificationNewAusweise().length == 0 && getModificationNewPersons().length == 0 && getModificationUpdatePersons().length == 0) {
 			return false;
 		}
 		return true;
 	}
-	
+
 }

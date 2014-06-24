@@ -5,9 +5,9 @@ import ch.infbr5.sentinel.server.ws.PersonDetails;
 public class ModificationUpdatePerson extends Modification {
 
 	private PersonDetails personDetailsOld;
-	
+
 	private PersonDetails personDetailsNew;
-	
+
 	private UpdatePersonAttributeDiff[] updatePersonenDiffs;
 
 	public PersonDetails getPersonDetailsOld() {
@@ -17,7 +17,7 @@ public class ModificationUpdatePerson extends Modification {
 	public void setPersonDetailsOld(PersonDetails personDetailsOld) {
 		this.personDetailsOld = personDetailsOld;
 	}
-	
+
 	public PersonDetails getPersonDetailsNew() {
 		return personDetailsNew;
 	}
@@ -33,5 +33,5 @@ public class ModificationUpdatePerson extends Modification {
 	public void setUpdatePersonenDiffs(UpdatePersonAttributeDiff[] updatePersonenDiffs) {
 		this.updatePersonenDiffs = updatePersonenDiffs;
 	}
-	
+
 }

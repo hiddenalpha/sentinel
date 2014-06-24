@@ -25,21 +25,21 @@ import ch.infbr5.sentinel.client.wsgen.PersonenImportColumnMappingArray;
 public class WorkflowStepMapping extends WorkflowStep {
 
 	private ColumnMappingResponse response;
-	
+
 	private String fileHasMinimalRequirements;
-	
+
 	private JLabel lblHeader1;
-	
+
 	private JLabel lblHeader2;
-	
+
 	private List<JLabel> lblsPersonenAttribute = new ArrayList<>();
-	
+
 	private List<JComboBox<CmbItem>> cmbsColumns = new ArrayList<>();
-	
+
 	private List<CmbItem> cmbItems = new ArrayList<>();
-	
+
 	private CmbItem emptyCmbItem = new CmbItem();
-	
+
 	public WorkflowStepMapping(Frame parent, WorkflowData data, WorkflowInterceptor interceptor) {
 		super(parent, data, interceptor);
 	}
@@ -48,7 +48,7 @@ public class WorkflowStepMapping extends WorkflowStep {
 	public String getName() {
 		return "Spaltenzuordnung";
 	}
-	
+
 	@Override
 	public String getUserInfo() {
 		return "Sie können nun die Spalten den Personenattributen zuordnen. Es wird eine mögliche Zu"
@@ -62,28 +62,28 @@ public class WorkflowStepMapping extends WorkflowStep {
 			lblsPersonenAttribute.clear();
 			cmbsColumns.clear();
 			cmbItems.clear();
-			
+
 			createLabels();
 			createDropdowns();
-			
+
 			panel.add(lblHeader1, "cell 0 0");
 			panel.add(lblHeader2, "cell 1 0");
-			
+
 			lblHeader1.setPreferredSize(new Dimension(180, 20));
-			
+
 			for (int i = 0; i < lblsPersonenAttribute.size(); i++) {
 				panel.add(lblsPersonenAttribute.get(i), "cell 0 " + (i+1));
 			}
 			for (int i = 0; i < cmbsColumns.size(); i++) {
 				panel.add(cmbsColumns.get(i), "cell 1 " + (i+1));
 			}
-			
+
 			checkEmptySelection();
 			checkDoubleSelection(cmbsColumns.get(0));
 		} else {
 			panel.add(new JLabel(fileHasMinimalRequirements));
 		}
-			
+
 		return panel;
 	}
 
@@ -103,7 +103,7 @@ public class WorkflowStepMapping extends WorkflowStep {
 	public void finishReturn() {
 		finishNext();
 	}
-	
+
 	@Override
 	public void abort() {
 		if (getData().getSessionKey() != null) {
@@ -114,7 +114,7 @@ public class WorkflowStepMapping extends WorkflowStep {
 			}
 		}
 	}
-	
+
 	@Override
 	public void finishNext() {
 		PersonenImportColumnMappingArray array = new PersonenImportColumnMappingArray();
@@ -130,24 +130,24 @@ public class WorkflowStepMapping extends WorkflowStep {
 		}
 		ServiceHelper.getPersonenImporterService().setColumnMappings(getData().getSessionKey(), array);
 	}
-	
+
 	private void createLabels() {
 		lblHeader1 = new JLabel("Personenattribute");
-		lblHeader2 = new JLabel("SpaltenÃ¼berschriften");
+		lblHeader2 = new JLabel("Spaltenüberschriften");
 		changeToBold(lblHeader1);
 		changeToBold(lblHeader2);
 	}
-	
+
 	private void createDropdowns() {
 		for (PersonenImportColumnMapping mapping : response.getMappings()) {
 			lblsPersonenAttribute.add(new JLabel(mapping.getPersonenAttribute().name()));
-			
+
 			JComboBox<CmbItem> cmb = new JComboBox<>();
 			cmb.setActionCommand(mapping.getPersonenAttribute().value()); // Set the name of the person attribute associated with this combobox
-			
+
 			ComboBoxModel<CmbItem> model = createComboBoxModel(mapping.getColumn(), mapping.getPossibleColumns());
 			cmb.setModel(model);
-			
+
 			cmb.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
@@ -159,7 +159,7 @@ public class WorkflowStepMapping extends WorkflowStep {
 			cmbsColumns.add(cmb);
 		}
 	}
-	
+
 	private void checkEmptySelection() {
 		boolean emptySelected = false;
 		for (JComboBox<CmbItem> box : cmbsColumns) {
@@ -172,7 +172,7 @@ public class WorkflowStepMapping extends WorkflowStep {
 			getInterceptor().activateNext();
 		}
 	}
-	
+
 	private void checkDoubleSelection(JComboBox<CmbItem> sourceBox) {
 		for (JComboBox<CmbItem> box : cmbsColumns) {
 			if (box != sourceBox) {
@@ -197,18 +197,18 @@ public class WorkflowStepMapping extends WorkflowStep {
 			items[i] = item;
 			i++;
 		}
-		
+
 		DefaultComboBoxModel<CmbItem> model = new DefaultComboBoxModel<>(items);
 		model.setSelectedItem(getCmbItem(selectedColumn));
 		return model;
 	}
-	
+
 	private void changeToBold(JLabel label) {
 		Font font = label.getFont();
 		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
 		label.setFont(boldFont);
 	}
-	
+
 	private CmbItem getCmbItem(PersonenImportColumn column) {
 		if (column == null) {
 			return emptyCmbItem;
@@ -220,11 +220,11 @@ public class WorkflowStepMapping extends WorkflowStep {
 		}
 		return null;
 	}
-	
+
 	class CmbItem {
-		
+
 		PersonenImportColumn column;
-		
+
 		@Override
 		public String toString() {
 			if (column == null) {
@@ -232,6 +232,6 @@ public class WorkflowStepMapping extends WorkflowStep {
 			}
 			return column.getName();
 		}
-		
+
 	}
 }

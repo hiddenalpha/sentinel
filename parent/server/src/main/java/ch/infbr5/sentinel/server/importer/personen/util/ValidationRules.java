@@ -11,12 +11,12 @@ public class ValidationRules {
 		if (string == null) {
 			return false;
 		}
-		
+
 		 // fix Ahv Nr sind keine Geburtstage
 		if (isValidAhvNr(string)) {
 			return false;
 		}
-		
+
 		boolean isValid = true;
 		try {
 			DateHelper.getCalendar(string);
@@ -25,25 +25,25 @@ public class ValidationRules {
 		}
 		return isValid;
 	}
-	
+
 	public static boolean isValidGrad(String string) {
 		if (string == null) {
 			return false;
 		}
-		
+
 		if (Grad.getGrad(string) == null) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public static boolean isValidString(String string) {
 		return string != null && !"".equals(string);
 	}
-	
+
 	public static boolean isValidAhvNr(String nr) {
 		int checksum = 0;
-		
+
 		if (nr == null) {
 			return false;
 		}
@@ -81,5 +81,5 @@ public class ValidationRules {
 			return false;
 		}
 	}
-	
+
 }

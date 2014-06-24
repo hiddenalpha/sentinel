@@ -6,15 +6,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
-import ch.infbr5.sentinel.client.gui.components.journal.operator.dialog.OperatorInfoDialogPanel;
 import ch.infbr5.sentinel.client.util.ImageCreator;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.Sound;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
-import ch.infbr5.sentinel.client.wsgen.OperatorEintrag;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
 import ch.infbr5.sentinel.utils.JournalEintragLogger;
 
@@ -52,10 +49,12 @@ public class CheckInModelImpl implements CheckInModel {
 		this.fireImageChanged();
 	}
 
+	@Override
 	public void addCheckInChangedListener(CheckInChangeListener l) {
 		this.checkInChangeListeners.add(l);
 	}
 
+	@Override
 	public void addImageChangedListener(ImageChangeListener l) {
 		this.imageChangeListeners.add(l);
 	}
@@ -74,30 +73,37 @@ public class CheckInModelImpl implements CheckInModel {
 		}
 	}
 
+	@Override
 	public long getCounterAngemeldet() {
 		return this.counterAngemeldet;
 	}
 
+	@Override
 	public long getCounterIn() {
 		return this.counterIn;
 	}
 
+	@Override
 	public long getCounterOut() {
 		return this.counterOut;
 	}
 
+	@Override
 	public long getCounterUrlaub() {
 		return this.counterUrlaub;
 	}
 
+	@Override
 	public Image getImage() {
 		return this.image;
 	}
 
+	@Override
 	public String getMessageText() {
 		return this.messageText;
 	}
 
+	@Override
 	public CheckInSelectionValue[] getPersonenMitAusweis() {
 		OperationResponse response = ServiceHelper.getSentinelService().getPersonenMitAusweis();
 
@@ -118,14 +124,17 @@ public class CheckInModelImpl implements CheckInModel {
 		return pdArray;
 	}
 
+	@Override
 	public CheckInOperation getSelectedOperation() {
 		return this.selectedOperation;
 	}
 
+	@Override
 	public OperationResponseStatus getStatus() {
 		return this.status;
 	}
 
+	@Override
 	public void handleCheckinEvent(String barcode) {
 		OperationResponse response;
 		switch (this.selectedOperation) {
@@ -174,28 +183,30 @@ public class CheckInModelImpl implements CheckInModel {
 			Sound.warn();
 		}
 
-		OperatorEintrag personTriggerEintrag = response.getPersonTriggerEintrag();
-		if (personTriggerEintrag != null) {
-			this.showPersonTriggerInfoPopup(personTriggerEintrag);
-		}
+		//JournalEintragBenutzerMeldung personTriggerEintrag = response.getPersonTriggerEintrag();
+		//if (personTriggerEintrag != null) {
+		//	this.showPersonTriggerInfoPopup(personTriggerEintrag);
+		//}
 	}
-	
+
+	@Override
 	public void resetImageAndMessage(){
 		image = null;
 		messageText = "";
 		status = null;
-		
+
 		fireStateChanged();
 		fireImageChanged();
 	}
 
+	@Override
 	public void setOperation(CheckInOperation op) {
 		this.selectedOperation = op;
 
 		this.fireStateChanged();
 	}
 
-	private void showPersonTriggerInfoPopup(OperatorEintrag personTriggerEintrag) {
+	/*private void showPersonTriggerInfoPopup(JournalEintragBenutzerMeldung personTriggerEintrag) {
 		Object[] options = { "Als erledigt markieren", "Schliessen" };
 
 		OperatorInfoDialogPanel operatorInfoDialogPanel = new OperatorInfoDialogPanel(personTriggerEintrag);
@@ -206,11 +217,12 @@ public class CheckInModelImpl implements CheckInModel {
 			return;
 		}
 
-		if (!ServiceHelper.getJournalService().setPersonTriggerToDone(personTriggerEintrag)) {
+		/*if (!ServiceHelper.getJournalService().setPersonTriggerToDone(personTriggerEintrag)) {
 			this.systemEintragLogger.addSystemEintrag("Konnte Eintrag nicht als erledigt markieren", this.getClass());
-		}
-	}
+		}*/
+	//}*/
 
+	@Override
 	public void updateCounter(OperationResponse response) {
 		this.counterIn = response.getCounterIn();
 		this.counterOut = response.getCounterOut();

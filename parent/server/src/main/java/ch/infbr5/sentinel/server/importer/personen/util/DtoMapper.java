@@ -15,15 +15,15 @@ public class DtoMapper {
 		target.setGeburtsdatum(source.getGeburtsdatum());
 		target.setId(source.getId());
 		target.setVorname(source.getVorname());
-		
+
 		Einheit einheit = source.getEinheit();
 		target.setEinheitId(einheit != null ? einheit.getId() : -1);
 		target.setEinheitText(einheit != null ? einheit.getName() : "");
-		
+
 		Grad grad = source.getGrad();
 		target.setGrad(grad != null ? grad.toString() : "");
 
 		return target;
 	}
-	
+
 }

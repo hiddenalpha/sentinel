@@ -22,7 +22,7 @@ public class WorkflowStepFile extends WorkflowStep {
 	private JPanel panel;
 	
 	private JButton btnOpenFile;
-	
+	 
 	private JLabel lblInfo;
 	
 	private JLabel lblFilename;

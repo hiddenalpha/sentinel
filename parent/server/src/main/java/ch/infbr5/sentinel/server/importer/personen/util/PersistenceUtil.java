@@ -21,7 +21,7 @@ public class PersistenceUtil {
 	/**
 	 * Gibt die Einheit _Archiv_ zurÃ¼ck. Falls diese nicht existiert wird sie
 	 * erzeugt.
-	 * 
+	 *
 	 * @return _Archiv_ Einheit
 	 */
 	public static Einheit getArchivEinheit() {
@@ -30,7 +30,7 @@ public class PersistenceUtil {
 
 	/**
 	 * Erzeugt auf jedenfall die Person.
-	 * 
+	 *
 	 * @param personDetails
 	 *            PersonDetails.
 	 * @param einheit
@@ -50,9 +50,9 @@ public class PersistenceUtil {
 
 	/**
 	 * Sucht die Person in der Datenbank aufgrund des Datensatzes.
-	 * 
+	 *
 	 * Zuerst wird mit der AHVNr gesucht. Falls keine Person gefunden wird, wird mit Name, Vorname und Geburtsdatum gearbeitet.
-	 * 
+	 *
 	 * @param PersonDetails personDetaills
 	 * @return Person, falls eine gefunden wurde, anderenfalls keine.
 	 */
@@ -64,7 +64,7 @@ public class PersistenceUtil {
 		}
 		return p;
 	}
-	
+
 	public static Person findPerson(DataRow dataRow) {
 		Person p = QueryHelper.getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
 		if (p == null) {
@@ -72,11 +72,11 @@ public class PersistenceUtil {
 		}
 		return p;
 	}
-	
+
 	/**
 	 * Entfernt den gÃ¼ltigen Ausweis der Person, falls die Person einen hat.
 	 * Ausserdem wird der Ausweis deaktiviert.
-	 * 
+	 *
 	 * @param person
 	 *            Person
 	 */
@@ -90,7 +90,7 @@ public class PersistenceUtil {
 
 	/**
 	 * Deaktiviert den Ausweis. Dannach ist der Ausweis nicht mehr gültig.
-	 * 
+	 *
 	 * @param ausweis
 	 *            Ausweis
 	 */
@@ -102,7 +102,7 @@ public class PersistenceUtil {
 
 	/**
 	 * Sucht die Einheit in der Datenbank aufgrund des Namens.
-	 * 
+	 *
 	 * @param String
 	 *            Name der Einheit.
 	 * @return Falls die Einheit existiert, dann die Einheit sonst null.
@@ -113,10 +113,10 @@ public class PersistenceUtil {
 
 	/**
 	 * Sucht die Einheit in der Datenbank aufgrund des Namens.
-	 * 
+	 *
 	 * Falls keine Einheit gefunden wird, wird eine mit diesem Name erstellt und
 	 * persistiert.
-	 * 
+	 *
 	 * @param String
 	 *            Name der Einheit.
 	 * @return Immer eine Einheit.
@@ -132,7 +132,7 @@ public class PersistenceUtil {
 
 	/**
 	 * Prüft ob die Einheit mit diesem Namen existiert.
-	 * 
+	 *
 	 * @param name
 	 *            Name der Einheit
 	 * @return True, falls die Einheit existiert, anderenfalls false.
@@ -145,7 +145,7 @@ public class PersistenceUtil {
 	/**
 	 * Gibt die Einheit zum Namen zurück. Falls die Einheit nicht existiert wird
 	 * sie erzeugt.
-	 * 
+	 *
 	 * @param einheitName
 	 *            Name der Einheit
 	 * @param isKompletterBestand
@@ -169,7 +169,7 @@ public class PersistenceUtil {
 		}
 		return einheit;
 	}
-	
+
 	public static void updatePerson(Person person, PersonDetails details, boolean isKompletterBestand) {
 		person.setAhvNr(details.getAhvNr());
 		person.setName(details.getName());
@@ -180,5 +180,5 @@ public class PersistenceUtil {
 		Einheit einheit = PersistenceUtil.createEinheitKompletterBestand(details.getEinheitText(), isKompletterBestand);
 		person.setEinheit(einheit);
 	}
-	
+
 }

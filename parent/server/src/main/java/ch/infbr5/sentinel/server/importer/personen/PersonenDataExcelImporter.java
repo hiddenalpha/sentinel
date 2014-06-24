@@ -20,11 +20,11 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 class PersonenDataExcelImporter extends PersonenDataImporter {
 
 	private FileInputStream file;
-	
+
 	private Sheet sheet;
-	
+
 	private int currentRow = 1;
-	
+
 	public PersonenDataExcelImporter(String filenameData, boolean isKompletteEinheit) {
 		super(filenameData, isKompletteEinheit);
 	}
@@ -36,7 +36,7 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 		close();
 		return headerLine;
 	}
-	
+
 	private String[] createArray(Row row) {
 		List<String> headers = new ArrayList<>();
 		if (row == null) {
@@ -68,15 +68,15 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 		String[] line = createArray(sheet.getRow(currentRow));
 		return line;
 	}
-	
+
 	@Override
 	int getCountDataLines() {
 		Sheet sheet = getSheet();
 		int rowNum = sheet.getLastRowNum();
 		close();
 		return rowNum;
-	}	
-	
+	}
+
 	@Override
 	String[] getNextDataLine() {
 		currentRow++;
@@ -92,7 +92,7 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 	void forceClose() {
 		close();
 	}
-	
+
 	private Sheet getSheet() {
 		try {
 			file = new FileInputStream(new File(getFilenameData()));
@@ -103,7 +103,7 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
+
 	private void close() {
 		if (file != null) {
 			try {

@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import ch.infbr5.sentinel.server.db.QueryHelper;
-import ch.infbr5.sentinel.server.model.journal.OperatorEintrag;
+import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
+import ch.infbr5.sentinel.server.ws.journal.JournalSystemMeldung;
 
 public class ObjectFactory {
 
@@ -39,10 +40,6 @@ public class ObjectFactory {
 		return e;
 	}
 
-	public static OperatorEintrag createOperatorEintrag() {
-		return new OperatorEintrag();
-	}
-
 	public static Person createPerson(Einheit einheit, String ahvNr, Grad grad, String name, String vorname,
 			Calendar geburtsdatum, String funktion) {
 		Person person = new Person();
@@ -70,8 +67,8 @@ public class ObjectFactory {
 		return p;
 	}
 
-	public static LogEintrag createSystemEintrag() {
-		return new LogEintrag();
+	public static SystemMeldung createSystemEintrag() {
+		return new SystemMeldung();
 	}
 
 	public static Zone createZone(String name, List<Zutrittsregel> regeln, boolean undOpRegeln) {
@@ -95,29 +92,14 @@ public class ObjectFactory {
 		v.setValidFor(validFor);
 		return v;
 	}
-
-	public static LogEintrag createLogEintrag(long checkpointId, String level, String message, long millis, int type,
-			String loggerClass, String method, String operator, String reportedClass, long sequence, int thread) {
-		LogEintrag r = createLogEintrag(checkpointId, level, message, millis, type);
-
-		r.setLoggerClass(loggerClass);
-		r.setMethod(method);
-		r.setMillis(millis);
-		r.setOperator(operator);
-		r.setReportedClass(reportedClass);
-		r.setSequence(sequence);
-		r.setThread(thread);
-
-		return r;
-	}
-
-	public static LogEintrag createLogEintrag(long checkpointId, String level, String message, long millis, int type) {
-		LogEintrag r = new LogEintrag();
-		r.setCheckpointId(checkpointId);
-		r.setLevel(level);
-		r.setMessage(message);
-		r.setType(type);
-		r.setMillis(millis);
+	
+	public static SystemMeldung createEintragLog(JournalSystemMeldung log) {
+		SystemMeldung r = new SystemMeldung();
+		r.setCheckpointId(log.getCheckpointId());
+		r.setLevel(log.getLevel());
+		r.setMessage(log.getMessage());
+		r.setType(log.getType());
+		r.setMillis(log.getMillis());
 		return r;
 	}
 
@@ -128,5 +110,6 @@ public class ObjectFactory {
 		j.setPrintJobDate(new Date());
 		return j;
 	}
+
 
 }

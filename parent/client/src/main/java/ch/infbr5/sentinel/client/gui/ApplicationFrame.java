@@ -5,8 +5,10 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
@@ -22,21 +24,19 @@ import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModel;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInTabbedPanels;
 import ch.infbr5.sentinel.client.gui.components.ipcam.IpCamaraPane;
-import ch.infbr5.sentinel.client.gui.components.journal.JournalModelImpl;
-import ch.infbr5.sentinel.client.gui.components.journal.JournalNewMessagePanel;
-import ch.infbr5.sentinel.client.gui.components.journal.JournalPanel;
-import ch.infbr5.sentinel.client.gui.components.journal.old.JournalModel;
-import ch.infbr5.sentinel.client.gui.components.journal.operator.dialog.OperatorEntryDialogListener;
+import ch.infbr5.sentinel.client.gui.components.journal.create.JournalNewMessagePanel;
+import ch.infbr5.sentinel.client.gui.components.journal.log.JournalPanel;
 import ch.infbr5.sentinel.client.util.ConfigurationHelper;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
+import ch.infbr5.sentinel.client.util.ServiceHelper;
+import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
+import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
+import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
 import ch.infbr5.sentinel.utils.JournalEintragLogger;
 import ch.infbr5.sentinel.utils.JournalEintragLoggerImpl;
 
 public class ApplicationFrame extends JFrame implements ActionListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private IpCamaraPane myGlassPane;
@@ -75,6 +75,7 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		checkInTabbedPanel.displayPersonSelectionDialog();
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 
 	}
@@ -136,17 +137,37 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		}
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		JournalModel journalModel = new JournalModelImpl(
-				this.journalEintragLogger, ConfigurationLocalHelper.getConfig()
-						.getCheckpointId());
+		// new JournalModelImpl(this.journalEintragLogger, ConfigurationLocalHelper.getConfig().getCheckpointId());
 
-		// tabbedPane.add(new JournalPanelOld(journalModel));
-		tabbedPane.add(new JournalPanel(), "Journal");
-		tabbedPane.add(new JournalNewMessagePanel(), "Neue Meldung erfassen");
+		Long checkpointId = ConfigurationLocalHelper.getConfig().getCheckpointId();
+
+		List<JournalSystemMeldung> systemMeldungen = ServiceHelper.getJournalService().getSystemJournal(checkpointId).getSystemMeldungen();
+		List<JournalBewegungsMeldung> bewegungsMeldungen = ServiceHelper.getJournalService().getBewegungsJournal(checkpointId).getBewegungsMeldungen();
+		List<JournalGefechtsMeldung> gefechtsMeldung = ServiceHelper.getJournalService().getGefechtsJournal(checkpointId).getGefechtsMeldungen();
+
+		DefaultListModel<JournalSystemMeldung> model1 = new DefaultListModel<>();
+		for (JournalSystemMeldung m : systemMeldungen) {
+			model1.addElement(m);
+		}
+
+		DefaultListModel<JournalBewegungsMeldung> model2 = new DefaultListModel<>();
+		for (JournalBewegungsMeldung m : bewegungsMeldungen) {
+			model2.addElement(m);
+		}
+
+		DefaultListModel<JournalGefechtsMeldung> model3 = new DefaultListModel<>();
+		for (JournalGefechtsMeldung m : gefechtsMeldung) {
+			model3.addElement(m);
+		}
+
+		tabbedPane.add(new JournalPanel<JournalSystemMeldung>(model1), "SYSTEM");
+		tabbedPane.add(new JournalPanel<JournalBewegungsMeldung>(model2), "BEWEGUNG");
+		tabbedPane.add(new JournalPanel<JournalGefechtsMeldung>(model3), "GEFECHT");
+		tabbedPane.add(new JournalNewMessagePanel(model3), "Neue Meldung erfassen");
+
 		this.add(tabbedPane, "cell 1 1");
 
-		ActionListener operatorEntryDialog = new OperatorEntryDialogListener(
-				this, this.journalEintragLogger, checkInModel);
+		// new OperatorEntryDialogListener(this, this.journalEintragLogger, checkInModel);
 
 		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper
 				.getConfig().isAdminMode(), ConfigurationLocalHelper

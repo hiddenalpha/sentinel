@@ -1,17 +1,18 @@
 package ch.infbr5.sentinel.server.importer.personen.state;
 
 import java.io.File;
+import java.io.IOException;
 
-import ch.infbr5.sentinel.server.utils.FileHelper;
-
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import com.thoughtworks.xstream.XStream;
 
 public class PersonenImporterStatePersister {
 
 	private PersonenImporterState state;
-	
+
 	private String file;
-	
+
 	public PersonenImporterStatePersister(String file) {
 		this.file = file;
 		if ((new File(file)).exists()) {
@@ -21,20 +22,30 @@ public class PersonenImporterStatePersister {
 			state = new PersonenImporterState();
 		}
 	}
-	
+
 	public PersonenImporterState getState() {
 		return state;
 	}
-	
+
 	public void save() {
 		XStream xStream = new XStream();
 		String xml = xStream.toXML(state);
-		FileHelper.saveAsFile(file, xml.getBytes());
+
+		if (new File(file).exists()) {
+			new File(file).delete();
+		}
+
+		try {
+			Files.write(xml, new File(file), Charsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// FileHelper.saveAsFile(file, xml.getBytes());
 	}
 
 	public void remove() {
 		File f = new File(file);
 		f.delete();
 	}
-	
+
 }

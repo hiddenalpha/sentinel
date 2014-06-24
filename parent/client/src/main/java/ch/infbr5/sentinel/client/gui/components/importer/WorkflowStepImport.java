@@ -15,7 +15,7 @@ import ch.infbr5.sentinel.client.wsgen.ModificationDto;
 public class WorkflowStepImport extends WorkflowStep {
 
 	private JPanel panel;
-	
+	 
 	private ModificationDto dto;
 	
 	public WorkflowStepImport(Frame parent, WorkflowData data, WorkflowInterceptor interceptor) {

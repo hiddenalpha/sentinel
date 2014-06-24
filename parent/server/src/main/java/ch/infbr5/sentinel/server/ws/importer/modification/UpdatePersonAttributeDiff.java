@@ -5,9 +5,9 @@ import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenAttribute;
 public class UpdatePersonAttributeDiff {
 
 	private PersonenAttribute personenAttribute;
-	
+
 	private String oldValue;
-	
+
 	private String newValue;
 
 	public PersonenAttribute getPersonenAttribute() {
@@ -33,5 +33,5 @@ public class UpdatePersonAttributeDiff {
 	public void setNewValue(String newValue) {
 		this.newValue = newValue;
 	}
-	
+
 }
