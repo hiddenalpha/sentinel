@@ -25,7 +25,7 @@ import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInTabbedPanels;
 import ch.infbr5.sentinel.client.gui.components.ipcam.IpCamaraPane;
 import ch.infbr5.sentinel.client.gui.components.journal.create.JournalNewMessagePanel;
-import ch.infbr5.sentinel.client.gui.components.journal.log.JournalPanel;
+import ch.infbr5.sentinel.client.gui.components.journal.list.JournalPanel;
 import ch.infbr5.sentinel.client.util.ConfigurationHelper;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
@@ -160,9 +160,9 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 			model3.addElement(m);
 		}
 
-		tabbedPane.add(new JournalPanel<JournalSystemMeldung>(model1), "SYSTEM");
-		tabbedPane.add(new JournalPanel<JournalBewegungsMeldung>(model2), "BEWEGUNG");
-		tabbedPane.add(new JournalPanel<JournalGefechtsMeldung>(model3), "GEFECHT");
+		//tabbedPane.add(new JournalPanel<JournalSystemMeldung>(model1), "SYSTEM");
+		//tabbedPane.add(new JournalPanel<JournalBewegungsMeldung>(model2), "BEWEGUNG");
+		tabbedPane.add(new JournalPanel<JournalGefechtsMeldung>(model3), "Gefechtsmeldungen");
 		tabbedPane.add(new JournalNewMessagePanel(model3), "Neue Meldung erfassen");
 
 		this.add(tabbedPane, "cell 1 1");

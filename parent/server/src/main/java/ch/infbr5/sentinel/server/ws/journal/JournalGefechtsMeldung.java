@@ -1,47 +1,69 @@
 package ch.infbr5.sentinel.server.ws.journal;
 
+import java.util.Calendar;
+
 import ch.infbr5.sentinel.server.ws.PersonDetails;
 
 public class JournalGefechtsMeldung extends JournalEintrag {
 
-	private String text;
+	private Calendar zeitpunktMeldungsEingang;
 
-	private boolean isDone = false;
+	private String werWasWoWie;
 
-	private String creator;
+	private String massnahme;
 
-	private PersonDetails personDetails;
+	private PersonDetails weiterleitenAnPerson;
 
-	public String getText() {
-		return text;
+	private Calendar zeitpunktErledigt;
+
+	private boolean istErledigt;
+
+	public Calendar getZeitpunktMeldungsEingang() {
+		return zeitpunktMeldungsEingang;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setZeitpunktMeldungsEingang(Calendar zeitpunktMeldungsEingang) {
+		this.zeitpunktMeldungsEingang = zeitpunktMeldungsEingang;
 	}
 
-	public boolean isDone() {
-		return isDone;
+	public String getWerWasWoWie() {
+		return werWasWoWie;
 	}
 
-	public void setDone(boolean isDone) {
-		this.isDone = isDone;
+	public void setWerWasWoWie(String werWasWoWie) {
+		this.werWasWoWie = werWasWoWie;
 	}
 
-	public String getCreator() {
-		return creator;
+	public String getMassnahme() {
+		return massnahme;
 	}
 
-	public void setCreator(String creator) {
-		this.creator = creator;
+	public void setMassnahme(String massnahme) {
+		this.massnahme = massnahme;
 	}
 
-	public PersonDetails getPersonDetails() {
-		return personDetails;
+	public Calendar getZeitpunktErledigt() {
+		return zeitpunktErledigt;
 	}
 
-	public void setPersonDetails(PersonDetails personDetails) {
-		this.personDetails = personDetails;
+	public void setZeitpunktErledigt(Calendar zeitpunktErledigt) {
+		this.zeitpunktErledigt = zeitpunktErledigt;
+	}
+
+	public boolean isIstErledigt() {
+		return istErledigt;
+	}
+
+	public void setIstErledigt(boolean istErledigt) {
+		this.istErledigt = istErledigt;
+	}
+
+	public PersonDetails getWeiterleitenAnPerson() {
+		return weiterleitenAnPerson;
+	}
+
+	public void setWeiterleitenAnPerson(PersonDetails weiterleitenAnPerson) {
+		this.weiterleitenAnPerson = weiterleitenAnPerson;
 	}
 
 }

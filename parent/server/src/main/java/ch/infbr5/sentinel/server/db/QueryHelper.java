@@ -427,4 +427,11 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
+	public static GefechtsMeldung getGefechtsMeldungen(long id) {
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		Query q = em.createNamedQuery("findGefechtsMeldung");
+		q.setParameter("id", id);
+		return (GefechtsMeldung) q.getSingleResult();
+	}
+
 }

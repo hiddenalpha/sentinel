@@ -1,5 +1,7 @@
 package ch.infbr5.sentinel.server.model.journal;
 
+import java.util.Calendar;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -7,8 +9,15 @@ import javax.persistence.NamedQuery;
 
 import ch.infbr5.sentinel.server.model.Person;
 
+/**
+ *
+ * Modellierung gemäss Gefechtsjournal.
+ * @author Alex
+ *
+ */
 @Entity
 @NamedQueries({
+	@NamedQuery(name = "findGefechtsMeldung", query = "SELECT r FROM GefechtsMeldung r WHERE r.id = :id"),
 	@NamedQuery(name = "findGefechtsMeldungen", query = "SELECT r FROM GefechtsMeldung r WHERE r.checkpointId = :checkpointId order by r.millis desc")
 })
 
@@ -16,45 +25,67 @@ import ch.infbr5.sentinel.server.model.Person;
 	//@NamedQuery(name="getPersonTriggerEintrag",query="SELECT o FROM GefechtsMeldung o WHERE o.idPersonGefechtsMeldungIsFor = :idPerson AND o.isDone = false"),
 public class GefechtsMeldung extends JournalEintrag {
 
-	private String text;
+	private Calendar zeitpunktMeldungsEingang;
 
-	private boolean isDone = false;
+	private String werWasWoWie;
 
-	private String creator;
+	private String massnahme;
 
 	@ManyToOne
-	private Person person;
+	private Person weiterleitenAnPerson;
 
-	public Person getPerson() {
-		return person;
+	private Calendar zeitpunktErledigt;
+
+	private boolean istErledigt;
+
+	public Calendar getZeitpunktMeldungsEingang() {
+		return zeitpunktMeldungsEingang;
 	}
 
-	public void setPerson(Person person) {
-		this.person = person;
+	public void setZeitpunktMeldungsEingang(Calendar zeitpunktMeldungsEingang) {
+		this.zeitpunktMeldungsEingang = zeitpunktMeldungsEingang;
 	}
 
-	public String getText() {
-		return text;
+	public String getWerWasWoWie() {
+		return werWasWoWie;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setWerWasWoWie(String werWasWoWie) {
+		this.werWasWoWie = werWasWoWie;
 	}
 
-	public boolean isDone() {
-		return isDone;
+	public String getMassnahme() {
+		return massnahme;
 	}
 
-	public void setDone(boolean isDone) {
-		this.isDone = isDone;
+	public void setMassnahme(String massnahme) {
+		this.massnahme = massnahme;
 	}
 
-	public String getCreator() {
-		return creator;
+
+
+	public Person getWeiterleitenAnPerson() {
+		return weiterleitenAnPerson;
 	}
 
-	public void setCreator(String creator) {
-		this.creator = creator;
+	public void setWeiterleitenAnPerson(Person weiterleitenAnPerson) {
+		this.weiterleitenAnPerson = weiterleitenAnPerson;
+	}
+
+	public Calendar getZeitpunktErledigt() {
+		return zeitpunktErledigt;
+	}
+
+	public void setZeitpunktErledigt(Calendar zeitpunktErledigt) {
+		this.zeitpunktErledigt = zeitpunktErledigt;
+	}
+
+	public boolean isIstErledigt() {
+		return istErledigt;
+	}
+
+	public void setIstErledigt(boolean istErledigt) {
+		this.istErledigt = istErledigt;
 	}
 
 }

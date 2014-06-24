@@ -3,6 +3,7 @@ package ch.infbr5.sentinel.client.gui.components.journal.create;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -12,34 +13,39 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.gui.util.SwingHelper;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
+import ch.infbr5.sentinel.client.util.Formater;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
 
+import com.google.common.base.Strings;
+
 public class JournalNewMessagePanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private JTextArea txtAreaMessage;
+	private JTextArea txtAreaWerWasWieWo;
 
-	private JTextField txtCreator;
+	private JTextArea txtAreaMassnahmen;
 
 	private JComboBox<CmbItemPerson> cmbMeldungIstFuer;
+
+	private JCheckBox ckbStatus;
 
 	private JButton btnSave;
 
 	private JButton btnCancel;
-
-	private JCheckBox ckbStatus;
 
 	private CmbItemPerson emptyItem;
 
@@ -50,27 +56,34 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 
 		setLayout(new MigLayout("inset 20"));
 
-		SwingHelper.addSeparator(this, "Journaleintrag");
+		SwingHelper.addSeparator(this, "Gefechtsmeldung");
 
-		txtCreator = SwingHelper.createTextField(30);
-		add(SwingHelper.createLabel("Erstellt von"), "gap para");
-		add(txtCreator, "span, growx");
+		add(SwingHelper.createLabel("Zeitpunkt"), "gap para");
+		add(SwingHelper.createLabel(Formater.formatWithTime(new Date())), "span, growx");
+
+		add(SwingHelper.createLabel("Wer/Was/Wie/Wo"), "gap para");
+		txtAreaWerWasWieWo = SwingHelper.createTextArea(7, 20);
+		txtAreaWerWasWieWo.setLineWrap(true);
+		txtAreaWerWasWieWo.setWrapStyleWord(true);
+		JScrollPane scrollPane = new JScrollPane(txtAreaWerWasWieWo);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		add(scrollPane, "span, growx");
+
+		add(SwingHelper.createLabel("Massnahmen"), "gap para");
+		txtAreaMassnahmen = SwingHelper.createTextArea(7, 20);
+		txtAreaMassnahmen.setLineWrap(true);
+		txtAreaMassnahmen.setWrapStyleWord(true);
+		JScrollPane scrollPane2 = new JScrollPane(txtAreaMassnahmen);
+		scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		add(scrollPane2, "span, growx");
 
 		cmbMeldungIstFuer = new JComboBox<>();
-		add(SwingHelper.createLabel("Meldung ist für "), "gap para");
+		add(SwingHelper.createLabel("Meldung an "), "gap para");
 		add(cmbMeldungIstFuer, "span, growx");
 
 		ckbStatus = new JCheckBox();
 		add(SwingHelper.createLabel("Erledigt"), "gap para");
 		add(ckbStatus, "span, growx");
-
-		add(SwingHelper.createLabel("Text"), "gap para");
-		txtAreaMessage = SwingHelper.createTextArea(7, 20);
-		txtAreaMessage.setLineWrap(true);
-		txtAreaMessage.setWrapStyleWord(true);
-		JScrollPane scrollPane = new JScrollPane(txtAreaMessage);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		add(scrollPane, "span, growx");
 
 		btnSave = new JButton("Speichern");
 		btnSave.addActionListener(this);
@@ -98,24 +111,33 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("JOURNALPANEL_SAVE")) {
-			if (isDataValid()) {
+			if (isDataValid() == null) {
 				JournalGefechtsMeldung meldung = new JournalGefechtsMeldung();
 				meldung.setCheckpointId(ConfigurationLocalHelper.getConfig().getCheckpointId());
 				meldung.setMillis(new Date().getTime());
 
-				meldung.setDone(ckbStatus.isSelected());
-				meldung.setCreator(txtCreator.getText());
-				meldung.setText(txtAreaMessage.getText());
-
+				try {
+					GregorianCalendar c = new GregorianCalendar();
+					c.setTime(new Date());
+					meldung.setZeitpunktMeldungsEingang(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
+				} catch (DatatypeConfigurationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} // TODO
+				meldung.setWerWasWoWie(txtAreaWerWasWieWo.getText());
+				meldung.setMassnahme(txtAreaMassnahmen.getText());
 				CmbItemPerson item = (CmbItemPerson) cmbMeldungIstFuer.getSelectedItem();
 				if (item != emptyItem) {
-					meldung.setPersonDetails(item.detail);
+					meldung.setWeiterleitenAnPerson(item.detail);
 				}
+				meldung.setIstErledigt(ckbStatus.isSelected());
 
 				ServiceHelper.getJournalService().addGefechtsMeldung(meldung);
 				model.add(0, meldung);
 
 				clearFields();
+			} else {
+				JOptionPane.showMessageDialog(this, isDataValid());
 			}
 		} else if (e.getActionCommand().equals("JOURNALPANEL_CANCEL")) {
 			clearFields();
@@ -123,12 +145,20 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 	}
 
 	private void clearFields() {
-		txtAreaMessage.setText("");
-		txtCreator.setText("");
+		txtAreaMassnahmen.setText("");
+		txtAreaWerWasWieWo.setText("");
+		ckbStatus.setSelected(false);
+		cmbMeldungIstFuer.setSelectedItem(emptyItem);
 	}
 
-	private boolean isDataValid() {
-		return !txtAreaMessage.getText().equals("");
+	private String isDataValid() {
+		if (Strings.isNullOrEmpty(txtAreaWerWasWieWo.getText())) {
+			return "Wer/Was/Wie/Wo muss ausfgefüllt sein.";
+		}
+		if (Strings.isNullOrEmpty(txtAreaMassnahmen.getText())) {
+			return "Massnahmen muss ausgefüllt sein.";
+		}
+		return null;
 	}
 
 	class CmbItemPerson {

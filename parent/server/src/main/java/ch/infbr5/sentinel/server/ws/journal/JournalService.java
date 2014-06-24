@@ -1,5 +1,6 @@
 package ch.infbr5.sentinel.server.ws.journal;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -43,9 +44,29 @@ public class JournalService {
 
 	@WebMethod
 	public void addGefechtsMeldung(@WebParam(name = "meldung") JournalGefechtsMeldung meldung) {
-		log.info("Neue Gefechtsmeldung von " + meldung.getCreator() + " erfasst.");
+		log.info("Neue Gefechtsmeldung am Checkpoint " + meldung.getCheckpointId() + " erfasst.");
 		GefechtsMeldung record = Mapper.mapJournalGefechtsMeldungToGefechtsMeldung().apply(meldung);
 		EntityManagerHelper.getEntityManager().persist(record);
+	}
+
+	@WebMethod
+	public void updateGefechtsMeldung(@WebParam(name = "meldung") JournalGefechtsMeldung meldung) {
+		log.info("Gefechtsmeldung wird aktualisiert");
+		GefechtsMeldung gefechtsMeldung = QueryHelper.getGefechtsMeldungen(meldung.getId());
+
+		if (!gefechtsMeldung.isIstErledigt()) {
+			if (meldung.isIstErledigt()) {
+				gefechtsMeldung.setZeitpunktErledigt(Calendar.getInstance());
+			}
+		}
+
+		if (gefechtsMeldung.isIstErledigt()) {
+			if (!meldung.isIstErledigt()) {
+				gefechtsMeldung.setZeitpunktErledigt(null);
+			}
+		}
+
+		gefechtsMeldung.setIstErledigt(meldung.isIstErledigt());
 	}
 
 	@WebMethod

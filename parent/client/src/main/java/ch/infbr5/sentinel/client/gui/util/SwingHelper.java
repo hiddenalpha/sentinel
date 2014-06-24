@@ -15,9 +15,9 @@ import javax.swing.text.AbstractDocument;
 
 public class SwingHelper {
 
-	public static final Color COLOR_RED = new Color(250,128,114);
+	public static final Color COLOR_RED = new Color(240,230,140);
 
-	public static final Color COLOR_GREEN = new Color(102,255,102);
+	public static final Color COLOR_GREEN = new Color(193,255,193);
 
 	private static final Color LABEL_COLOR = new Color(0, 70, 213);;
 

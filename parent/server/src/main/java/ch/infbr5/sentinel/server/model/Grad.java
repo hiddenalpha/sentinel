@@ -41,6 +41,10 @@ public enum Grad {
 		this.gradtext = gradtext;
 	}
 
+	public String getGradText() {
+		return this.gradtext;
+	}
+
 	@Override
 	public String toString() {
 		return this.gradtext;

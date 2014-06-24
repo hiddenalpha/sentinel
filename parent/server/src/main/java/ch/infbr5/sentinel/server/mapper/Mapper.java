@@ -20,13 +20,16 @@ public class Mapper {
 			@Override
 			public GefechtsMeldung apply(JournalGefechtsMeldung source) {
 				GefechtsMeldung target = new GefechtsMeldung();
+				target.setId(source.getId());
 				target.setCheckpointId(source.getCheckpointId());
 				target.setMillis(source.getMillis());
-				target.setCreator(source.getCreator());
-				target.setDone(source.isDone());
-				target.setText(source.getText());
-				if (source.getPersonDetails() != null) {
-					target.setPerson(QueryHelper.getPerson(source.getPersonDetails().getId()));
+				target.setIstErledigt(source.isIstErledigt());
+				target.setMassnahme(source.getMassnahme());
+				target.setWerWasWoWie(source.getWerWasWoWie());
+				target.setZeitpunktErledigt(source.getZeitpunktErledigt());
+				target.setZeitpunktMeldungsEingang(source.getZeitpunktErledigt());
+				if (source.getWeiterleitenAnPerson() != null) {
+					target.setWeiterleitenAnPerson(QueryHelper.getPerson(source.getWeiterleitenAnPerson().getId()));
 				}
 				return target;
 			}
@@ -40,6 +43,7 @@ public class Mapper {
 			@Override
 			public BewegungsMeldung apply(JournalBewegungsMeldung source) {
 				BewegungsMeldung target = new BewegungsMeldung();
+				target.setId(source.getId());
 				target.setCheckpointId(source.getCheckpointId());
 				target.setMillis(source.getMillis());
 				return target;
@@ -72,6 +76,7 @@ public class Mapper {
 			@Override
 			public SystemMeldung apply(JournalSystemMeldung source) {
 				SystemMeldung target = new SystemMeldung();
+				target.setId(source.getId());
 				target.setCheckpointId(source.getCheckpointId());
 				target.setLevel(source.getLevel());
 				target.setMessage(source.getMessage());
@@ -95,6 +100,7 @@ public class Mapper {
 			@Override
 			public JournalBewegungsMeldung apply(BewegungsMeldung source) {
 				JournalBewegungsMeldung target = new JournalBewegungsMeldung();
+				target.setId(source.getId());
 				target.setCheckpointId(source.getCheckpointId());
 				target.setMillis(source.getMillis());
 				return target;
@@ -108,16 +114,17 @@ public class Mapper {
 			@Override
 			public JournalGefechtsMeldung apply(GefechtsMeldung source) {
 				JournalGefechtsMeldung target = new JournalGefechtsMeldung();
+				target.setId(source.getId());
 				target.setCheckpointId(source.getCheckpointId());
 				target.setMillis(source.getMillis());
-				target.setCreator(source.getCreator());
-				target.setDone(source.isDone());
-				target.setText(source.getText());
-
-				if (source.getPerson() != null) {
-					target.setPersonDetails(mapPersonToPersonDetails().apply(source.getPerson()));
+				target.setIstErledigt(source.isIstErledigt());
+				target.setMassnahme(source.getMassnahme());
+				target.setWerWasWoWie(source.getWerWasWoWie());
+				target.setZeitpunktErledigt(source.getZeitpunktErledigt());
+				target.setZeitpunktMeldungsEingang(source.getZeitpunktErledigt());
+				if (source.getWeiterleitenAnPerson() != null) {
+					target.setWeiterleitenAnPerson(mapPersonToPersonDetails().apply(source.getWeiterleitenAnPerson()));
 				}
-
 				return target;
 			}
 		};
@@ -134,7 +141,7 @@ public class Mapper {
 				target.setAhvNr(source.getAhvNr());
 				target.setName(source.getName());
 				target.setVorname(source.getVorname());
-				target.setGrad(source.getGrad().name());
+				target.setGrad(source.getGrad().getGradText());
 				return target;
 			}
 		};

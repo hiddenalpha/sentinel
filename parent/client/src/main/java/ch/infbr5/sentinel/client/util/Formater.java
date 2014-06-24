@@ -8,6 +8,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class Formater {
 
 	private static SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+	private static SimpleDateFormat dfDateTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 	private static SimpleDateFormat dfWithTime = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	private static SimpleDateFormat dfWithDetailTime = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
@@ -33,6 +34,14 @@ public class Formater {
 
 	public static String formatWithDetailTime(XMLGregorianCalendar date) {
 		return formatWithDetailTime(date.toGregorianCalendar().getTime());
+	}
+
+	public static String formatDateTime(Date date) {
+		return dfDateTime.format(date);
+	}
+
+	public static String formatDateTime(XMLGregorianCalendar date) {
+		return formatDateTime(date.toGregorianCalendar().getTime());
 	}
 
 }
