@@ -2,9 +2,11 @@ package ch.infbr5.sentinel.client.gui.components.checkin;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -12,6 +14,7 @@ import ch.infbr5.sentinel.client.gui.components.journal.operator.dialog.Operator
 import ch.infbr5.sentinel.client.util.ImageCreator;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.Sound;
+import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
@@ -216,6 +219,16 @@ public class CheckInModelImpl implements CheckInModel {
 		if (answer == JOptionPane.YES_OPTION) {
 			personTriggerEintrag.setIstErledigt(true);
 			ServiceHelper.getJournalService().updateGefechtsMeldung(personTriggerEintrag);
+
+			for (int i = 0; i < journalGefechtsModel.size(); i++) {
+				JournalGefechtsMeldung m = journalGefechtsModel.get(i);
+				if (personTriggerEintrag.getId() == m.getId()) {
+					m.setIstErledigt(true);
+					m.setZeitpunktErledigt(XMLGregorianCalendarConverter.dateToXMLGregorianCalendar(new Date()));
+					journalGefechtsModel.remove(i);
+					journalGefechtsModel.add(i, m);
+				}
+			}
 		}
 	}
 
@@ -226,4 +239,12 @@ public class CheckInModelImpl implements CheckInModel {
 		this.counterUrlaub = response.getCounterUrlaub();
 		this.counterAngemeldet = response.getCounterAngemeldet();
 	}
+
+	private DefaultListModel<JournalGefechtsMeldung> journalGefechtsModel;
+
+	@Override
+	public void setJournalGefechtsModel(DefaultListModel<JournalGefechtsMeldung> model) {
+		journalGefechtsModel = model;
+	}
+
 }

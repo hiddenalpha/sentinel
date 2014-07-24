@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -47,12 +49,29 @@ public class JournalGefechtsMeldungsPanel<T extends JournalEintrag> extends JPan
 					JList<T> list = (JList<T>) e.getSource();
 					final int row = list.locationToIndex(e.getPoint());
 					JPopupMenu menu = new JPopupMenu();
-					menu.add(createErledigtItem(row));
-					menu.add(createUnerledigtItem(row));
+					JournalGefechtsMeldung eintrag = (JournalGefechtsMeldung) model.get(row);
+					if (eintrag.isIstErledigt()) {
+						menu.add(createUnerledigtItem(row));
+					} else {
+						menu.add(createErledigtItem(row));
+					}
 					menu.show(jList, e.getX(), e.getY());
 				}
 			}
 		});
+		jList.addMouseMotionListener(new MouseMotionAdapter() {
+	        @Override
+	        public void mouseMoved(MouseEvent e) {
+	            JList l = (JList) e.getSource();
+	            ListModel m = l.getModel();
+	            int index = l.locationToIndex(e.getPoint());
+	            if( index>-1 ) {
+	            	JournalGefechtsMeldung eintrag = (JournalGefechtsMeldung) m.getElementAt(index);
+	                l.setToolTipText("<html><b>Wer / Was / Wo / Wie</b><br />" + eintrag.getWerWasWoWie().replaceAll("\n", "<br />") + "<br /><b>Massnahmen</b><br />"+eintrag.getMassnahme().replaceAll("\n", "<br />")+"</html>");
+
+	            }
+	        }
+	    });
 	}
 
 	private void createList() {

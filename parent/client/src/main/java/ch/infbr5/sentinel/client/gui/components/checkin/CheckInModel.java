@@ -2,6 +2,9 @@ package ch.infbr5.sentinel.client.gui.components.checkin;
 
 import java.awt.Image;
 
+import javax.swing.DefaultListModel;
+
+import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
 
@@ -37,5 +40,7 @@ public interface CheckInModel {
 	public void resetImageAndMessage();
 
 	public void updateCounter(OperationResponse response);
+
+	public void setJournalGefechtsModel(DefaultListModel<JournalGefechtsMeldung> model);
 
 }

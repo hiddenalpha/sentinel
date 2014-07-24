@@ -8,7 +8,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.Border;
 
@@ -17,7 +16,8 @@ import ch.infbr5.sentinel.client.gui.util.SwingHelper;
 import ch.infbr5.sentinel.client.util.Formater;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 
-public class ListCellJournalGefechtsMeldungRenderer<T extends JournalGefechtsMeldung> extends JPanel implements ListCellRenderer<T> {
+public class ListCellJournalGefechtsMeldungRenderer<T extends JournalGefechtsMeldung> extends JPanel implements
+		ListCellRenderer<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,68 +33,31 @@ public class ListCellJournalGefechtsMeldungRenderer<T extends JournalGefechtsMel
 
 	private JLabel lblCheckpoint;
 
-	private JLabel lblWerWasWieWo;
-
-	private JLabel txtPaneWerWasWieWo;
-
-	private JLabel lblMassnahmen;
-
-	private JTextArea txtPaneMassnahmen;
-
-	private JPanel detailInfoPanel;
-
-	private JPanel textPanel;
-
 	public ListCellJournalGefechtsMeldungRenderer() {
-		setLayout(new MigLayout("aligny top", "[20%][80%]"));
+		setLayout(new MigLayout());
 
 		// Borders
 		raisedbevel = BorderFactory.createRaisedBevelBorder();
 		loweredbevel = BorderFactory.createLoweredBevelBorder();
 
 		// Detailpanel
-		detailInfoPanel = new JPanel();
-		detailInfoPanel.setLayout(new MigLayout());
-
 		lblDate = new JLabel();
-		detailInfoPanel.add(lblDate, "wrap");
+		add(lblDate, "width 100px");
 
 		lblCheckpoint = new JLabel();
-		detailInfoPanel.add(lblCheckpoint, "wrap");
+		add(lblCheckpoint, "width 100px, alignx center");
 
 		lblMeldungFuer = new JLabel();
-		detailInfoPanel.add(lblMeldungFuer, "wrap");
+		add(lblMeldungFuer);
 
 		ckbDone = new JCheckBox();
-		detailInfoPanel.add(ckbDone);
-
-		add(detailInfoPanel, "aligny top");
-
-		// Textpanel
-		textPanel = new JPanel();
-		textPanel.setLayout(new MigLayout());
-
-		lblWerWasWieWo = new JLabel("<html><b>Wer/Was/Wie/Wo</b></html>");
-		textPanel.add(lblWerWasWieWo, "wrap");
-
-		txtPaneWerWasWieWo = new JLabel();
-		textPanel.add(txtPaneWerWasWieWo, "growx, wrap");
-
-		lblMassnahmen = new JLabel("<html><b>Massnahmen</b></html>");
-		textPanel.add(lblMassnahmen, "wrap");
-
-		txtPaneMassnahmen = new JTextArea();
-		textPanel.add(txtPaneMassnahmen, "growx, wrap");
-
-		add(textPanel, "aligny top");
+		add(ckbDone, "push, alignx right");
 	}
 
 	@Override
 	public Component getListCellRendererComponent(JList<? extends T> list, T value, int index, boolean isSelected,
 			boolean cellHasFocus) {
 
-		String werWasWieWo = "";
-		String massnahmen = "";
 		String status = "";
 		String meldungFor = "";
 		boolean isDone = false;
@@ -105,17 +68,9 @@ public class ListCellJournalGefechtsMeldungRenderer<T extends JournalGefechtsMel
 		if (value.getZeitpunktMeldungsEingang() != null) {
 			date = Formater.formatDateTime(value.getZeitpunktMeldungsEingang());
 		}
-		werWasWieWo = value.getWerWasWoWie().trim();
-		massnahmen = value.getMassnahme().trim();
 		checkpoint = String.valueOf(value.getCheckpoint().getName());
 
-		meldungFor = "";
-		if (value.getWeiterleitenAnPerson() != null) {
-			meldungFor = value.getWeiterleitenAnPerson().getGrad() + " " + value.getWeiterleitenAnPerson().getName()
-					+ " " + value.getWeiterleitenAnPerson().getVorname();
-		} else {
-			meldungFor = "niemanden";
-		}
+		meldungFor = Formater.getFullName(value.getWeiterleitenAnPerson());
 
 		if (value.isIstErledigt()) {
 			isDone = true;
@@ -129,15 +84,10 @@ public class ListCellJournalGefechtsMeldungRenderer<T extends JournalGefechtsMel
 			color = SwingHelper.COLOR_RED;
 		}
 
-		//txtPaneWerWasWieWo.setWrapStyleWord(true);
-		//txtPaneMassnahmen.setWrapStyleWord(true);
-
 		ckbDone.setText(status);
 		lblDate.setText(date);
 		lblMeldungFuer.setText(meldungFor);
 		lblCheckpoint.setText(checkpoint);
-		txtPaneWerWasWieWo.setText("<html>" + werWasWieWo + "</html>");
-		txtPaneMassnahmen.setText(massnahmen);
 		ckbDone.setSelected(isDone);
 
 		setColor(color);
@@ -154,10 +104,6 @@ public class ListCellJournalGefechtsMeldungRenderer<T extends JournalGefechtsMel
 	private void setColor(Color color) {
 		setBackground(color);
 		ckbDone.setBackground(color);
-		txtPaneWerWasWieWo.setBackground(color);
-		txtPaneMassnahmen.setBackground(color);
-		textPanel.setBackground(color);
-		detailInfoPanel.setBackground(color);
 	}
 
 }

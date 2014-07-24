@@ -37,16 +37,16 @@ public class ListCellJournalBewegungsMeldungRenderer<T extends JournalBewegungsM
 		loweredbevel = BorderFactory.createLoweredBevelBorder();
 
 		lblDatumZeit = new JLabel();
-		add(lblDatumZeit);
+		add(lblDatumZeit, "width 100px");
 
 		lblCheckpoint = new JLabel();
-		add(lblCheckpoint);
-
-		lblStatus = new JLabel();
-		add(lblStatus, "width 90px");
+		add(lblCheckpoint, "width 100px, alignx center");
 
 		lblPerson = new JLabel();
-		add(lblPerson);
+		add(lblPerson, "");
+
+		lblStatus = new JLabel();
+		add(lblStatus, "push, alignx right");
 	}
 
 	@Override

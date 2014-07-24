@@ -164,6 +164,8 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		tabbedPane.add(new JournalGefechtsMeldungsPanel<JournalGefechtsMeldung>(model3), "Gefechtsmeldungen");
 		tabbedPane.add(new JournalNewMessagePanel(), "Neue Meldung erfassen");
 
+		checkInModel.setJournalGefechtsModel(model3);
+
 		this.add(tabbedPane, "cell 1 1");
 
 		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper

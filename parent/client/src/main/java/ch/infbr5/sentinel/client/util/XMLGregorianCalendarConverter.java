@@ -8,21 +8,21 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
- 
+
 /**
  * Converts different objects into XMLGregorianCalendar
  * Source: http://www.heber.it/wordpress/?p=239#anchor_2
  */
 public class XMLGregorianCalendarConverter {
- 
+
     /**
      * Converts Date object into XMLGregorianCalendar
      *
      * @param date Object to be converted
      * @return XMLGregorianCalendar
      */
-    private static XMLGregorianCalendar dateToXMLGregorianCalendar(Date date) {
- 
+    public static XMLGregorianCalendar dateToXMLGregorianCalendar(Date date) {
+
         try {
             GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
             gc.setTime(date);
@@ -33,7 +33,7 @@ public class XMLGregorianCalendarConverter {
             return null;
         }
     }
- 
+
     /**
      * Converts a formatted string into XMLGregorianCalendar
      *
@@ -44,7 +44,7 @@ public class XMLGregorianCalendarConverter {
     public static XMLGregorianCalendar stringToXMLGregorianCalendar(String datetime, SimpleDateFormat sdf) {
         try {
             Date date = sdf.parse(datetime);
-            
+
             return dateToXMLGregorianCalendar(date);
         } catch (ParseException e) {
             return null;
