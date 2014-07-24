@@ -1,6 +1,8 @@
 package ch.infbr5.sentinel.client.gui.components.journal.create;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +16,6 @@ import java.util.Vector;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -56,15 +57,11 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 
 	private CmbItemPerson emptyItem;
 
-	private DefaultListModel<JournalGefechtsMeldung> model;
-
 	private JSpinner dateSpinner;
 
 	private JButton btnDateUpdate;
 
-	public JournalNewMessagePanel(DefaultListModel<JournalGefechtsMeldung> model) {
-		this.model = model;
-
+	public JournalNewMessagePanel() {
 		setLayout(new MigLayout("inset 20"));
 
 		SwingHelper.addSeparator(this, "Gefechtsmeldung");
@@ -74,17 +71,18 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		dateSpinner = new JSpinner( new SpinnerDateModel() );
 		dateSpinner.setEditor(new JSpinner.DateEditor(dateSpinner, "dd.MM.yyyy HH:mm"));
 		dateSpinner.setValue(new Date());
-		add(dateSpinner);
+		add(dateSpinner, "width 100%");
 
 		btnDateUpdate = new JButton("Aktualisieren");
-		btnDateUpdate.setSize(20, 10);
+		btnDateUpdate.setPreferredSize(new Dimension(30, 8));
+		btnDateUpdate.setFont(new Font("Arial", Font.PLAIN, 9));
 		btnDateUpdate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dateSpinner.setValue(new Date());
 			}
 		});
-		add(btnDateUpdate, "wrap");
+		add(btnDateUpdate, "aligny top, alignx right, wrap");
 
 		add(SwingHelper.createLabel("Wer/Was/Wie/Wo"), "gap para");
 		txtAreaWerWasWieWo = SwingHelper.createTextArea(7, 20);
@@ -93,7 +91,7 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		patch(txtAreaWerWasWieWo);
 		JScrollPane scrollPane = new JScrollPane(txtAreaWerWasWieWo);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		add(scrollPane, "span, growx");
+		add(scrollPane, "span, growx, width 100%");
 
 		add(SwingHelper.createLabel("Massnahmen"), "gap para");
 		txtAreaMassnahmen = SwingHelper.createTextArea(7, 20);
@@ -140,7 +138,7 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 		if (e.getActionCommand().equals("JOURNALPANEL_SAVE")) {
 			if (isDataValid() == null) {
 				JournalGefechtsMeldung meldung = new JournalGefechtsMeldung();
-				meldung.setCheckpointId(ConfigurationLocalHelper.getConfig().getCheckpointId());
+				meldung.setCheckpoint(ConfigurationLocalHelper.getConfig().getCheckpoint());
 				meldung.setMillis(new Date().getTime());
 
 				try {
@@ -151,8 +149,8 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} // TODO
-				meldung.setWerWasWoWie(txtAreaWerWasWieWo.getText());
-				meldung.setMassnahme(txtAreaMassnahmen.getText());
+				meldung.setWerWasWoWie(txtAreaWerWasWieWo.getText().trim());
+				meldung.setMassnahme(txtAreaMassnahmen.getText().trim());
 				CmbItemPerson item = (CmbItemPerson) cmbMeldungIstFuer.getSelectedItem();
 				if (item != emptyItem) {
 					meldung.setWeiterleitenAnPerson(item.detail);
@@ -160,7 +158,6 @@ public class JournalNewMessagePanel extends JPanel implements ActionListener {
 				meldung.setIstErledigt(ckbStatus.isSelected());
 
 				ServiceHelper.getJournalService().addGefechtsMeldung(meldung);
-				model.add(0, meldung);
 
 				clearFields();
 			} else {

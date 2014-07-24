@@ -33,8 +33,9 @@ public interface CheckInModel {
 	public void handleCheckinEvent(String barcode);
 
 	public void setOperation(CheckInOperation op);
-	
+
 	public void resetImageAndMessage();
-	
+
 	public void updateCounter(OperationResponse response);
+
 }

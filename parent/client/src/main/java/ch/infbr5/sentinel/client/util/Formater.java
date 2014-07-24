@@ -5,19 +5,20 @@ import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import ch.infbr5.sentinel.client.wsgen.PersonDetails;
+
 public class Formater {
 
-	private static SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+	private static SimpleDateFormat dfDate = new SimpleDateFormat("dd.MM.yyyy");
 	private static SimpleDateFormat dfDateTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-	private static SimpleDateFormat dfWithTime = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	private static SimpleDateFormat dfWithDetailTime = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
 	public static String format(Date date) {
-		return df.format(date);
+		return dfDate.format(date);
 	}
 
 	public static String formatWithTime(Date date) {
-		return dfWithTime.format(date);
+		return dfDateTime.format(date);
 	}
 
 	public static String formatWithDetailTime(Date date) {
@@ -29,6 +30,9 @@ public class Formater {
 	}
 
 	public static String formatWithTime(XMLGregorianCalendar date) {
+		if (date == null) {
+			return "";
+		}
 		return formatWithTime(date.toGregorianCalendar().getTime());
 	}
 
@@ -42,6 +46,13 @@ public class Formater {
 
 	public static String formatDateTime(XMLGregorianCalendar date) {
 		return formatDateTime(date.toGregorianCalendar().getTime());
+	}
+
+	public static String getFullName(PersonDetails personDetails) {
+		if (personDetails == null) {
+			return "";
+		}
+		return personDetails.getGrad() + ". " + personDetails.getName() + " " + personDetails.getVorname();
 	}
 
 }

@@ -35,7 +35,7 @@ public class LoggingServerHandler extends Handler {
 				eintrag.setThread(record.getThreadID());
 				eintrag.setMessage(record.getMessage());
 				eintrag.setMethod(record.getSourceMethodName());
-				eintrag.setCheckpointId(ConfigurationLocalHelper.getConfig().getCheckpointId());
+				eintrag.setCheckpoint(ConfigurationLocalHelper.getConfig().getCheckpoint());
 				eintrag.setLoggerClass(record.getLoggerName());
 				eintrag.setOperator("operator");
 				eintrag.setReportedClass(record.getSourceClassName());

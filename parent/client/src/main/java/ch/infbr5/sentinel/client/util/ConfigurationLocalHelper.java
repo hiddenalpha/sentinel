@@ -9,6 +9,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
+
 public class ConfigurationLocalHelper {
 
 	private static ConfigurationLocalHelper config;
@@ -84,11 +86,11 @@ public class ConfigurationLocalHelper {
 		applicationProps.setProperty("ServerHostname", host);
 		saveProperites();
 	}
-	
+
 	public String getFileChooserLastPath() {
 		return applicationProps.getProperty("FileChooserLastPath");
 	}
-	
+
 	public void setFileChooserLastPath(String path) {
 		applicationProps.setProperty("FileChooserLastPath", path);
 		saveProperites();
@@ -129,6 +131,13 @@ public class ConfigurationLocalHelper {
 
 	public Long getCheckpointId() {
 		return Long.valueOf(applicationProps.getProperty("CheckpointId"));
+	}
+
+	public CheckpointDetails getCheckpoint() {
+		CheckpointDetails details = new CheckpointDetails();
+		details.setId(getCheckpointId());
+		//details.setName(ConfigurationHelper.getCheckpointName());
+		return details;
 	}
 
 	public void setCheckpointId(Long checkpointId) {

@@ -25,23 +25,22 @@ import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInTabbedPanels;
 import ch.infbr5.sentinel.client.gui.components.ipcam.IpCamaraPane;
 import ch.infbr5.sentinel.client.gui.components.journal.create.JournalNewMessagePanel;
-import ch.infbr5.sentinel.client.gui.components.journal.list.JournalPanel;
+import ch.infbr5.sentinel.client.gui.components.journal.list.JournalBewegungsMeldungsPanel;
+import ch.infbr5.sentinel.client.gui.components.journal.list.JournalGefechtsMeldungsPanel;
+import ch.infbr5.sentinel.client.polling.UpdateBewegungsJournal;
+import ch.infbr5.sentinel.client.polling.UpdateGefechtsJournal;
 import ch.infbr5.sentinel.client.util.ConfigurationHelper;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
-import ch.infbr5.sentinel.utils.JournalEintragLogger;
-import ch.infbr5.sentinel.utils.JournalEintragLoggerImpl;
 
 public class ApplicationFrame extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
 	private IpCamaraPane myGlassPane;
-
-	private JournalEintragLogger journalEintragLogger;
 
 	private ApplicationModel applicationFrameModel;
 
@@ -97,8 +96,6 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		// } while (this.applicationFrameModel.getOperatorName() == null ||
 		// this.applicationFrameModel.getOperatorName().equals(""));
 
-		this.initializeJournalLogger();
-
 		this.run();
 	}
 
@@ -119,7 +116,7 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 						"[50%, fill][50%, grow]"));
 
 		checkInModel = new CheckInModelImpl(ConfigurationLocalHelper
-				.getConfig().getCheckpointId(), this.journalEintragLogger, this);
+				.getConfig().getCheckpointId(), this);
 		checkInTabbedPanel = new CheckInTabbedPanels(checkInModel);
 
 		this.add(checkInTabbedPanel, "cell 0 0 1 2 growy");
@@ -137,7 +134,6 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		}
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		// new JournalModelImpl(this.journalEintragLogger, ConfigurationLocalHelper.getConfig().getCheckpointId());
 
 		Long checkpointId = ConfigurationLocalHelper.getConfig().getCheckpointId();
 
@@ -150,7 +146,7 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 			model1.addElement(m);
 		}
 
-		DefaultListModel<JournalBewegungsMeldung> model2 = new DefaultListModel<>();
+		final DefaultListModel<JournalBewegungsMeldung> model2 = new DefaultListModel<>();
 		for (JournalBewegungsMeldung m : bewegungsMeldungen) {
 			model2.addElement(m);
 		}
@@ -160,14 +156,15 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 			model3.addElement(m);
 		}
 
-		//tabbedPane.add(new JournalPanel<JournalSystemMeldung>(model1), "SYSTEM");
-		//tabbedPane.add(new JournalPanel<JournalBewegungsMeldung>(model2), "BEWEGUNG");
-		tabbedPane.add(new JournalPanel<JournalGefechtsMeldung>(model3), "Gefechtsmeldungen");
-		tabbedPane.add(new JournalNewMessagePanel(model3), "Neue Meldung erfassen");
+		new UpdateBewegungsJournal(model2);
+		new UpdateGefechtsJournal(model3);
+
+		// tabbedPane.add(new JournalPanel<JournalSystemMeldung>(model1), "Systemmeldungen");
+		tabbedPane.add(new JournalBewegungsMeldungsPanel<JournalBewegungsMeldung>(model2), "Bewegungsmeldungen");
+		tabbedPane.add(new JournalGefechtsMeldungsPanel<JournalGefechtsMeldung>(model3), "Gefechtsmeldungen");
+		tabbedPane.add(new JournalNewMessagePanel(), "Neue Meldung erfassen");
 
 		this.add(tabbedPane, "cell 1 1");
-
-		// new OperatorEntryDialogListener(this, this.journalEintragLogger, checkInModel);
 
 		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper
 				.getConfig().isAdminMode(), ConfigurationLocalHelper
@@ -178,15 +175,8 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		isInitialized = true;
 	}
 
-	private void initializeJournalLogger() {
-		this.journalEintragLogger = new JournalEintragLoggerImpl(
-				ConfigurationLocalHelper.getConfig().getCheckpointId(),
-				this.applicationFrameModel.getOperatorName());
-	}
-
 	private void run() {
 		this.setVisible(true);
-
 		this.setIcon();
 	}
 
@@ -198,7 +188,6 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		this.setIconImage(defaultImage);
 	}
 }

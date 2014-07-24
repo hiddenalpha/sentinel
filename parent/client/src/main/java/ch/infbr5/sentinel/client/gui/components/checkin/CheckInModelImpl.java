@@ -6,14 +6,16 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
+import ch.infbr5.sentinel.client.gui.components.journal.operator.dialog.OperatorInfoDialogPanel;
 import ch.infbr5.sentinel.client.util.ImageCreator;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.Sound;
+import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
-import ch.infbr5.sentinel.utils.JournalEintragLogger;
 
 public class CheckInModelImpl implements CheckInModel {
 
@@ -30,15 +32,13 @@ public class CheckInModelImpl implements CheckInModel {
 	private long counterUrlaub;
 	private long counterAngemeldet;
 
-	private JournalEintragLogger systemEintragLogger;
 
 	private final JFrame parent;
 
 	private OperationResponseStatus status;
 
-	public CheckInModelImpl(long checkpointId, JournalEintragLogger systemEintragLogger, JFrame parent) {
+	public CheckInModelImpl(long checkpointId, JFrame parent) {
 		this.checkpointId = checkpointId;
-		this.systemEintragLogger = systemEintragLogger;
 		this.parent = parent;
 
 		this.selectedOperation = CheckInOperation.CHECKIN;
@@ -67,7 +67,8 @@ public class CheckInModelImpl implements CheckInModel {
 	}
 
 	private void fireStateChanged() {
-		for (ListIterator<CheckInChangeListener> iterator = this.checkInChangeListeners.listIterator(); iterator.hasNext();) {
+		for (ListIterator<CheckInChangeListener> iterator = this.checkInChangeListeners.listIterator(); iterator
+				.hasNext();) {
 			CheckInChangeListener l = iterator.next();
 			l.valueChanged(new CheckInChangedEvent(this));
 		}
@@ -166,8 +167,6 @@ public class CheckInModelImpl implements CheckInModel {
 		this.messageText = response.getMessage();
 		this.status = response.getStatus();
 
-		this.systemEintragLogger.addSystemEintrag(this.messageText, this.getClass());
-
 		image = ImageCreator.createImage(response.getImageId());
 
 		this.updateCounter(response);
@@ -183,14 +182,15 @@ public class CheckInModelImpl implements CheckInModel {
 			Sound.warn();
 		}
 
-		//JournalEintragBenutzerMeldung personTriggerEintrag = response.getPersonTriggerEintrag();
-		//if (personTriggerEintrag != null) {
-		//	this.showPersonTriggerInfoPopup(personTriggerEintrag);
-		//}
+		// Trigger Einträge anzeigen.
+		List<JournalGefechtsMeldung> triggerEintraege = response.getPersonTriggerEintraege();
+		for (JournalGefechtsMeldung eintrag : triggerEintraege) {
+			this.showPersonTriggerInfoPopup(eintrag);
+		}
 	}
 
 	@Override
-	public void resetImageAndMessage(){
+	public void resetImageAndMessage() {
 		image = null;
 		messageText = "";
 		status = null;
@@ -206,21 +206,18 @@ public class CheckInModelImpl implements CheckInModel {
 		this.fireStateChanged();
 	}
 
-	/*private void showPersonTriggerInfoPopup(JournalEintragBenutzerMeldung personTriggerEintrag) {
+	private void showPersonTriggerInfoPopup(JournalGefechtsMeldung personTriggerEintrag) {
 		Object[] options = { "Als erledigt markieren", "Schliessen" };
 
 		OperatorInfoDialogPanel operatorInfoDialogPanel = new OperatorInfoDialogPanel(personTriggerEintrag);
-		int answer = JOptionPane.showOptionDialog(this.parent, operatorInfoDialogPanel, "Journaleintrag anzeigen",
+		int answer = JOptionPane.showOptionDialog(this.parent, operatorInfoDialogPanel, "Gefechtsmeldung",
 				JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
 
-		if (answer != 0) {
-			return;
+		if (answer == JOptionPane.YES_OPTION) {
+			personTriggerEintrag.setIstErledigt(true);
+			ServiceHelper.getJournalService().updateGefechtsMeldung(personTriggerEintrag);
 		}
-
-		/*if (!ServiceHelper.getJournalService().setPersonTriggerToDone(personTriggerEintrag)) {
-			this.systemEintragLogger.addSystemEintrag("Konnte Eintrag nicht als erledigt markieren", this.getClass());
-		}*/
-	//}*/
+	}
 
 	@Override
 	public void updateCounter(OperationResponse response) {
