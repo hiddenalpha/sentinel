@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import ch.infbr5.sentinel.server.model.Checkpoint;
 
 @Entity
 public class JournalEintrag {
@@ -11,11 +14,12 @@ public class JournalEintrag {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	private long millis;
-	
-	private long checkpointId;
-	
+
+	@ManyToOne
+	private Checkpoint checkpoint;
+
 	public long getId() {
 		return id;
 	}
@@ -32,12 +36,12 @@ public class JournalEintrag {
 		this.millis = millis;
 	}
 
-	public long getCheckpointId() {
-		return checkpointId;
+	public Checkpoint getCheckpoint() {
+		return checkpoint;
 	}
 
-	public void setCheckpointId(long checkpointId) {
-		this.checkpointId = checkpointId;
+	public void setCheckpoint(Checkpoint checkpoint) {
+		this.checkpoint = checkpoint;
 	}
 
 }

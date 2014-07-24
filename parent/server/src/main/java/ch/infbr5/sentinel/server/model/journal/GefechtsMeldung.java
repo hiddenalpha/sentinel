@@ -10,19 +10,16 @@ import javax.persistence.NamedQuery;
 import ch.infbr5.sentinel.server.model.Person;
 
 /**
- *
  * Modellierung gemäss Gefechtsjournal.
- * @author Alex
  *
+ * @author Alex
  */
 @Entity
 @NamedQueries({
-	@NamedQuery(name = "findGefechtsMeldung", query = "SELECT r FROM GefechtsMeldung r WHERE r.id = :id"),
-	@NamedQuery(name = "findGefechtsMeldungen", query = "SELECT r FROM GefechtsMeldung r WHERE r.checkpointId = :checkpointId order by r.millis desc")
-})
-
-	//@NamedQuery(name="findBenutzerMeldungEintraege",query="SELECT o FROM GefechtsMeldung o WHERE o.checkpointId = :checkpointId"),
-	//@NamedQuery(name="getPersonTriggerEintrag",query="SELECT o FROM GefechtsMeldung o WHERE o.idPersonGefechtsMeldungIsFor = :idPerson AND o.isDone = false"),
+		@NamedQuery(name = "findGefechtsMeldung", query = "SELECT r FROM GefechtsMeldung r WHERE r.id = :id"),
+		@NamedQuery(name = "findGefechtsMeldungen", query = "SELECT r FROM GefechtsMeldung r WHERE r.checkpoint.id = :checkpointId order by r.millis desc"),
+		@NamedQuery(name = "findGefechtsMeldungenSeit", query = "SELECT r FROM GefechtsMeldung r WHERE r.checkpoint.id = :checkpointId and r.millis > :timeInMillis order by r.millis desc"),
+		@NamedQuery(name = "getPersonTriggerEintraege", query = "SELECT o FROM GefechtsMeldung o WHERE o.weiterleitenAnPerson.id = :idPerson AND o.istErledigt = false"), })
 public class GefechtsMeldung extends JournalEintrag {
 
 	private Calendar zeitpunktMeldungsEingang;
@@ -61,8 +58,6 @@ public class GefechtsMeldung extends JournalEintrag {
 	public void setMassnahme(String massnahme) {
 		this.massnahme = massnahme;
 	}
-
-
 
 	public Person getWeiterleitenAnPerson() {
 		return weiterleitenAnPerson;

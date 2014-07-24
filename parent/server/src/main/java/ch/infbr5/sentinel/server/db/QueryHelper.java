@@ -26,8 +26,6 @@ import ch.infbr5.sentinel.server.model.journal.BewegungsMeldung;
 import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
 import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 
-import com.google.common.collect.Lists;
-
 public class QueryHelper {
 
 	private static Logger logger = Logger.getLogger(QueryHelper.class.getName());
@@ -38,8 +36,7 @@ public class QueryHelper {
 		do {
 			Random zufall = new Random();
 
-			barcode = prefix.concat(String.valueOf(100000 + zufall
-					.nextInt((int) Math.pow(10, len) - 100000)));
+			barcode = prefix.concat(String.valueOf(100000 + zufall.nextInt((int) Math.pow(10, len) - 100000)));
 
 			ausweis = QueryHelper.findAusweisByBarcode(barcode);
 		} while (QueryHelper.isAusweisVorhanden(ausweis));
@@ -80,8 +77,7 @@ public class QueryHelper {
 	public static int invalidateAusweise(Long personId) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		Person personParam = getPerson(personId);
-		Query q = em
-				.createNamedQuery(Ausweis.INVALIDATE_AUSWEISE_BY_PERSON_VALUE);
+		Query q = em.createNamedQuery(Ausweis.INVALIDATE_AUSWEISE_BY_PERSON_VALUE);
 		q.setParameter("personParam", personParam);
 
 		return q.executeUpdate();
@@ -98,18 +94,16 @@ public class QueryHelper {
 		em.persist(p);
 	}
 
-	public static Person createPerson(Einheit einheit, String ahvNr, Grad grad,
-			String name, String vorname, Calendar geburtsdatum, String funktion) {
+	public static Person createPerson(Einheit einheit, String ahvNr, Grad grad, String name, String vorname,
+			Calendar geburtsdatum, String funktion) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
-		Person person = ObjectFactory.createPerson(einheit, ahvNr, grad, name,
-				vorname, geburtsdatum, funktion);
+		Person person = ObjectFactory.createPerson(einheit, ahvNr, grad, name, vorname, geburtsdatum, funktion);
 		em.persist(person);
 		return person;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<ZonenPraesenz> findZonenPraesenz(long zoneId,
-			PraesenzStatus status) {
+	public static List<ZonenPraesenz> findZonenPraesenz(long zoneId, PraesenzStatus status) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		Query q = em.createNamedQuery("findOpenZonenPraesenByStatusAndZone");
 		q.setParameter("statusParam", status);
@@ -133,8 +127,7 @@ public class QueryHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Person> getPersonen(boolean nurMitAusweis,
-			boolean nachEinheit, String einheit) {
+	public static List<Person> getPersonen(boolean nurMitAusweis, boolean nachEinheit, String einheit) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		Query q;
 		if (nurMitAusweis) {
@@ -200,24 +193,21 @@ public class QueryHelper {
 
 		// --- Personen und Ausweise loeschen ---
 		Query q = em.createNamedQuery(Person.GET_PERSONEN_VALUE);
-		for (Iterator iterator = q.getResultList().iterator(); iterator
-				.hasNext();) {
+		for (Iterator iterator = q.getResultList().iterator(); iterator.hasNext();) {
 			Person p = (Person) iterator.next();
 			em.remove(p);
 		}
 
 		// --- Einheiten loeschen ---
 		q = em.createNamedQuery(Einheit.GET_EINHEITEN_VALUE);
-		for (Iterator iterator = q.getResultList().iterator(); iterator
-				.hasNext();) {
+		for (Iterator iterator = q.getResultList().iterator(); iterator.hasNext();) {
 			Einheit p = (Einheit) iterator.next();
 			em.remove(p);
 		}
 
 		// --- Praesenz loeschen
 		q = em.createNamedQuery(ZonenPraesenz.GET_ALL_ZONEN_PRAESENZ);
-		for (Iterator iterator = q.getResultList().iterator(); iterator
-				.hasNext();) {
+		for (Iterator iterator = q.getResultList().iterator(); iterator.hasNext();) {
 			ZonenPraesenz zp = (ZonenPraesenz) iterator.next();
 			em.remove(zp);
 		}
@@ -228,8 +218,7 @@ public class QueryHelper {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 
 		// aus existenz prüfen und IDs auf null setzen.
-		for (Iterator<Person> iterator = personen.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<Person> iterator = personen.iterator(); iterator.hasNext();) {
 			Person person = iterator.next();
 
 			person.setId(null);
@@ -268,11 +257,9 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
-	public static Long getCountOfZonenPraesenz(long zoneId,
-			PraesenzStatus status) {
+	public static Long getCountOfZonenPraesenz(long zoneId, PraesenzStatus status) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
-		Query q = em
-				.createNamedQuery("getCountOfOpenZonenPraesenByStatusAndZone");
+		Query q = em.createNamedQuery("getCountOfOpenZonenPraesenByStatusAndZone");
 		q.setParameter("statusParam", status);
 		q.setParameter("zoneParam", zoneId);
 
@@ -280,8 +267,7 @@ public class QueryHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<SystemMeldung> getSystemMeldungen(long checkpointId,
-			int maxResult) {
+	public static List<SystemMeldung> getSystemMeldungen(long checkpointId, int maxResult) {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		Query q = em.createNamedQuery("findLogEintrag");
 		q.setParameter("checkpointId", checkpointId);
@@ -289,40 +275,27 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
-	// public static OperatorEintrag getPersonTriggerEintrag(String barcode) {
-	// EntityManager em = EntityManagerHelper.getEntityManager();
-	// Query q = em.createNamedQuery("getPersonTriggerEintrag");
-	// q.setParameter("barcode", barcode);
-	//
-	// try {
-	// return (OperatorEintrag) q.getSingleResult();
-	// } catch (Exception e) {
-	// return null;
-	// }
-	// }
-
 	private static boolean isAusweisVorhanden(Ausweis ausweis) {
 		return ausweis != null;
 	}
 
-	/*public static boolean updateOperatorEintrag(GefechtsMeldung operatorEintrag) {
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		boolean transactionDone = true;
-		try {
-			GefechtsMeldung operatorEintragX = em.find(GefechtsMeldung.class, operatorEintrag.getId());
-			operatorEintragX.setAction(operatorEintrag.getAction());
-			operatorEintragX.setCause(operatorEintrag.getCause());
-			operatorEintragX.setCreator(operatorEintrag.getCreator());
-			operatorEintragX.setDate(operatorEintrag.getDate());
-			operatorEintragX.setDone(true);
-			operatorEintragX.setPersonTriggerId(operatorEintrag
-					.getPersonTriggerId());
-		} catch (Exception e) {
-			transactionDone = false;
-		}
-
-		return transactionDone;
-	}*/
+	/*
+	 * public static boolean updateOperatorEintrag(GefechtsMeldung
+	 * operatorEintrag) { EntityManager em =
+	 * EntityManagerHelper.getEntityManager(); boolean transactionDone = true;
+	 * try { GefechtsMeldung operatorEintragX = em.find(GefechtsMeldung.class,
+	 * operatorEintrag.getId());
+	 * operatorEintragX.setAction(operatorEintrag.getAction());
+	 * operatorEintragX.setCause(operatorEintrag.getCause());
+	 * operatorEintragX.setCreator(operatorEintrag.getCreator());
+	 * operatorEintragX.setDate(operatorEintrag.getDate());
+	 * operatorEintragX.setDone(true);
+	 * operatorEintragX.setPersonTriggerId(operatorEintrag
+	 * .getPersonTriggerId()); } catch (Exception e) { transactionDone = false;
+	 * }
+	 *
+	 * return transactionDone; }
+	 */
 
 	@SuppressWarnings("unchecked")
 	public static List<ConfigurationValue> findConfigurationValue(String key) {
@@ -406,21 +379,30 @@ public class QueryHelper {
 
 	@SuppressWarnings("unchecked")
 	public static List<Zone> getZonen() {
-		EntityManager em = EntityManagerHelper.getEntityManager();
+		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery(Zone.GET_ZONEN_VALUE);
 
 		return q.getResultList();
 	}
 
-	public static List<BewegungsMeldung> getBewegungsMeldungen(long checkpointId,
-			int i) {
-		// TODO Auto-generated method stub
-		return Lists.newArrayList();
+	public static List<BewegungsMeldung> getBewegungsMeldungen(long checkpointId, int maxResult) {
+		EntityManager em = getEntityManager();
+		Query q = em.createNamedQuery("findBewegungsMeldungen");
+		q.setParameter("checkpointId", checkpointId);
+		q.setMaxResults(maxResult);
+		return q.getResultList();
 	}
 
-	public static List<GefechtsMeldung> getGefechtsMeldungen(long checkpointId,
-			int maxResult) {
-		EntityManager em = EntityManagerHelper.getEntityManager();
+	public static List<BewegungsMeldung> getBewegungsMeldungenSeit(long checkpointId, long timeInMillis) {
+		EntityManager em = getEntityManager();
+		Query q = em.createNamedQuery("findBewegungsMeldungenSeit");
+		q.setParameter("checkpointId", checkpointId);
+		q.setParameter("timeInMillis", timeInMillis);
+		return q.getResultList();
+	}
+
+	public static List<GefechtsMeldung> getGefechtsMeldungen(long checkpointId, int maxResult) {
+		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findGefechtsMeldungen");
 		q.setParameter("checkpointId", checkpointId);
 		q.setMaxResults(maxResult);
@@ -428,10 +410,33 @@ public class QueryHelper {
 	}
 
 	public static GefechtsMeldung getGefechtsMeldungen(long id) {
-		EntityManager em = EntityManagerHelper.getEntityManager();
+		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findGefechtsMeldung");
 		q.setParameter("id", id);
 		return (GefechtsMeldung) q.getSingleResult();
 	}
+
+	public static List<GefechtsMeldung> getGefechtsMeldungenSeit(long checkpointId, long timeInMillis) {
+		EntityManager em = getEntityManager();
+		Query q = em.createNamedQuery("findGefechtsMeldungenSeit");
+		q.setParameter("checkpointId", checkpointId);
+		q.setParameter("timeInMillis", timeInMillis);
+		return q.getResultList();
+	}
+
+	public static List<GefechtsMeldung> getPersonTriggerEintraege(Person person) {
+		EntityManager em = getEntityManager();
+		Query query = em.createNamedQuery("getPersonTriggerEintraege");
+		query.setParameter("idPerson", person.getId());
+		return query.getResultList();
+	}
+
+	private static EntityManager getEntityManager() {
+		return EntityManagerHelper.getEntityManager();
+	}
+
+
+
+
 
 }

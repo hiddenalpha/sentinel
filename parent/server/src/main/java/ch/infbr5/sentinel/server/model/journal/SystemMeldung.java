@@ -5,12 +5,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "findLogEintrag", query = "SELECT r FROM SystemMeldung r WHERE r.checkpointId = :checkpointId order by r.millis desc"), })
+@NamedQueries({ @NamedQuery(name = "findLogEintrag", query = "SELECT r FROM SystemMeldung r WHERE r.checkpoint.id = :checkpointId order by r.millis desc"), })
 public class SystemMeldung extends JournalEintrag {
 
 	private String reportedClass;
 	private String loggerClass;
-	
+
 	private long sequence;
 
 	private String level;

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.infbr5.sentinel.server.db.QueryHelper;
+import ch.infbr5.sentinel.server.mapper.Mapper;
 import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 import ch.infbr5.sentinel.server.ws.journal.JournalSystemMeldung;
 
@@ -92,10 +93,10 @@ public class ObjectFactory {
 		v.setValidFor(validFor);
 		return v;
 	}
-	
+
 	public static SystemMeldung createEintragLog(JournalSystemMeldung log) {
 		SystemMeldung r = new SystemMeldung();
-		r.setCheckpointId(log.getCheckpointId());
+		r.setCheckpoint(Mapper.mapCheckpointDetailsToCheckpoint().apply(log.getCheckpoint()));
 		r.setLevel(log.getLevel());
 		r.setMessage(log.getMessage());
 		r.setType(log.getType());

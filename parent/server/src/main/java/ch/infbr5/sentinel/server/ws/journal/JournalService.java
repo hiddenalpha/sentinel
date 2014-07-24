@@ -37,14 +37,8 @@ public class JournalService {
 	}
 
 	@WebMethod
-	public void addBewegungsMeldung(@WebParam(name = "meldung") JournalBewegungsMeldung meldung) {
-		BewegungsMeldung record = Mapper.mapJournalBewegungsMeldungToBewegungsMeldung().apply(meldung);
-		EntityManagerHelper.getEntityManager().persist(record);
-	}
-
-	@WebMethod
 	public void addGefechtsMeldung(@WebParam(name = "meldung") JournalGefechtsMeldung meldung) {
-		log.info("Neue Gefechtsmeldung am Checkpoint " + meldung.getCheckpointId() + " erfasst.");
+		log.info("Neue Gefechtsmeldung am Checkpoint " + meldung.getCheckpoint().getName() + " erfasst.");
 		GefechtsMeldung record = Mapper.mapJournalGefechtsMeldungToGefechtsMeldung().apply(meldung);
 		EntityManagerHelper.getEntityManager().persist(record);
 	}
@@ -90,8 +84,28 @@ public class JournalService {
 	}
 
 	@WebMethod
+	public JournalResponse getBewegungsJournalSeit(@WebParam(name = "checkpointId") long checkpointId, @WebParam(name = "timeInMillis") long timeInMillis) {
+		List<BewegungsMeldung> data = QueryHelper.getBewegungsMeldungenSeit(checkpointId, timeInMillis);
+		List<JournalBewegungsMeldung> eintraege = Lists.transform(data, Mapper.mapBewegungsMeldungToJournalBewegungsMeldung());
+
+		JournalResponse response = new JournalResponse();
+		response.setBewegungsMeldungen(eintraege);
+		return response;
+	}
+
+	@WebMethod
 	public JournalResponse getGefechtsJournal(@WebParam(name = "checkpointId") long checkpointId) {
 		List<GefechtsMeldung> data = QueryHelper.getGefechtsMeldungen(checkpointId, MAXIMAL_COUNT_RESULTS);
+		List<JournalGefechtsMeldung> eintraege = Lists.transform(data, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
+
+		JournalResponse response = new JournalResponse();
+		response.setGefechtsMeldungen(eintraege);
+		return response;
+	}
+
+	@WebMethod
+	public JournalResponse getGefechtsJournalSeit(@WebParam(name = "checkpointId") long checkpointId, @WebParam(name = "timeInMillis") long timeInMillis) {
+		List<GefechtsMeldung> data = QueryHelper.getGefechtsMeldungenSeit(checkpointId, timeInMillis);
 		List<JournalGefechtsMeldung> eintraege = Lists.transform(data, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
 
 		JournalResponse response = new JournalResponse();

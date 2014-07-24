@@ -1,19 +1,21 @@
 package ch.infbr5.sentinel.server.ws.journal;
 
+import ch.infbr5.sentinel.server.ws.CheckpointDetails;
+
 public class JournalEintrag {
 
 	private long id;
-	
-	private long millis;
-	
-	private long checkpointId;
 
-	public long getCheckpointId() {
-		return checkpointId;
+	private long millis;
+
+	private CheckpointDetails checkpoint;
+
+	public CheckpointDetails getCheckpoint() {
+		return checkpoint;
 	}
 
-	public void setCheckpointId(long checkpointId) {
-		this.checkpointId = checkpointId;
+	public void setCheckpoint(CheckpointDetails checkpoint) {
+		this.checkpoint = checkpoint;
 	}
 
 	public long getMillis() {
@@ -31,5 +33,5 @@ public class JournalEintrag {
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 }

@@ -1,7 +1,9 @@
 package ch.infbr5.sentinel.server.ws;
 
 import java.awt.Image;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
@@ -20,6 +22,11 @@ import ch.infbr5.sentinel.server.model.ObjectFactory;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.model.PraesenzStatus;
 import ch.infbr5.sentinel.server.model.ZonenPraesenz;
+import ch.infbr5.sentinel.server.model.journal.BewegungsMeldung;
+import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
+import ch.infbr5.sentinel.server.ws.journal.JournalGefechtsMeldung;
+
+import com.google.common.collect.Lists;
 
 @MTOM
 @WebService(name = "SentinelQueryService", targetNamespace = "http://ws.sentinel.infbr5.ch/")
@@ -27,19 +34,28 @@ import ch.infbr5.sentinel.server.model.ZonenPraesenz;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class SentinelQueryService {
 
+	private static Logger log = Logger.getLogger(SentinelQueryService.class.getName());
+
 	@WebMethod
 	public OperationResponse abmelden(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		// Checkpoint ermitteln
+		PraesenzStatus status = PraesenzStatus.ABGEMELDET;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		// alle offenen Praesenzen schliessen
-		OperationResponse response = CheckpointHelper.setZonenPraesenz(barcode, checkpoint.getCheckInZonen(),
-				PraesenzStatus.ABGEMELDET);
+		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+		log.info("Abmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
+		// Alle offenen Präsenzen schliessen
+		OperationResponse response = CheckpointHelper.setZonenPraesenz(person, checkpoint, status);
+
+		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		this.setPersonTriggerEintragIfAvailable(barcode, response);
+		// Trigger Objekt setzen
+		setPersonTriggerEintraege(person, response);
+
+		// Bewegungsmeldung
+		persistBewegungsMeldung(checkpoint, status, person);
 
 		return response;
 	}
@@ -48,15 +64,22 @@ public class SentinelQueryService {
 	public OperationResponse anmelden(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		// Checkpoint ermitteln
+		PraesenzStatus status = PraesenzStatus.ANGEMELDET;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		// FÃ¼r Zone anmelden
-		OperationResponse response = CheckpointHelper.setZonenPraesenz(barcode, checkpoint.getCheckInZonen(),
-				PraesenzStatus.ANGEMELDET);
+		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+		log.info("Anmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
+		// Für Zone anmelden
+		OperationResponse response = CheckpointHelper.setZonenPraesenz(person, checkpoint, status);
+
+		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		this.setPersonTriggerEintragIfAvailable(barcode, response);
+		// Trigger Objekt setzen
+		setPersonTriggerEintraege(person, response);
+
+		// Bewegungsmeldung
+		persistBewegungsMeldung(checkpoint, status, person);
 
 		return response;
 	}
@@ -65,15 +88,24 @@ public class SentinelQueryService {
 	public OperationResponse beurlauben(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		// Checkpoint ermitteln
+		PraesenzStatus status = PraesenzStatus.URLAUB;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		// CHECKOUT: IN(Urlaub) -> OUT(Innerhalb)
-		OperationResponse response = CheckpointHelper.passCheckpoint(barcode, checkpoint.getCheckInZonen(),
-				PraesenzStatus.AUSSERHALB, checkpoint.getCheckInZonen(), PraesenzStatus.URLAUB);
+		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+		log.info("Urlaub von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
+		// CHECKOUT: IN (Urlaub) -> OUT (Innerhalb)
+		OperationResponse response = CheckpointHelper.passCheckpoint(checkpointId, barcode,
+				checkpoint.getCheckInZonen(), PraesenzStatus.AUSSERHALB, checkpoint.getCheckInZonen(),
+				status);
+
+		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		this.setPersonTriggerEintragIfAvailable(barcode, response);
+		// Trigger Objekt setzen
+		setPersonTriggerEintraege(person, response);
+
+		// Bewegungsmeldung
+		persistBewegungsMeldung(checkpoint, status, person);
 
 		return response;
 	}
@@ -82,15 +114,24 @@ public class SentinelQueryService {
 	public OperationResponse checkin(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		// Checkpoint ermitteln
+		PraesenzStatus status = PraesenzStatus.INNERHALB;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		// CHECKIN: OUT(Ausserhalb) -> IN(Innerhalb)
-		OperationResponse response = CheckpointHelper.passCheckpoint(barcode, checkpoint.getCheckInZonen(),
-				PraesenzStatus.AUSSERHALB, checkpoint.getCheckInZonen(), PraesenzStatus.INNERHALB);
+		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+		log.info("Checkin von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
+		// CHECKIN: OUT(Ausserhalb) -> IN(Innerhalb)
+		OperationResponse response = CheckpointHelper.passCheckpoint(checkpointId, barcode,
+				checkpoint.getCheckInZonen(), PraesenzStatus.AUSSERHALB, checkpoint.getCheckInZonen(),
+				status);
+
+		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		this.setPersonTriggerEintragIfAvailable(barcode, response);
+		// Trigger Objekt setzen
+		setPersonTriggerEintraege(person, response);
+
+		// Bewegungsmeldung
+		persistBewegungsMeldung(checkpoint, status, person);
 
 		return response;
 	}
@@ -99,15 +140,24 @@ public class SentinelQueryService {
 	public OperationResponse checkout(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		// Checkpoint ermitteln
+		PraesenzStatus status = PraesenzStatus.AUSSERHALB;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		// CHECKOUT: IN(Ausserhalb) -> OUT(Innerhalb)
-		OperationResponse response = CheckpointHelper.passCheckpoint(barcode, checkpoint.getCheckInZonen(),
-				PraesenzStatus.INNERHALB, checkpoint.getCheckInZonen(), PraesenzStatus.AUSSERHALB);
+		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+		log.info("Checkout von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
+		// CHECKOUT: IN(Ausserhalb) -> OUT(Innerhalb)
+		OperationResponse response = CheckpointHelper.passCheckpoint(checkpointId, barcode,
+				checkpoint.getCheckInZonen(), PraesenzStatus.INNERHALB, checkpoint.getCheckInZonen(),
+				status);
+
+		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		this.setPersonTriggerEintragIfAvailable(barcode, response);
+		// Trigger Objekt setzen
+		setPersonTriggerEintraege(person, response);
+
+		// Bewegungsmeldung
+		persistBewegungsMeldung(checkpoint, status, person);
 
 		return response;
 	}
@@ -223,13 +273,29 @@ public class SentinelQueryService {
 		return ImageStore.getImage(imageId);
 	}
 
-	private void setPersonTriggerEintragIfAvailable(String barcode, OperationResponse response) {
-		// TODO
-		// OperatorEintrag operatorEintrag = QueryHelper
-		// .getPersonTriggerEintrag(barcode);
+	/**
+	 * Setzt auf dem Response eine Gefechtsmeldung, falls für die gegebene
+	 * Person eine unerledigte vorhanden ist.
+	 *
+	 * @param person
+	 *            Person.
+	 * @param response
+	 *            Response-Objekt an den Client.
+	 */
+	private void setPersonTriggerEintraege(Person person, OperationResponse response) {
+		List<JournalGefechtsMeldung> eintraege = Lists.newArrayList();
+		List<GefechtsMeldung> gefechtsMeldungen = QueryHelper.getPersonTriggerEintraege(person);
+		eintraege = Lists.transform(gefechtsMeldungen, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
+		log.info(eintraege.size() + " Trigger Einträge für " + person.getName() + " gefunden.");
+		response.setPersonTriggerEintraege(eintraege);
+	}
 
-		// if (operatorEintrag != null) {
-		// response.setPersonTriggerEintrag(operatorEintrag);
-		// }
+	private static void persistBewegungsMeldung(Checkpoint checkpoint, PraesenzStatus status, Person person) {
+		BewegungsMeldung bewegungsMeldung = new BewegungsMeldung();
+		bewegungsMeldung.setCheckpoint(checkpoint);
+		bewegungsMeldung.setMillis(new Date().getTime());
+		bewegungsMeldung.setPraesenzStatus(status);
+		bewegungsMeldung.setPerson(person);
+		EntityManagerHelper.getEntityManager().persist(bewegungsMeldung);
 	}
 }

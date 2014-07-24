@@ -1,6 +1,7 @@
 package ch.infbr5.sentinel.server.ws;
 
-import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
+import java.util.List;
+
 import ch.infbr5.sentinel.server.ws.journal.JournalGefechtsMeldung;
 
 public class OperationResponse {
@@ -15,7 +16,7 @@ public class OperationResponse {
 	private Long counterUrlaub;
 	private Long counterAngemeldet;
 
-	private JournalGefechtsMeldung personTriggerEintrag;
+	private List<JournalGefechtsMeldung> personTriggerEintraege;
 
 	public Long getCounterAngemeldet() {
 		return this.counterAngemeldet;
@@ -43,10 +44,6 @@ public class OperationResponse {
 
 	public PersonDetails[] getPersonDetails() {
 		return this.personDetails;
-	}
-
-	public JournalGefechtsMeldung getPersonTriggerEintrag() {
-		return this.personTriggerEintrag;
 	}
 
 	public OperationResponseStatus getStatus() {
@@ -81,11 +78,15 @@ public class OperationResponse {
 		this.personDetails = personDetails;
 	}
 
-	public void setPersonTriggerEintrag(JournalGefechtsMeldung operatorEintrag) {
-		this.personTriggerEintrag = operatorEintrag;
-	}
-
 	public void setStatus(OperationResponseStatus status) {
 		this.status = status;
+	}
+
+	public List<JournalGefechtsMeldung> getPersonTriggerEintraege() {
+		return personTriggerEintraege;
+	}
+
+	public void setPersonTriggerEintraege(List<JournalGefechtsMeldung> personTriggerEintraege) {
+		this.personTriggerEintraege = personTriggerEintraege;
 	}
 }
