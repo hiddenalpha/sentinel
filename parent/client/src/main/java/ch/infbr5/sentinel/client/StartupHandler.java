@@ -3,12 +3,12 @@ package ch.infbr5.sentinel.client;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.xml.ws.WebServiceException;
+
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
@@ -20,7 +20,7 @@ import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 
 public class StartupHandler {
 
-	private static Logger logger = Logger.getLogger(StartupHandler.class.getName());
+	private static Logger logger = Logger.getLogger(StartupHandler.class);
 
 	private final ApplicationModel applicationFrameModel;
 	private final JFrame parent;
@@ -133,12 +133,12 @@ public class StartupHandler {
 				ServiceHelper.setEndpointAddress(serverAdress);
 				ServiceHelper.getConfigurationsService().getCheckpoints();
 				incomplete = false;
-				logger.config("Client Startup: Server sucessful connected at "
+				logger.debug("Client Startup: Server sucessful connected at "
 						+ ConfigurationLocalHelper.getConfig().getEndpointAddress());
 
 			} catch (WebServiceException | MalformedURLException e) {
 
-				logger.log(Level.CONFIG, e.getMessage(), e.getCause());
+				logger.error(e);
 
 				JOptionPane.showMessageDialog(this.parent, "Servername nicht erreichbar. Server: "
 						+ ConfigurationLocalHelper.getConfig().getEndpointAddress() + ". Bitte Admin benachrichtigen.",
@@ -148,7 +148,7 @@ public class StartupHandler {
 						JOptionPane.INFORMATION_MESSAGE);
 				if ((serverName != null) && !serverName.equals("")) {
 					ConfigurationLocalHelper.getConfig().setServerHostname(serverName);
-					logger.config("new Server Hostname " + serverName);
+					logger.debug("new Server Hostname " + serverName);
 
 				}
 			}

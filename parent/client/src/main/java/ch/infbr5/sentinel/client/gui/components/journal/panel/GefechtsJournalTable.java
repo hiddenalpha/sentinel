@@ -6,7 +6,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -16,6 +15,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apache.log4j.Logger;
+
 import ch.infbr5.sentinel.client.gui.util.MultiLineCellRenderer;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
@@ -24,7 +25,7 @@ public class GefechtsJournalTable extends JTable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Logger log = Logger.getLogger(GefechtsJournalTable.class.getName());
+	private static Logger log = Logger.getLogger(GefechtsJournalTable.class);
 
 	private GefechtsJournalModel model;
 
@@ -76,7 +77,7 @@ public class GefechtsJournalTable extends JTable {
 					c.setTime(new Date());
 					eintrag.setZeitpunktErledigt(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
 				} catch (DatatypeConfigurationException e1) {
-					log.warning(e1.getMessage());
+					log.warn(e1.getMessage());
 				}
 				ServiceHelper.getJournalService().updateGefechtsMeldung(eintrag);
 				model.fireTableDataChanged();
