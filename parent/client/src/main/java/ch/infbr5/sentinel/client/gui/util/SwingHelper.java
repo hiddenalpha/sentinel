@@ -2,6 +2,10 @@ package ch.infbr5.sentinel.client.gui.util;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.KeyboardFocusManager;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -10,15 +14,16 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.text.AbstractDocument;
 
 public class SwingHelper {
 
-	public static final Color COLOR_RED = new Color(240,230,140);
+	public static final Color COLOR_RED = new Color(240, 230, 140);
 
-	public static final Color COLOR_GREEN = new Color(193,255,193);
+	public static final Color COLOR_GREEN = new Color(193, 255, 193);
 
 	private static final Color LABEL_COLOR = new Color(0, 70, 213);;
 
@@ -42,7 +47,7 @@ public class SwingHelper {
 	}
 
 	public static JTextField createTextField(int cols) {
-		return createTextField("", cols,"");
+		return createTextField("", cols, "");
 	}
 
 	public static JTextField createTextField(String text) {
@@ -50,7 +55,7 @@ public class SwingHelper {
 	}
 
 	public static JTextField createTextField(int cols, String regex) {
-		return createTextField("", cols,regex);
+		return createTextField("", cols, regex);
 	}
 
 	public static JTextField createTextField(String text, String regex) {
@@ -60,9 +65,11 @@ public class SwingHelper {
 	public static JTextField createTextField(String text, int cols, String regex) {
 		final JTextField b = new JTextField(text, cols);
 		if (regex.equalsIgnoreCase("[ahvnr]")) {
-			((AbstractDocument) b.getDocument()).setDocumentFilter(new AhvNrFilter(b,new LineBorder(Color.RED), new LineBorder(Color.GREEN)));
-		} else if (regex!=""){
-			((AbstractDocument) b.getDocument()).setDocumentFilter(new RegexFilter(regex, b,new LineBorder(Color.RED), new LineBorder(Color.GREEN)));
+			((AbstractDocument) b.getDocument()).setDocumentFilter(new AhvNrFilter(b, new LineBorder(Color.RED),
+					new LineBorder(Color.GREEN)));
+		} else if (regex != "") {
+			((AbstractDocument) b.getDocument()).setDocumentFilter(new RegexFilter(regex, b, new LineBorder(Color.RED),
+					new LineBorder(Color.GREEN)));
 		}
 		configureActiveComponent(b);
 
@@ -96,6 +103,13 @@ public class SwingHelper {
 
 	public static Font smaller(Font font) {
 		return new Font(font.getName(), font.getStyle(), font.getSize() - 3);
+	}
+
+	public static void patchKeystrokeTab(JComponent component) {
+		Set<KeyStroke> strokes = new HashSet<KeyStroke>(Arrays.asList(KeyStroke.getKeyStroke("pressed TAB")));
+		component.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, strokes);
+		strokes = new HashSet<KeyStroke>(Arrays.asList(KeyStroke.getKeyStroke("shift pressed TAB")));
+		component.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, strokes);
 	}
 
 }

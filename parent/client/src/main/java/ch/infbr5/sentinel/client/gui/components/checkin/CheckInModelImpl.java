@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
+import ch.infbr5.sentinel.client.gui.components.journal.create.ChangeStatusGefechtsMeldungDialog;
 import ch.infbr5.sentinel.client.gui.components.journal.list.GefechtsJournalModel;
-import ch.infbr5.sentinel.client.gui.components.journal.operator.dialog.OperatorInfoDialogPanel;
 import ch.infbr5.sentinel.client.util.ImageCreator;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.Sound;
@@ -208,18 +207,8 @@ public class CheckInModelImpl implements CheckInModel {
 	}
 
 	private void showPersonTriggerInfoPopup(JournalGefechtsMeldung personTriggerEintrag) {
-		Object[] options = { "Als erledigt markieren", "Schliessen" };
-
-		OperatorInfoDialogPanel operatorInfoDialogPanel = new OperatorInfoDialogPanel(personTriggerEintrag);
-		int answer = JOptionPane.showOptionDialog(this.parent, operatorInfoDialogPanel, "Gefechtsmeldung",
-				JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
-
-		if (answer == JOptionPane.YES_OPTION) {
-			personTriggerEintrag.setIstErledigt(true);
-			ServiceHelper.getJournalService().updateGefechtsMeldung(personTriggerEintrag);
-
-			journalGefechtsModel.setGefechtsMeldungToDone(personTriggerEintrag);
-		}
+		ChangeStatusGefechtsMeldungDialog d = new ChangeStatusGefechtsMeldungDialog(parent, personTriggerEintrag, journalGefechtsModel);
+		d.setVisible(true);
 	}
 
 	@Override

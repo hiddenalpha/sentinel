@@ -25,6 +25,8 @@ public class FilterTablePanel extends JPanel {
 
 	private JTextField txtFilter;
 
+	private JButton btnFilter;
+
 	private JButton btnReset;
 
 	private JButton additionalButton;
@@ -41,7 +43,7 @@ public class FilterTablePanel extends JPanel {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
-				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + txtFilter.getText()));
+
 			}
 
 			@Override
@@ -51,9 +53,24 @@ public class FilterTablePanel extends JPanel {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
+				int key = e.getKeyCode();
+                if (key == KeyEvent.VK_ENTER) {
+                	sorter.setRowFilter(RowFilter.regexFilter("(?i)" + txtFilter.getText()));
+                }
 
 			}
 		});
+
+		btnFilter = new JButton("Filter");
+		btnFilter.setFont(SwingHelper.smaller(btnFilter.getFont()));
+		btnFilter.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + txtFilter.getText()));
+			}
+		});
+
 		btnReset = new JButton("Zurücksetzen");
 		btnReset.setFont(SwingHelper.smaller(btnReset.getFont()));
 		btnReset.addActionListener(new ActionListener() {
@@ -68,9 +85,11 @@ public class FilterTablePanel extends JPanel {
 		setLayout(new MigLayout());
 		add(txtFilter, "growx, aligny center");
 		if (additionalButton == null) {
+			add(btnFilter);
 			add(btnReset, "wrap");
 		} else {
 			additionalButton.setFont(SwingHelper.smaller(additionalButton.getFont()));
+			add(btnFilter);
 			add(btnReset);
 			add(additionalButton, "wrap");
 		}

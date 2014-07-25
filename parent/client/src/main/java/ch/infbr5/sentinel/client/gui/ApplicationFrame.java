@@ -40,6 +40,7 @@ import ch.infbr5.sentinel.client.polling.BewegungsJournalUpdater;
 import ch.infbr5.sentinel.client.polling.GefechtsJournalUpdater;
 import ch.infbr5.sentinel.client.util.ConfigurationHelper;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
+import ch.infbr5.sentinel.client.util.DateUtil;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
@@ -133,14 +134,14 @@ public class ApplicationFrame extends JFrame {
 		// Make all Panes fully hidable
 		makePanelHideable(tabbedPane);
 		makePanelHideable(checkInTabbedPanel);
-		makePanelDefaultHeight(tabbedPane);
+		makePanelDefaultHeight(tabbedPane, 200);
 
 		// Layout
 		this.getContentPane().setLayout(new MigLayout("", "[fill, grow]", "[fill, grow]"));
 
 		if (showCams) {
 			IpCamaraPane ipCamaraPane = new IpCamaraPane(0, 4, cams);
-			makePanelDefaultHeight(ipCamaraPane);
+			makePanelDefaultHeight(ipCamaraPane, 400);
 			makePanelHideable(ipCamaraPane);
 
 			JSplitPane innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, ipCamaraPane, tabbedPane);
@@ -166,9 +167,9 @@ public class ApplicationFrame extends JFrame {
 		comp.setMinimumSize(dimHidable);
 	}
 
-	private void makePanelDefaultHeight(JComponent comp) {
+	private void makePanelDefaultHeight(JComponent comp, int size) {
 		//comp.setSize(new Dimension(0, 200));
-		comp.setPreferredSize(new Dimension(0, 200));
+		comp.setPreferredSize(new Dimension(0, size));
 	}
 
 	private void run() {
@@ -213,9 +214,11 @@ public class ApplicationFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				NewGefechtsMeldungDialog d = new NewGefechtsMeldungDialog(parentframe);
-				d.setCheckpointName(ConfigurationLocalHelper.getConfig().getCheckpointWithName().getName());
-				d.showDialog();
+				JournalGefechtsMeldung meldung = new JournalGefechtsMeldung();
+				meldung.setCheckpoint(ConfigurationLocalHelper.getConfig().getCheckpointWithName());
+				meldung.setZeitpunktMeldungsEingang(DateUtil.getCurrentXMLGregorianCalendar());
+				NewGefechtsMeldungDialog d = new NewGefechtsMeldungDialog(parentframe, meldung);
+				d.setVisible(true);
 			}
 		});
 
