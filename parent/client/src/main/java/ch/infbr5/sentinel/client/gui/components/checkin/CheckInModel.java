@@ -2,7 +2,7 @@ package ch.infbr5.sentinel.client.gui.components.checkin;
 
 import java.awt.Image;
 
-import ch.infbr5.sentinel.client.gui.components.journal.list.GefechtsJournalModel;
+import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalModel;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
 

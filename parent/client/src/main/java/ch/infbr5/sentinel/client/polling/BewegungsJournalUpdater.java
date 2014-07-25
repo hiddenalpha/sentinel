@@ -1,6 +1,6 @@
 package ch.infbr5.sentinel.client.polling;
 
-import ch.infbr5.sentinel.client.gui.components.journal.list.BewegungsJournalModel;
+import ch.infbr5.sentinel.client.gui.components.journal.panel.BewegungsJournalModel;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;

@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.gui.components.journal.list;
+package ch.infbr5.sentinel.client.gui.components.journal.panel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.gui.components.journal.create;
+package ch.infbr5.sentinel.client.gui.components.journal.dialog;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;

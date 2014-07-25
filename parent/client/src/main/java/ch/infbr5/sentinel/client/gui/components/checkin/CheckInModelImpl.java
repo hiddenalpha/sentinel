@@ -7,8 +7,8 @@ import java.util.ListIterator;
 
 import javax.swing.JFrame;
 
-import ch.infbr5.sentinel.client.gui.components.journal.create.ChangeStatusGefechtsMeldungDialog;
-import ch.infbr5.sentinel.client.gui.components.journal.list.GefechtsJournalModel;
+import ch.infbr5.sentinel.client.gui.components.journal.dialog.ChangeStatusGefechtsMeldungDialog;
+import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalModel;
 import ch.infbr5.sentinel.client.util.ImageCreator;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.Sound;
