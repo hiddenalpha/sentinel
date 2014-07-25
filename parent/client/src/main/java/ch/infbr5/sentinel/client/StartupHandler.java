@@ -8,10 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.xml.ws.WebServiceException;
 
+import ch.infbr5.sentinel.client.config.ConfigurationHelper;
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.startup.CheckpointSelectionValue;
 import ch.infbr5.sentinel.client.gui.startup.LoginDialog;
-import ch.infbr5.sentinel.client.util.ConfigurationHelper;
-import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;

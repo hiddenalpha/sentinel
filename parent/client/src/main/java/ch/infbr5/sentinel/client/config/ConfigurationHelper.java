@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.util;
+package ch.infbr5.sentinel.client.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;

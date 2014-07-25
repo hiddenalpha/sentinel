@@ -7,6 +7,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.components.configuration.AbstractAdminOverviewPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.CheckpointConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.ConfigurationValuePanel;
@@ -14,7 +15,6 @@ import ch.infbr5.sentinel.client.gui.components.configuration.EinheitenConfigPan
 import ch.infbr5.sentinel.client.gui.components.configuration.PersonenConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.PrintConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.ZoneConfigPanel;
-import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 
 public class AdminstrationFrame extends JFrame {
 	

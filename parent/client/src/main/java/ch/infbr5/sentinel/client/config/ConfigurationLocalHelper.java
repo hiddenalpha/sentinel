@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.util;
+package ch.infbr5.sentinel.client.config;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+import ch.infbr5.sentinel.client.gui.util.DesktopHelper;
 import ch.infbr5.sentinel.client.gui.util.SwingHelper;
-import ch.infbr5.sentinel.client.util.DesktopHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 import ch.infbr5.sentinel.client.wsgen.EinheitDetails;

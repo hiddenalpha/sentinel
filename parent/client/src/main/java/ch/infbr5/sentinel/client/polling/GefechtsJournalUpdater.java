@@ -1,7 +1,7 @@
 package ch.infbr5.sentinel.client.polling;
 
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalModel;
-import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalResponse;

@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
+
 public class ImageCreator {
 
 	public static BufferedImage createImage(String imageId) {

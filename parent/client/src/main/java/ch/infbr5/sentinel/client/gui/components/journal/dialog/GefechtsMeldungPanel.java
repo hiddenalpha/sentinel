@@ -21,8 +21,8 @@ import javax.swing.SpinnerDateModel;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.miginfocom.swing.MigLayout;
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.util.SwingHelper;
-import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.Formater;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;

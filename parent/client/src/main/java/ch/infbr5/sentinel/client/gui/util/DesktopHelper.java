@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.util;
+package ch.infbr5.sentinel.client.gui.util;
 
 import java.awt.Desktop;
 import java.io.File;

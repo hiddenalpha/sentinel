@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 
 public class FileUpAndDownload {

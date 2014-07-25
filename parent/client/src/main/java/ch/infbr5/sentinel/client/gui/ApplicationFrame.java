@@ -23,6 +23,8 @@ import ch.infbr5.sentinel.client.ApplicationModel;
 import ch.infbr5.sentinel.client.ApplicationModelImpl;
 import ch.infbr5.sentinel.client.StartupHandler;
 import ch.infbr5.sentinel.client.Version;
+import ch.infbr5.sentinel.client.config.ConfigurationHelper;
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.checkin.AusweisInfoPanel;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModel;
@@ -38,8 +40,6 @@ import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalTab
 import ch.infbr5.sentinel.client.polling.AbstractPollingModelUpdater;
 import ch.infbr5.sentinel.client.polling.BewegungsJournalUpdater;
 import ch.infbr5.sentinel.client.polling.GefechtsJournalUpdater;
-import ch.infbr5.sentinel.client.util.ConfigurationHelper;
-import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.DateUtil;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;

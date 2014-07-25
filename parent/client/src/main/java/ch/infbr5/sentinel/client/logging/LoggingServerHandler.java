@@ -5,7 +5,7 @@ import java.util.logging.LogRecord;
 
 import javax.xml.ws.WebServiceException;
 
-import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalService;
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
