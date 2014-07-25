@@ -37,13 +37,17 @@ import ch.infbr5.sentinel.client.gui.components.journal.panel.BewegungsJournalTa
 import ch.infbr5.sentinel.client.gui.components.journal.panel.FilterTablePanel;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalModel;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalTable;
+import ch.infbr5.sentinel.client.gui.components.journal.panel.SystemJournalModel;
+import ch.infbr5.sentinel.client.gui.components.journal.panel.SystemJournalTable;
 import ch.infbr5.sentinel.client.polling.AbstractPollingModelUpdater;
 import ch.infbr5.sentinel.client.polling.BewegungsJournalUpdater;
 import ch.infbr5.sentinel.client.polling.GefechtsJournalUpdater;
+import ch.infbr5.sentinel.client.polling.SystemJournalUpdater;
 import ch.infbr5.sentinel.client.util.DateUtil;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
+import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
 
 public class ApplicationFrame extends JFrame {
 
@@ -201,12 +205,16 @@ public class ApplicationFrame extends JFrame {
 				.getBewegungsJournalSeit(checkpointId, timestampSeit).getBewegungsMeldungen();
 		List<JournalGefechtsMeldung> gefechtsMeldung = ServiceHelper.getJournalService()
 				.getGefechtsJournalSeit(checkpointId, timestampSeit).getGefechtsMeldungen();
+		List<JournalSystemMeldung> systemMeldungen = ServiceHelper.getJournalService()
+				.getSystemJournalSeit(checkpointId, timestampSeit).getSystemMeldungen();
 
 		BewegungsJournalModel modelBewegungsJournal = new BewegungsJournalModel(bewegungsMeldungen);
 		GefechtsJournalModel modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
+		SystemJournalModel modelSystemJournal = new SystemJournalModel(systemMeldungen);
 
 		final JTable tableGefecht = new GefechtsJournalTable(modelGefechtsJournal);
 		JTable tableBewegung = new BewegungsJournalTable(modelBewegungsJournal);
+		JTable tableSystem = new SystemJournalTable(modelSystemJournal);
 
 		JButton additionalButton = new JButton("Neu");
 		final JFrame parentframe = this;
@@ -223,6 +231,7 @@ public class ApplicationFrame extends JFrame {
 		});
 
 		tabbedPane.add(new FilterTablePanel(tableGefecht, additionalButton), "Gefechtsmeldungen");
+		tabbedPane.add(new FilterTablePanel(tableSystem, null), "Systemmeldungen");
 		tabbedPane.add(new FilterTablePanel(tableBewegung, null), "Bewegungsmeldungen");
 
 		checkInModel.setJournalGefechtsModel(modelGefechtsJournal);
@@ -230,8 +239,10 @@ public class ApplicationFrame extends JFrame {
 		// Model Polling Updater
 		AbstractPollingModelUpdater updater1 = new BewegungsJournalUpdater(modelBewegungsJournal);
 		AbstractPollingModelUpdater updater2 = new GefechtsJournalUpdater(modelGefechtsJournal);
+		AbstractPollingModelUpdater updater3 = new SystemJournalUpdater(modelSystemJournal);
 		updater1.startKeepUpdated();
 		updater2.startKeepUpdated();
+		updater3.startKeepUpdated();
 
 		return tabbedPane;
 	}

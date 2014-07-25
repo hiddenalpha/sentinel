@@ -28,8 +28,6 @@ public class JournalService {
 
 	private static Logger log = Logger.getLogger(JournalService.class.getName());
 
-	private static final int MAXIMAL_COUNT_RESULTS = 10;
-
 	@WebMethod
 	public void addSystemMeldung(@WebParam(name = "meldung") JournalSystemMeldung meldung) {
 		SystemMeldung record = Mapper.mapJournalSystemMeldungToSystemMeldung().apply(meldung);
@@ -64,22 +62,12 @@ public class JournalService {
 	}
 
 	@WebMethod
-	public JournalResponse getSystemJournal(@WebParam(name = "checkpointId") long checkpointId) {
-		List<SystemMeldung> data = QueryHelper.getSystemMeldungen(checkpointId, MAXIMAL_COUNT_RESULTS);
+	public JournalResponse getSystemJournalSeit(@WebParam(name = "checkpointId") long checkpointId, @WebParam(name = "timeInMillis") long timeInMillis) {
+		List<SystemMeldung> data = QueryHelper.getSystemMeldungenSeit(checkpointId, timeInMillis);
 		List<JournalSystemMeldung> eintraege = Lists.transform(data, Mapper.mapSystemMeldungToJournalSystemMeldung());
 
 		JournalResponse response = new JournalResponse();
 		response.setSystemMeldungen(eintraege);
-		return response;
-	}
-
-	@WebMethod
-	public JournalResponse getBewegungsJournal(@WebParam(name = "checkpointId") long checkpointId) {
-		List<BewegungsMeldung> data = QueryHelper.getBewegungsMeldungen(checkpointId, MAXIMAL_COUNT_RESULTS);
-		List<JournalBewegungsMeldung> eintraege = Lists.transform(data, Mapper.mapBewegungsMeldungToJournalBewegungsMeldung());
-
-		JournalResponse response = new JournalResponse();
-		response.setBewegungsMeldungen(eintraege);
 		return response;
 	}
 
@@ -90,16 +78,6 @@ public class JournalService {
 
 		JournalResponse response = new JournalResponse();
 		response.setBewegungsMeldungen(eintraege);
-		return response;
-	}
-
-	@WebMethod
-	public JournalResponse getGefechtsJournal(@WebParam(name = "checkpointId") long checkpointId) {
-		List<GefechtsMeldung> data = QueryHelper.getGefechtsMeldungen(checkpointId, MAXIMAL_COUNT_RESULTS);
-		List<JournalGefechtsMeldung> eintraege = Lists.transform(data, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
-
-		JournalResponse response = new JournalResponse();
-		response.setGefechtsMeldungen(eintraege);
 		return response;
 	}
 

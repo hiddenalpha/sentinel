@@ -385,6 +385,7 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<BewegungsMeldung> getBewegungsMeldungen(long checkpointId, int maxResult) {
 		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findBewegungsMeldungen");
@@ -393,6 +394,7 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<BewegungsMeldung> getBewegungsMeldungenSeit(long checkpointId, long timeInMillis) {
 		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findBewegungsMeldungenSeit");
@@ -401,6 +403,7 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<GefechtsMeldung> getGefechtsMeldungen(long checkpointId, int maxResult) {
 		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findGefechtsMeldungen");
@@ -416,6 +419,7 @@ public class QueryHelper {
 		return (GefechtsMeldung) q.getSingleResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<GefechtsMeldung> getGefechtsMeldungenSeit(long checkpointId, long timeInMillis) {
 		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findGefechtsMeldungenSeit");
@@ -424,6 +428,16 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public static List<SystemMeldung> getSystemMeldungenSeit(long checkpointId, long timeInMillis) {
+		EntityManager em = getEntityManager();
+		Query q = em.createNamedQuery("findSystemMeldungenSeit");
+		q.setParameter("checkpointId", checkpointId);
+		q.setParameter("timeInMillis", timeInMillis);
+		return q.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
 	public static List<GefechtsMeldung> getPersonTriggerEintraege(Person person) {
 		EntityManager em = getEntityManager();
 		Query query = em.createNamedQuery("getPersonTriggerEintraege");
@@ -434,9 +448,5 @@ public class QueryHelper {
 	private static EntityManager getEntityManager() {
 		return EntityManagerHelper.getEntityManager();
 	}
-
-
-
-
 
 }

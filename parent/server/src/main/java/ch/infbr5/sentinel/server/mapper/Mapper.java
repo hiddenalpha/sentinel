@@ -61,11 +61,15 @@ public class Mapper {
 			public JournalSystemMeldung apply(SystemMeldung source) {
 				JournalSystemMeldung target = new JournalSystemMeldung();
 				target.setId(source.getId());
+				target.setCheckpoint(mapCheckpointToCheckpointDetails().apply(source.getCheckpoint()));
 				target.setLevel(source.getLevel());
 				target.setMessage(source.getMessage());
-				target.setType(source.getType());
 				target.setMillis(source.getMillis());
-				target.setCheckpoint(mapCheckpointToCheckpointDetails().apply(source.getCheckpoint()));
+				target.setLoggerClass(source.getLoggerClass());
+				target.setCallerClass(source.getCallerClass());
+				target.setCallerFilename(source.getCallerFilename());
+				target.setCallerLineNumber(source.getCallerLineNumber());
+				target.setCallerMethod(source.getCallerMethod());
 				return target;
 			}
 
@@ -82,14 +86,12 @@ public class Mapper {
 				target.setCheckpoint(mapCheckpointDetailsToCheckpoint().apply(source.getCheckpoint()));
 				target.setLevel(source.getLevel());
 				target.setMessage(source.getMessage());
-				target.setType(source.getType());
 				target.setMillis(source.getMillis());
 				target.setLoggerClass(source.getLoggerClass());
-				target.setMethod(source.getMethod());
-				target.setOperator(source.getOperator());
-				target.setReportedClass(source.getReportedClass());
-				target.setSequence(source.getSequence());
-				target.setThread(source.getThread());
+				target.setCallerClass(source.getCallerClass());
+				target.setCallerFilename(source.getCallerFilename());
+				target.setCallerLineNumber(source.getCallerLineNumber());
+				target.setCallerMethod(source.getCallerMethod());
 				return target;
 			}
 

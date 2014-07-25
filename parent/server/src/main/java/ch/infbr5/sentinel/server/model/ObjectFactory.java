@@ -99,7 +99,6 @@ public class ObjectFactory {
 		r.setCheckpoint(Mapper.mapCheckpointDetailsToCheckpoint().apply(log.getCheckpoint()));
 		r.setLevel(log.getLevel());
 		r.setMessage(log.getMessage());
-		r.setType(log.getType());
 		r.setMillis(log.getMillis());
 		return r;
 	}

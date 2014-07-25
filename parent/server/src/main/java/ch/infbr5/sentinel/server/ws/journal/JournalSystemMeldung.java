@@ -3,41 +3,26 @@ package ch.infbr5.sentinel.server.ws.journal;
 
 public class JournalSystemMeldung extends JournalEintrag {
 
-	private String reportedClass;
-	private String loggerClass;
-
-	private long sequence;
-
-	private String level;
-	private String method;
-	private int thread;
 	private String message;
 
-	private int type;
-	private String operator;
+	private String level;
 
-	public String getReportedClass() {
-		return reportedClass;
+	private String loggerClass;
+
+	private String callerClass;
+
+	private String callerMethod;
+
+	private String callerLineNumber;
+
+	private String callerFilename;
+
+	public String getMessage() {
+		return message;
 	}
 
-	public void setReportedClass(String reportedClass) {
-		this.reportedClass = reportedClass;
-	}
-
-	public String getLoggerClass() {
-		return loggerClass;
-	}
-
-	public void setLoggerClass(String loggerClass) {
-		this.loggerClass = loggerClass;
-	}
-
-	public long getSequence() {
-		return sequence;
-	}
-
-	public void setSequence(long sequence) {
-		this.sequence = sequence;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public String getLevel() {
@@ -48,44 +33,44 @@ public class JournalSystemMeldung extends JournalEintrag {
 		this.level = level;
 	}
 
-	public String getMethod() {
-		return method;
+	public String getLoggerClass() {
+		return loggerClass;
 	}
 
-	public void setMethod(String method) {
-		this.method = method;
+	public void setLoggerClass(String loggerClass) {
+		this.loggerClass = loggerClass;
 	}
 
-	public int getThread() {
-		return thread;
+	public String getCallerClass() {
+		return callerClass;
 	}
 
-	public void setThread(int thread) {
-		this.thread = thread;
+	public void setCallerClass(String callerClass) {
+		this.callerClass = callerClass;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getCallerMethod() {
+		return callerMethod;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setCallerMethod(String callerMethod) {
+		this.callerMethod = callerMethod;
 	}
 
-	public int getType() {
-		return type;
+	public String getCallerLineNumber() {
+		return callerLineNumber;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+	public void setCallerLineNumber(String callerLineNumber) {
+		this.callerLineNumber = callerLineNumber;
 	}
 
-	public String getOperator() {
-		return operator;
+	public String getCallerFilename() {
+		return callerFilename;
 	}
 
-	public void setOperator(String operator) {
-		this.operator = operator;
+	public void setCallerFilename(String callerFilename) {
+		this.callerFilename = callerFilename;
 	}
 
 }

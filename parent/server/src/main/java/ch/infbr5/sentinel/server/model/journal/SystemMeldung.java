@@ -5,74 +5,77 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "findLogEintrag", query = "SELECT r FROM SystemMeldung r WHERE r.checkpoint.id = :checkpointId order by r.millis desc"), })
+@NamedQueries({ @NamedQuery(name = "findSystemMeldungenSeit", query = "SELECT r FROM SystemMeldung r WHERE r.checkpoint.id = :checkpointId AND r.millis > :timeInMillis order by r.millis desc"), })
 public class SystemMeldung extends JournalEintrag {
 
-	private String reportedClass;
-	private String loggerClass;
-
-	private long sequence;
-
-	private String level;
-	private String method;
-	private int thread;
 	private String message;
 
-	public String getReportedClass() {
-		return reportedClass;
-	}
-	public void setReportedClass(String reportedClass) {
-		this.reportedClass = reportedClass;
-	}
-	public String getLoggerClass() {
-		return loggerClass;
-	}
-	public void setLoggerClass(String loggerClass) {
-		this.loggerClass = loggerClass;
-	}
-	public long getSequence() {
-		return sequence;
-	}
-	public void setSequence(long sequence) {
-		this.sequence = sequence;
-	}
-	public String getLevel() {
-		return level;
-	}
-	public void setLevel(String level) {
-		this.level = level;
-	}
-	public String getMethod() {
-		return method;
-	}
-	public void setMethod(String method) {
-		this.method = method;
-	}
-	public int getThread() {
-		return thread;
-	}
-	public void setThread(int thread) {
-		this.thread = thread;
-	}
+	private String level;
+
+	private String loggerClass;
+
+	private String callerClass;
+
+	private String callerMethod;
+
+	private String callerLineNumber;
+
+	private String callerFilename;
+
 	public String getMessage() {
 		return message;
 	}
+
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public int getType() {
-		return type;
+
+	public String getLevel() {
+		return level;
 	}
-	public void setType(int type) {
-		this.type = type;
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
-	public String getOperator() {
-		return operator;
+
+	public String getLoggerClass() {
+		return loggerClass;
 	}
-	public void setOperator(String operator) {
-		this.operator = operator;
+
+	public void setLoggerClass(String loggerClass) {
+		this.loggerClass = loggerClass;
 	}
-	private int type;
-	private String operator;
+
+	public String getCallerClass() {
+		return callerClass;
+	}
+
+	public void setCallerClass(String callerClass) {
+		this.callerClass = callerClass;
+	}
+
+	public String getCallerMethod() {
+		return callerMethod;
+	}
+
+	public void setCallerMethod(String callerMethod) {
+		this.callerMethod = callerMethod;
+	}
+
+	public String getCallerLineNumber() {
+		return callerLineNumber;
+	}
+
+	public void setCallerLineNumber(String callerLineNumber) {
+		this.callerLineNumber = callerLineNumber;
+	}
+
+	public String getCallerFilename() {
+		return callerFilename;
+	}
+
+	public void setCallerFilename(String callerFilename) {
+		this.callerFilename = callerFilename;
+	}
 
 }
