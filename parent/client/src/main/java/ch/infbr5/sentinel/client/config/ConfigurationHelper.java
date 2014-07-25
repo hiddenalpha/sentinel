@@ -17,7 +17,7 @@ public class ConfigurationHelper {
 
 		List<URL> tmp = new ArrayList<URL>();
 
-		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(1, "URL_IPCAM_%");
+		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(ConfigurationLocalHelper.getConfig().getCheckpointId(), "URL_IPCAM_%");
 		List<ConfigurationDetails> liste = response.getConfigurationDetails();
 
 		for (Iterator<ConfigurationDetails> iterator = liste.iterator(); iterator.hasNext();) {

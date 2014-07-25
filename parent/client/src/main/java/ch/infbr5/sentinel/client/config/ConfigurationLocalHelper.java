@@ -5,13 +5,29 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
 
 public class ConfigurationLocalHelper {
+
+	private static final String FILE_DEFAULT_PROPERTIES = "/META-INF/default.properties";
+
+	private static final String FILE_LAST_APPLICATION_PROPERTIES = "sentinel.properties";
+
+	private static final String SERVER_HOSTNAME = "ServerHostname";
+
+	private static final String FILE_CHOOSER_LAST_PATH = "FileChooserLastPath";
+
+	private static final String SERVER_PORT_NUMBER = "ServerPortnumber";
+
+	private static final String HOURS_INITIAL_LOAD_JOURNAL = "hoursInitialLoadJournal";
+
+	private static final String CHECKPOINT_ID = "CheckpointId";
+
+	private static final String ADMIN_MODE = "AdminMode";
+
+	private static final String SUPERUSER_MODE = "SuperuserMode";
 
 	private static ConfigurationLocalHelper config;
 
@@ -22,105 +38,76 @@ public class ConfigurationLocalHelper {
 		return config;
 	}
 
-	private Properties applicationProps;
-	private boolean localMode = false;
-	private String localImagePath = "";
+	private Properties defaultProperties;
+
+	private Properties applicatonProperties;
 
 	private ConfigurationLocalHelper() {
-
+		// Standard-Properties laden und diese als Applikationsproperties setzen
 		try {
-			// create and load default properties
-			Properties defaultProps = new Properties();
-			InputStream in = this.getClass().getResourceAsStream(
-					"/META-INF/default.properties");
-			defaultProps.load(in);
+			defaultProperties = new Properties();
+			InputStream in = this.getClass().getResourceAsStream(FILE_DEFAULT_PROPERTIES);
+			defaultProperties.load(in);
 			in.close();
-
-			// create application properties with default
-			applicationProps = new Properties(defaultProps);
+			applicatonProperties = new Properties(defaultProperties);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		// Properties vom letzten Run nehmen und über die Standard-Properties schreiben
 		try {
-			// now load properties from last invocation
-			InputStream in = new FileInputStream("sentinel.properties");
-			applicationProps.load(in);
+			InputStream in = new FileInputStream(FILE_LAST_APPLICATION_PROPERTIES);
+			applicatonProperties.load(in);
 			in.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		saveProperites();
-
 	}
 
 	private void saveProperites() {
 		try {
-			FileOutputStream out;
-			out = new FileOutputStream("sentinel.properties");
-			applicationProps.store(out, "---No Comment---");
+			FileOutputStream out = new FileOutputStream(FILE_LAST_APPLICATION_PROPERTIES);
+			applicatonProperties.store(out, "Last Application Properties");
 			out.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	private boolean localMode = false;
+
+	private String localImagePath = "";
+
 	public String getServerHostname() {
-		return applicationProps.getProperty("ServerHostname");
+		return getPropertyValue(SERVER_HOSTNAME);
 	}
 
 	public void setServerHostname(String host) {
-		applicationProps.setProperty("ServerHostname", host);
-		saveProperites();
+		savePropertyValue(SERVER_HOSTNAME, host);
 	}
 
 	public String getFileChooserLastPath() {
-		return applicationProps.getProperty("FileChooserLastPath");
+		return getPropertyValue(FILE_CHOOSER_LAST_PATH);
 	}
 
 	public void setFileChooserLastPath(String path) {
-		applicationProps.setProperty("FileChooserLastPath", path);
-		saveProperites();
+		savePropertyValue(FILE_CHOOSER_LAST_PATH, path);
 	}
 
 	public String getServerPortnumber() {
-		return applicationProps.getProperty("ServerPortnumber");
-	}
-
-	private static final int DEFAULT_HOURS_INITIAL_LOAD_JOURNAL = 48;
-
-	public int getHoursInitialLoadJournal() {
-		String hours = applicationProps.getProperty("hoursInitialLoadJournal");
-		int h = 0;
-		try {
-			h = Integer.parseInt(hours);
-		} catch (NumberFormatException e) {
-			h = DEFAULT_HOURS_INITIAL_LOAD_JOURNAL;
-		}
-		return h;
-	}
-
-	public void setHoursInitialLoadJournal(int hours) {
-		applicationProps.setProperty("hoursInitialLoadJournal", String.valueOf(hours));
-		saveProperites();
+		return getPropertyValue(SERVER_PORT_NUMBER);
 	}
 
 	public void setServerPortnumber(String port) {
-		applicationProps.setProperty("ServerPortnumber", port);
-		saveProperites();
+		savePropertyValue(SERVER_PORT_NUMBER, port);
 	}
 
 	public String getEndpointAddress() {
@@ -131,24 +118,28 @@ public class ConfigurationLocalHelper {
 		return "http://127.0.0.1:" + getServerPortnumber();
 	}
 
-	public boolean isLocalAdress(String ip) {
+	public int getHoursInitialLoadJournal() {
+		String hours = getPropertyValue(HOURS_INITIAL_LOAD_JOURNAL);
+		int h = 0;
 		try {
-			InetAddress[] thisIp = InetAddress.getAllByName(InetAddress
-					.getLocalHost().getHostName());
-			for (int i = 0; i < thisIp.length; i++) {
-				if (thisIp[i].getHostAddress().toString().equals(ip)) {
-					return true;
-				}
-			}
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			h = Integer.parseInt(hours);
+		} catch (NumberFormatException e) {
+			hours = defaultProperties.getProperty(HOURS_INITIAL_LOAD_JOURNAL);
+			h = Integer.parseInt(hours);
 		}
-		return false;
+		return h;
+	}
+
+	public void setHoursInitialLoadJournal(int hours) {
+		savePropertyValue(HOURS_INITIAL_LOAD_JOURNAL, String.valueOf(hours));
 	}
 
 	public Long getCheckpointId() {
-		return Long.valueOf(applicationProps.getProperty("CheckpointId"));
+		return Long.valueOf(getPropertyValue(CHECKPOINT_ID));
+	}
+
+	public void setCheckpointId(Long checkpointId) {
+		savePropertyValue(CHECKPOINT_ID, String.valueOf(checkpointId));
 	}
 
 	public CheckpointDetails getCheckpoint() {
@@ -158,46 +149,27 @@ public class ConfigurationLocalHelper {
 	}
 
 	public CheckpointDetails getCheckpointWithName() {
-		CheckpointDetails details = new CheckpointDetails();
-		details.setId(getCheckpointId());
+		CheckpointDetails details = getCheckpoint();
 		details.setName(ConfigurationHelper.getCheckpointName());
 		return details;
 	}
 
-	public void setCheckpointId(Long checkpointId) {
-		applicationProps.setProperty("CheckpointId",
-				String.valueOf(checkpointId));
-		saveProperites();
-	}
-
 	public void setAdminMode(boolean mode) {
-		applicationProps.setProperty("AdminMode", Boolean.toString(mode));
-		saveProperites();
+		savePropertyValue(ADMIN_MODE, Boolean.toString(mode));
 	}
 
 	public boolean isAdminMode() {
-		String modeStr = applicationProps.getProperty("AdminMode");
-		if (modeStr != null) {
-			return Boolean.parseBoolean(modeStr);
-		} else {
-			return false;
-		}
-
+		String modeStr = getPropertyValue(ADMIN_MODE);
+		return modeStr == null ? false : Boolean.parseBoolean(modeStr);
 	}
 
 	public void setSuperuserMode(boolean mode) {
-		applicationProps.setProperty("SuperuserMode", Boolean.toString(mode));
-		saveProperites();
+		savePropertyValue(SUPERUSER_MODE, Boolean.toString(mode));
 	}
 
 	public boolean isSuperuserMode() {
-		String modeStr = applicationProps.getProperty("SuperuserMode");
-		if (modeStr != null) {
-			return Boolean.parseBoolean(modeStr);
-		} else {
-			return false;
-		}
-
+		String modeStr = getPropertyValue(SUPERUSER_MODE);
+		return modeStr == null ? false : Boolean.parseBoolean(modeStr);
 	}
 
 	public boolean isLocalMode() {
@@ -214,6 +186,15 @@ public class ConfigurationLocalHelper {
 
 	public void setLocalImagePath(String localImagePath) {
 		this.localImagePath = localImagePath;
+	}
+
+	private String getPropertyValue(String name) {
+		return applicatonProperties.getProperty(name);
+	}
+
+	private void savePropertyValue(String name, String value) {
+		applicatonProperties.setProperty(name, value);
+		saveProperites();
 	}
 
 }

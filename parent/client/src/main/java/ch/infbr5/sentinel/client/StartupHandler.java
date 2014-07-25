@@ -1,6 +1,8 @@
 package ch.infbr5.sentinel.client;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -151,7 +153,7 @@ public class StartupHandler {
 				}
 			}
 
-			if (ConfigurationLocalHelper.getConfig().isLocalAdress(ConfigurationLocalHelper.getConfig().getServerHostname())) {
+			if (isLocalAdress(ConfigurationLocalHelper.getConfig().getServerHostname())) {
 				ConfigurationLocalHelper.getConfig().setLocalMode(true);
 			} else {
 				ConfigurationLocalHelper.getConfig().setLocalMode(false);
@@ -163,5 +165,19 @@ public class StartupHandler {
 			String localImagePaht = ServiceHelper.getConfigurationsService().getLocalImagePath();
 			ConfigurationLocalHelper.getConfig().setLocalImagePath(localImagePaht);
 		}
+	}
+
+	private boolean isLocalAdress(String ip) {
+		try {
+			InetAddress[] thisIp = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
+			for (int i = 0; i < thisIp.length; i++) {
+				if (thisIp[i].getHostAddress().toString().equals(ip)) {
+					return true;
+				}
+			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
