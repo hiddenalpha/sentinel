@@ -31,10 +31,10 @@ import ch.infbr5.sentinel.client.util.ImageCropper;
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class ImageEditor extends javax.swing.JDialog {
-	private static final int MAX_IMAGEWIDTH = 500;
+	// private static final int MAX_IMAGEWIDTH = 500;
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -116,6 +116,7 @@ public class ImageEditor extends javax.swing.JDialog {
 			abstractActionNewImage = new AbstractAction("Bild laden", null) {
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public void actionPerformed(ActionEvent evt) {
 					int returnVal = getFileChooser().showOpenDialog(
 							ImageEditor.this);
@@ -142,6 +143,7 @@ public class ImageEditor extends javax.swing.JDialog {
 			abstractActionCancel = new AbstractAction("Abbrechen", null) {
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public void actionPerformed(ActionEvent evt) {
 					image = null;
 					dispose();
@@ -157,6 +159,7 @@ public class ImageEditor extends javax.swing.JDialog {
 			abstractActionSave = new AbstractAction("OK", null) {
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public void actionPerformed(ActionEvent evt) {
 					saveCroppedImage();
 				}
@@ -176,9 +179,10 @@ public class ImageEditor extends javax.swing.JDialog {
 			abstractActionRotateImage = new AbstractAction("Drehen", null) {
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public void actionPerformed(ActionEvent evt) {
 					image = rotateImage90(image);
-					
+
 					initCropper(image);
 				}
 			};
@@ -192,6 +196,7 @@ public class ImageEditor extends javax.swing.JDialog {
 			abstractActionCutter = new AbstractAction("Ausschneiden", null) {
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public void actionPerformed(ActionEvent evt) {
 					image = cropper.getCroppedImage();
 					initCropper(image);
@@ -297,7 +302,7 @@ public class ImageEditor extends javax.swing.JDialog {
 
 		return imageEditorPanel;
 	}
-	
+
 	private static BufferedImage rotateImage90(BufferedImage src) {
 		// http://stackoverflow.com/questions/10426883/affinetransform-truncates-image
 		int srcWidth = src.getWidth();
@@ -349,7 +354,7 @@ public class ImageEditor extends javax.swing.JDialog {
         AffineTransformOp op = new AffineTransformOp(affineTransform, null);
         BufferedImage rotatedImage = new BufferedImage(srcWidth, srcHeight, src.getType());
         op.filter(src, rotatedImage);
-        
+
         return rotatedImage;
 	}
 }

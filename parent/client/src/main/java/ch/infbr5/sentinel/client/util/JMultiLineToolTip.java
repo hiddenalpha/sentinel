@@ -1,8 +1,6 @@
 package ch.infbr5.sentinel.client.util;
 
-//JMultiLineToolTip.java
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.CellRendererPane;
@@ -17,13 +15,8 @@ import javax.swing.plaf.basic.BasicToolTipUI;
  */
 
 public class JMultiLineToolTip extends JToolTip {
-	/** */
-	private static final String uiClassID = "ToolTipUI";
 
-	/** */
-	private String tipText;
-	/** */
-	private JComponent component;
+	private static final long serialVersionUID = 1L;
 
 	/** */
 	public JMultiLineToolTip() {
@@ -75,9 +68,6 @@ class MultiLineToolTipUI extends BasicToolTipUI {
 	/** */
 	private static MultiLineToolTipUI sharedInstance = new MultiLineToolTipUI();
 	/** */
-	private Font smallFont;
-	/** */
-	private static JToolTip tip;
 	/** */
 	protected CellRendererPane rendererPane;
 	/** */
@@ -101,7 +91,6 @@ class MultiLineToolTipUI extends BasicToolTipUI {
 	@Override
 	public void installUI(JComponent c) {
 		super.installUI(c);
-		tip = (JToolTip) c;
 		rendererPane = new CellRendererPane();
 		c.add(rendererPane);
 	}

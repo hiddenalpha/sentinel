@@ -21,19 +21,13 @@ public class FilterTablePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private JTable table;
-
 	private JTextField txtFilter;
 
 	private JButton btnFilter;
 
 	private JButton btnReset;
 
-	private JButton additionalButton;
-
 	public FilterTablePanel(JTable table, JButton additionalButton) {
-		this.table = table;
-		this.additionalButton = additionalButton;
 
 		final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
 	    table.setRowSorter(sorter);

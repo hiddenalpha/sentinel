@@ -149,6 +149,7 @@ public class WorkflowStepMapping extends WorkflowStep {
 			cmb.setModel(model);
 
 			cmb.addItemListener(new ItemListener() {
+				@SuppressWarnings("unchecked")
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
 					checkEmptySelection();
