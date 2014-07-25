@@ -19,7 +19,7 @@ import net.miginfocom.swing.MigLayout;
 public class IpCamaraPane extends JPanel implements ActionListener, AWTEventListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private Timer timer;
@@ -45,6 +45,7 @@ public class IpCamaraPane extends JPanel implements ActionListener, AWTEventList
 		this.initComponents();
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (this.isVisible()) {
 			this.repaint();
@@ -55,6 +56,7 @@ public class IpCamaraPane extends JPanel implements ActionListener, AWTEventList
 		}
 	}
 
+	@Override
 	public void eventDispatched(AWTEvent event) {
 		if (this.isVisible()) {
 			this.setVisible(false);
@@ -91,6 +93,7 @@ public class IpCamaraPane extends JPanel implements ActionListener, AWTEventList
 		}
 	}
 
+	@Override
 	protected void paintComponent(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -105,18 +108,18 @@ public class IpCamaraPane extends JPanel implements ActionListener, AWTEventList
 			for (int j = 0; j < this.noOfCamsHeight; j++) {
 				if (this.camUrls.length > (i + j * this.noOfCamsWidth)) {
 					Image image = this.receiver.getImage(i + j * this.noOfCamsWidth);
-					float scaleHeight = (float) maxImageHeight / (float) image.getHeight(null);
-					float scaleWidth = (float) maxImageWidth / (float) image.getWidth(null);
+						float scaleHeight = (float) maxImageHeight / (float) image.getHeight(null);
+						float scaleWidth = (float) maxImageWidth / (float) image.getWidth(null);
 
-					if (scaleHeight < scaleWidth) {
-						imageHeight = maxImageHeight;
-						imageWidth = image.getWidth(null) * maxImageHeight / image.getHeight(null);
-					} else {
-						imageHeight = image.getHeight(null) * maxImageWidth / image.getWidth(null);
-						imageWidth = maxImageWidth;
-					}
+						if (scaleHeight < scaleWidth) {
+							imageHeight = maxImageHeight;
+							imageWidth = image.getWidth(null) * maxImageHeight / image.getHeight(null);
+						} else {
+							imageHeight = image.getHeight(null) * maxImageWidth / image.getWidth(null);
+							imageWidth = maxImageWidth;
+						}
 
-					g.drawImage(image, i * maxImageWidth, j * maxImageHeight, imageWidth, imageHeight, null);
+						g.drawImage(image, i * maxImageWidth, j * maxImageHeight, imageWidth, imageHeight, null);
 				}
 			}
 		}

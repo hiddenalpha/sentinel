@@ -19,6 +19,7 @@ import ch.infbr5.sentinel.server.mapper.Mapper;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.ObjectFactory;
+import ch.infbr5.sentinel.server.model.OperatorAktion;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.model.PraesenzStatus;
 import ch.infbr5.sentinel.server.model.ZonenPraesenz;
@@ -40,22 +41,29 @@ public class SentinelQueryService {
 	public OperationResponse abmelden(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		PraesenzStatus status = PraesenzStatus.ABGEMELDET;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
-		log.info("Abmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
+		Ausweis ausweis = QueryHelper.findAusweisByBarcode(barcode);
+		OperationResponse response;
+		if (ausweis != null) {
+			Person person = ausweis.getPerson();
+			log.info("Abmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
-		// Alle offenen Präsenzen schliessen
-		OperationResponse response = CheckpointHelper.setZonenPraesenz(person, checkpoint, status);
+			// Alle offenen Präsenzen schliessen
+			response = CheckpointHelper.setZonenPraesenz(person, checkpoint, PraesenzStatus.ABGEMELDET);
 
-		// Auf dem Response Objekt die Zähler setzen
-		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
+			// Auf dem Response Objekt die Zähler setzen
+			CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		// Trigger Objekt setzen
-		setPersonTriggerEintraege(person, response);
+			// Trigger Objekt setzen
+			setPersonTriggerEintraege(person, response);
 
-		// Bewegungsmeldung
-		persistBewegungsMeldung(checkpoint, status, person);
+			// Bewegungsmeldung
+			persistBewegungsMeldung(checkpoint, OperatorAktion.ABMELDEN, person);
+		} else {
+			response = new OperationResponse();
+			response.setStatus(OperationResponseStatus.FAIL);
+			response.setMessage("Kein Ausweis.");
+		}
 
 		return response;
 	}
@@ -64,22 +72,30 @@ public class SentinelQueryService {
 	public OperationResponse anmelden(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		PraesenzStatus status = PraesenzStatus.ANGEMELDET;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
-		log.info("Anmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
-		// Für Zone anmelden
-		OperationResponse response = CheckpointHelper.setZonenPraesenz(person, checkpoint, status);
+		Ausweis ausweis = QueryHelper.findAusweisByBarcode(barcode);
+		OperationResponse response;
+		if (ausweis != null) {
+			Person person = ausweis.getPerson();
+			log.info("Anmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
-		// Auf dem Response Objekt die Zähler setzen
-		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
+			// Für Zone anmelden
+			response = CheckpointHelper.setZonenPraesenz(person, checkpoint, PraesenzStatus.ANGEMELDET);
 
-		// Trigger Objekt setzen
-		setPersonTriggerEintraege(person, response);
+			// Auf dem Response Objekt die Zähler setzen
+			CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		// Bewegungsmeldung
-		persistBewegungsMeldung(checkpoint, status, person);
+			// Trigger Objekt setzen
+			setPersonTriggerEintraege(person, response);
+
+			// Bewegungsmeldung
+			persistBewegungsMeldung(checkpoint, OperatorAktion.ANMELDEN, person);
+		} else {
+			response = new OperationResponse();
+			response.setStatus(OperationResponseStatus.FAIL);
+			response.setMessage("Kein Ausweis.");
+		}
 
 		return response;
 	}
@@ -88,24 +104,26 @@ public class SentinelQueryService {
 	public OperationResponse beurlauben(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		PraesenzStatus status = PraesenzStatus.URLAUB;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
-		log.info("Urlaub von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
 		// CHECKOUT: IN (Urlaub) -> OUT (Innerhalb)
 		OperationResponse response = CheckpointHelper.passCheckpoint(checkpointId, barcode,
 				checkpoint.getCheckInZonen(), PraesenzStatus.AUSSERHALB, checkpoint.getCheckInZonen(),
-				status);
+				PraesenzStatus.URLAUB);
 
 		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		// Trigger Objekt setzen
-		setPersonTriggerEintraege(person, response);
+		if (response.getStatus().equals(OperationResponseStatus.SUCESS)) {
+			Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+			log.info("Urlaub von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
-		// Bewegungsmeldung
-		persistBewegungsMeldung(checkpoint, status, person);
+			// Trigger Objekt setzen
+			setPersonTriggerEintraege(person, response);
+
+			// Bewegungsmeldung
+			persistBewegungsMeldung(checkpoint, OperatorAktion.URLAUB, person);
+		}
 
 		return response;
 	}
@@ -114,24 +132,26 @@ public class SentinelQueryService {
 	public OperationResponse checkin(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		PraesenzStatus status = PraesenzStatus.INNERHALB;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
-		log.info("Checkin von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
 		// CHECKIN: OUT(Ausserhalb) -> IN(Innerhalb)
 		OperationResponse response = CheckpointHelper.passCheckpoint(checkpointId, barcode,
 				checkpoint.getCheckInZonen(), PraesenzStatus.AUSSERHALB, checkpoint.getCheckInZonen(),
-				status);
+				PraesenzStatus.INNERHALB);
 
 		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		// Trigger Objekt setzen
-		setPersonTriggerEintraege(person, response);
+		if (response.getStatus().equals(OperationResponseStatus.SUCESS)) {
+			Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+			log.info("Checkin von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
-		// Bewegungsmeldung
-		persistBewegungsMeldung(checkpoint, status, person);
+			// Trigger Objekt setzen
+			setPersonTriggerEintraege(person, response);
+
+			// Bewegungsmeldung
+			persistBewegungsMeldung(checkpoint, OperatorAktion.CHECKIN, person);
+		}
 
 		return response;
 	}
@@ -140,24 +160,26 @@ public class SentinelQueryService {
 	public OperationResponse checkout(@WebParam(name = "checkpointId") Long checkpointId,
 			@WebParam(name = "barcode") String barcode) {
 
-		PraesenzStatus status = PraesenzStatus.AUSSERHALB;
 		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
-		Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
-		log.info("Checkout von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
 		// CHECKOUT: IN(Ausserhalb) -> OUT(Innerhalb)
 		OperationResponse response = CheckpointHelper.passCheckpoint(checkpointId, barcode,
 				checkpoint.getCheckInZonen(), PraesenzStatus.INNERHALB, checkpoint.getCheckInZonen(),
-				status);
+				PraesenzStatus.AUSSERHALB);
 
 		// Auf dem Response Objekt die Zähler setzen
 		CheckpointHelper.setCounters(checkpoint.getCheckInZonen().get(0).getId(), response);
 
-		// Trigger Objekt setzen
-		setPersonTriggerEintraege(person, response);
+		if (response.getStatus().equals(OperationResponseStatus.SUCESS)) {
+			Person person = QueryHelper.findAusweisByBarcode(barcode).getPerson();
+			log.info("Checkout von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
-		// Bewegungsmeldung
-		persistBewegungsMeldung(checkpoint, status, person);
+			// Trigger Objekt setzen
+			setPersonTriggerEintraege(person, response);
+
+			// Bewegungsmeldung
+			persistBewegungsMeldung(checkpoint, OperatorAktion.CHECKOUT, person);
+		}
 
 		return response;
 	}
@@ -290,11 +312,11 @@ public class SentinelQueryService {
 		response.setPersonTriggerEintraege(eintraege);
 	}
 
-	private static void persistBewegungsMeldung(Checkpoint checkpoint, PraesenzStatus status, Person person) {
+	private static void persistBewegungsMeldung(Checkpoint checkpoint, OperatorAktion aktion, Person person) {
 		BewegungsMeldung bewegungsMeldung = new BewegungsMeldung();
 		bewegungsMeldung.setCheckpoint(checkpoint);
 		bewegungsMeldung.setMillis(new Date().getTime());
-		bewegungsMeldung.setPraesenzStatus(status);
+		bewegungsMeldung.setOperatorAktion(aktion);
 		bewegungsMeldung.setPerson(person);
 		EntityManagerHelper.getEntityManager().persist(bewegungsMeldung);
 	}

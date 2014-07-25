@@ -90,8 +90,6 @@ public class CheckpointHelper {
 		// Präsenz setzen
 		CheckpointHelper.setZonenPraesenz(person, checkpoint.getCheckInZonen(), status);
 
-
-
 		// Response erstellen
 		OperationResponse response = new OperationResponse();
 		response.setMessage(status.name() + " " + person.getName()); // TODO

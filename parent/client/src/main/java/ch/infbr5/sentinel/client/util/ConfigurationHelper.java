@@ -26,8 +26,7 @@ public class ConfigurationHelper {
 				URL camURL = new URL(config.getStringValue());
 				tmp.add(camURL);
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// If its no URL so let it be.
 			}
 		}
 

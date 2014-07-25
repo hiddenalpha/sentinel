@@ -19,7 +19,12 @@ public class IpCamaraReceiver {
 				for (int i = 0; i < IpCamaraReceiver.this.camUrls.length; i++) {
 					try {
 						Image image = ImageIO.read(IpCamaraReceiver.this.camUrls[i]);
-						IpCamaraReceiver.this.images[i] = image;
+						if (image != null) {
+							IpCamaraReceiver.this.images[i] = image;
+						} else {
+							// case wenn url was not an image
+							IpCamaraReceiver.this.images[i] = IpCamaraReceiver.this.defaultImage;
+						}
 					} catch (IOException e) {
 						IpCamaraReceiver.this.images[i] = IpCamaraReceiver.this.defaultImage;
 					}

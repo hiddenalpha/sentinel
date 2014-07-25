@@ -106,7 +106,7 @@ public class Mapper {
 				target.setCheckpoint(mapCheckpointToCheckpointDetails().apply(source.getCheckpoint()));
 				target.setMillis(source.getMillis());
 				target.setPerson(mapPersonToPersonDetails().apply(source.getPerson()));
-				target.setPraesenzStatus(source.getPraesenzStatus().name());
+				target.setPraesenzStatus(source.getOperatorAktion().name());
 				return target;
 			}
 		};

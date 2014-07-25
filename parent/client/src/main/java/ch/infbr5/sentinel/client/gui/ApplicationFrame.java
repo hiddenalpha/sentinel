@@ -1,16 +1,21 @@
 package ch.infbr5.sentinel.client.gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.ApplicationFrameController;
@@ -24,19 +29,22 @@ import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModel;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInTabbedPanels;
 import ch.infbr5.sentinel.client.gui.components.ipcam.IpCamaraPane;
-import ch.infbr5.sentinel.client.gui.components.journal.create.JournalNewMessagePanel;
-import ch.infbr5.sentinel.client.gui.components.journal.list.JournalBewegungsMeldungsPanel;
-import ch.infbr5.sentinel.client.gui.components.journal.list.JournalGefechtsMeldungsPanel;
-import ch.infbr5.sentinel.client.polling.UpdateBewegungsJournal;
-import ch.infbr5.sentinel.client.polling.UpdateGefechtsJournal;
+import ch.infbr5.sentinel.client.gui.components.journal.create.NewGefechtsMeldungDialog;
+import ch.infbr5.sentinel.client.gui.components.journal.list.BewegungsJournalModel;
+import ch.infbr5.sentinel.client.gui.components.journal.list.BewegungsJournalTable;
+import ch.infbr5.sentinel.client.gui.components.journal.list.FilterTablePanel;
+import ch.infbr5.sentinel.client.gui.components.journal.list.GefechtsJournalModel;
+import ch.infbr5.sentinel.client.gui.components.journal.list.GefechtsJournalTable;
+import ch.infbr5.sentinel.client.polling.AbstractPollingModelUpdater;
+import ch.infbr5.sentinel.client.polling.BewegungsJournalUpdater;
+import ch.infbr5.sentinel.client.polling.GefechtsJournalUpdater;
 import ch.infbr5.sentinel.client.util.ConfigurationHelper;
 import ch.infbr5.sentinel.client.util.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
-import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
 
-public class ApplicationFrame extends JFrame implements ActionListener {
+public class ApplicationFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -59,8 +67,7 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 	public ApplicationFrame() {
 		applicationFrameModel = new ApplicationModelImpl();
 
-		windowListener = new ApplicationFrameController(applicationFrameModel,
-				this);
+		windowListener = new ApplicationFrameController(applicationFrameModel, this);
 		this.addWindowListener(windowListener);
 
 		this.startupHandler = new StartupHandler(applicationFrameModel, this);
@@ -74,11 +81,6 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		checkInTabbedPanel.displayPersonSelectionDialog();
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-	}
-
 	private void handleStartupProcess() {
 		this.setVisible(false);
 
@@ -86,95 +88,87 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		startupHandler.showCheckpointChooserIfNeeded();
 		startupHandler.setAdminPasswordIfNeeded();
 
-		// do {
-		//
-		// if (!this.startupHandler.showLoginDialogAndSetOperatorName()) {
-		// this.applicationFrameModel.setOperatorName("");
-		// continue;
-		// }
-		//
-		// } while (this.applicationFrameModel.getOperatorName() == null ||
-		// this.applicationFrameModel.getOperatorName().equals(""));
+		/*
+		 * do { if (!this.startupHandler.showLoginDialogAndSetOperatorName()) {
+		 * this.applicationFrameModel.setOperatorName(""); continue; }
+		 *
+		 * } while (this.applicationFrameModel.getOperatorName() == null ||
+		 * this.applicationFrameModel.getOperatorName().equals(""));
+		 */
 
 		this.run();
 	}
 
+	private String createTitle() {
+		return "Sentinel - " + Version.get().getVersion() + " (" + Version.get().getBuildTimestamp() + ") - "
+				+ ConfigurationHelper.getCheckpointName();
+	}
+
 	private void initComponents() {
+
 		if (this.isInitialized) {
 			return;
 		}
 
-		this.setSize(1024, 900);
-
+		// Default
+		this.setSize(1024, 900); // Bei Klick auf kleines Fenster
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Start in Max-Mode
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Sentinel - " + Version.get().getVersion() + " ("
-				+ Version.get().getBuildTimestamp() + ") - "
-				+ ConfigurationHelper.getCheckpointName());
+		this.setTitle(createTitle());
 
-		this.getContentPane().setLayout(
-				new MigLayout("", "[fill, grow][fill, grow]",
-						"[50%, fill][50%, grow]"));
-
-		checkInModel = new CheckInModelImpl(ConfigurationLocalHelper
-				.getConfig().getCheckpointId(), this);
+		checkInModel = new CheckInModelImpl(ConfigurationLocalHelper.getConfig().getCheckpointId(), this);
 		checkInTabbedPanel = new CheckInTabbedPanels(checkInModel);
 
-		this.add(checkInTabbedPanel, "cell 0 0 1 2 growy");
-
+		boolean showCams = false;
 		URL[] cams = ConfigurationHelper.getIPCams();
 		if (cams.length > 0) {
-
-			IpCamaraPane ipCamaraPane = new IpCamaraPane(0, 4, cams);
-			ipCamaraPane.setSize(200, 400);
-			this.add(ipCamaraPane, "cell 1 0");
-
+			showCams = true;
 			this.myGlassPane = new IpCamaraPane(60, 2, cams);
 			this.setGlassPane(this.myGlassPane);
 			this.myGlassPane.setVisible(true);
 		}
 
-		JTabbedPane tabbedPane = new JTabbedPane();
+		JTabbedPane tabbedPane = createTabbedPane();
 
-		Long checkpointId = ConfigurationLocalHelper.getConfig().getCheckpointId();
+		// Make all Panes fully hidable
+		makePanelHideable(tabbedPane);
+		makePanelHideable(checkInTabbedPanel);
+		makePanelDefaultHeight(tabbedPane);
 
-		List<JournalSystemMeldung> systemMeldungen = ServiceHelper.getJournalService().getSystemJournal(checkpointId).getSystemMeldungen();
-		List<JournalBewegungsMeldung> bewegungsMeldungen = ServiceHelper.getJournalService().getBewegungsJournal(checkpointId).getBewegungsMeldungen();
-		List<JournalGefechtsMeldung> gefechtsMeldung = ServiceHelper.getJournalService().getGefechtsJournal(checkpointId).getGefechtsMeldungen();
+		// Layout
+		this.getContentPane().setLayout(new MigLayout("", "[fill, grow]", "[fill, grow]"));
 
-		DefaultListModel<JournalSystemMeldung> model1 = new DefaultListModel<>();
-		for (JournalSystemMeldung m : systemMeldungen) {
-			model1.addElement(m);
+		if (showCams) {
+			IpCamaraPane ipCamaraPane = new IpCamaraPane(0, 4, cams);
+			makePanelDefaultHeight(ipCamaraPane);
+			makePanelHideable(ipCamaraPane);
+
+			JSplitPane innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, ipCamaraPane, tabbedPane);
+			JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, checkInTabbedPanel, innerSplitPane);
+
+			this.add(outerSplitPane, "");
+		} else {
+			JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, checkInTabbedPanel, tabbedPane);
+			this.add(outerSplitPane, "");
 		}
 
-		final DefaultListModel<JournalBewegungsMeldung> model2 = new DefaultListModel<>();
-		for (JournalBewegungsMeldung m : bewegungsMeldungen) {
-			model2.addElement(m);
-		}
-
-		DefaultListModel<JournalGefechtsMeldung> model3 = new DefaultListModel<>();
-		for (JournalGefechtsMeldung m : gefechtsMeldung) {
-			model3.addElement(m);
-		}
-
-		new UpdateBewegungsJournal(model2);
-		new UpdateGefechtsJournal(model3);
-
-		// tabbedPane.add(new JournalPanel<JournalSystemMeldung>(model1), "Systemmeldungen");
-		tabbedPane.add(new JournalBewegungsMeldungsPanel<JournalBewegungsMeldung>(model2), "Bewegungsmeldungen");
-		tabbedPane.add(new JournalGefechtsMeldungsPanel<JournalGefechtsMeldung>(model3), "Gefechtsmeldungen");
-		tabbedPane.add(new JournalNewMessagePanel(), "Neue Meldung erfassen");
-
-		checkInModel.setJournalGefechtsModel(model3);
-
-		this.add(tabbedPane, "cell 1 1");
-
-		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper
-				.getConfig().isAdminMode(), ConfigurationLocalHelper
-				.getConfig().isSuperuserMode());
-
+		// Menubar
+		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper.getConfig().isAdminMode(),
+				ConfigurationLocalHelper.getConfig().isSuperuserMode());
 		setJMenuBar(this.menuBar);
 
+		// Finish
 		isInitialized = true;
+	}
+
+	private void makePanelHideable(JComponent comp) {
+		Dimension dimHidable = new Dimension(0, 0);
+		comp.setMinimumSize(dimHidable);
+	}
+
+	private void makePanelDefaultHeight(JComponent comp) {
+		//comp.setSize(new Dimension(0, 200));
+		comp.setPreferredSize(new Dimension(0, 200));
 	}
 
 	private void run() {
@@ -192,4 +186,51 @@ public class ApplicationFrame extends JFrame implements ActionListener {
 		}
 		this.setIconImage(defaultImage);
 	}
+
+	public JTabbedPane createTabbedPane() {
+		JTabbedPane tabbedPane = new JTabbedPane();
+
+		Long checkpointId = ConfigurationLocalHelper.getConfig().getCheckpointId();
+
+		long currentTimestamp = (new Date()).getTime();
+		long hoursInitialLoadInMillis = ConfigurationLocalHelper.getConfig().getHoursInitialLoadJournal() * 60 * 60 * 1000;
+		long timestampSeit = currentTimestamp - hoursInitialLoadInMillis;
+
+		List<JournalBewegungsMeldung> bewegungsMeldungen = ServiceHelper.getJournalService()
+				.getBewegungsJournalSeit(checkpointId, timestampSeit).getBewegungsMeldungen();
+		List<JournalGefechtsMeldung> gefechtsMeldung = ServiceHelper.getJournalService()
+				.getGefechtsJournalSeit(checkpointId, timestampSeit).getGefechtsMeldungen();
+
+		BewegungsJournalModel modelBewegungsJournal = new BewegungsJournalModel(bewegungsMeldungen);
+		GefechtsJournalModel modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
+
+		final JTable tableGefecht = new GefechtsJournalTable(modelGefechtsJournal);
+		JTable tableBewegung = new BewegungsJournalTable(modelBewegungsJournal);
+
+		JButton additionalButton = new JButton("Neu");
+		final JFrame parentframe = this;
+		additionalButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				NewGefechtsMeldungDialog d = new NewGefechtsMeldungDialog(parentframe);
+				d.setCheckpointName(ConfigurationLocalHelper.getConfig().getCheckpointWithName().getName());
+				d.showDialog();
+			}
+		});
+
+		tabbedPane.add(new FilterTablePanel(tableGefecht, additionalButton), "Gefechtsmeldungen");
+		tabbedPane.add(new FilterTablePanel(tableBewegung, null), "Bewegungsmeldungen");
+
+		checkInModel.setJournalGefechtsModel(modelGefechtsJournal);
+
+		// Model Polling Updater
+		AbstractPollingModelUpdater updater1 = new BewegungsJournalUpdater(modelBewegungsJournal);
+		AbstractPollingModelUpdater updater2 = new GefechtsJournalUpdater(modelGefechtsJournal);
+		updater1.startKeepUpdated();
+		updater2.startKeepUpdated();
+
+		return tabbedPane;
+	}
+
 }

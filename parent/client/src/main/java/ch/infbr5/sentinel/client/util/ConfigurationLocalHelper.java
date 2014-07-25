@@ -100,6 +100,24 @@ public class ConfigurationLocalHelper {
 		return applicationProps.getProperty("ServerPortnumber");
 	}
 
+	private static final int DEFAULT_HOURS_INITIAL_LOAD_JOURNAL = 48;
+
+	public int getHoursInitialLoadJournal() {
+		String hours = applicationProps.getProperty("hoursInitialLoadJournal");
+		int h = 0;
+		try {
+			h = Integer.parseInt(hours);
+		} catch (NumberFormatException e) {
+			h = DEFAULT_HOURS_INITIAL_LOAD_JOURNAL;
+		}
+		return h;
+	}
+
+	public void setHoursInitialLoadJournal(int hours) {
+		applicationProps.setProperty("hoursInitialLoadJournal", String.valueOf(hours));
+		saveProperites();
+	}
+
 	public void setServerPortnumber(String port) {
 		applicationProps.setProperty("ServerPortnumber", port);
 		saveProperites();
@@ -136,7 +154,13 @@ public class ConfigurationLocalHelper {
 	public CheckpointDetails getCheckpoint() {
 		CheckpointDetails details = new CheckpointDetails();
 		details.setId(getCheckpointId());
-		//details.setName(ConfigurationHelper.getCheckpointName());
+		return details;
+	}
+
+	public CheckpointDetails getCheckpointWithName() {
+		CheckpointDetails details = new CheckpointDetails();
+		details.setId(getCheckpointId());
+		details.setName(ConfigurationHelper.getCheckpointName());
 		return details;
 	}
 

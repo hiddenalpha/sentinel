@@ -5,8 +5,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import ch.infbr5.sentinel.server.model.OperatorAktion;
 import ch.infbr5.sentinel.server.model.Person;
-import ch.infbr5.sentinel.server.model.PraesenzStatus;
 
 @Entity
 @NamedQueries({
@@ -17,17 +17,17 @@ import ch.infbr5.sentinel.server.model.PraesenzStatus;
 
 public class BewegungsMeldung extends JournalEintrag {
 
-	private PraesenzStatus praesenzStatus;
+	private OperatorAktion operatorAktion;
 
 	@ManyToOne
 	private Person person;
 
-	public PraesenzStatus getPraesenzStatus() {
-		return praesenzStatus;
+	public OperatorAktion getOperatorAktion() {
+		return operatorAktion;
 	}
 
-	public void setPraesenzStatus(PraesenzStatus praesenzStatus) {
-		this.praesenzStatus = praesenzStatus;
+	public void setOperatorAktion(OperatorAktion operatorAktion) {
+		this.operatorAktion = operatorAktion;
 	}
 
 	public Person getPerson() {

@@ -1,6 +1,7 @@
 package ch.infbr5.sentinel.client.gui.util;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -91,6 +92,10 @@ public class SwingHelper {
 		// c.addMouseListener(constraintListener);
 		// }
 		return c;
+	}
+
+	public static Font smaller(Font font) {
+		return new Font(font.getName(), font.getStyle(), font.getSize() - 3);
 	}
 
 }
