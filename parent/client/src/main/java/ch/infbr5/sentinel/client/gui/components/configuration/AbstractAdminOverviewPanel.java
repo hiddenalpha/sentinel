@@ -48,7 +48,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 	public static final String BUTTON_ADMINPANEL_NEW = "ADMINPANEL_NEW";
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -136,7 +136,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 				details.setDataRecord(null);
 			} else {
 				JOptionPane.showMessageDialog(null,
-						"Die eingegebenen Daten sind nicht gÃ¼ltig.",
+						"Die eingegebenen Daten sind nicht gültig.",
 						"Validierung", JOptionPane.CANCEL_OPTION);
 			}
 		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_NEW)) {
@@ -221,6 +221,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 
 	private void addKeyListenerToTable() {
 		table.addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyReleased(KeyEvent e) {
 				showFilterBoxAndAddKey(e.getKeyCode(), e.getKeyChar());
 			}
@@ -254,7 +255,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 		for (int i = 0; i < table.getColumnCount(); ++i) {
 			JTextField filterField = new JTextField() {
 				/**
-				 * 
+				 *
 				 */
 				private static final long serialVersionUID = 1L;
 
@@ -265,6 +266,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 			};
 
 			filterField.addKeyListener(new KeyAdapter() {
+				@Override
 				public void keyReleased(KeyEvent e) {
 					if (isAbortOnSpecialKey(e.getKeyCode())) {
 						clearAndHideFilter();
@@ -287,6 +289,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 	private PropertyChangeListener createFilterPropertyChangeListener() {
 		// Define PropertyChangeListener
 		PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
 				String propertyName = propertyChangeEvent.getPropertyName();
 				if (propertyName.equals(FILTER_CHANGE_EVENT_NAME)) {
@@ -423,7 +426,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 		saveButton.setActionCommand(BUTTON_ADMINPANEL_SAVE);
 		add(saveButton);
 
-		deleteButton = new JButton("LÃ¶schen");
+		deleteButton = new JButton("Löschen");
 		deleteButton.setName(BUTTON_ADMINPANEL_DELETE);
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand(BUTTON_ADMINPANEL_DELETE);

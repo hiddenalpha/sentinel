@@ -14,7 +14,7 @@ public class ConfigurationValuePanel extends
 		AbstractAdminOverviewPanel<ConfigurationDetails> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -31,11 +31,11 @@ public class ConfigurationValuePanel extends
 			AbstractAdminTableModel<ConfigurationDetails> {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		private final String[] headerNames = { "Key", "String Value",
-				"Long Value", "GÃ¼ltig fÃ¼r" };
+				"Long Value", "Gültig für" };
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
@@ -95,7 +95,7 @@ public class ConfigurationValuePanel extends
 			AbstractAdminDetailPanel<ConfigurationDetails> {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		private JTextField fieldKey;
@@ -109,7 +109,7 @@ public class ConfigurationValuePanel extends
 			SwingHelper.addSeparator(this, "Configuration");
 
 			fieldKey = createField("Key");
-			fieldValidFor = createField("GÃ¼ltig fÃ¼r");
+			fieldValidFor = createField("Gültig für");
 
 			SwingHelper.addSeparator(this, "Werte");
 
