@@ -160,6 +160,9 @@ public class Mapper {
 
 			@Override
 			public CheckpointDetails apply(Checkpoint source) {
+				if (source == null) {
+					return null;
+				}
 				CheckpointDetails target = new CheckpointDetails();
 				target.setId(source.getId());
 				target.setName(source.getName());
@@ -175,6 +178,9 @@ public class Mapper {
 
 			@Override
 			public Checkpoint apply(CheckpointDetails source) {
+				if (source == null) {
+					return null;
+				}
 				Checkpoint target = new Checkpoint();
 				target.setId(source.getId());
 				target.setName(source.getName());

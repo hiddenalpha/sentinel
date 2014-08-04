@@ -12,7 +12,7 @@ import ch.infbr5.sentinel.server.model.Person;
 @NamedQueries({
 	@NamedQuery(name = "findBewegungsMeldung", query = "SELECT r FROM BewegungsMeldung r WHERE r.id = :id"),
 	@NamedQuery(name = "findBewegungsMeldungen", query = "SELECT r FROM BewegungsMeldung r WHERE r.checkpoint.id = :checkpointId order by r.millis desc"),
-	@NamedQuery(name = "findBewegungsMeldungenSeit", query = "SELECT r FROM BewegungsMeldung r WHERE r.checkpoint.id = :checkpointId AND r.millis > :timeInMillis order by r.millis desc"),
+	@NamedQuery(name = "findBewegungsMeldungenSeit", query = "SELECT r FROM BewegungsMeldung r WHERE r.millis > :timeInMillis order by r.millis desc"),
 })
 
 public class BewegungsMeldung extends JournalEintrag {

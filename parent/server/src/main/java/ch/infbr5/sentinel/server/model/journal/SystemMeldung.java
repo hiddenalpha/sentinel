@@ -5,7 +5,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "findSystemMeldungenSeit", query = "SELECT r FROM SystemMeldung r WHERE r.checkpoint.id = :checkpointId AND r.millis > :timeInMillis order by r.millis desc"), })
+@NamedQueries({ @NamedQuery(name = "findSystemMeldungenSeit", query = "SELECT r FROM SystemMeldung r WHERE r.millis > :timeInMillis order by r.millis desc"), })
 public class SystemMeldung extends JournalEintrag {
 
 	private String message;

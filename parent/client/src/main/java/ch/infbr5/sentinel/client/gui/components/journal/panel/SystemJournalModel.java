@@ -47,6 +47,9 @@ public class SystemJournalModel extends AbstractTableModel {
 			return Formater.formatWithTime(new Date(meldung.getMillis()));
 		}
 		if (columnIndex == 1) {
+			if (meldung.getCheckpoint() == null) {
+				return "";
+			}
 			return meldung.getCheckpoint().getName();
 		}
 		if (columnIndex == 2) {

@@ -63,8 +63,8 @@ public class JournalService {
 	}
 
 	@WebMethod
-	public JournalResponse getSystemJournalSeit(@WebParam(name = "checkpointId") long checkpointId, @WebParam(name = "timeInMillis") long timeInMillis) {
-		List<SystemMeldung> data = QueryHelper.getSystemMeldungenSeit(checkpointId, timeInMillis);
+	public JournalResponse getSystemJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
+		List<SystemMeldung> data = QueryHelper.getSystemMeldungenSeit(timeInMillis);
 		List<JournalSystemMeldung> eintraege = Lists.transform(data, Mapper.mapSystemMeldungToJournalSystemMeldung());
 
 		JournalResponse response = new JournalResponse();
@@ -73,8 +73,8 @@ public class JournalService {
 	}
 
 	@WebMethod
-	public JournalResponse getBewegungsJournalSeit(@WebParam(name = "checkpointId") long checkpointId, @WebParam(name = "timeInMillis") long timeInMillis) {
-		List<BewegungsMeldung> data = QueryHelper.getBewegungsMeldungenSeit(checkpointId, timeInMillis);
+	public JournalResponse getBewegungsJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
+		List<BewegungsMeldung> data = QueryHelper.getBewegungsMeldungenSeit(timeInMillis);
 		List<JournalBewegungsMeldung> eintraege = Lists.transform(data, Mapper.mapBewegungsMeldungToJournalBewegungsMeldung());
 
 		JournalResponse response = new JournalResponse();
@@ -83,12 +83,21 @@ public class JournalService {
 	}
 
 	@WebMethod
-	public JournalResponse getGefechtsJournalSeit(@WebParam(name = "checkpointId") long checkpointId, @WebParam(name = "timeInMillis") long timeInMillis) {
-		List<GefechtsMeldung> data = QueryHelper.getGefechtsMeldungenSeit(checkpointId, timeInMillis);
+	public JournalResponse getGefechtsJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
+		List<GefechtsMeldung> data = QueryHelper.getGefechtsMeldungenSeit(timeInMillis);
 		List<JournalGefechtsMeldung> eintraege = Lists.transform(data, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
 
 		JournalResponse response = new JournalResponse();
 		response.setGefechtsMeldungen(eintraege);
+		return response;
+	}
+
+	@WebMethod
+	public JournalResponse getJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
+		JournalResponse response = new JournalResponse();
+		response.setSystemMeldungen(this.getSystemJournalSeit(timeInMillis).getSystemMeldungen());
+		response.setGefechtsMeldungen(this.getGefechtsJournalSeit(timeInMillis).getGefechtsMeldungen());
+		response.setBewegungsMeldungen(this.getBewegungsJournalSeit(timeInMillis).getBewegungsMeldungen());
 		return response;
 	}
 

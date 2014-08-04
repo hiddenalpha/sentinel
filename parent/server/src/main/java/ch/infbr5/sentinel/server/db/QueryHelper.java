@@ -387,29 +387,10 @@ public class QueryHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<BewegungsMeldung> getBewegungsMeldungen(long checkpointId, int maxResult) {
-		EntityManager em = getEntityManager();
-		Query q = em.createNamedQuery("findBewegungsMeldungen");
-		q.setParameter("checkpointId", checkpointId);
-		q.setMaxResults(maxResult);
-		return q.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<BewegungsMeldung> getBewegungsMeldungenSeit(long checkpointId, long timeInMillis) {
+	public static List<BewegungsMeldung> getBewegungsMeldungenSeit(long timeInMillis) {
 		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findBewegungsMeldungenSeit");
-		q.setParameter("checkpointId", checkpointId);
 		q.setParameter("timeInMillis", timeInMillis);
-		return q.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<GefechtsMeldung> getGefechtsMeldungen(long checkpointId, int maxResult) {
-		EntityManager em = getEntityManager();
-		Query q = em.createNamedQuery("findGefechtsMeldungen");
-		q.setParameter("checkpointId", checkpointId);
-		q.setMaxResults(maxResult);
 		return q.getResultList();
 	}
 
@@ -421,19 +402,17 @@ public class QueryHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<GefechtsMeldung> getGefechtsMeldungenSeit(long checkpointId, long timeInMillis) {
+	public static List<GefechtsMeldung> getGefechtsMeldungenSeit(long timeInMillis) {
 		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findGefechtsMeldungenSeit");
-		q.setParameter("checkpointId", checkpointId);
 		q.setParameter("timeInMillis", timeInMillis);
 		return q.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<SystemMeldung> getSystemMeldungenSeit(long checkpointId, long timeInMillis) {
+	public static List<SystemMeldung> getSystemMeldungenSeit(long timeInMillis) {
 		EntityManager em = getEntityManager();
 		Query q = em.createNamedQuery("findSystemMeldungenSeit");
-		q.setParameter("checkpointId", checkpointId);
 		q.setParameter("timeInMillis", timeInMillis);
 		return q.getResultList();
 	}

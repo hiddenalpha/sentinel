@@ -39,10 +39,7 @@ import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalMod
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalTable;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.SystemJournalModel;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.SystemJournalTable;
-import ch.infbr5.sentinel.client.polling.AbstractPollingModelUpdater;
-import ch.infbr5.sentinel.client.polling.BewegungsJournalUpdater;
-import ch.infbr5.sentinel.client.polling.GefechtsJournalUpdater;
-import ch.infbr5.sentinel.client.polling.SystemJournalUpdater;
+import ch.infbr5.sentinel.client.polling.PollingModelUpdater;
 import ch.infbr5.sentinel.client.util.DateUtil;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
@@ -195,18 +192,16 @@ public class ApplicationFrame extends JFrame {
 	public JTabbedPane createTabbedPane() {
 		JTabbedPane tabbedPane = new JTabbedPane();
 
-		Long checkpointId = ConfigurationLocalHelper.getConfig().getCheckpointId();
-
 		long currentTimestamp = (new Date()).getTime();
 		long hoursInitialLoadInMillis = ConfigurationLocalHelper.getConfig().getHoursInitialLoadJournal() * 60 * 60 * 1000;
 		long timestampSeit = currentTimestamp - hoursInitialLoadInMillis;
 
 		List<JournalBewegungsMeldung> bewegungsMeldungen = ServiceHelper.getJournalService()
-				.getBewegungsJournalSeit(checkpointId, timestampSeit).getBewegungsMeldungen();
+				.getBewegungsJournalSeit(timestampSeit).getBewegungsMeldungen();
 		List<JournalGefechtsMeldung> gefechtsMeldung = ServiceHelper.getJournalService()
-				.getGefechtsJournalSeit(checkpointId, timestampSeit).getGefechtsMeldungen();
+				.getGefechtsJournalSeit(timestampSeit).getGefechtsMeldungen();
 		List<JournalSystemMeldung> systemMeldungen = ServiceHelper.getJournalService()
-				.getSystemJournalSeit(checkpointId, timestampSeit).getSystemMeldungen();
+				.getSystemJournalSeit(timestampSeit).getSystemMeldungen();
 
 		BewegungsJournalModel modelBewegungsJournal = new BewegungsJournalModel(bewegungsMeldungen);
 		GefechtsJournalModel modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
@@ -237,12 +232,8 @@ public class ApplicationFrame extends JFrame {
 		checkInModel.setJournalGefechtsModel(modelGefechtsJournal);
 
 		// Model Polling Updater
-		AbstractPollingModelUpdater updater1 = new BewegungsJournalUpdater(modelBewegungsJournal);
-		AbstractPollingModelUpdater updater2 = new GefechtsJournalUpdater(modelGefechtsJournal);
-		AbstractPollingModelUpdater updater3 = new SystemJournalUpdater(modelSystemJournal);
-		updater1.startKeepUpdated();
-		updater2.startKeepUpdated();
-		updater3.startKeepUpdated();
+		PollingModelUpdater poller = new PollingModelUpdater(modelGefechtsJournal, modelSystemJournal, modelBewegungsJournal);
+		poller.startKeepUpdated();
 
 		return tabbedPane;
 	}

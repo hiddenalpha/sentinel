@@ -18,7 +18,7 @@ import ch.infbr5.sentinel.server.model.Person;
 @NamedQueries({
 		@NamedQuery(name = "findGefechtsMeldung", query = "SELECT r FROM GefechtsMeldung r WHERE r.id = :id"),
 		@NamedQuery(name = "findGefechtsMeldungen", query = "SELECT r FROM GefechtsMeldung r WHERE r.checkpoint.id = :checkpointId order by r.millis desc"),
-		@NamedQuery(name = "findGefechtsMeldungenSeit", query = "SELECT r FROM GefechtsMeldung r WHERE r.checkpoint.id = :checkpointId and r.millis > :timeInMillis order by r.millis desc"),
+		@NamedQuery(name = "findGefechtsMeldungenSeit", query = "SELECT r FROM GefechtsMeldung r WHERE r.millis > :timeInMillis order by r.millis desc"),
 		@NamedQuery(name = "getPersonTriggerEintraege", query = "SELECT o FROM GefechtsMeldung o WHERE o.weiterleitenAnPerson.id = :idPerson AND o.istErledigt = false"), })
 public class GefechtsMeldung extends JournalEintrag {
 
