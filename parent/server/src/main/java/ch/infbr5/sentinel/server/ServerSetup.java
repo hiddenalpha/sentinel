@@ -45,19 +45,19 @@ public class ServerSetup {
 		// Standart Passwort anlgen
 		ConfigurationValue v = ObjectFactory.createConfigurationValue("PASSWORD_admin", "1234", 0, "");
 		em.persist(v);
-		
+
 		ConfigurationValue v2 = ObjectFactory.createConfigurationValue("IdentityCardPassword", "1nf8r5!", 0, "");
 		em.persist(v2);
-		
+
 		ConfigurationValue v3 = ObjectFactory.createConfigurationValue("URL_IPCAM_1", "http://192.168.2.90/image.jpg", 0, "");
 		em.persist(v3);
-		
+
 		ConfigurationValue v4 = ObjectFactory.createConfigurationValue("URL_IPCAM_2", "http://192.168.2.91/image.jpg", 0, "");
 		em.persist(v4);
-		
+
 		ConfigurationValue v5 = ObjectFactory.createConfigurationValue("URL_IPCAM_3", "http://192.168.2.92/image.jpg", 0, "");
 		em.persist(v5);
-		
+
 		ConfigurationValue v6 = ObjectFactory.createConfigurationValue("URL_IPCAM_4", "http://192.168.2.93/image.jpg", 0, "");
 		em.persist(v6);
 

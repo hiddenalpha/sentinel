@@ -6,7 +6,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.apache.log4j.Logger;
+
 public class EntityManagerHelper {
+
+	private static Logger log = Logger.getLogger(EntityManagerHelper.class);
 
 	private static final String PERSISTENCE_UNIT_NAME = "sentinel";
 	private static EntityManagerFactory factory;
@@ -20,13 +24,12 @@ public class EntityManagerHelper {
 		if ((em == null) || (em.isOpen()==false)) {
 			em = EntityManagerHelper.getFactory().createEntityManager();
 			EntityManagerHelper.threadLocalEntityManager.set(em);
-			// TODO Log
-			System.out.println("create EntityManager for Thread " + Thread.currentThread().getName());
-		} 
-		
+			log.debug("create EntityManager for Thread " + Thread.currentThread().getName());
+		}
+
 		return em;
 	}
-	
+
 	public static void close(){
 		EntityManagerHelper.factory.close();
 		EntityManagerHelper.factory = null;
@@ -35,7 +38,7 @@ public class EntityManagerHelper {
 	public static EntityManagerFactory getFactory() {
 		if (EntityManagerHelper.factory == null) {
 			Properties props = new Properties();
-			
+
 			if (EntityManagerHelper.debugMode) {
 				props.put("javax.persistence.jdbc.driver", "org.apache.derby.jdbc.ClientDriver");
 				if (EntityManagerHelper.inMemoryMode){
@@ -62,7 +65,7 @@ public class EntityManagerHelper {
 	public static void setDebugMode(boolean mode) {
 		EntityManagerHelper.debugMode = mode;
 	}
-	
+
 	public static void setInMemoryMode(boolean mode){
 		EntityManagerHelper.inMemoryMode  = mode;
 	}

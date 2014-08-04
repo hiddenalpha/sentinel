@@ -6,7 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 public class PdfStore {
+
+	private static Logger log = Logger.getLogger(PdfStore.class);
 
 	public static byte[] loadPdf(String name) {
 		// create file object
@@ -29,13 +33,13 @@ public class PdfStore {
 			 */
 			fin.read(fileContent);
 			fin.close();
-			
+
 			return fileContent;
 
 		} catch (FileNotFoundException e) {
-			System.out.println("File not found" + e);
+			log.error("File not found" + e);
 		} catch (IOException ioe) {
-			System.out.println("Exception while reading the file " + ioe);
+			log.error("Exception while reading the file " + ioe);
 		}
 
 		return null;

@@ -9,9 +9,13 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import org.apache.log4j.Logger;
+
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 
 public class RequestHandler implements SOAPHandler<SOAPMessageContext> {
+
+	private static Logger log = Logger.getLogger(RequestHandler.class);
 
 	@Override
 	public void close(MessageContext context) {
@@ -52,19 +56,16 @@ public class RequestHandler implements SOAPHandler<SOAPMessageContext> {
 
 		if (outboundProperty) {
 			//TODO Debug Log
-			//System.out.println("\nOutbound message:");
 		} else {
 			//TODO Debug Log
-			//System.out.println("\nInbound message:");
 		}
 
 		SOAPMessage message = smc.getMessage();
 		try {
 			//TODO Debug Log
 			//message.writeTo(System.out);
-			//System.out.println("");
 		} catch (Exception e) {
-			System.out.println("Exception in handler: " + e);
+			log.error("Exception in handler: " + e);
 		}
 	}
 

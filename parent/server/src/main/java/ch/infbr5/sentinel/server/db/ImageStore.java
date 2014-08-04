@@ -12,7 +12,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import org.apache.log4j.Logger;
+
 public class ImageStore {
+
+	private static Logger log = Logger.getLogger(ImageStore.class);
 
 	private static final String FOLDER_NAME = "images";
 
@@ -49,7 +53,7 @@ public class ImageStore {
 		if (!file.exists()) {
 			return null;
 		}
-		
+
 		try {
 			// create FileInputStream object
 			FileInputStream fin = new FileInputStream(file);
@@ -71,15 +75,15 @@ public class ImageStore {
 			return fileContent;
 
 		} catch (FileNotFoundException e) {
-			System.out.println("File not found" + e);
+			log.error("File not found" + e);
 		} catch (IOException ioe) {
-			System.out.println("Exception while reading the file " + ioe);
+			log.error("Exception while reading the file " + ioe);
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	public static BufferedImage byteArrayToBufferedImage(byte[] binaryData) {
 		if (binaryData == null || binaryData.length == 0)
 			return null;
@@ -125,13 +129,13 @@ public class ImageStore {
 	}
 
 	private static String createFilename(String ahvNr) {
-		String folder = "."+File.separator+FOLDER_NAME+File.separator; 
+		String folder = "."+File.separator+FOLDER_NAME+File.separator;
 		return folder + ahvNr + ".jpg";
 	}
 
 	public static String getLocalImagePath() {
 		return new File(FOLDER_NAME).getAbsolutePath();
 	}
-	
-	
+
+
 }

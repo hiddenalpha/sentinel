@@ -9,11 +9,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.log4j.Logger;
+
 /**
  * Converts different objects into XMLGregorianCalendar
  * Source: http://www.heber.it/wordpress/?p=239#anchor_2
  */
 public class XMLGregorianCalendarConverter {
+
+	private static Logger log = Logger.getLogger(XMLGregorianCalendarConverter.class);
 
     /**
      * Converts Date object into XMLGregorianCalendar
@@ -29,7 +33,7 @@ public class XMLGregorianCalendarConverter {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
         } catch (DatatypeConfigurationException e) {
             // TODO: Optimize exception handling
-            System.out.print(e.getMessage());
+            log.error(e.getMessage());
             return null;
         }
     }

@@ -9,7 +9,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
+import org.apache.log4j.Logger;
+
 public class CheckInTableContextMenu extends MouseAdapter implements ActionListener {
+
+	private static Logger log = Logger.getLogger(CheckInTableContextMenu.class);
 
 	private static final String CMD_CHECKOUT = "CMD_CHECKOUT";
 	private static final String CMD_CHECKIN = "CMD_CHECKIN";
@@ -85,7 +89,7 @@ public class CheckInTableContextMenu extends MouseAdapter implements ActionListe
 				break;
 
 			default:
-				System.out.println("Command not handled by " + this.getClass().getName() + ": " + e.getActionCommand());
+				log.warn("Command not handled by " + this.getClass().getName() + ": " + e.getActionCommand());
 				return;
 			}
 
