@@ -3,13 +3,14 @@ package ch.infbr5.sentinel.server.ws.importer;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.importer.personen.PersonenImporter;
 import ch.infbr5.sentinel.server.importer.personen.state.PersonenImporterStatePersister;
@@ -26,7 +27,7 @@ import com.google.common.collect.Lists;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class PersonenImporterService {
 
-	private static Logger log = Logger.getLogger(PersonenImporterService.class.getName());
+	private static Logger log = Logger.getLogger(PersonenImporterService.class);
 
 	@WebMethod
 	public String initiatImport(@WebParam(name = "filename") String filename, @WebParam(name = "data") byte[] data, @WebParam(name = "isKompletterBestand") boolean isKompletterBestand) {
@@ -126,7 +127,7 @@ public class PersonenImporterService {
 			cleanup(sessionKey);
 			return true;
 		} else {
-			log.warning("Daten konnten nicht importiert werden, da der Import ungültig ist.");
+			log.warn("Daten konnten nicht importiert werden, da der Import ungültig ist.");
 			return false;
 		}
 	}

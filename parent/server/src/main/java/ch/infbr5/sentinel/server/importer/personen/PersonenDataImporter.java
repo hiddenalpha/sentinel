@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.importer.personen.util.DataRow;
@@ -30,7 +31,7 @@ import ch.infbr5.sentinel.server.ws.importer.modification.UpdatePersonAttributeD
 
 abstract class PersonenDataImporter {
 
-	private static Logger log = Logger.getLogger(PersonenDataImporter.class.getName());
+	private static Logger log = Logger.getLogger(PersonenDataImporter.class);
 
 	private String filenameData;
 
@@ -259,7 +260,7 @@ abstract class PersonenDataImporter {
 				}
 			}
 			if (!found) {
-				log.warning("Import ungültig: Kein Mapping für das Attribute " + attribute + ".");
+				log.warn("Import ungültig: Kein Mapping für das Attribute " + attribute + ".");
 				return false;
 			}
 		}

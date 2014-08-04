@@ -1,10 +1,6 @@
 package ch.infbr5.sentinel.server;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -13,40 +9,36 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 public class Main {
 
 	private static ServerControl sentinelServer;
-	private static Logger log;
 
-	/**
-	 * @param args
-	 */
+	private static Logger log = Logger.getLogger(Main.class);
+
+	private static final String LOG4J_PROPERTIES = "/META-INF/log4j.properties";
+
+	private static boolean debugMode = false;
+
 	public static void main(String[] args) {
 
-		log = Logger.getLogger(Main.class.getName());
-		log.setLevel(Level.ALL);
-		log.info(System.getProperty("java.vendor") + " "
-				+ System.getProperty("java.version"));
-		log.info("initializing - trying to load configuration file ...");
-		try {
-			InputStream configFile = Main.class
-					.getResourceAsStream("/META-INF/logging.properites");
-			LogManager.getLogManager().readConfiguration(configFile);
-		} catch (IOException ex) {
+		// log4j
+		InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES);
+		if (inputStream == null) {
 			System.out.println("WARNING: Could not open configuration file");
-			System.out
-					.println("WARNING: Logging not configured (console output only)");
+			System.out.println("WARNING: Logging not configured");
+		} else {
+			PropertyConfigurator.configure(inputStream);
 		}
-		log.info("trying to start server ...");
 
-		boolean debugMode = false;
+		log.debug("Server startet: Java-Vendor:" + System.getProperty("java.vendor") + " Java-Version:" + System.getProperty("java.version"));
 
+		// cli
 		Options options = new Options();
-		Option ipAddress = OptionBuilder.withArgName("ip").hasArg()
-				.withDescription("Server IpAdress").create("ipAddress");
+		Option ipAddress = OptionBuilder.withArgName("ip").hasArg().withDescription("Server IpAdress").create("ipAddress");
 		Option debug = new Option("debug", "print debugging information");
-
 		options.addOption(ipAddress);
 		options.addOption(debug);
 
@@ -61,12 +53,13 @@ public class Main {
 			}
 
 			String ip = line.getOptionValue("ipAddress", "0.0.0.0");
-			log.info("listening on ".concat(ip));
+			log.debug("listening on ".concat(ip));
 
 			sentinelServer = new ServerControl(debugMode, false);
 
 			// Shutdown Hook installieren
 			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
 				public void run() {
 					log.info("trying to stop server ...");
 					sentinelServer.stop();
@@ -75,9 +68,10 @@ public class Main {
 			});
 
 			// Server starten
-			log.info("trying to start server ...");
+			log.debug("trying to start server ...");
 			sentinelServer.start(ip);
-			log.info("Sentienl server version " + Version.get().getVersion()
+			// Erst ab hier auf Info Level logen.
+			log.info("Sentinel server version " + Version.get().getVersion()
 					+ " (" + Version.get().getBuildTimestamp()
 					+ ") is running.");
 
@@ -86,16 +80,14 @@ public class Main {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e);
 				}
 			}
 
 			System.exit(0);
 
 		} catch (ParseException exp) {
-			// oops, something went wrong
-			log.severe("Parsing failed.  Reason: " + exp.getMessage());
+			log.warn("Parsing failed.  Reason: " + exp.getMessage());
 		}
 
 	}

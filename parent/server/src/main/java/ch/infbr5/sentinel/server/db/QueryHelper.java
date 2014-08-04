@@ -4,12 +4,13 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Checkpoint;
@@ -28,7 +29,7 @@ import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 
 public class QueryHelper {
 
-	private static Logger logger = Logger.getLogger(QueryHelper.class.getName());
+	private static Logger log = Logger.getLogger(QueryHelper.class);
 
 	public static String createUniqueBarcode(int len, String prefix) {
 		String barcode;
@@ -170,7 +171,7 @@ public class QueryHelper {
 		} catch (NoResultException e) {
 			return null;
 		} catch (NonUniqueResultException e) {
-			logger.severe("Primary Key " + avhNr + " is not unique.");
+			log.warn("Primary Key " + avhNr + " is not unique.");
 			return null;
 		}
 	}

@@ -4,7 +4,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.model.Grad;
 import ch.infbr5.sentinel.server.model.Person;
@@ -16,7 +17,7 @@ import ch.infbr5.sentinel.server.ws.importer.modification.UpdatePersonAttributeD
 
 public class DataRow {
 
-	private static Logger log = Logger.getLogger(DataRow.class.getName());
+	private static Logger log = Logger.getLogger(DataRow.class);
 
 	private String[] data;
 
@@ -30,7 +31,7 @@ public class DataRow {
 		try {
 			this.geburtstag = DateHelper.getCalendar(this.getValue(PersonenAttribute.Geburtstag));
 		} catch (ParseException e) {
-			log.warning("Geburtsdatum von " + getValue(PersonenAttribute.Geburtstag) + " konnte nicht geparst werden.");
+			log.warn("Geburtsdatum von " + getValue(PersonenAttribute.Geburtstag) + " konnte nicht geparst werden.");
 			this.geburtstag = Calendar.getInstance();
 		}
 	}

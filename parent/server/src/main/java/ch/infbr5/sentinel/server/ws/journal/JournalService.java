@@ -2,7 +2,6 @@ package ch.infbr5.sentinel.server.ws.journal;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
@@ -10,6 +9,8 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.soap.MTOM;
+
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.QueryHelper;
@@ -26,7 +27,7 @@ import com.google.common.collect.Lists;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class JournalService {
 
-	private static Logger log = Logger.getLogger(JournalService.class.getName());
+	private static Logger log = Logger.getLogger(JournalService.class);
 
 	@WebMethod
 	public void addSystemMeldung(@WebParam(name = "meldung") JournalSystemMeldung meldung) {

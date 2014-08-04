@@ -3,7 +3,6 @@ package ch.infbr5.sentinel.server.ws;
 import java.awt.Image;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
@@ -11,6 +10,8 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.soap.MTOM;
+
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.ImageStore;
@@ -35,7 +36,7 @@ import com.google.common.collect.Lists;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class SentinelQueryService {
 
-	private static Logger log = Logger.getLogger(SentinelQueryService.class.getName());
+	private static Logger log = Logger.getLogger(SentinelQueryService.class);
 
 	@WebMethod
 	public OperationResponse abmelden(@WebParam(name = "checkpointId") Long checkpointId,
