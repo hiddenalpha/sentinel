@@ -18,7 +18,7 @@ public class ServerControl {
 	private Endpoint configurationEndpoint;
 	private Endpoint journalEndpoint;
 	private Endpoint personenImporterEndpoint;
-	
+
 	private boolean running = true;
 
 	private NetworkServerControl databaseServer;
@@ -35,7 +35,6 @@ public class ServerControl {
 		if (ServerSetup.databaseIsEmpty()) {
 			ServerSetup.setupDatabase();
 		}
-
 		this.startWebServices(ip);
 
 	}
@@ -93,7 +92,7 @@ public class ServerControl {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+
 	}
 
 	private void stopWebServces() {

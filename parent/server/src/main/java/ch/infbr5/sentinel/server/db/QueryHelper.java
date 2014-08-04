@@ -252,6 +252,7 @@ public class QueryHelper {
 
 	@SuppressWarnings("unchecked")
 	public static List<Checkpoint> getCheckpoints() {
+
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		Query q = em.createNamedQuery("getCheckpoints");
 
