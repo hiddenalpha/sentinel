@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import org.junit.Ignore;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
+import ch.infbr5.sentinel.server.db.QueryHelper;
 @Ignore
 public class ModelTest {
 
@@ -35,7 +36,7 @@ public class ModelTest {
 				Grad.MAJ, "Müller", "Hans", cal, "C HQ");
 		em.persist(person);
 
-		Ausweis a = ObjectFactory.createAusweis(person);
+		Ausweis a = ObjectFactory.createAusweis(person, new QueryHelper(em).createUniqueBarcode());
 
 		em.persist(a);
 	}
@@ -47,7 +48,7 @@ public class ModelTest {
 				Grad.FOUR, "Rüdisühli", "Claude", cal, "H HQ");
 		em.persist(person);
 
-		Ausweis a = ObjectFactory.createAusweis(person);
+		Ausweis a = ObjectFactory.createAusweis(person, new QueryHelper(em).createUniqueBarcode());
 
 		em.persist(a);
 	}
@@ -109,7 +110,7 @@ public class ModelTest {
 
 	private static void setUpDB() {
 		EntityManagerHelper.setDebugMode(false);
-		EntityManager em = EntityManagerHelper.getEntityManager();
+		EntityManager em = EntityManagerHelper.createEntityManager();
 		em.getTransaction().begin();
 
 		List<Zutrittsregel> regeln = ModelTest.createRegeln(em);

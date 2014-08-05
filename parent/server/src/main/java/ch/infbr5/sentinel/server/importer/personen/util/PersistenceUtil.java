@@ -2,7 +2,8 @@ package ch.infbr5.sentinel.server.importer.personen.util;
 
 import java.util.Date;
 
-import ch.infbr5.sentinel.server.db.EntityManagerHelper;
+import javax.persistence.EntityManager;
+
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Einheit;
@@ -18,13 +19,23 @@ public class PersistenceUtil {
 
 	private static String NAME_EINHEIT_GAST = "GAST";
 
+	private EntityManager entityManager;
+
+	public PersistenceUtil(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+
+	private QueryHelper getQueryHelper() {
+		return new QueryHelper(entityManager);
+	}
+
 	/**
 	 * Gibt die Einheit _Archiv_ zurück. Falls diese nicht existiert wird sie
 	 * erzeugt.
 	 *
 	 * @return _Archiv_ Einheit
 	 */
-	public static Einheit getArchivEinheit() {
+	public Einheit getArchivEinheit() {
 		return createEinheit(NAME_EINHEIT_ARCHIV);
 	}
 
@@ -37,8 +48,8 @@ public class PersistenceUtil {
 	 *            Einheit.
 	 * @return Person.
 	 */
-	public static Person createPerson(PersonDetails personDetails, Einheit einheit) {
-		return QueryHelper.createPerson(einheit,
+	public Person createPerson(PersonDetails personDetails, Einheit einheit) {
+		return  getQueryHelper().createPerson(einheit,
 				personDetails.getAhvNr(),
 				Grad.getGrad(personDetails.getGrad()),
 				personDetails.getName(),
@@ -56,19 +67,19 @@ public class PersistenceUtil {
 	 * @param PersonDetails personDetaills
 	 * @return Person, falls eine gefunden wurde, anderenfalls keine.
 	 */
-	public static Person findPerson(PersonDetails personDetail) {
-		Person p = QueryHelper.getPerson(personDetail.getAhvNr());
+	public Person findPerson(PersonDetails personDetail) {
+		Person p = getQueryHelper().getPerson(personDetail.getAhvNr());
 		if (p == null) {
 			// Ich finde das nicht so schlau...?!
-			p = QueryHelper.getPerson(personDetail.getName(), personDetail.getVorname(), personDetail.getGeburtsdatum());
+			p = getQueryHelper().getPerson(personDetail.getName(), personDetail.getVorname(), personDetail.getGeburtsdatum());
 		}
 		return p;
 	}
 
-	public static Person findPerson(DataRow dataRow) {
-		Person p = QueryHelper.getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
+	public Person findPerson(DataRow dataRow) {
+		Person p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
 		if (p == null) {
-			p = QueryHelper.getPerson(dataRow.getValue(PersonenAttribute.Name), dataRow.getValue(PersonenAttribute.Vorname), dataRow.getGeburtstag());
+			p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.Name), dataRow.getValue(PersonenAttribute.Vorname), dataRow.getGeburtstag());
 		}
 		return p;
 	}
@@ -80,7 +91,7 @@ public class PersistenceUtil {
 	 * @param person
 	 *            Person
 	 */
-	public static void removeValidAusweis(Person person) {
+	public void removeValidAusweis(Person person) {
 		Ausweis ausweis = person.getValidAusweis();
 		if (ausweis != null) {
 			deactivateAusweis(ausweis);
@@ -94,7 +105,7 @@ public class PersistenceUtil {
 	 * @param ausweis
 	 *            Ausweis
 	 */
-	public static void deactivateAusweis(Ausweis ausweis) {
+	public void deactivateAusweis(Ausweis ausweis) {
 		ausweis.setInvalid(true);
 		ausweis.setErstellt(true);
 		ausweis.setGueltigBis(new Date());
@@ -107,8 +118,8 @@ public class PersistenceUtil {
 	 *            Name der Einheit.
 	 * @return Falls die Einheit existiert, dann die Einheit sonst null.
 	 */
-	private static Einheit findEinheit(String name) {
-		return QueryHelper.getEinheit(name);
+	private Einheit findEinheit(String name) {
+		return getQueryHelper().getEinheit(name);
 	}
 
 	/**
@@ -121,11 +132,11 @@ public class PersistenceUtil {
 	 *            Name der Einheit.
 	 * @return Immer eine Einheit.
 	 */
-	private static Einheit createEinheit(String name) {
+	private Einheit createEinheit(String name) {
 		Einheit einheit = findEinheit(name);
 		if (einheit == null) {
 			einheit = ObjectFactory.createEinheit(name);
-			EntityManagerHelper.getEntityManager().persist(einheit);
+			entityManager.persist(einheit);
 		}
 		return einheit;
 	}
@@ -137,7 +148,7 @@ public class PersistenceUtil {
 	 *            Name der Einheit
 	 * @return True, falls die Einheit existiert, anderenfalls false.
 	 */
-	private static boolean existsEinheit(String name) {
+	private boolean existsEinheit(String name) {
 		Einheit einheit = findEinheit(name);
 		return (einheit != null);
 	}
@@ -155,7 +166,7 @@ public class PersistenceUtil {
 	 *            nicht existiert.
 	 * @return Einheit (nie NULL).
 	 */
-	public static Einheit createEinheitKompletterBestand(String einheitName,
+	public Einheit createEinheitKompletterBestand(String einheitName,
 			boolean isKompletterBestand) {
 		Einheit einheit;
 		if (isKompletterBestand) {
@@ -170,14 +181,14 @@ public class PersistenceUtil {
 		return einheit;
 	}
 
-	public static void updatePerson(Person person, PersonDetails details, boolean isKompletterBestand) {
+	public void updatePerson(Person person, PersonDetails details, boolean isKompletterBestand) {
 		person.setAhvNr(details.getAhvNr());
 		person.setName(details.getName());
 		person.setVorname(details.getVorname());
 		person.setFunktion(details.getFunktion());
 		person.setGrad(Grad.getGrad(details.getGrad()));
 		person.setGeburtsdatum(details.getGeburtsdatum());
-		Einheit einheit = PersistenceUtil.createEinheitKompletterBestand(details.getEinheitText(), isKompletterBestand);
+		Einheit einheit = createEinheitKompletterBestand(details.getEinheitText(), isKompletterBestand);
 		person.setEinheit(einheit);
 	}
 

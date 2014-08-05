@@ -17,10 +17,10 @@ public class AusweisRendererTest {
 	@Test
 	public void createAusweiseTest() {
 		EntityManagerHelper.setDebugMode(true);
-		EntityManager em = EntityManagerHelper.getEntityManager();
+		EntityManager em = EntityManagerHelper.createEntityManager();
 		em.getTransaction().begin();
 
-		PrintJob j = new PdfAusweisListe(false, true, "HQ Kp 5/1").print();
+		PrintJob j = new PdfAusweisListe(em, false, true, "HQ Kp 5/1").print();
 
 		em.getTransaction().commit();
 

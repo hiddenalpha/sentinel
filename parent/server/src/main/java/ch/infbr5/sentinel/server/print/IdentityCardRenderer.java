@@ -15,10 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.persistence.EntityManager;
 
-import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.ImageStore;
-import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.Einheit;
@@ -47,44 +46,55 @@ import com.thoughtworks.xstream.core.util.Base64Encoder;
 
 public class IdentityCardRenderer extends PrintingDocument {
 
+	@Override
 	public String toString() {
 		return "Erstellte Ausweise";
 	}
 
+	@Override
 	public String getFileName() {
 		return "ausweise";
 	}
 
+
+
+	public IdentityCardRenderer(EntityManager em) {
+		super(em);
+	}
+
+
+
+	@Override
 	protected byte[] renderPdf() {
 
-		List<Ausweis> ausweise = QueryHelper.findAusweiseZumDrucken();
+		List<Ausweis> ausweise = getQueryHelper().findAusweiseZumDrucken();
 
 		if (!ausweise.isEmpty()) {
 			try {
-	
+
 				int offsetX = 50;
 				int offsetY = 40;
-	
+
 				int counter = 0;
-	
+
 				Rectangle A4_quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
 				Document document = new Document(A4_quer);
-	
+
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				PdfWriter writer = PdfWriter.getInstance(document, out);
 				document.open();
 				PdfContentByte cb = writer.getDirectContent();
-	
+
 				String password = "";
-				List<ConfigurationValue> passwordList = QueryHelper.findConfigurationValue("IdentityCardPassword");
+				List<ConfigurationValue> passwordList = getQueryHelper().findConfigurationValue("IdentityCardPassword");
 				if (passwordList.size() > 0) {
 					password = passwordList.get(0).getStringValue();
 				}
-	
+
 				for (Iterator<Ausweis> iterator = ausweise.iterator(); iterator.hasNext();) {
 					Ausweis ausweis = iterator.next();
 					counter++;
-	
+
 					if (counter % 4 == 1)
 						printAusweis(offsetX, offsetY + 270, cb, ausweis, password);
 					if (counter % 4 == 2)
@@ -93,18 +103,18 @@ public class IdentityCardRenderer extends PrintingDocument {
 						printAusweis(offsetX, offsetY, cb, ausweis, password);
 					if (counter % 4 == 0)
 						printAusweis(offsetX + 400, offsetY, cb, ausweis, password);
-	
+
 					if (counter % 4 == 0)
 						neueSeite(document);
-	
+
 					ausweis.setErstellt(true);
-					EntityManagerHelper.getEntityManager().persist(ausweis);
-	
+					getEntityManager().persist(ausweis);
+
 				}
-	
+
 				document.close();
 				return out.toByteArray();
-	
+
 			} catch (BadElementException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -118,10 +128,10 @@ public class IdentityCardRenderer extends PrintingDocument {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
-	
+
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -184,7 +194,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 	/**
 	 * Generiert Content für QC Barcode auf Rückseite
-	 * 
+	 *
 	 * @param p
 	 *            Person
 	 * @param a
@@ -316,7 +326,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 			return new Jpeg(IdentityCardRenderer.class.getResource("/images/AusweisVorlage.jpg"));
 		}
 	}
-	
+
 	private BufferedImage getWasserzeichen() throws IOException {
 		File f = new File(FileHelper.FILE_WASSERZEICHEN_PNG);
 		if(f.exists()) {

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.db.QueryHelper;
@@ -43,7 +45,10 @@ abstract class PersonenDataImporter {
 
 	private ModificationDto modifcationDto;
 
-	public PersonenDataImporter(String filenameData, boolean isKompletterBestand) {
+	private EntityManager entityManager;
+
+	public PersonenDataImporter(EntityManager em, String filenameData, boolean isKompletterBestand) {
+		this.entityManager = em;
 		this.filenameData = filenameData;
 		this.isKompletterBestand = isKompletterBestand;
 
@@ -292,7 +297,7 @@ abstract class PersonenDataImporter {
 			String einheitsName = "";
 
 			if (dataRow.isValid()) {
-				Person person = PersistenceUtil.findPerson(dataRow);
+				Person person = getPersistenceUtil().findPerson(dataRow);
 				if (person == null) {
 					ModificationNewPerson mod = new ModificationNewPerson();
 					mod.setPersonDetails(dataRow.createPersonDetails());
@@ -347,7 +352,7 @@ abstract class PersonenDataImporter {
 
 		// Alte Personen archivieren
 		if (isKompletterBestand()) {
-			List<Person> personen = QueryHelper.getPersonen();
+			List<Person> personen = getQueryHelper().getPersonen();
 			for (Person p : personen) {
 				// Falls die Person bei einem kompletten Bestandes import nicht daher gekommen ist und
 				// falls die Einheit bereits bekannt ist, dann wird sie archiviert.
@@ -414,33 +419,33 @@ abstract class PersonenDataImporter {
 
 		for (ModificationNewPerson mod : modifcationDto.getModificationNewPersons()) {
 			if (mod.isToModify()) {
-				Einheit einheit = PersistenceUtil.createEinheitKompletterBestand(mod.getPersonDetails().getEinheitText(), isKompletterBestand());
-				PersistenceUtil.createPerson(mod.getPersonDetails(), einheit);
+				Einheit einheit = getPersistenceUtil().createEinheitKompletterBestand(mod.getPersonDetails().getEinheitText(), isKompletterBestand());
+				getPersistenceUtil().createPerson(mod.getPersonDetails(), einheit);
 			}
 		}
 
 		for (ModificationUpdatePerson mod : modifcationDto.getModificationUpdatePersons()) {
 			if (mod.isToModify()) {
-				Person person = PersistenceUtil.findPerson(mod.getPersonDetailsOld());
-				PersistenceUtil.updatePerson(person, mod.getPersonDetailsNew(), isKompletterBestand());
+				Person person = getPersistenceUtil().findPerson(mod.getPersonDetailsOld());
+				getPersistenceUtil().updatePerson(person, mod.getPersonDetailsNew(), isKompletterBestand());
 			}
 		}
 
 		for (ModificationUpdatePersonAndNewAusweis mod : modifcationDto.getModificationNewAusweise()) {
 			if (mod.isToModify()) {
-				Person person = PersistenceUtil.findPerson(mod.getPersonDetailsOld());
-				PersistenceUtil.updatePerson(person, mod.getPersonDetailsNew(), isKompletterBestand());
-				PersistenceUtil.deactivateAusweis(person.getValidAusweis());
-				QueryHelper.createAusweis(person.getId());
+				Person person = getPersistenceUtil().findPerson(mod.getPersonDetailsOld());
+				getPersistenceUtil().updatePerson(person, mod.getPersonDetailsNew(), isKompletterBestand());
+				getPersistenceUtil().deactivateAusweis(person.getValidAusweis());
+				getQueryHelper().createAusweis(person.getId());
 			}
 		}
 
 		for (ModificationArchivePerson mod : modifcationDto.getModificationArchivePersons()) {
 			if (mod.isToModify()) {
-				Einheit archivEinheit = PersistenceUtil.getArchivEinheit();
-				Person person = PersistenceUtil.findPerson(mod.getPersonDetails());
+				Einheit archivEinheit = getPersistenceUtil().getArchivEinheit();
+				Person person = getPersistenceUtil().findPerson(mod.getPersonDetails());
 				person.setEinheit(archivEinheit);
-				PersistenceUtil.removeValidAusweis(person);
+				getPersistenceUtil().removeValidAusweis(person);
 			}
 		}
 	}
@@ -452,6 +457,14 @@ abstract class PersonenDataImporter {
 			}
 		}
 		return null;
+	}
+
+	private QueryHelper getQueryHelper() {
+		return new QueryHelper(entityManager);
+	}
+
+	private PersistenceUtil getPersistenceUtil() {
+		return new PersistenceUtil(entityManager);
 	}
 
 }

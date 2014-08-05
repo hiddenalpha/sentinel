@@ -17,14 +17,18 @@ public class ServerSetup {
 
 	public static boolean databaseIsEmpty() {
 
-		int noOfRecords = QueryHelper.getCheckpoints().size() + QueryHelper.getConfigurationValues().size()
-				+ QueryHelper.findAusweise().size();
+		EntityManager em = EntityManagerHelper.createEntityManager();
+		QueryHelper qh = new QueryHelper(em);
+
+		int noOfRecords = qh.getCheckpoints().size() + qh.getConfigurationValues().size() + qh.findAusweise().size();
+
+		em.close();
 
 		return (noOfRecords == 0);
 	}
 
 	public static void setupDatabase() {
-		EntityManager em = EntityManagerHelper.getEntityManager();
+		EntityManager em = EntityManagerHelper.createEntityManager();
 		em.getTransaction().begin();
 
 		// Standart Zone anlegen
@@ -49,19 +53,24 @@ public class ServerSetup {
 		ConfigurationValue v2 = ObjectFactory.createConfigurationValue("IdentityCardPassword", "1nf8r5!", 0, "");
 		em.persist(v2);
 
-		ConfigurationValue v3 = ObjectFactory.createConfigurationValue("URL_IPCAM_1", "http://192.168.2.90/image.jpg", 0, "");
+		ConfigurationValue v3 = ObjectFactory.createConfigurationValue("URL_IPCAM_1", "http://192.168.2.90/image.jpg",
+				0, "");
 		em.persist(v3);
 
-		ConfigurationValue v4 = ObjectFactory.createConfigurationValue("URL_IPCAM_2", "http://192.168.2.91/image.jpg", 0, "");
+		ConfigurationValue v4 = ObjectFactory.createConfigurationValue("URL_IPCAM_2", "http://192.168.2.91/image.jpg",
+				0, "");
 		em.persist(v4);
 
-		ConfigurationValue v5 = ObjectFactory.createConfigurationValue("URL_IPCAM_3", "http://192.168.2.92/image.jpg", 0, "");
+		ConfigurationValue v5 = ObjectFactory.createConfigurationValue("URL_IPCAM_3", "http://192.168.2.92/image.jpg",
+				0, "");
 		em.persist(v5);
 
-		ConfigurationValue v6 = ObjectFactory.createConfigurationValue("URL_IPCAM_4", "http://192.168.2.93/image.jpg", 0, "");
+		ConfigurationValue v6 = ObjectFactory.createConfigurationValue("URL_IPCAM_4", "http://192.168.2.93/image.jpg",
+				0, "");
 		em.persist(v6);
 
 		em.getTransaction().commit();
+		em.close();
 	}
 
 }

@@ -3,7 +3,8 @@ package ch.infbr5.sentinel.server.print;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-import ch.infbr5.sentinel.server.db.QueryHelper;
+import javax.persistence.EntityManager;
+
 import ch.infbr5.sentinel.server.model.Person;
 
 import com.lowagie.text.Chunk;
@@ -22,8 +23,8 @@ public class PdfAusweisBoxInventar extends PrintingDocument {
 	private static final int NOF_SLOTS_IN_BOX = 132;
 	private String einheitName;
 
-	public PdfAusweisBoxInventar(String einheitName) {
-
+	public PdfAusweisBoxInventar(EntityManager entityManager, String einheitName) {
+		super(entityManager);
 		this.einheitName = einheitName;
 	}
 
@@ -32,6 +33,7 @@ public class PdfAusweisBoxInventar extends PrintingDocument {
 		return "ausweisboxInventar";
 	}
 
+	@Override
 	public String toString() {
 		return "Ausweisbox Inventar";
 	}
@@ -39,12 +41,12 @@ public class PdfAusweisBoxInventar extends PrintingDocument {
 	@Override
 	protected byte[] renderPdf() {
 
-		List<Person> personen = QueryHelper.getPersonen(true, true, einheitName);
+		List<Person> personen = getQueryHelper().getPersonen(true, true, einheitName);
 
 		if (personen.isEmpty()) {
 			return null;
 		}
-		
+
 		Document document = new Document();
 		document.setPageSize(PageSize.A4.rotate());
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

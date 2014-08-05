@@ -4,8 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import ch.infbr5.sentinel.server.db.ImageStore;
-import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.utils.DateHelper;
@@ -27,7 +28,8 @@ public class PdfAusweisListe extends PrintingDocument {
 	private boolean nachEinheit = false;
 	private String einheitName;
 
-	public PdfAusweisListe(boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
+	public PdfAusweisListe(EntityManager em, boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
+		super(em);
 		this.nurMitAusweis = nurMitAusweis;
 		this.nachEinheit = nachEinheit;
 		this.einheitName = einheitName;
@@ -38,30 +40,31 @@ public class PdfAusweisListe extends PrintingDocument {
 		return "ausweisListe";
 	}
 
+	@Override
 	public String toString() {
 		String parameter = "";
-		
+
 		if (nurMitAusweis)
 			parameter = "nur Ausweise ";
-		
+
 		if (nachEinheit) {
 			parameter = parameter + "nach Einheit";
 		} else {
 			parameter = parameter + "nach Name";
 		}
-		
+
 		return "Ausweisliste ("+parameter+")";
 	}
 
 	@Override
 	protected byte[] renderPdf() {
 
-		List<Person> personen = QueryHelper.getPersonen(nurMitAusweis, nachEinheit, einheitName);
+		List<Person> personen = getQueryHelper().getPersonen(nurMitAusweis, nachEinheit, einheitName);
 
 		if (personen.isEmpty()) {
 			return null;
 		}
-		
+
 		Document document = new Document();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {

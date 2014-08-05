@@ -2,7 +2,7 @@
 <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
 	<handler-chain>
 		<handler>
-			<handler-class>ch.infbr5.sentinel.server.ws.RequestHandler</handler-class>
+			<handler-class>ch.infbr5.sentinel.server.ws.EntityManagerHandler</handler-class>
 		</handler>
 	</handler-chain>
 </handler-chains>

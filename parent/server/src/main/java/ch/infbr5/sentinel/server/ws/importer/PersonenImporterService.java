@@ -4,14 +4,18 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.persistence.EntityManager;
+import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
 
+import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.importer.personen.PersonenImporter;
 import ch.infbr5.sentinel.server.importer.personen.state.PersonenImporterStatePersister;
 import ch.infbr5.sentinel.server.utils.FileHelper;
@@ -28,6 +32,9 @@ import com.google.common.collect.Lists;
 public class PersonenImporterService {
 
 	private static Logger log = Logger.getLogger(PersonenImporterService.class);
+
+	@Resource
+	private WebServiceContext context;
 
 	@WebMethod
 	public String initiatImport(@WebParam(name = "filename") String filename, @WebParam(name = "data") byte[] data, @WebParam(name = "isKompletterBestand") boolean isKompletterBestand) {
@@ -174,7 +181,7 @@ public class PersonenImporterService {
 	}
 
 	private PersonenImporter createImporter(PersonenImporterStatePersister persister) {
-		PersonenImporter importer = new PersonenImporter(persister.getState().getFilenameData(), persister.getState().isKompletterBestand());
+		PersonenImporter importer = new PersonenImporter(getEntityManager(), persister.getState().getFilenameData(), persister.getState().isKompletterBestand());
 		importer.setColumnMappings(toListMappings(persister.getState().getColumnMappings()));
 		importer.setModifications(persister.getState().getModifications());
 		return importer;
@@ -225,6 +232,10 @@ public class PersonenImporterService {
 
 	private String getFileData(String sessionKey, String extension) {
 		return "import/" + sessionKey + "-data." + extension;
+	}
+
+	private EntityManager getEntityManager() {
+		return EntityManagerHelper.getEntityManager(context);
 	}
 
 }

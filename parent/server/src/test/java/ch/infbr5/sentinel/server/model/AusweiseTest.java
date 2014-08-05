@@ -20,10 +20,10 @@ public class AusweiseTest {
 	public void getAusweise() {
 
 		EntityManagerHelper.setDebugMode(false);
-		EntityManager em = EntityManagerHelper.getEntityManager();
+		EntityManager em = EntityManagerHelper.createEntityManager();
 		em.getTransaction().begin();
 
-		List<Ausweis> a = QueryHelper.findAusweise();
+		List<Ausweis> a = new QueryHelper(em).findAusweise();
 
 		em.getTransaction().commit();
 
@@ -37,21 +37,21 @@ public class AusweiseTest {
 	public void migDB() {
 
 		EntityManagerHelper.setDebugMode(false);
-		EntityManager em = EntityManagerHelper.getEntityManager();
+		EntityManager em = EntityManagerHelper.createEntityManager();
 		em.getTransaction().begin();
-		
-		List<Person> personen = QueryHelper.getPersonen(false, true, "ZIVIL");
+
+		List<Person> personen = new QueryHelper(em).getPersonen(false, true, "ZIVIL");
 		//List<Person> personen = QueryHelper.getPersonen(false, true, "_Archiv_");
 		for (Iterator<Person> iterator = personen.iterator(); iterator.hasNext();) {
 			Person person = iterator.next();
-			
-						
+
+
 			if(person.getValidAusweis()!=null) {
 				person.getValidAusweis().invalidate();
 			}
-			
+
 			em.remove(person);
-			
+
 			System.out.println(person.getName() + " " + person.getVorname());
 
 		}

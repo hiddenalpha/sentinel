@@ -4,19 +4,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.mapper.Mapper;
 import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 import ch.infbr5.sentinel.server.ws.journal.JournalSystemMeldung;
 
 public class ObjectFactory {
 
-	private static final String BARCODE_PREFIX = "A";
-	private static final int BARCODE_LAENGE = 6;
+	public static final String BARCODE_PREFIX = "A";
+	public static final int BARCODE_LAENGE = 6;
 
-	public static Ausweis createAusweis(Person person) {
+	public static Ausweis createAusweis(Person person, String barcode) {
 		Ausweis ausweis = new Ausweis();
-		ausweis.setBarcode(QueryHelper.createUniqueBarcode(ObjectFactory.BARCODE_LAENGE, ObjectFactory.BARCODE_PREFIX));
+		ausweis.setBarcode(barcode);
 		ausweis.setPerson(person);
 		ausweis.setErstellt(false);
 		ausweis.setInvalid(false);

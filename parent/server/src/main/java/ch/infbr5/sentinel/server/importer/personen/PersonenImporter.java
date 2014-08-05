@@ -2,6 +2,8 @@ package ch.infbr5.sentinel.server.importer.personen;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import ch.infbr5.sentinel.server.utils.FileHelper;
 import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumn;
 import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumnMapping;
@@ -13,12 +15,12 @@ public class PersonenImporter {
 
 	private PersonenDataImporter importer;
 
-	public PersonenImporter(String filenameData, boolean isKompletterBestand) {
+	public PersonenImporter(EntityManager em, String filenameData, boolean isKompletterBestand) {
 		String extension = FileHelper.getExtension(filenameData);
 		if ("csv".equals(extension)) {
-			importer = new PersonenDataCsvImporter(filenameData, isKompletterBestand);
+			importer = new PersonenDataCsvImporter(em, filenameData, isKompletterBestand);
 		} else if ("xls".equals(extension) || "xlsx".equals(extension)) {
-			importer = new PersonenDataExcelImporter(filenameData, isKompletterBestand);
+			importer = new PersonenDataExcelImporter(em, filenameData, isKompletterBestand);
 		} else {
 			throw new IllegalArgumentException("Datei Extension wird nicht unterstützt.");
 		}

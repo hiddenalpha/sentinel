@@ -1,5 +1,7 @@
 package ch.infbr5.sentinel.server.mapper;
 
+import javax.persistence.EntityManager;
+
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.Person;
@@ -16,7 +18,7 @@ import com.google.common.base.Function;
 
 public class Mapper {
 
-	public static Function<JournalGefechtsMeldung, GefechtsMeldung> mapJournalGefechtsMeldungToGefechtsMeldung() {
+	public static Function<JournalGefechtsMeldung, GefechtsMeldung> mapJournalGefechtsMeldungToGefechtsMeldung(final EntityManager entityManager) {
 		return new Function<JournalGefechtsMeldung, GefechtsMeldung>() {
 
 			@Override
@@ -31,7 +33,7 @@ public class Mapper {
 				target.setZeitpunktErledigt(source.getZeitpunktErledigt());
 				target.setZeitpunktMeldungsEingang(source.getZeitpunktMeldungsEingang());
 				if (source.getWeiterleitenAnPerson() != null) {
-					target.setWeiterleitenAnPerson(QueryHelper.getPerson(source.getWeiterleitenAnPerson().getId()));
+					target.setWeiterleitenAnPerson(new QueryHelper(entityManager).getPerson(source.getWeiterleitenAnPerson().getId()));
 				}
 				return target;
 			}

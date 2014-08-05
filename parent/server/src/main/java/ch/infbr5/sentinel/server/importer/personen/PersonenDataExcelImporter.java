@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -25,8 +27,8 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 
 	private int currentRow = 1;
 
-	public PersonenDataExcelImporter(String filenameData, boolean isKompletteEinheit) {
-		super(filenameData, isKompletteEinheit);
+	public PersonenDataExcelImporter(EntityManager em, String filenameData, boolean isKompletteEinheit) {
+		super(em, filenameData, isKompletteEinheit);
 	}
 
 	@Override

@@ -6,14 +6,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import javax.persistence.EntityManager;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 class PersonenDataCsvImporter extends PersonenDataImporter {
 
 	private CSVReader reader;
 
-	public PersonenDataCsvImporter(String filenameData, boolean isKompletteEinheit) {
-		super(filenameData, isKompletteEinheit);
+	public PersonenDataCsvImporter(EntityManager em, String filenameData, boolean isKompletteEinheit) {
+		super(em, filenameData, isKompletteEinheit);
 	}
 
 	@Override

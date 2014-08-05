@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.persistence.EntityManager;
+import javax.xml.ws.WebServiceContext;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.ImageStore;
@@ -41,9 +44,12 @@ import ch.infbr5.sentinel.server.ws.ZoneDetails;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class ConfigurationQueryService {
 
+	@Resource
+	private WebServiceContext context;
+
 	@WebMethod
 	public ConfigurationResponse getEinheiten() {
-		List<Einheit> einheiten = QueryHelper.getEinheiten();
+		List<Einheit> einheiten = getQueryHelper().getEinheiten();
 
 		EinheitDetails[] einheitDetails = new EinheitDetails[einheiten.size()];
 		for (int i = 0; i < einheiten.size(); i++) {
@@ -74,7 +80,7 @@ public class ConfigurationQueryService {
 			@WebParam(name = "EinheitDetails") EinheitDetails details) {
 		Einheit einheit = null;
 		if ((details.getId() != null) && (details.getId() > 0)) {
-			einheit = QueryHelper.getEinheitById(details.getId());
+			einheit = getQueryHelper().getEinheitById(details.getId());
 		}
 		if (einheit == null) {
 			einheit = ObjectFactory.createEinheit("");
@@ -89,15 +95,15 @@ public class ConfigurationQueryService {
 		einheit.setText_TrpK(details.getText_TrpK());
 		einheit.setText_Einh(details.getText_Einh());
 
-		EntityManagerHelper.getEntityManager().persist(einheit);
+		getEntityManager().persist(einheit);
 	}
 
 	@WebMethod
 	public boolean removeEinheit(@WebParam(name = "einheitId") Long einheitId) {
 		if ((einheitId != null) && (einheitId > 0)) {
-			Einheit einheit = QueryHelper.getEinheitById(einheitId);
+			Einheit einheit = getQueryHelper().getEinheitById(einheitId);
 			if (einheit != null) {
-				EntityManagerHelper.getEntityManager().remove(einheit);
+				getEntityManager().remove(einheit);
 				return true;
 			}
 		}
@@ -107,7 +113,7 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public ConfigurationResponse getZonen() {
-		List<Zone> zonen = QueryHelper.getZonen();
+		List<Zone> zonen = getQueryHelper().getZonen();
 
 		ZoneDetails[] zoneDetails = new ZoneDetails[zonen.size()];
 		for (int i = 0; i < zonen.size(); i++) {
@@ -130,7 +136,7 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public ConfigurationResponse getPersonen() {
-		List<Person> personen = QueryHelper.getPersonen();
+		List<Person> personen = getQueryHelper().getPersonen();
 
 		PersonDetails[] personenDetails = new PersonDetails[personen.size()];
 		for (int i = 0; i < personen.size(); i++) {
@@ -169,7 +175,7 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public ConfigurationResponse getPersonByAhvNr(String ahvNr) {
-		Person person = QueryHelper.getPerson(ahvNr);
+		Person person = getQueryHelper().getPerson(ahvNr);
 		PersonDetails[] personenDetails;
 
 		if (person != null) {
@@ -210,7 +216,7 @@ public class ConfigurationQueryService {
 	public void updatePerson(@WebParam(name = "PersonDetails") PersonDetails pd) {
 		Person person = null;
 		if ((pd.getId() != null) && (pd.getId() > 0)) {
-			person = QueryHelper.getPerson(pd.getId());
+			person = getQueryHelper().getPerson(pd.getId());
 		}
 		if (person == null) {
 			person = ObjectFactory.createPerson(null, null, null, null, null,
@@ -225,7 +231,7 @@ public class ConfigurationQueryService {
 		person.setGrad(Grad.getGrad(pd.getGrad()));
 		person.setId(pd.getId());
 		person.setVorname(pd.getVorname());
-		EntityManagerHelper.getEntityManager().persist(person);
+		getEntityManager().persist(person);
 
 		if (pd.getImage() != null) {
 			ImageStore.saveJpegImage(person.getAhvNr(), pd.getImage());
@@ -235,9 +241,9 @@ public class ConfigurationQueryService {
 	@WebMethod
 	public boolean removePerson(@WebParam(name = "personId") Long personId) {
 		if ((personId != null) && (personId > 0)) {
-			Person person = QueryHelper.getPerson(personId);
+			Person person = getQueryHelper().getPerson(personId);
 			if (person != null) {
-				EntityManagerHelper.getEntityManager().remove(person);
+				getEntityManager().remove(person);
 				return true;
 			}
 		}
@@ -246,7 +252,7 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public ConfigurationResponse getCheckpoints() {
-		List<Checkpoint> checkpoints = QueryHelper.getCheckpoints();
+		List<Checkpoint> checkpoints = getQueryHelper().getCheckpoints();
 
 		CheckpointDetails[] checkpointsDetails = new CheckpointDetails[checkpoints
 				.size()];
@@ -272,23 +278,23 @@ public class ConfigurationQueryService {
 			@WebParam(name = "CheckpointDetails") CheckpointDetails cd) {
 		Checkpoint checkpoint = null;
 		if ((cd.getId() != null) && (cd.getId() > 0)) {
-			checkpoint = QueryHelper.getCheckpoint(cd.getId());
+			checkpoint = getQueryHelper().getCheckpoint(cd.getId());
 		}
 		if (checkpoint == null) {
 			checkpoint = ObjectFactory.createCheckpoint("", null, null);
 		}
 
 		checkpoint.setName(cd.getName());
-		EntityManagerHelper.getEntityManager().persist(checkpoint);
+		getEntityManager().persist(checkpoint);
 	}
 
 	@WebMethod
 	public boolean removeCheckpoint(
 			@WebParam(name = "checkpointId") Long checkpointId) {
 		if ((checkpointId != null) && (checkpointId > 0)) {
-			Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
+			Checkpoint checkpoint = getQueryHelper().getCheckpoint(checkpointId);
 			if (checkpoint != null) {
-				EntityManagerHelper.getEntityManager().remove(checkpoint);
+				getEntityManager().remove(checkpoint);
 				return true;
 			}
 		}
@@ -299,7 +305,7 @@ public class ConfigurationQueryService {
 	public void updateConfigurationValue(ConfigurationDetails c) {
 		ConfigurationValue config = null;
 		if ((c.getId() != null) && (c.getId() > 0)) {
-			config = QueryHelper.getConfigurationValueById(c.getId());
+			config = getQueryHelper().getConfigurationValueById(c.getId());
 		}
 		if (config == null) {
 			config = ObjectFactory.createConfigurationValue(c.getKey(),
@@ -310,7 +316,7 @@ public class ConfigurationQueryService {
 			config.setLongValue(c.getLongValue());
 			config.setStringValue(c.getStringValue());
 		}
-		EntityManagerHelper.getEntityManager().persist(config);
+		getEntityManager().persist(config);
 
 	}
 
@@ -321,16 +327,16 @@ public class ConfigurationQueryService {
 
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		List<ConfigurationValue> configurationValues = QueryHelper
+		List<ConfigurationValue> configurationValues = getQueryHelper()
 				.findConfigurationValue(key);
 		List<ConfigurationDetails> temp = new ArrayList<ConfigurationDetails>();
 
-		Checkpoint checkpoint = QueryHelper.getCheckpoint(checkpointId);
+		Checkpoint checkpoint = getQueryHelper().getCheckpoint(checkpointId);
 		if (checkpoint != null) {
 
 			for (int i = 0; i < configurationValues.size(); i++) {
 				String regex = configurationValues.get(i).getValidFor();
-				// Falls Config fÃ¼r den Checkpoint gÃ¼ltig ist
+				// Falls Config für den Checkpoint gültig ist
 				if ((regex != null) && (checkpoint != null)) {
 					if (regex.equals("")
 							|| (isValidRegex(regex) && checkpoint.getName()
@@ -354,7 +360,7 @@ public class ConfigurationQueryService {
 			@WebParam(name = "key") String key) {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		List<ConfigurationValue> configurationValues = QueryHelper
+		List<ConfigurationValue> configurationValues = getQueryHelper()
 				.findConfigurationValue(key);
 		ConfigurationDetails cds[] = new ConfigurationDetails[1];
 		if (configurationValues.size() > 0) {
@@ -367,7 +373,7 @@ public class ConfigurationQueryService {
 	@WebMethod
 	public ConfigurationResponse getConfigurationValues() {
 
-		List<ConfigurationValue> configurationValues = QueryHelper
+		List<ConfigurationValue> configurationValues = getQueryHelper()
 				.getConfigurationValues();
 
 		ConfigurationDetails[] configurationDetails = new ConfigurationDetails[configurationValues
@@ -385,10 +391,10 @@ public class ConfigurationQueryService {
 	public boolean removeConfiguration(
 			@WebParam(name = "configurationId") Long configurationId) {
 		if ((configurationId != null) && (configurationId > 0)) {
-			ConfigurationValue config = QueryHelper
+			ConfigurationValue config = getQueryHelper()
 					.getConfigurationValueById(configurationId);
 			if (config != null) {
-				EntityManagerHelper.getEntityManager().remove(config);
+				getEntityManager().remove(config);
 				return true;
 			}
 		}
@@ -398,7 +404,7 @@ public class ConfigurationQueryService {
 	@WebMethod
 	public ConfigurationResponse getPrintJobs() {
 
-		List<PrintJob> printJobs = QueryHelper.getPrintJobs();
+		List<PrintJob> printJobs = getQueryHelper().getPrintJobs();
 
 		PrintJobDetails[] printJobDetails = new PrintJobDetails[printJobs
 				.size()];
@@ -416,7 +422,7 @@ public class ConfigurationQueryService {
 		PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PrintJob job = QueryHelper.getPrintJobs(id).get(0);
+		PrintJob job = getQueryHelper().getPrintJobs(id).get(0);
 		printJobDetails[0] = convert(job);
 		printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
 
@@ -428,7 +434,7 @@ public class ConfigurationQueryService {
 	public ConfigurationResponse printAusweise() {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		IdentityCardRenderer renderer = new IdentityCardRenderer();
+		IdentityCardRenderer renderer = new IdentityCardRenderer(getEntityManager());
 		PrintJob job = renderer.print();
 		if (job != null) {
 			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
@@ -443,7 +449,7 @@ public class ConfigurationQueryService {
 	public ConfigurationResponse printAusweisListe(boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisListe ausweisList = new PdfAusweisListe(nurMitAusweis, nachEinheit, einheitName);
+		PdfAusweisListe ausweisList = new PdfAusweisListe(getEntityManager(), nurMitAusweis, nachEinheit, einheitName);
 		PrintJob job = ausweisList.print();
 		if (job != null) {
 			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
@@ -451,7 +457,7 @@ public class ConfigurationQueryService {
 			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
 			response.setPrintJobDetails(printJobDetails);
 		}
-		
+
 		return response;
 	}
 
@@ -459,7 +465,7 @@ public class ConfigurationQueryService {
 	public ConfigurationResponse printAusweisboxInventar(String einheitName) {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(einheitName);
+		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(getEntityManager(), einheitName);
 		PrintJob job = ausweisBoxListen.print();
 		if (job != null) {
 			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
@@ -467,7 +473,7 @@ public class ConfigurationQueryService {
 			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
 			response.setPrintJobDetails(printJobDetails);
 		}
-		
+
 		return response;
 	}
 
@@ -487,12 +493,13 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public byte[] exportPersonData(String password) {
-		return AusweisDatenWriter.export(password);
+		List<Person> result = getQueryHelper().getPersonen();
+		return AusweisDatenWriter.export(password, result);
 	}
 
 	@WebMethod
 	public boolean importPersonData(byte[] data, String password) {
-		AusweisDatenReader reader = new AusweisDatenReader(data, password);
+		AusweisDatenReader reader = new AusweisDatenReader(data, password, getEntityManager());
 		if (reader.isValidPassword()) {
 			reader.read();
 			return true;
@@ -522,7 +529,7 @@ public class ConfigurationQueryService {
 	}
 
 	private Einheit getEinheit(Long einheitId) {
-		return QueryHelper.getEinheitById(einheitId);
+		return getQueryHelper().getEinheitById(einheitId);
 	}
 
 	private boolean isValidRegex(String pattern) {
@@ -554,5 +561,13 @@ public class ConfigurationQueryService {
 		configurationDetail.setValidFor(config.getValidFor());
 
 		return configurationDetail;
+	}
+
+	private EntityManager getEntityManager() {
+		return EntityManagerHelper.getEntityManager(context);
+	}
+
+	private QueryHelper getQueryHelper() {
+		return new QueryHelper(getEntityManager());
 	}
 }

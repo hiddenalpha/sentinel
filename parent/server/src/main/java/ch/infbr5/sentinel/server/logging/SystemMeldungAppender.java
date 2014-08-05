@@ -1,5 +1,7 @@
 package ch.infbr5.sentinel.server.logging;
 
+import javax.persistence.EntityManager;
+
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -38,7 +40,11 @@ public class SystemMeldungAppender extends AppenderSkeleton {
 		meldung.setCallerLineNumber(event.getLocationInformation().getLineNumber());
 		meldung.setCallerFilename(event.getLocationInformation().getFileName());
 
-		EntityManagerHelper.getEntityManager().persist(meldung);
+		EntityManager em = EntityManagerHelper.createEntityManager();
+		em.getTransaction().begin();
+		em.persist(meldung);
+		em.getTransaction().commit();
+		em.close();
 	}
 
 }
