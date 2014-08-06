@@ -70,7 +70,7 @@ public class StartupHandler {
 	}
 
 	/**
-	 * ÃœberprÃ¼ft das ein Checkpoint configuriert ist. Ansonsten wird ein Auswahl
+	 * Überprüft das ein Checkpoint configuriert ist. Ansonsten wird ein Auswahl
 	 * Dialog angezeigt.
 	 */
 	public void showCheckpointChooserIfNeeded() {
@@ -88,7 +88,7 @@ public class StartupHandler {
 				CheckpointSelectionValue selected = null;
 
 				if (values.length > 0) {
-					selected = (CheckpointSelectionValue) JOptionPane.showInputDialog(this.parent, "WÃ¤hle Checkpoint",
+					selected = (CheckpointSelectionValue) JOptionPane.showInputDialog(this.parent, "Wähle Checkpoint",
 							"Checkpoint Auswahl", JOptionPane.WARNING_MESSAGE, null, values, values[0]);
 				} else {
 					JOptionPane.showMessageDialog(this.parent,
@@ -119,7 +119,7 @@ public class StartupHandler {
 	}
 
 	/**
-	 * ÃœberprÃ¼ft die Verbindung zum Server (default localhost) und fragt bei
+	 * Überprüft die Verbindung zum Server (default localhost) und fragt bei
 	 * einem Fehlschlagen nach dem Hostname.
 	 */
 	public void showServerInputIfNeeded() {
@@ -127,29 +127,21 @@ public class StartupHandler {
 		String serverAdress = ConfigurationLocalHelper.getConfig().getEndpointAddress();
 
 		do {
-
 			try {
-
 				ServiceHelper.setEndpointAddress(serverAdress);
 				ServiceHelper.getConfigurationsService().getCheckpoints();
 				incomplete = false;
-				logger.debug("Client Startup: Server sucessful connected at "
-						+ ConfigurationLocalHelper.getConfig().getEndpointAddress());
-
+				logger.debug("Client Startup: Server sucessful connected at " + ConfigurationLocalHelper.getConfig().getEndpointAddress());
 			} catch (WebServiceException | MalformedURLException e) {
-
 				logger.error(e);
-
 				JOptionPane.showMessageDialog(this.parent, "Servername nicht erreichbar. Server: "
 						+ ConfigurationLocalHelper.getConfig().getEndpointAddress() + ". Bitte Admin benachrichtigen.",
 						"Servername nicht erreichbar", JOptionPane.WARNING_MESSAGE);
-
 				String serverName = JOptionPane.showInputDialog(this.parent, "Bitte Servernamen eingeben", "Server",
 						JOptionPane.INFORMATION_MESSAGE);
 				if ((serverName != null) && !serverName.equals("")) {
 					ConfigurationLocalHelper.getConfig().setServerHostname(serverName);
 					logger.debug("new Server Hostname " + serverName);
-
 				}
 			}
 
