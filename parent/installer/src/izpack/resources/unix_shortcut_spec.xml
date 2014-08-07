@@ -1,0 +1,35 @@
+<shortcuts>
+	<programGroup defaultName="Sentinel" location="applications||startMenu"/>
+	
+	<shortcut
+     name="Sentinel Server starten"
+     desktop="yes"
+     applications="yes"
+     startMenu="yes"
+     target="java"
+     commandLine="-jar &quot;$INSTALL_PATH/${NameServerJar}&quot;"
+     iconFile="$INSTALL_PATH/${NameDesktopIcon}"
+     workingDirectory="${directory.runtime.server}"
+     type="Application"
+     encoding="UTF-8"
+     terminal="true"
+     description="Startet den Sentinel Server">
+     <createForPack name="Sentinel Server" />
+   </shortcut>
+   
+   <shortcut
+     name="Sentinel Client starten"
+     desktop="yes"
+     applications="yes"
+     startMenu="yes"
+     target="java"
+     commandLine="-jar &quot;$INSTALL_PATH/${NameClientJar}&quot;"
+     iconFile="$INSTALL_PATH/${NameDesktopIcon}"
+     workingDirectory="${directory.runtime.client}"
+     type="Application"
+     encoding="UTF-8"
+     description="Startet den Sentinel Client">
+     <createForPack name="Sentinel Client" />
+   </shortcut>
+	
+</shortcuts>

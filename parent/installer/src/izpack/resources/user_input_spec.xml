@@ -1,0 +1,19 @@
+<userInput>
+  <panel id="userinputpanel">
+    
+	<field type="staticText" align="left" txt="Speicherort für Client-Daten" id="input.comment.client.data"/>   
+    
+    <field type="dir" align="left" variable="directory.runtime.client">
+ 		 <spec txt="" size="25" set="${DefaultApplicationDataFolder}/sentinel/client-runtime" mustExist="false" create="true"/>
+	</field>
+	    
+    <field type="staticText" align="left" txt="Speicherort für Server-Daten" id="input.comment.server.data"/>
+    
+    <field type="dir" align="left" variable="directory.runtime.server">
+ 		 <spec txt="" size="25" set="${DefaultApplicationDataFolder}/sentinel/server-runtime" mustExist="false" create="true"/>
+	</field>
+    
+    <field type="staticText" align="left" txt="Achtung: Wählen Sie ein Verzeichnis, welches vom Benutzer beschreibar ist. Die Standardeinstellungen sind vom Benutzer beschreibar." id="input.comment.writable.runtime.dir"/>
+    
+  </panel>
+</userInput>

@@ -1,0 +1,162 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>ch.infbr5.sentinel</groupId>
+		<artifactId>parent</artifactId>
+		<version>${sentinel-version}</version>
+	</parent>
+
+	<artifactId>installer</artifactId>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.izpack</groupId>
+			<artifactId>izpack-compiler</artifactId>
+			<version>${izpack.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<!-- Staging Area -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create-staging-area</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<copy todir="${izpack.staging}">
+									<fileset dir="${basedir}/src/izpack" />
+								</copy>
+							</tasks>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-app-jars</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<copy
+									file="${basedir}/../client/target/client-${sentinel-version}-jar-with-dependencies.jar"
+									tofile="${izpack.staging}/app-jars/sentinel-client.jar" />
+								<copy
+									file="${basedir}/../server/target/server-${sentinel-version}-jar-with-dependencies.jar"
+									tofile="${izpack.staging}/app-jars/sentinel-server.jar" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Abhängigkeiten kopieren -->
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<configuration>
+					<excludeTransitive>false</excludeTransitive>
+					<stripVersion>true</stripVersion>
+					<overWriteReleases>true</overWriteReleases>
+					<overWriteSnapshots>true</overWriteSnapshots>
+					<overWriteIfNewer>true</overWriteIfNewer>
+				</configuration>
+				<executions>
+					<execution>
+						<!-- copy *application* jars to izpack staging lib -->
+						<id>copy-product-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${izpack.staging}/lib</outputDirectory>
+							<excludeScope>system</excludeScope>
+							<!-- this excludes tools.jar, e.g. -->
+							<excludeArtifactIds>mycustompanels</excludeArtifactIds>
+							<!-- IMPORTANT: don't copy custom panels where our application jars 
+								live -->
+							<excludeGroupIds>org.codehaus.izpack</excludeGroupIds>
+							<!-- IMPORTANT: we don't want to copy the izpack dependency where 
+								our application jars live -->
+						</configuration>
+					</execution>
+					<execution>
+						<!-- copy izpack custom (custom panels, etc.) jars to izpack staging 
+							custom -->
+						<id>copy-izpack-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${izpack.staging}/custom</outputDirectory>
+							<includeArtifactIds>mycustompanels</includeArtifactIds>
+							<!-- IMPORTANT: this causes *only* our custom panels to be copied -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+
+			<plugin>
+				<groupId>org.codehaus.izpack</groupId>
+				<artifactId>izpack-maven-plugin</artifactId>
+				<version>${izpack.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>izpack</goal>
+						</goals>
+						<configuration>
+							<!-- base for relative paths in izpack descriptor -->
+							<baseDir>${izpack.staging}</baseDir>
+							<installFile>${basedir}/src/izpack/install.xml</installFile>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.izpack</groupId>
+						<artifactId>izpack-panel</artifactId>
+						<version>${izpack.version}</version>
+					</dependency>
+					<!-- <dependency> <groupId>com.mycompany</groupId> <artifactId>mycustompanels</artifactId> 
+						<version>1.0-SNAPSHOT</version> </dependency> -->
+				</dependencies>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<properties>
+		<izpack.version>5.0.0-rc2</izpack.version>
+		<izpack.staging>${project.build.directory}/staging</izpack.staging>
+		<jar.finalName>${project.artifactId}</jar.finalName>
+		
+		<info.appName>Sentinel</info.appName>
+		<info.appsubpath>sentinel</info.appsubpath>
+		<info.version>${project.version}</info.version>
+		
+		<path.installationdata>INSTALLATIONS-DATEN</path.installationdata>
+		<path.appjars>app-jars</path.appjars>
+		
+		<file.sentinelclientjar>sentinel-client.jar</file.sentinelclientjar>
+		<file.sentinelserverjar>sentinel-server.jar</file.sentinelserverjar>
+		<file.sentinelicon>sentinel.ico</file.sentinelicon>
+	</properties>
+
+</project>

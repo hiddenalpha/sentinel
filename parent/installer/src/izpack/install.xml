@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+          
+	<!-- Generelle Einstellungen -->
+	<info>
+		<appname>@{info.appName}</appname>
+		<appversion>@{info.version}</appversion>
+		<appsubpath>@{info.appsubpath}</appsubpath>
+		
+		<uninstaller name="sentinel-deinstallieren.jar" path="${INSTALL_PATH}\Deinstallation" write="yes"/>
+		
+		<run-privileged condition="izpack.windowsinstall|izpack.windowsinstall.xp|izpack.windowsinstall.vista|izpack.windowsinstall.7|izpack.windowsinstall.8"/>
+		
+		<summarylogfilepath>
+			${INSTALL_PATH}\Deinstallation\Installation.html
+		</summarylogfilepath>
+    </info>
+    
+    <!-- Variabeln -->
+    <variables>
+		<variable name="DesktopShortcutCheckboxEnabled" value="true" />
+		
+		<variable name="NameDesktopIcon" value="@{file.sentinelicon}"/>
+		<variable name="NameServerJar" value="@{file.sentinelserverjar}"/>
+		<variable name="NameClientJar" value="@{file.sentinelclientjar}"/>
+
+		<!-- <variable name="DefaultApplicationDataFolder" value="$USER_HOME" condition="!izpack.windowsinstall && !izpack.linuxinstall" />-->
+		<variable name="DefaultApplicationDataFolder" value="${ENV[ALLUSERSPROFILE]}" condition="izpack.windowsinstall" />
+		<variable name="DefaultApplicationDataFolder" value="$USER_HOME" condition="izpack.linuxinstall" />
+    </variables>
+    
+    <!-- Bedingungen -->
+	<conditions>
+		<condition type="variable" id="is32bit">
+			<name>SYSTEM_sun_arch_data_model</name>
+			<value>32</value>
+		</condition>
+	</conditions>
+
+	<!-- Einstellungen fürs GUI des Installers -->
+    <guiprefs width="600" height="480" resizable="no">
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="useHeadingForSummary" value="yes"/>
+		<modifier key="headingImageOnLeft" value="yes"/>
+        <modifier key="headingLineCount" value="2"/>
+        <modifier key="headingFontSize" value="1.5"/>
+        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+        <modifier key="headingPanelCounter" value="text"/>
+        <modifier key="headingPanelCounterPos" value="inHeading"/>
+        <laf name="kunststoff">
+			<os family="unix" />
+        </laf>
+    </guiprefs>
+		
+	<!-- Sprachpakete -->
+    <locale>
+		<langpack iso3="deu"/>
+    </locale>
+
+	<!-- Ressourcen -->
+    <resources>
+		<res src="resources\default_shortcut_spec.xml" id="shortcutSpec.xml"/>
+		<res src="resources\unix_shortcut_spec.xml" id="Unix_shortcutSpec.xml"/>
+		
+    	<res src="resources\user_input_spec.xml" id="userInputSpec.xml" parse="yes" type="xml"/>
+	</resources>
+
+	<!-- Listener -->
+	<listeners>
+		<!-- Dieser Listener loggt die gesamte Installation und fasst es im Ordner Uninstaller zusammen -->
+		<listener classname="SummaryLoggerInstallerListener" stage="install">
+			<os family="windows"/>
+		</listener>
+	</listeners>
+
+	<!-- Panels -->
+    <panels>
+        <panel classname="HelloPanel" id="hellopanel"/>
+        <panel classname="TargetPanel" id="targetpanel"/>              
+        <panel classname="UserInputPanel" id="userinputpanel"/>
+		<panel classname="PacksPanel" id="packspanel"/>
+		<panel classname="InstallPanel" id="installpanel"/>
+		<panel classname="ShortcutPanel" id="shortcutpanel"/>
+		<panel classname="SimpleFinishPanel" id="simplefinishpanel"/>
+	</panels>
+	
+	<!-- Packets -->
+    <packs>
+		<pack name="Basis" required="yes">
+			<description>Basissoftware.</description>
+			<file src="@{path.installationdata}/@{file.sentinelicon}" targetdir="$INSTALL_PATH"/>
+        </pack>
+		<pack name="Sentinel Client" required="no">
+			<description>Der Sentinel Client bietet eine Benutzeroberfläche für die Zutrittskontrolle.</description>
+			<file src="@{path.appjars}/@{file.sentinelclientjar}" targetdir="$INSTALL_PATH"/>
+        </pack>
+		<pack name="Sentinel Server" required="no">
+			<description>Es muss ein Sentinel Server im Einsatz sein um die Sentinel Clients anzubinden.</description>
+			<file src="@{path.appjars}/@{file.sentinelserverjar}" targetdir="$INSTALL_PATH"/>
+        </pack>
+        
+        <pack name="Java 7 Windows" required="yes">
+			<description>Java 7 in der 32Bit Version für Windows.</description>
+			<fileset dir="@{path.installationdata}/WINDOWS/JRE-32" targetdir="$INSTALL_PATH/JRE" />
+			<os family="windows" />
+        </pack>
+        
+        <!-- <pack name="Java 7 Unix" required="yes">
+			<description>Java 7 in der 32Bit Version für Unix.</description>
+			<fileset dir="@{path.installationdata}/LINUX/JRE-32" targetdir="$INSTALL_PATH/JRE" />
+			<os family="unix" />
+        </pack>
+         -->
+        
+        <!-- Alte Definitionen - Unterscheidung mit 32Bit/64Bit -->
+        <!-- 
+		<pack name="Java 7 32Bit Windows" os="windows" required="yes" installGroups="JVM" condition="is32bit">
+			<description>Java 7 in der 32Bit Version für Windows.</description>
+			<fileset dir="INSTALLATIONS-DATEN\WINDOWS\JRE-32" targetdir="$INSTALL_PATH/JRE" />
+        </pack>
+		<pack name="Java 7 64Bit Windows" os="windows" required="yes" installGroups="JVM" condition="!is32bit">
+			<description>Java 7 in der 64Bit Version für Windows.</description>
+			<fileset dir="INSTALLATIONS-DATEN\WINDOWS\JRE-64" targetdir="$INSTALL_PATH/JRE" />
+        </pack>
+		<pack name="Java 7 32Bit Unix" os="unix" required="yes" installGroups="JVM" condition="is32bit">
+			<description>Java 7 in der 32Bit Version für Unix.</description>
+        </pack>
+		<pack name="Java 7 64Bit Unix" os="unix" required="yes" installGroups="JVM" condition="!is32bit">
+			<description>Java 7 in der 64Bit Version für Unix.</description>
+        </pack>
+        -->
+        
+    </packs>
+    
+    <!-- Natives -->
+	<natives>
+		<native type="izpack" name="ShellLink.dll"/>
+		<native type="izpack" name="ShellLink_x64.dll"/>
+	</natives>
+		
+</izpack:installation>
