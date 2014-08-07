@@ -27,11 +27,13 @@
 		<variable name="NameDesktopIcon" value="@{file.sentinelicon}"/>
 		<variable name="NameServerJar" value="@{file.sentinelserverjar}"/>
 		<variable name="NameClientJar" value="@{file.sentinelclientjar}"/>
-
-		<!-- <variable name="DefaultApplicationDataFolder" value="$USER_HOME" condition="!izpack.windowsinstall && !izpack.linuxinstall" />-->
+    </variables>
+    
+    <dynamicvariables>
+    	<variable name="DefaultApplicationDataFolder" value="$USER_HOME" />
 		<variable name="DefaultApplicationDataFolder" value="${ENV[ALLUSERSPROFILE]}" condition="izpack.windowsinstall" />
 		<variable name="DefaultApplicationDataFolder" value="$USER_HOME" condition="izpack.linuxinstall" />
-    </variables>
+    </dynamicvariables>
     
     <!-- Bedingungen -->
 	<conditions>
