@@ -12,10 +12,10 @@
      workingDirectory="${directory.runtime.server}"
      type="Application"
      encoding="UTF-8"
-     terminal="true"
      description="Startet den Sentinel Server">
      <createForPack name="Sentinel Server" />
    </shortcut>
+   <!-- terminal="true" -->
    
    <shortcut
      name="Sentinel Client starten"
