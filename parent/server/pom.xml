@@ -132,6 +132,11 @@
 			<version>1.7.7</version>
 		</dependency>
 
+		<dependency>
+			<groupId>ch.infbr5.sentinel</groupId>
+			<artifactId>common</artifactId>
+			<version>${sentinel-version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
