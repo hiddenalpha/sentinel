@@ -94,7 +94,7 @@
     <packs>
 		<pack name="Basis" required="yes">
 			<description>Basissoftware.</description>
-			<file src="@{path.installationdata}/@{file.sentinelicon}" targetdir="$INSTALL_PATH"/>
+			<file src="@{path.resources}/@{file.sentinelicon}" targetdir="$INSTALL_PATH"/>
         </pack>
 		<pack name="Sentinel Client" required="no">
 			<description>Der Sentinel Client bietet eine Benutzeroberfläche für die Zutrittskontrolle.</description>
@@ -107,7 +107,7 @@
         
         <pack name="Java 7 Windows" required="yes">
 			<description>Java 7 in der 32Bit Version für Windows.</description>
-			<fileset dir="@{path.installationdata}/WINDOWS/JRE-32" targetdir="$INSTALL_PATH/JRE" />
+			<fileset dir="windows-jvm/JRE-7-WINDOWS-32" targetdir="$INSTALL_PATH/JRE" />
 			<os family="windows" />
         </pack>
         
