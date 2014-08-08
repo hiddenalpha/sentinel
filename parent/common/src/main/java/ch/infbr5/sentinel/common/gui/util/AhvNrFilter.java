@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.gui.util;
+package ch.infbr5.sentinel.common.gui.util;
 
 import javax.swing.JTextField;
 import javax.swing.UIManager;

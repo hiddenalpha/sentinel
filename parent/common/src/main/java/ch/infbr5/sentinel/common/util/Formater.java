@@ -1,11 +1,9 @@
-package ch.infbr5.sentinel.client.util;
+package ch.infbr5.sentinel.common.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import ch.infbr5.sentinel.client.wsgen.PersonDetails;
 
 public class Formater {
 
@@ -46,13 +44,6 @@ public class Formater {
 
 	public static String formatDateTime(XMLGregorianCalendar date) {
 		return formatDateTime(date.toGregorianCalendar().getTime());
-	}
-
-	public static String getFullName(PersonDetails personDetails) {
-		if (personDetails == null) {
-			return "";
-		}
-		return personDetails.getGrad() + ". " + personDetails.getName() + " " + personDetails.getVorname();
 	}
 
 }

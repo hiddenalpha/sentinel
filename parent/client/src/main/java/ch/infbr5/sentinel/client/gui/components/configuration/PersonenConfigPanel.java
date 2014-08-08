@@ -32,7 +32,6 @@ import javax.swing.JTextField;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.miginfocom.swing.MigLayout;
-import ch.infbr5.sentinel.client.gui.util.SwingHelper;
 import ch.infbr5.sentinel.client.util.EinheitDetailsClient;
 import ch.infbr5.sentinel.client.util.ImageCreator;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
@@ -42,6 +41,7 @@ import ch.infbr5.sentinel.client.wsgen.EinheitDetails;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetails> {
 

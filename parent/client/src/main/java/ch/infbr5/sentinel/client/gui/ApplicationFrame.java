@@ -34,7 +34,6 @@ import ch.infbr5.sentinel.client.gui.components.ipcam.IpCamaraPane;
 import ch.infbr5.sentinel.client.gui.components.journal.dialog.NewGefechtsMeldungDialog;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.BewegungsJournalModel;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.BewegungsJournalTable;
-import ch.infbr5.sentinel.client.gui.components.journal.panel.FilterTablePanel;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalModel;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalTable;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.SystemJournalModel;
@@ -45,6 +44,7 @@ import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
+import ch.infbr5.sentinel.common.gui.table.FilterTablePanel;
 
 public class ApplicationFrame extends JFrame {
 

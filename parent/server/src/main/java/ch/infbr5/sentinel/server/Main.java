@@ -12,6 +12,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import ch.infbr5.sentinel.server.gui.ApplicationFrame;
+
 public class Main {
 
 	private static ServerControl sentinelServer;
@@ -32,6 +34,10 @@ public class Main {
 		} else {
 			PropertyConfigurator.configure(inputStream);
 		}
+
+		// Starting UI
+		ApplicationFrame frame = new ApplicationFrame();
+		frame.show();
 
 		log.debug("Server startet: Java-Vendor:" + System.getProperty("java.vendor") + " Java-Version:" + System.getProperty("java.version"));
 

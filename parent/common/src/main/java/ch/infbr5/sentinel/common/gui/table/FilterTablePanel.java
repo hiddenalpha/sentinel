@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.gui.components.journal.panel;
+package ch.infbr5.sentinel.common.gui.table;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +15,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import net.miginfocom.swing.MigLayout;
-import ch.infbr5.sentinel.client.gui.util.SwingHelper;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class FilterTablePanel extends JPanel {
 

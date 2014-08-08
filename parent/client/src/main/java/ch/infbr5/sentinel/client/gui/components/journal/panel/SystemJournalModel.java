@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import ch.infbr5.sentinel.client.util.Formater;
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
+import ch.infbr5.sentinel.common.util.Formater;
 
 public class SystemJournalModel extends AbstractTableModel {
 

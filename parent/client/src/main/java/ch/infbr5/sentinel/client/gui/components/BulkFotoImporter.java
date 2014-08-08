@@ -13,10 +13,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import ch.infbr5.sentinel.client.gui.util.SwingHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class BulkFotoImporter {
 

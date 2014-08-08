@@ -5,9 +5,10 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import ch.infbr5.sentinel.client.util.Formater;
+import ch.infbr5.sentinel.client.util.PersonDetailsFormater;
 import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
+import ch.infbr5.sentinel.common.util.Formater;
 
 public class GefechtsJournalModel extends AbstractTableModel {
 
@@ -60,7 +61,7 @@ public class GefechtsJournalModel extends AbstractTableModel {
 			return meldung.getCheckpoint().getName();
 		}
 		if (columnIndex == 4) {
-			return Formater.getFullName(meldung.getWeiterleitenAnPerson());
+			return PersonDetailsFormater.getFullName(meldung.getWeiterleitenAnPerson());
 		}
 		if (columnIndex == 2) {
 			return meldung.getWerWasWoWie();

@@ -22,13 +22,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
-import ch.infbr5.sentinel.client.gui.util.SwingHelper;
-import ch.infbr5.sentinel.client.util.Formater;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
+import ch.infbr5.sentinel.common.util.Formater;
 
 import com.google.common.base.Strings;
 

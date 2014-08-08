@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.gui.util;
+package ch.infbr5.sentinel.common.gui.util;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -32,7 +32,7 @@ public class SwingHelper {
 		l.setForeground(LABEL_COLOR);
 
 		panel.add(l, "gapbottom 1, span, split 2, aligny center");
-		panel.add(configureActiveComponent(new JSeparator()), "gapleft rel, growx");
+		panel.add(new JSeparator(), "gapleft rel, growx");
 	}
 
 	public static JLabel createLabel(String text) {
@@ -40,10 +40,7 @@ public class SwingHelper {
 	}
 
 	public static JLabel createLabel(String text, int align) {
-		final JLabel b = new JLabel(text, align);
-		configureActiveComponent(b);
-
-		return b;
+		return new JLabel(text, align);
 	}
 
 	public static JTextField createTextField(int cols) {
@@ -71,8 +68,6 @@ public class SwingHelper {
 			((AbstractDocument) b.getDocument()).setDocumentFilter(new RegexFilter(regex, b, new LineBorder(Color.RED),
 					new LineBorder(Color.GREEN)));
 		}
-		configureActiveComponent(b);
-
 		return b;
 	}
 
@@ -81,24 +76,11 @@ public class SwingHelper {
 	}
 
 	public static JTextArea createTextArea(String text, int rows, int columns) {
-		final JTextArea b = new JTextArea(text, rows, columns);
-		configureActiveComponent(b);
-		return b;
+		return new JTextArea(text, rows, columns);
 	}
 
 	public static JCheckBox createCheckBox() {
-		final JCheckBox c = new JCheckBox();
-		configureActiveComponent(c);
-
-		return c;
-	}
-
-	private static JComponent configureActiveComponent(JComponent c) {
-		// if (benchRuns == 0) {
-		// c.addMouseMotionListener(toolTipListener);
-		// c.addMouseListener(constraintListener);
-		// }
-		return c;
+		return new JCheckBox();
 	}
 
 	public static Font smaller(Font font) {

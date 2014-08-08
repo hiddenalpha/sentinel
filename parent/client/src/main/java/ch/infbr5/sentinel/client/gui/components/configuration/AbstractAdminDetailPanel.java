@@ -4,7 +4,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import ch.infbr5.sentinel.client.gui.util.SwingHelper;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public abstract class AbstractAdminDetailPanel<T> extends JPanel {
 

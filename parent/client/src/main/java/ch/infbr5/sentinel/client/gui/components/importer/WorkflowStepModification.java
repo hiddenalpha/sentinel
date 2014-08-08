@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.miginfocom.swing.MigLayout;
-import ch.infbr5.sentinel.client.gui.util.SwingHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.Modification;
 import ch.infbr5.sentinel.client.wsgen.ModificationArchivePerson;
@@ -24,6 +23,7 @@ import ch.infbr5.sentinel.client.wsgen.ModificationUpdatePerson;
 import ch.infbr5.sentinel.client.wsgen.ModificationUpdatePersonAndNewAusweis;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
 import ch.infbr5.sentinel.client.wsgen.UpdatePersonAttributeDiff;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class WorkflowStepModification extends WorkflowStep {
 

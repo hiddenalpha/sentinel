@@ -11,11 +11,11 @@ import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.gui.util.DesktopHelper;
-import ch.infbr5.sentinel.client.gui.util.SwingHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 import ch.infbr5.sentinel.client.wsgen.EinheitDetails;
 import ch.infbr5.sentinel.client.wsgen.PrintJobDetails;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class PrintConfigPanel extends
 		AbstractAdminOverviewPanel<PrintJobDetails> {
