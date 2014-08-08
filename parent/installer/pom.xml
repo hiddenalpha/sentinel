@@ -83,6 +83,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+				<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<version>1.2.0</version>
+				<executions>
+					<execution>
+						<!-- the wget goal actually binds itself to this phase by default -->
+						<phase>process-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>http://www.handball-ktvm.ch/jvm/JRE-7-UNIX-32.zip</url>
+							<outputFileName>jvm.zip</outputFileName>
+							<unpack>true</unpack>
+							<outputDirectory>${izpack.staging}/unix-jvm</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
 
 			<!-- Abhängigkeiten kopieren -->
 			<plugin>
@@ -175,9 +197,14 @@
 							<tasks>
 								<copy file="${project.build.directory}/${jar.finalName}.jar" todir="${installationdisk}" />
 								<copy file="${basedir}/src/izpack/install-paket/install-windows.cmd" todir="${installationdisk}" />
+								<copy file="${basedir}/src/izpack/install-paket/install-unix.sh" todir="${installationdisk}" />
 								
 								<copy todir="${installationdisk}/JVM-WINDOWS">
     								<fileset dir="${izpack.staging}/windows-jvm/JRE-7-WINDOWS-32"/>
+  								</copy>
+								
+								<copy todir="${installationdisk}/JVM-UNIX">
+    								<fileset dir="${izpack.staging}/unix-jvm"/>
   								</copy>
 								
 							</tasks>

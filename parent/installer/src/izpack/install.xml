@@ -111,13 +111,13 @@
 			<os family="windows" />
         </pack>
         
-        <!-- <pack name="Java 7 Unix" required="yes">
+        <pack name="Java 7 Unix" required="yes">
 			<description>Java 7 in der 32Bit Version für Unix.</description>
-			<fileset dir="@{path.installationdata}/LINUX/JRE-32" targetdir="$INSTALL_PATH/JRE" />
+			<fileset dir="unix-jvm" targetdir="$INSTALL_PATH/JRE" />
+			<executable targetfile="$INSTALL_PATH/JRE/bin/java" stage="never" />
 			<os family="unix" />
         </pack>
-         -->
-        
+                 
         <!-- Alte Definitionen - Unterscheidung mit 32Bit/64Bit -->
         <!-- 
 		<pack name="Java 7 32Bit Windows" os="windows" required="yes" installGroups="JVM" condition="is32bit">
