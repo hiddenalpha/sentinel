@@ -1,0 +1,12 @@
+Linux Installation
+- Desktop Icons werden nicht ersetzt
+- Rechte Mgmt. ?
+
+Maven Build
+- jre auf anderen server 
+
+Server/Client
+- Konsole Handling
+
+-- Client keine Konsole nur GUI
+-- Ich würde sagen Server gleich!
