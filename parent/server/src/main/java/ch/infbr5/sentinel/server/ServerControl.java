@@ -1,10 +1,12 @@
 package ch.infbr5.sentinel.server;
 
 import java.net.InetAddress;
+import java.util.List;
 
 import javax.xml.ws.Endpoint;
 
 import org.apache.derby.drda.NetworkServerControl;
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.ws.SentinelQueryService;
@@ -12,31 +14,32 @@ import ch.infbr5.sentinel.server.ws.admin.ConfigurationQueryService;
 import ch.infbr5.sentinel.server.ws.importer.PersonenImporterService;
 import ch.infbr5.sentinel.server.ws.journal.JournalService;
 
+import com.google.common.collect.Lists;
+
 public class ServerControl {
 
-	private Endpoint servicesEndpoint;
-	private Endpoint configurationEndpoint;
-	private Endpoint journalEndpoint;
-	private Endpoint personenImporterEndpoint;
+	private static final String PORT = "8080";
 
-	private boolean running = true;
+	private static final Logger log = Logger.getLogger(ServerControl.class);
+
+	private static List<Endpoint> endpoints;
 
 	private NetworkServerControl databaseServer;
+
+	private boolean running = true;
 
 	public ServerControl(boolean debugMode, boolean inMemoryMode) {
 		EntityManagerHelper.setDebugMode(debugMode);
 		EntityManagerHelper.setInMemoryMode(inMemoryMode);
+		endpoints = Lists.newArrayList();
 	}
 
 	public void start(String ip) {
-
 		this.startDerby();
-
 		if (ServerSetup.databaseIsEmpty()) {
 			ServerSetup.setupDatabase();
 		}
 		this.startWebServices(ip);
-
 	}
 
 	public void stop() {
@@ -50,63 +53,52 @@ public class ServerControl {
 	}
 
 	private void startDerby() {
-
 		try {
 			InetAddress localhost = InetAddress.getLoopbackAddress();
-			this.databaseServer = new NetworkServerControl(localhost, 1527,
-					"sentinel", "pwd");
+			this.databaseServer = new NetworkServerControl(localhost, 1527, "sentinel", "pwd");
 			this.databaseServer.start(null);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 
 	}
 
-	private void startWebServices(String thisIpAddress) {
-
+	private void startWebServices(String ipAddress) {
 		try {
-
-			this.servicesEndpoint = Endpoint.publish("http://" + thisIpAddress
-					+ ":8080/services", new SentinelQueryService());
-			this.configurationEndpoint = Endpoint.publish("http://"
-					+ thisIpAddress + ":8080/configuration",
-					new ConfigurationQueryService());
-			this.journalEndpoint = Endpoint.publish("http://" + thisIpAddress
-					+ ":8080/journal", new JournalService());
-			this.personenImporterEndpoint = Endpoint.publish("http://" + thisIpAddress
-					+ ":8080/personenImporter", new PersonenImporterService());
-
+			publishEndpoint(ipAddress, "services", new SentinelQueryService());
+			publishEndpoint(ipAddress, "configuration", new ConfigurationQueryService());
+			publishEndpoint(ipAddress, "journal", new JournalService());
+			publishEndpoint(ipAddress, "personenImporter", new PersonenImporterService());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
 	private void stopDerby() {
-
 		try {
 			EntityManagerHelper.close();
 			this.databaseServer.shutdown();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
-
 	}
 
 	private void stopWebServces() {
-
 		try {
-			this.servicesEndpoint.stop();
-			this.configurationEndpoint.stop();
-			this.journalEndpoint.stop();
-			this.personenImporterEndpoint.stop();
+			for (Endpoint endpoint : endpoints) {
+				endpoint.stop();
+			}
 		} catch (NullPointerException e) {
 			// Bug in JAX-WS - nix zu tun.
-
 		}
+	}
 
+	private void publishEndpoint(String ipAddress, String endpointName, Object implementator) {
+		endpoints.add(Endpoint.publish(createEndpointUrl(ipAddress, endpointName), implementator));
+	}
+
+	private String createEndpointUrl(String ipAddress, String endpointName) {
+		return "http://" + ipAddress + ":" + PORT + "/" + endpointName;
 	}
 
 }
