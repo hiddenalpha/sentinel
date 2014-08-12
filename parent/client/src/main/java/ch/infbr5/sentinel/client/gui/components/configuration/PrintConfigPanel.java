@@ -17,8 +17,7 @@ import ch.infbr5.sentinel.client.wsgen.EinheitDetails;
 import ch.infbr5.sentinel.client.wsgen.PrintJobDetails;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
-public class PrintConfigPanel extends
-		AbstractAdminOverviewPanel<PrintJobDetails> {
+public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,10 +32,8 @@ public class PrintConfigPanel extends
 
 	public class MyTableModel extends AbstractAdminTableModel<PrintJobDetails> {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
+
 		private final String[] headerNames = { "Datum", "Printjob", "File" };
 
 		@Override
@@ -68,8 +65,7 @@ public class PrintConfigPanel extends
 
 		@Override
 		public List<PrintJobDetails> getBackendObjects() {
-			ConfigurationResponse response = ServiceHelper
-					.getConfigurationsService().getPrintJobs();
+			ConfigurationResponse response = ServiceHelper.getConfigurationsService().getPrintJobs();
 			return response.getPrintJobDetails();
 		}
 
@@ -84,8 +80,7 @@ public class PrintConfigPanel extends
 		return new MyDetailPanel();
 	}
 
-	public class MyDetailPanel extends
-			AbstractAdminDetailPanel<PrintJobDetails> implements ActionListener {
+	public class MyDetailPanel extends AbstractAdminDetailPanel<PrintJobDetails> implements ActionListener {
 
 		private static final String CMD_BUTTON_PDF_OEFFNEN = "CMD_BUTTON_PDF_OEFFNEN";
 		private static final String CMD_BUTTON_DRUCKE_AUSWEISE = "CMD_BUTTON_DRUCKE_AUSWEISE";
@@ -95,7 +90,7 @@ public class PrintConfigPanel extends
 		private static final String CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH = "CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH";
 		private static final String CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR = "CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR";
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		private JTextField druckdatum;
@@ -135,40 +130,33 @@ public class PrintConfigPanel extends
 			ausweiseDruckenButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEISE);
 			this.add(ausweiseDruckenButton);
 
-			this.add(SwingHelper.createLabel("Ausweisliste"),
-					"newline, gap para");
+			this.add(SwingHelper.createLabel("Ausweisliste"), "newline, gap para");
 
 			ausweisListeDruckenNachNameButton = new JButton("nach Name");
 			ausweisListeDruckenNachNameButton.addActionListener(this);
-			ausweisListeDruckenNachNameButton
-					.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME);
+			ausweisListeDruckenNachNameButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME);
 			this.add(ausweisListeDruckenNachNameButton);
 
 			ausweisListeDruckenNachEinhButton = new JButton("nach Einheit");
 			ausweisListeDruckenNachEinhButton.addActionListener(this);
-			ausweisListeDruckenNachEinhButton
-					.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH);
+			ausweisListeDruckenNachEinhButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH);
 			this.add(ausweisListeDruckenNachEinhButton);
 
 			ausweisboxInventarDruckenButton = new JButton("Ausweisboxen");
 			ausweisboxInventarDruckenButton.addActionListener(this);
-			ausweisboxInventarDruckenButton
-					.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR);
+			ausweisboxInventarDruckenButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR);
 			this.add(ausweisboxInventarDruckenButton);
 
-			this.add(SwingHelper.createLabel("Personenliste"),
-					"newline, gap para");
+			this.add(SwingHelper.createLabel("Personenliste"), "newline, gap para");
 
 			personenListeDruckenNachNameButton = new JButton("nach Name");
 			personenListeDruckenNachNameButton.addActionListener(this);
-			personenListeDruckenNachNameButton
-					.setActionCommand(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME);
+			personenListeDruckenNachNameButton.setActionCommand(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME);
 			this.add(personenListeDruckenNachNameButton);
 
 			personenListeDruckenNachEinhButton = new JButton("nach Einheit");
 			personenListeDruckenNachEinhButton.addActionListener(this);
-			personenListeDruckenNachEinhButton
-					.setActionCommand(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH);
+			personenListeDruckenNachEinhButton.setActionCommand(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH);
 			this.add(personenListeDruckenNachEinhButton);
 
 		}
@@ -181,10 +169,8 @@ public class PrintConfigPanel extends
 		public void setFieldValues() {
 
 			if (data.getPrintJobDate() != null) {
-				SimpleDateFormat sdf = new SimpleDateFormat(
-						"dd.MM.yyyy HH:mm:ss");
-				druckdatum.setText(sdf.format(data.getPrintJobDate()
-						.toGregorianCalendar().getTime()));
+				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+				druckdatum.setText(sdf.format(data.getPrintJobDate().toGregorianCalendar().getTime()));
 			} else {
 				druckdatum.setText("");
 			}
@@ -209,36 +195,25 @@ public class PrintConfigPanel extends
 			ConfigurationResponse response = null;
 
 			if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEISE)) {
-				response = ServiceHelper.getConfigurationsService()
-						.printAusweise();
-			} else if (e.getActionCommand().equals(
-					CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME)) {
-				response = ServiceHelper.getConfigurationsService()
-						.printAusweisListe(true, false, "");
+				response = ServiceHelper.getConfigurationsService().printAusweise();
+			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME)) {
+				response = ServiceHelper.getConfigurationsService().printAusweisListe(true, false, "");
 
-			} else if (e.getActionCommand().equals(
-					CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH)) {
-				response = ServiceHelper.getConfigurationsService()
-						.printAusweisListe(true, true, selectEinheit());
+			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH)) {
+				response = ServiceHelper.getConfigurationsService().printAusweisListe(true, true, selectEinheit());
 
-			} else if (e.getActionCommand().equals(
-					CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR)) {
-				response = ServiceHelper.getConfigurationsService()
-						.printAusweisboxInventar(selectEinheit());
+			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR)) {
+				response = ServiceHelper.getConfigurationsService().printAusweisboxInventar(selectEinheit());
 
-			} else if (e.getActionCommand().equals(
-					CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME)) {
-				response = ServiceHelper.getConfigurationsService()
-						.printAusweisListe(false, false, "");
+			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME)) {
+				response = ServiceHelper.getConfigurationsService().printAusweisListe(false, false, "");
 
-			} else if (e.getActionCommand().equals(
-					CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH)) {
-				response = ServiceHelper.getConfigurationsService()
-						.printAusweisListe(false, true, selectEinheit());
-
+			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH)) {
+				response = ServiceHelper.getConfigurationsService().printAusweisListe(false, true, selectEinheit());
 			} else if (e.getActionCommand().equals(CMD_BUTTON_PDF_OEFFNEN)) {
-				response = ServiceHelper.getConfigurationsService()
-						.getPrintJob(data.getPrintJobId());
+				if (data != null) {
+					response = ServiceHelper.getConfigurationsService().getPrintJob(data.getPrintJobId());
+				}
 			}
 
 			if (response != null) {
@@ -247,16 +222,14 @@ public class PrintConfigPanel extends
 					byte[] pdf = job.getPdf();
 					DesktopHelper.openPdfFile(job.getPintJobFile(), pdf);
 				} else {
-					JOptionPane.showMessageDialog(null,
-							"Keine ausstehende Daten zum Drucken.",
-							"Keine Daten", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Keine ausstehende Daten zum Drucken.", "Keine Daten",
+							JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		}
 
 		private String selectEinheit() {
-			ConfigurationResponse configurationResponse = ServiceHelper
-					.getConfigurationsService().getEinheiten();
+			ConfigurationResponse configurationResponse = ServiceHelper.getConfigurationsService().getEinheiten();
 			List<EinheitDetails> ed = configurationResponse.getEinheitDetails();
 			String[] values = new String[ed.size()];
 			for (int i = 0; i < values.length; i++) {
@@ -264,8 +237,7 @@ public class PrintConfigPanel extends
 			}
 
 			if (values.length > 0) {
-				String selected = (String) JOptionPane.showInputDialog(this,
-						"Wähle Checkpoint", "Checkpoint Auswahl",
+				String selected = (String) JOptionPane.showInputDialog(this, "Wähle Checkpoint", "Checkpoint Auswahl",
 						JOptionPane.WARNING_MESSAGE, null, values, values[0]);
 				return selected;
 			} else {
