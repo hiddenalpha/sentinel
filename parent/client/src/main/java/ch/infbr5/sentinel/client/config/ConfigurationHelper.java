@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationDetails;
@@ -13,25 +15,25 @@ import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 
 public class ConfigurationHelper {
 
+	private static final Logger log = Logger.getLogger(ConfigurationHelper.class);
+
+	public static List<ConfigurationDetails> loadConfigurationIPCams() {
+		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getGlobalConfigurationValues("URL_IPCAM_%");
+		return response.getConfigurationDetails();
+	}
+
 	public static URL[] getIPCams() {
-
-		List<URL> tmp = new ArrayList<URL>();
-
-		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(ConfigurationLocalHelper.getConfig().getCheckpointId(), "URL_IPCAM_%");
-		List<ConfigurationDetails> liste = response.getConfigurationDetails();
-
-		for (Iterator<ConfigurationDetails> iterator = liste.iterator(); iterator.hasNext();) {
-			ConfigurationDetails config = iterator.next();
-
+		List<ConfigurationDetails> details = loadConfigurationIPCams();
+		List<URL> urls = new ArrayList<URL>();
+		for (ConfigurationDetails detail : details) {
 			try {
-				URL camURL = new URL(config.getStringValue());
-				tmp.add(camURL);
+				URL camURL = new URL(detail.getStringValue());
+				urls.add(camURL);
 			} catch (MalformedURLException e) {
-				// If its no URL so let it be.
+				log.warn("Keine gültige URL für IP-Cam: " + detail.getStringValue());
 			}
 		}
-
-		return tmp.toArray(new URL[0]);
+		return urls.toArray(new URL[0]);
 	}
 
 	public static String getCheckpointName() {
@@ -43,7 +45,7 @@ public class ConfigurationHelper {
 				return cd.getName();
 			}
 		}
-		return "";
+		return ""; // TODO Darf nie eintreten, müsste sofort exceptoin geben
 	}
 
 }

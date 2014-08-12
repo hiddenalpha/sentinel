@@ -12,8 +12,6 @@ public class ServerConfigurationPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	// UI Components
-	private JLabel lblGeneralInfo;
-
 	private JPanel groupPanel;
 
 	private JLabel lblInfo;
@@ -27,8 +25,7 @@ public class ServerConfigurationPanel extends JPanel {
 	private JTextField txtServerPort;
 
 	public ServerConfigurationPanel(String info, String serverName, String serverPort) {
-		lblGeneralInfo = SwingHelper.createLabel("<html>" + "Nachfolgend können Sie die Server-Verbindungsdaten eintragen" + "</html>");
-		lblInfo = SwingHelper.createLabel("<html>" + info + "</html>");
+		lblInfo = SwingHelper.createLabel("<html>" + "Nachfolgend können Sie die Server-Verbindungsdaten eintragen.<br /><br />" + info + "</html>");
 		lblServerName = SwingHelper.createLabel("Server IP-Adresse");
 		lblServerPort = SwingHelper.createLabel("Server Port");
 		groupPanel = new JPanel(new MigLayout());
@@ -41,15 +38,15 @@ public class ServerConfigurationPanel extends JPanel {
 
 		setLayout(new MigLayout());
 
-		groupPanel.add(lblGeneralInfo, "growx, spanx, wrap");
 		groupPanel.add(lblServerName, "");
 		groupPanel.add(txtServerName, "push, growx, wrap");
 
 		groupPanel.add(lblServerPort, "");
 		groupPanel.add(txtServerPort, "growx, wrap");
 
-		add(groupPanel, "wrap");
-		add(lblInfo, "growx, spanx");
+		add(lblInfo, "growx, wrap");
+		add(groupPanel, "growx, push");
+
 	}
 
 	public String getServerName() {

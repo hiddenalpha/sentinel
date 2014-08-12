@@ -8,11 +8,12 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 
-public class ServerConfigurationDialog extends JDialog {
+public class ServerConnectionConfigurationDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +24,7 @@ public class ServerConfigurationDialog extends JDialog {
 
 	private final ServerConfigurationPanel panel;
 
-	public ServerConfigurationDialog(JFrame parent, final ServerConfiguration config, String info, String serverName, String serverPort) {
+	public ServerConnectionConfigurationDialog(final JFrame parent, final ServerConnectionConfigurator config, String info, String serverName, String serverPort, final boolean isConfigurationWhileStartup) {
 		super(parent);
 
 		setModal(true);
@@ -34,7 +35,9 @@ public class ServerConfigurationDialog extends JDialog {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				dispose();
-				System.exit(0);
+				if (isConfigurationWhileStartup) {
+					System.exit(0);
+				}
 			}
 		});
 
@@ -45,9 +48,20 @@ public class ServerConfigurationDialog extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (!isConfigurationWhileStartup) {
+					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent, "Möchten Sie die Einstellung wirklich speichern? Der Client wird automatisch beendet. Starten Sie diesen dannach neu.", "Konfiguration speichern", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+						saveConfig();
+						System.exit(0);
+					}
+				} else {
+					saveConfig();
+					dispose();
+				}
+			}
+
+			private void saveConfig() {
 				ConfigurationLocalHelper.getConfig().setServerHostname(panel.getServerName());
 				ConfigurationLocalHelper.getConfig().setServerPortnumber(panel.getServerPort());
-				dispose();
 			}
 		});
 
@@ -57,7 +71,9 @@ public class ServerConfigurationDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				System.exit(0);
+				if (isConfigurationWhileStartup) {
+					System.exit(0);
+				}
 			}
 		});
 

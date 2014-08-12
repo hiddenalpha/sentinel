@@ -7,6 +7,8 @@ import java.awt.event.WindowListener;
 
 import org.apache.log4j.Logger;
 
+import ch.infbr5.sentinel.client.config.checkpoint.CheckpointConfigurator;
+import ch.infbr5.sentinel.client.config.server.ServerConnectionConfigurator;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.BulkFotoImporter;
@@ -92,6 +94,16 @@ public class ApplicationFrameController implements WindowListener, ActionListene
 
 			case AppMenuBar.CMD_EINSTELLUNGEN:
 				AdminstrationFrame.getInstance().setVisible(true);
+				break;
+
+			case AppMenuBar.CMD_SERVER_EINSTELLUNG:
+				ServerConnectionConfigurator config = new ServerConnectionConfigurator(false, false);
+				config.configureServerConfiguration();
+				break;
+
+			case AppMenuBar.CMD_CHECKPOINT_EINSTELLUNGEN:
+				CheckpointConfigurator confi = new CheckpointConfigurator(false, false);
+				confi.configureCheckpointConfiguration();
 				break;
 
 			case AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG:

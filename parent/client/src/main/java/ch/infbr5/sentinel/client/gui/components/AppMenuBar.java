@@ -18,6 +18,7 @@ public class AppMenuBar extends JMenuBar {
 	public static final String CMD_RESET_SYSTEM = "RESET_SYSTEM";
 	public static final String CMD_EXIT = "EXIT";
 	public static final String CMD_EINSTELLUNGEN = "EINSTELLUNGEN";
+	public static final String CMD_SERVER_EINSTELLUNG = "SERVER_EINSTELLUNG";
 	public static final String CMD_EXPORT_PERSONDATA = "EXPORT_PERSONDATA";
 	public static final String CMD_IMPORT_PERSONDATA = "IMPORT_PERSONDATA";
 	public static final String CMD_EXPORT_CONFIG = "EXPORT_CONFIG";
@@ -27,8 +28,9 @@ public class AppMenuBar extends JMenuBar {
 	public static final String CMD_IMPORT_PISADATA_EINR = "IMPORT_PISADATA_EINR";
 	public static final String CMD_IMPORT_AUSWEISVORLAGE = "CMD_IMPORT_AUSWEISVORLAGE";
 	public static final String CMD_IMPORT_WASSERZEICHEN = "CMD_IMPORT_WASSERZEICHEN";
+	public static final String CMD_CHECKPOINT_EINSTELLUNGEN = "CMD_CHECKPOINT_EINSTELLUNGEN";
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private JMenu adminMenu;
@@ -68,15 +70,15 @@ public class AppMenuBar extends JMenuBar {
 		addItem("Fotos importieren", adminMenu, startMenuListener,
 				CMD_IMPORT_FOTO, adminMode );
 		this.adminMenu.addSeparator();
-		
+
 		addItem("Configuration exportieren", adminMenu, startMenuListener,
 				CMD_EXPORT_CONFIG, adminMode );
 
 		addItem("Configuration importieren", adminMenu, startMenuListener,
 				CMD_IMPORT_CONFIG, adminMode );
-		
+
 		this.adminMenu.addSeparator();
-		
+
 		addItem("Ausweisvorlage importieren", adminMenu, startMenuListener,
 				CMD_IMPORT_AUSWEISVORLAGE, adminMode );
 
@@ -123,6 +125,26 @@ public class AppMenuBar extends JMenuBar {
 		propertiesItem.setActionCommand(CMD_EINSTELLUNGEN);
 		propertiesItem.addActionListener(startMenuListener);
 		menu.add(propertiesItem);
+
+		JMenuItem serverVerbindung = new JMenuItem("Server-Verbindung", KeyEvent.VK_V);
+		serverVerbindung.setName(CMD_SERVER_EINSTELLUNG);
+		serverVerbindung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
+				ActionEvent.ALT_MASK));
+		serverVerbindung.getAccessibleContext().setAccessibleDescription(
+				"Server-Verbindung");
+		serverVerbindung.setActionCommand(CMD_SERVER_EINSTELLUNG);
+		serverVerbindung.addActionListener(startMenuListener);
+		menu.add(serverVerbindung);
+
+		JMenuItem checkpointEinstellungen = new JMenuItem("Checkpoint-Einstellungen", KeyEvent.VK_N);
+		checkpointEinstellungen.setName(CMD_CHECKPOINT_EINSTELLUNGEN);
+		checkpointEinstellungen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+				ActionEvent.ALT_MASK));
+		checkpointEinstellungen.getAccessibleContext().setAccessibleDescription(
+				"Checkpoint-Einstellungen");
+		checkpointEinstellungen.setActionCommand(CMD_CHECKPOINT_EINSTELLUNGEN);
+		checkpointEinstellungen.addActionListener(startMenuListener);
+		menu.add(checkpointEinstellungen);
 
 		JMenuItem beendenItem = new JMenuItem("Beenden", KeyEvent.VK_B);
 		beendenItem.setName(CMD_EXIT);

@@ -70,7 +70,7 @@ public class ApplicationFrame extends JFrame {
 		windowListener = new ApplicationFrameController(applicationFrameModel, this);
 		this.addWindowListener(windowListener);
 
-		this.startupHandler = new StartupHandler(this);
+		this.startupHandler = new StartupHandler();
 
 		this.handleStartupProcess();
 

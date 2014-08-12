@@ -5,24 +5,38 @@ import org.apache.log4j.Logger;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 
-public class ServerConfiguration {
+public class ServerConnectionConfigurator {
 
-	private static Logger log = Logger.getLogger(ServerConfiguration.class);
+	private static Logger log = Logger.getLogger(ServerConnectionConfigurator.class);
 
 	private boolean isFirstConfiguration;
 
-	public ServerConfiguration(boolean isFirstConfiguration) {
+	private boolean isConfigurationWhileStartup;
+
+	/**
+	 * Erzeugt eine ServerConfigurator.
+	 *
+	 * @param isFirstConfiguration
+	 *            Gibt an, ob das eine Inital Konfiguration ist.
+	 * @param isConfigurationWhileStartup
+	 *            Gibt an, ob das eine Startup Konfiguration ist.
+	 */
+	public ServerConnectionConfigurator(boolean isFirstConfiguration, boolean isConfigurationWhileStartup) {
 		this.isFirstConfiguration = isFirstConfiguration;
+		this.isConfigurationWhileStartup = isConfigurationWhileStartup;
 	}
 
 	public void configureServerConfiguration() {
-		boolean success = false;
+		if (!isConfigurationWhileStartup) {
+			askForServerConfiguration("Nach dem diese Einstellungen geändert wurden, starten Sie den Sentiel Client neu.");
+			return;
+		}
 
+		boolean success = false;
 		if (isFirstConfiguration) {
 			askForServerConfiguration("Dies ist eine Erstkonfiguration. Überprüfen Sie lediglich die Einstellungen. Im Normalfall muss hier keine Anpassung vorgenommen werden.");
 			isFirstConfiguration = false;
 		}
-
 		while (!success) {
 			if (configureEndpointAddress()) {
 				if (isServerReachable()) {
@@ -82,7 +96,8 @@ public class ServerConfiguration {
 	 */
 	private void askForServerConfiguration(String info) {
 		log.debug("Client nach Serverkonfiguration fragen.");
-		ServerConfigurationDialog dialog = new ServerConfigurationDialog(null, this, info, ConfigurationLocalHelper.getConfig().getServerHostname(), ConfigurationLocalHelper.getConfig().getServerPortnumber());
+		ServerConnectionConfigurationDialog dialog = new ServerConnectionConfigurationDialog(null, this, info, ConfigurationLocalHelper
+				.getConfig().getServerHostname(), ConfigurationLocalHelper.getConfig().getServerPortnumber(), isConfigurationWhileStartup);
 		dialog.setVisible(true);
 	}
 
