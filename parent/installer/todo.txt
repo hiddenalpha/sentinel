@@ -1,12 +1,17 @@
-Linux Installation
-- Desktop Icons werden nicht ersetzt
-- Rechte Mgmt. ?
+Issues:
 
-Maven Build
-- jre auf anderen server 
+- Maven Build
+-- JRE auf einem anderem Server - Anbieter im Internet suchen, Software zur Verfügung stellen.
 
-Server/Client
-- Konsole Handling
+- Installation
+-- Update
+--- Installations Verzeichnis wieder das gleiche? Nicht so tragisch.
+--- Runtime Verzeichnise wieder das gleiche, sollte man fast...
 
--- Client keine Konsole nur GUI
--- Ich würde sagen Server gleich!
+- LinuxInsallation
+-- Update - Desktop Icons werden nicht ersetzt
+-- Rechte Mgmt.
+
+- Deinstallation
+- Software unter Programme
+-Wenn möglich als Servers, als Daemoens

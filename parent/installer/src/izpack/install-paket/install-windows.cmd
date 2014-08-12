@@ -1,3 +1,3 @@
 @ECHO OFF
 
-"JVM-WINDOWS/bin/java.exe" -jar installer.jar
+"JVM-WINDOWS/bin/javaw.exe" -jar installer.jar
