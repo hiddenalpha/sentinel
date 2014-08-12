@@ -22,6 +22,7 @@ public class Helper {
 
 		server = new ServerControl(false, true);
 		server.start("127.0.0.1", "8080");
+
 	}
 
 	public static void cleanupRuntime() {
