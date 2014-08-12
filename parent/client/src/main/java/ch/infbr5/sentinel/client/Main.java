@@ -14,18 +14,21 @@ public class Main {
 
 	private static Logger log = Logger.getLogger(Main.class);
 
-	private static final String LOG4J_PROPERTIES = "/META-INF/log4j.properties";
+	private static final String LOG4J_PROPERTIES_PRD = "/META-INF/log4j.properties";
 
 	public static void main(String[] args) {
 
-		InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES);
+		// log4j
+		InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES_PRD);
 		if (inputStream == null) {
 			System.out.println("WARNING: Could not open configuration file");
-			System.out.println("WARNING: Logging not configured (console output only)");
+			System.out.println("WARNING: Logging not configured");
 		} else {
 			PropertyConfigurator.configure(inputStream);
 		}
-		log.info("Starting Sentinel Client, Version " + Version.get().getVersion() + " (" + Version.get().getBuildTimestamp() + ")");
+
+		log.info("Starting Sentinel Client, Version " + Version.get().getVersion() + " ("
+				+ Version.get().getBuildTimestamp() + ")");
 
 		// Schedule a job for the event dispatch thread:
 		// creating and showing this application's GUI.

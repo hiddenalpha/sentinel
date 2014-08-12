@@ -33,7 +33,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.util.EinheitDetailsClient;
-import ch.infbr5.sentinel.client.util.ImageCreator;
+import ch.infbr5.sentinel.client.util.ImageLoader;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
@@ -47,7 +47,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 
 	public static final String BUTTON_NEUER_AUSWEIS = "BUTTON_NEUER_AUSWEIS";
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -69,7 +69,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 	public class MyTableModel extends AbstractAdminTableModel<PersonDetails> {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		private final String[] headerNames = { "Grad", "Name", "Vorname", "Funktion", "Ausweis", "Einheit" };
@@ -140,7 +140,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 	public class MyDetailPanel extends AbstractAdminDetailPanel<PersonDetails> {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		private JTextField fieldAhvNr;
@@ -173,7 +173,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			fieldGeburtsdatum = createField("Geburtsdatum","\\d{2}\\.\\d{2}\\.\\d{4}");
 			fieldFunktion = createField("Funktion",".{2,}.*");
 			fieldAhvNr = createField("AhvNr","[ahvnr]");
-			
+
 			SwingHelper.addSeparator(this, "Ausweis");
 			JPanel ausweisPanel = new JPanel();
 			ausweisPanel.setLayout(new MigLayout("", "[][]", "[][]"));
@@ -202,6 +202,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 				abstractActionAusweisSperren = new AbstractAction("Ausweis sperren", null) {
 					private static final long serialVersionUID = 1L;
 
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						ausweisSperren();
 					}
@@ -235,6 +236,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 				abstractActionNeuerAusweis = new AbstractAction("Neuer Ausweis", null) {
 					private static final long serialVersionUID = 1L;
 
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						neuerAusweis();
 					}
@@ -256,7 +258,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 		private void openEditImagePanel() {
 			imageEditor = new ImageEditor(parentFrame);
 			imageEditor.setResizable(false);
-			
+
 
 			imageEditor.addWindowListener(new WindowListener() {
 
@@ -298,13 +300,13 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 				public void windowActivated(WindowEvent arg0) {
 				}
 			});
-			
-			// PrÃ¼fen ob der Benutzer ein eigenes Bild hat und entsprechend in den imageEditor laden.
-			BufferedImage image = ImageCreator.createImage(data.getImageId());
+
+			// Prrüften ob der Benutzer ein eigenes Bild hat und entsprechend in den imageEditor laden.
+			BufferedImage image = ImageLoader.loadImage(data.getImageId());
 			if (image != null) {
 				imageEditor.setImage(image);
 			}
-			
+
 			imageEditor.setVisible(true);
 		}
 
@@ -381,6 +383,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			});
 		}
 
+		@Override
 		public void getFieldValues() {
 			data.setGrad(comboBoxGrad.getItemAt(comboBoxGrad.getSelectedIndex()));
 			data.setName(fieldName.getText());
@@ -395,6 +398,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			data.setAhvNr(fieldAhvNr.getText());
 		}
 
+		@Override
 		public void setFieldValues() {
 			comboBoxGrad.setSelectedItem(data.getGrad());
 			fieldName.setText(data.getName());
@@ -428,7 +432,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 					fotoLabel.setIcon(noFotoIcon);
 				}
 			} else {
-				BufferedImage image = ImageCreator.createImage(data.getImageId());
+				BufferedImage image = ImageLoader.loadImage(data.getImageId());
 				if (image != null) {
 					Image scaledImage = image.getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, 0);
 					ImageIcon imageIcon = new ImageIcon(scaledImage);
@@ -439,6 +443,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			}
 		}
 
+		@Override
 		public void clearFieldValues() {
 			comboBoxGrad.setSelectedIndex(0);
 			fieldName.setText("");
@@ -465,10 +470,10 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 		}
 
 		private byte[] convertBufferedImageToByte(BufferedImage image) {
-			
+
 			int DEST_WIDTH = 300;
 			int DEST_HEIGHT = 400;
-			
+
 			if (image == null)
 				return null;
 
@@ -494,7 +499,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 				ex.printStackTrace();
 			}
 			return null;
-			
+
 		}
 	}
 }

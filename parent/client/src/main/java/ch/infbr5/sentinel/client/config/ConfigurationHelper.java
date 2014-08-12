@@ -34,24 +34,6 @@ public class ConfigurationHelper {
 		return tmp.toArray(new URL[0]);
 	}
 
-	public static String getPassword(String user) {
-		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getGlobalConfigurationValue("PASSWORD_" + user);
-
-		if (response.getConfigurationDetails().size() > 0) {
-			ConfigurationDetails config = response.getConfigurationDetails().get(0);
-			return config.getStringValue();
-		}
-		return null;
-	}
-
-	public static void setPassword(String user, String password) {
-		ConfigurationDetails config = new ConfigurationDetails();
-		config.setKey("PASSWORD_" + user);
-		config.setStringValue(password);
-		config.setValidFor("");
-		ServiceHelper.getConfigurationsService().updateConfigurationValue(config);
-	}
-
 	public static String getCheckpointName() {
 		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getCheckpoints();
 		List<CheckpointDetails> res = response.getCheckpointDetails();

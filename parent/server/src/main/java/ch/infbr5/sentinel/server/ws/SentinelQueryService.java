@@ -310,6 +310,11 @@ public class SentinelQueryService {
 		return ImageStore.getImage(imageId);
 	}
 
+	@WebMethod
+	public String ping() {
+		return "pong";
+	}
+
 	private EntityManager getEntityManager() {
 		return EntityManagerHelper.getEntityManager(context);
 	}

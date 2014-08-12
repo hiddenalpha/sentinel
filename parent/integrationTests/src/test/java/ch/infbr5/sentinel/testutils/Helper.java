@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
@@ -22,7 +21,7 @@ public class Helper {
 		writeClientProperties();
 
 		server = new ServerControl(false, true);
-		server.start("127.0.0.1");
+		server.start("127.0.0.1", "8080");
 	}
 
 	public static void cleanupRuntime() {
@@ -34,9 +33,10 @@ public class Helper {
 		new File("sentinel.properties").delete();
 		new File("derby.log").delete();
 	}
-	
+
 	public static FrameFixture getWindow(){
 		ApplicationFrame frame = GuiActionRunner.execute(new GuiQuery<ApplicationFrame>() {
+			@Override
 			protected ApplicationFrame executeInEDT() {
 				return new ApplicationFrame();
 			}

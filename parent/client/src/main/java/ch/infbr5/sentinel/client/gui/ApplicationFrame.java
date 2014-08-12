@@ -4,12 +4,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -26,7 +24,6 @@ import ch.infbr5.sentinel.client.Version;
 import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
-import ch.infbr5.sentinel.client.gui.components.checkin.AusweisInfoPanel;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModel;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInTabbedPanels;
@@ -45,6 +42,7 @@ import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
 import ch.infbr5.sentinel.common.gui.table.FilterTablePanel;
+import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 
 public class ApplicationFrame extends JFrame {
 
@@ -72,7 +70,7 @@ public class ApplicationFrame extends JFrame {
 		windowListener = new ApplicationFrameController(applicationFrameModel, this);
 		this.addWindowListener(windowListener);
 
-		this.startupHandler = new StartupHandler(applicationFrameModel, this);
+		this.startupHandler = new StartupHandler(this);
 
 		this.handleStartupProcess();
 
@@ -85,19 +83,7 @@ public class ApplicationFrame extends JFrame {
 
 	private void handleStartupProcess() {
 		this.setVisible(false);
-
-		startupHandler.showServerInputIfNeeded();
-		startupHandler.showCheckpointChooserIfNeeded();
-		startupHandler.setAdminPasswordIfNeeded();
-
-		/*
-		 * do { if (!this.startupHandler.showLoginDialogAndSetOperatorName()) {
-		 * this.applicationFrameModel.setOperatorName(""); continue; }
-		 *
-		 * } while (this.applicationFrameModel.getOperatorName() == null ||
-		 * this.applicationFrameModel.getOperatorName().equals(""));
-		 */
-
+		startupHandler.startConfig();
 		this.run();
 	}
 
@@ -179,13 +165,7 @@ public class ApplicationFrame extends JFrame {
 	}
 
 	private void setIcon() {
-		BufferedImage defaultImage = null;
-		URL imageURL = AusweisInfoPanel.class.getResource("/images/icon.gif");
-		try {
-			defaultImage = ImageIO.read(imageURL);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BufferedImage defaultImage = ImageLoader.loadSentinelIcon();
 		this.setIconImage(defaultImage);
 	}
 

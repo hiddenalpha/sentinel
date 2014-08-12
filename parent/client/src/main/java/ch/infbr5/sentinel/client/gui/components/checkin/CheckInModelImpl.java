@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 
 import ch.infbr5.sentinel.client.gui.components.journal.dialog.ChangeStatusGefechtsMeldungDialog;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalModel;
-import ch.infbr5.sentinel.client.util.ImageCreator;
+import ch.infbr5.sentinel.client.util.ImageLoader;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.Sound;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
@@ -167,7 +167,7 @@ public class CheckInModelImpl implements CheckInModel {
 		this.messageText = response.getMessage();
 		this.status = response.getStatus();
 
-		image = ImageCreator.createImage(response.getImageId());
+		image = ImageLoader.loadImage(response.getImageId());
 
 		this.updateCounter(response);
 

@@ -1,5 +1,6 @@
 package ch.infbr5.sentinel.client.config;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,7 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import ch.infbr5.sentinel.client.util.NetworkUtil;
+import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
+
+import com.sun.media.Log;
 
 public class ConfigurationLocalHelper {
 
@@ -38,6 +43,11 @@ public class ConfigurationLocalHelper {
 		return config;
 	}
 
+	public static boolean isFirstConfiguration() {
+		File file = new File(FILE_LAST_APPLICATION_PROPERTIES);
+		return !file.exists();
+	}
+
 	private Properties defaultProperties;
 
 	private Properties applicatonProperties;
@@ -51,20 +61,22 @@ public class ConfigurationLocalHelper {
 			in.close();
 			applicatonProperties = new Properties(defaultProperties);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Log.error(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.error(e);
 		}
 
 		// Properties vom letzten Run nehmen und über die Standard-Properties schreiben
-		try {
-			InputStream in = new FileInputStream(FILE_LAST_APPLICATION_PROPERTIES);
-			applicatonProperties.load(in);
-			in.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (!isFirstConfiguration()) {
+			try {
+				InputStream in = new FileInputStream(FILE_LAST_APPLICATION_PROPERTIES);
+				applicatonProperties.load(in);
+				in.close();
+			} catch (FileNotFoundException e) {
+				Log.error(e);
+			} catch (IOException e) {
+				Log.error(e);
+			}
 		}
 
 		saveProperites();
@@ -81,8 +93,6 @@ public class ConfigurationLocalHelper {
 			e.printStackTrace();
 		}
 	}
-
-	private boolean localMode = false;
 
 	private String localImagePath = "";
 
@@ -112,10 +122,6 @@ public class ConfigurationLocalHelper {
 
 	public String getEndpointAddress() {
 		return "http://" + getServerHostname() + ":" + getServerPortnumber();
-	}
-
-	public String getLocalEndpointAddress() {
-		return "http://127.0.0.1:" + getServerPortnumber();
 	}
 
 	public int getHoursInitialLoadJournal() {
@@ -173,19 +179,17 @@ public class ConfigurationLocalHelper {
 	}
 
 	public boolean isLocalMode() {
-		return localMode;
+		return NetworkUtil.isLocalAdress(getServerHostname());
 	}
 
-	public void setLocalMode(boolean localMode) {
-		this.localMode = localMode;
-	}
+	private boolean imagePathloaded = false;
 
 	public String getLocalImagePath() {
+		if (!imagePathloaded) {
+			localImagePath = ServiceHelper.getConfigurationsService().getLocalImagePath();
+			imagePathloaded = true;
+		}
 		return localImagePath;
-	}
-
-	public void setLocalImagePath(String localImagePath) {
-		this.localImagePath = localImagePath;
 	}
 
 	private String getPropertyValue(String name) {

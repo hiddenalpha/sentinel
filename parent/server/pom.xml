@@ -140,6 +140,7 @@
 	</dependencies>
 
 	<build>
+
 		<plugins>
 
 			<plugin>
@@ -347,6 +348,11 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
+
 	</build>
+
+
+
 
 </project>
