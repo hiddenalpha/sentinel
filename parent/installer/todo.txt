@@ -14,4 +14,6 @@ Issues:
 
 - Deinstallation
 - Software unter Programme
--Wenn möglich als Servers, als Daemoens
+-Wenn möglich als Servers, als Daemoens muss quasi als ROot user gestartet sein, 
+- Windows Service Install
+

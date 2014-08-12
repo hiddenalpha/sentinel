@@ -36,7 +36,7 @@ public class CheckpointConfigurationCamerasPanel extends JPanel {
 	private JList<ConfigurationSelectionValue> cams;
 
 	public CheckpointConfigurationCamerasPanel() {
-		lblCam = SwingHelper.createLabel("Kamers");
+		lblCam = SwingHelper.createLabel("Kamera-URLs");
 		btnAdd = new JButton("+");
 		btnAdd.addActionListener(createAddListener());
 		btnRemove = new JButton("-");
