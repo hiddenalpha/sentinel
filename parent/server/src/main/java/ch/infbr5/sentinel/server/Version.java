@@ -23,18 +23,16 @@ public class Version {
 
 	private Version() {
 		try {
-			URL manifestURL = Version.class
-					.getResource("/META-INF/MANIFEST.MF");
-			
+			URL manifestURL = Version.class.getResource("/META-INF/MANIFEST.MF");
+
 			Class<Version> clazz = Version.class;
 			String className = clazz.getSimpleName() + ".class";
 			String classPath = clazz.getResource(className).toString();
 			if (!classPath.startsWith("jar")) {
-			  // Class not from JAR
-			  return;
+				// Class not from JAR
+				return;
 			}
-			String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + 
-			    "/META-INF/MANIFEST.MF";	
+			String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
 
 			if (manifestURL != null) {
 				InputStream is = new URL(manifestPath).openStream();
@@ -60,4 +58,7 @@ public class Version {
 		return buildTimestamp;
 	}
 
+	public static String getVersionDescription() {
+		return "Sentinel Server-Version: " + get().getVersion() + " (" + get().getBuildTimestamp() + ")";
+	}
 }

@@ -18,11 +18,15 @@ import com.google.common.collect.Lists;
 
 public class ServerControl {
 
-	private static final String PORT = "8080";
-
 	private static final Logger log = Logger.getLogger(ServerControl.class);
 
 	private static List<Endpoint> endpoints;
+
+	private static final int DB_PORT = 1527;
+
+	private static final String DB_USER = "sentinel";
+
+	private static final String DB_PW = "PWD";
 
 	private NetworkServerControl databaseServer;
 
@@ -34,12 +38,12 @@ public class ServerControl {
 		endpoints = Lists.newArrayList();
 	}
 
-	public void start(String ip) {
+	public void start(String ip, String port) {
 		this.startDerby();
 		if (ServerSetup.databaseIsEmpty()) {
 			ServerSetup.setupDatabase();
 		}
-		this.startWebServices(ip);
+		this.startWebServices(ip, port);
 	}
 
 	public void stop() {
@@ -55,7 +59,7 @@ public class ServerControl {
 	private void startDerby() {
 		try {
 			InetAddress localhost = InetAddress.getLoopbackAddress();
-			this.databaseServer = new NetworkServerControl(localhost, 1527, "sentinel", "pwd");
+			this.databaseServer = new NetworkServerControl(localhost, DB_PORT, DB_USER, DB_PW);
 			this.databaseServer.start(null);
 		} catch (Exception e) {
 			log.error(e);
@@ -63,12 +67,12 @@ public class ServerControl {
 
 	}
 
-	private void startWebServices(String ipAddress) {
+	private void startWebServices(String ipAddress, String port) {
 		try {
-			publishEndpoint(ipAddress, "services", new SentinelQueryService());
-			publishEndpoint(ipAddress, "configuration", new ConfigurationQueryService());
-			publishEndpoint(ipAddress, "journal", new JournalService());
-			publishEndpoint(ipAddress, "personenImporter", new PersonenImporterService());
+			publishEndpoint(ipAddress, port, "services", new SentinelQueryService());
+			publishEndpoint(ipAddress, port, "configuration", new ConfigurationQueryService());
+			publishEndpoint(ipAddress, port, "journal", new JournalService());
+			publishEndpoint(ipAddress, port, "personenImporter", new PersonenImporterService());
 		} catch (Exception e) {
 			log.error(e);
 		}
@@ -93,12 +97,12 @@ public class ServerControl {
 		}
 	}
 
-	private void publishEndpoint(String ipAddress, String endpointName, Object implementator) {
-		endpoints.add(Endpoint.publish(createEndpointUrl(ipAddress, endpointName), implementator));
+	private void publishEndpoint(String ipAddress, String port, String endpointName, Object implementator) {
+		endpoints.add(Endpoint.publish(createEndpointUrl(ipAddress, port, endpointName), implementator));
 	}
 
-	private String createEndpointUrl(String ipAddress, String endpointName) {
-		return "http://" + ipAddress + ":" + PORT + "/" + endpointName;
+	private String createEndpointUrl(String ipAddress, String port, String endpointName) {
+		return "http://" + ipAddress + ":" + port + "/" + endpointName;
 	}
 
 }

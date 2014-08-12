@@ -2,13 +2,6 @@ package ch.infbr5.sentinel.server;
 
 import java.io.InputStream;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -20,14 +13,19 @@ public class Main {
 
 	private static Logger log = Logger.getLogger(Main.class);
 
-	private static final String LOG4J_PROPERTIES = "/META-INF/log4j.properties";
+	private static final String LOG4J_PROPERTIES_DEV = "/META-INF/log4j.properties";
+
+	private static String ipAddress;
+
+	private static String port;
 
 	private static boolean debugMode = false;
 
 	public static void main(String[] args) {
 
+
 		// log4j
-		InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES);
+		InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES_DEV);
 		if (inputStream == null) {
 			System.out.println("WARNING: Could not open configuration file");
 			System.out.println("WARNING: Logging not configured");
@@ -35,66 +33,65 @@ public class Main {
 			PropertyConfigurator.configure(inputStream);
 		}
 
-		// Starting UI
+		// Creating UI
 		ApplicationFrame frame = new ApplicationFrame();
+
+		// Comand Line
+		readCommandLine(args);
+
+		// Java Info
+		printJavaInfo();
+
+		sentinelServer = new ServerControl(debugMode, false);
+
+		// Shutdown Hook installieren
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				log.info("Server wird gestoppt ...");
+				sentinelServer.stop();
+				log.info("Server wurde gestoppt");
+			}
+		});
+
+		// Server starten
+		log.debug("Server wird gestartet "+getConfigString()+" ...");
+		sentinelServer.start(ipAddress, port);
+		log.info(Version.getVersionDescription() + " " + getConfigString() + " gestartet");
+
+		// Erst GUI anzeigen nachdem, der Server sauber gestartet wurde.
 		frame.show();
 
-		log.debug("Server startet: Java-Vendor:" + System.getProperty("java.vendor") + " Java-Version:" + System.getProperty("java.version"));
-
-		// cli
-		Options options = new Options();
-		Option ipAddress = OptionBuilder.withArgName("ip").hasArg().withDescription("Server IpAdress").create("ipAddress");
-		Option debug = new Option("debug", "print debugging information");
-		options.addOption(ipAddress);
-		options.addOption(debug);
-
-		// create the parser
-		CommandLineParser parser = new GnuParser();
-		try {
-			// parse the command line arguments
-			CommandLine line = parser.parse(options, args);
-
-			if (line.hasOption("debug")) {
-				debugMode = true;
+		// warten bis Server beendet ist
+		while (sentinelServer.isRunning()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				log.error(e);
 			}
-
-			String ip = line.getOptionValue("ipAddress", "0.0.0.0");
-			log.debug("listening on ".concat(ip));
-
-			sentinelServer = new ServerControl(debugMode, false);
-
-			// Shutdown Hook installieren
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
-					log.info("trying to stop server ...");
-					sentinelServer.stop();
-					log.info("server stopped.");
-				}
-			});
-
-			// Server starten
-			log.debug("trying to start server ...");
-			sentinelServer.start(ip);
-			// Erst ab hier auf Info Level logen.
-			log.info("Sentinel server version " + Version.get().getVersion()
-					+ " (" + Version.get().getBuildTimestamp()
-					+ ") is running.");
-
-			// warten bis Server beendet ist
-			while (sentinelServer.isRunning()) {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					log.error(e);
-				}
-			}
-
-			System.exit(0);
-
-		} catch (ParseException exp) {
-			log.warn("Parsing failed.  Reason: " + exp.getMessage());
 		}
 
+		System.exit(0);
 	}
+
+	private static String getConfigString() {
+		String conf = "(" + ipAddress + ":" + port;
+		if (debugMode) {
+			conf += ", debugMode";
+		}
+		return conf + ")";
+	}
+
+	private static void readCommandLine(String[] args) {
+		CommandLineReader reader = new CommandLineReader(args, ServerConfiguration.IP_ADDRESS, ServerConfiguration.PORT, ServerConfiguration.DEBUG_MODE);
+		ipAddress = reader.getIp();
+		port = reader.getPort();
+		debugMode = reader.isDebugMode();
+	}
+
+	private static void printJavaInfo() {
+		log.debug("Java-Hersteller: " + System.getProperty("java.vendor"));
+		log.debug("Java-Version: " + System.getProperty("java.version"));
+	}
+
 }
