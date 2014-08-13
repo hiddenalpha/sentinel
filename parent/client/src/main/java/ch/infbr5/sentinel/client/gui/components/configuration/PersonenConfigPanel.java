@@ -46,9 +46,7 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetails> {
 
 	public static final String BUTTON_NEUER_AUSWEIS = "BUTTON_NEUER_AUSWEIS";
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	private static final int IMAGE_WIDTH = 135;
@@ -68,10 +66,8 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 
 	public class MyTableModel extends AbstractAdminTableModel<PersonDetails> {
 
-		/**
-		 *
-		 */
 		private static final long serialVersionUID = 1L;
+
 		private final String[] headerNames = { "Grad", "Name", "Vorname", "Funktion", "Ausweis", "Einheit" };
 
 		@Override
@@ -139,10 +135,8 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 
 	public class MyDetailPanel extends AbstractAdminDetailPanel<PersonDetails> {
 
-		/**
-		 *
-		 */
 		private static final long serialVersionUID = 1L;
+
 		private JTextField fieldAhvNr;
 		private JTextField fieldFunktion;
 		private JTextField fieldGeburtsdatum;

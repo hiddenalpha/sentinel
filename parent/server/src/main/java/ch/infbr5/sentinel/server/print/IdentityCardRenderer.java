@@ -280,7 +280,6 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 		image39.setBackgroundColor(Color.WHITE);
 		cb.addImage(image39, image39.getWidth(), 0, 0, image39.getHeight(), offsetWidth + 10, offsetHeight + 6);
-
 	}
 
 	private void addBackBarCode(PdfContentByte cb, int offsetWidth, int offsetHeight, String content)

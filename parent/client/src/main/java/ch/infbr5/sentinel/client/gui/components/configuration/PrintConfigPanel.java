@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -66,6 +67,9 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 		@Override
 		public List<PrintJobDetails> getBackendObjects() {
 			ConfigurationResponse response = ServiceHelper.getConfigurationsService().getPrintJobs();
+			if (getInstalledDetailPanel() != null) {
+				((MyDetailPanel) getInstalledDetailPanel()).updateAusweisDruckenButtonName();
+			}
 			return response.getPrintJobDetails();
 		}
 
@@ -89,10 +93,11 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 		private static final String CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME = "CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME";
 		private static final String CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH = "CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH";
 		private static final String CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR = "CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR";
-		/**
-		 *
-		 */
+
 		private static final long serialVersionUID = 1L;
+
+		private JLabel lblAusstehendeAusweise;
+
 		private JTextField druckdatum;
 		private JTextField beschreibung;
 		private JTextField dateiname;
@@ -104,6 +109,11 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 		private JButton personenListeDruckenNachEinhButton;
 		private JButton ausweisboxInventarDruckenButton;
 		private JButton pdfOeffnenButton;
+
+		public void updateAusweisDruckenButtonName() {
+			int no = ServiceHelper.getConfigurationsService().anzahlAusstehendeZuDruckendeAusweise();
+			lblAusstehendeAusweise.setText("(" + no + " ausstehend)");
+		}
 
 		public MyDetailPanel() {
 			setLayout(new MigLayout("inset 20"));
@@ -129,6 +139,10 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 			ausweiseDruckenButton.addActionListener(this);
 			ausweiseDruckenButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEISE);
 			this.add(ausweiseDruckenButton);
+
+			lblAusstehendeAusweise = SwingHelper.createLabel("");
+			updateAusweisDruckenButtonName();
+			this.add(lblAusstehendeAusweise);
 
 			this.add(SwingHelper.createLabel("Ausweisliste"), "newline, gap para");
 
@@ -158,16 +172,15 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 			personenListeDruckenNachEinhButton.addActionListener(this);
 			personenListeDruckenNachEinhButton.setActionCommand(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH);
 			this.add(personenListeDruckenNachEinhButton);
-
 		}
 
 		@Override
 		public void getFieldValues() {
+
 		}
 
 		@Override
 		public void setFieldValues() {
-
 			if (data.getPrintJobDate() != null) {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 				druckdatum.setText(sdf.format(data.getPrintJobDate().toGregorianCalendar().getTime()));
@@ -188,6 +201,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
 		@Override
 		public void setEditable(boolean mode) {
+
 		}
 
 		@Override
@@ -196,9 +210,9 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
 			if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEISE)) {
 				response = ServiceHelper.getConfigurationsService().printAusweise();
+				updateAusweisDruckenButtonName();
 			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME)) {
 				response = ServiceHelper.getConfigurationsService().printAusweisListe(true, false, "");
-
 			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH)) {
 				response = ServiceHelper.getConfigurationsService().printAusweisListe(true, true, selectEinheit());
 

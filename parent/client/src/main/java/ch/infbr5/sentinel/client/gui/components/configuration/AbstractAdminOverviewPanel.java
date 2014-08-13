@@ -201,6 +201,10 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 		sorter.setRowFilter(createRowFilter());
 	}
 
+	protected AbstractAdminDetailPanel<T> getInstalledDetailPanel() {
+		return details;
+	}
+
 	private void createAndIntitializeTable() {
 		DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
 		selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

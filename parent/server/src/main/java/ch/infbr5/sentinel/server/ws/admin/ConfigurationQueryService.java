@@ -439,6 +439,11 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
+	public int anzahlAusstehendeZuDruckendeAusweise() {
+		return getQueryHelper().findAusweiseZumDrucken().size();
+	}
+
+	@WebMethod
 	public ConfigurationResponse printAusweise() {
 		ConfigurationResponse response = new ConfigurationResponse();
 
