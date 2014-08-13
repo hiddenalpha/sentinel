@@ -106,6 +106,14 @@ public class ApplicationFrameController implements WindowListener, ActionListene
 				confi.configureCheckpointConfiguration();
 				break;
 
+			case AppMenuBar.CMD_EXPORT_CONFIG:
+				new FileUpAndDownload(appFrame).exportConfiguration();
+				break;
+
+			case AppMenuBar.CMD_IMPORT_CONFIG:
+				new FileUpAndDownload(appFrame).importConfiguration();
+				break;
+
 			case AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG:
 				appFrame.displayPersonSelectionDialog();
 				break;

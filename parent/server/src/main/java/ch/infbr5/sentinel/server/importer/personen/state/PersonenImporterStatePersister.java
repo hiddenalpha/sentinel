@@ -40,7 +40,6 @@ public class PersonenImporterStatePersister {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// FileHelper.saveAsFile(file, xml.getBytes());
 	}
 
 	public void remove() {

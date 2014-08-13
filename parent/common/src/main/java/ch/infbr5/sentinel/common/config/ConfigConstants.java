@@ -10,4 +10,6 @@ public class ConfigConstants {
 
 	public static final String URL_IPCAM_ALL = "URL_IPCAM_%";
 
+	public static final String SUPERUSER_PASSWORD = "SUPERUSER_PASSWORD";
+
 }

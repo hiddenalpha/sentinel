@@ -1,9 +1,10 @@
 package ch.infbr5.sentinel.server.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import com.google.common.io.Files;
 
 public class FileHelper {
 
@@ -11,21 +12,23 @@ public class FileHelper {
 	public static final String FILE_AUSWEISVORLAGE_JPG = "AusweisVorlage.jpg";
 
 	public static byte[] getAsByteArray(String filename) throws IOException {
-		File file = new File(filename);
-		FileInputStream fin = new FileInputStream(file);
-
-		byte fileContent[] = new byte[(int) file.length()];
-		fin.read(fileContent);
-		fin.close();
-
-		return fileContent;
+		return Files.toByteArray(new File(filename));
 	}
 
+	/**
+	 * Löscht das File sofern es existiert.
+	 *
+	 * @param filename Datei zu löschen.
+	 */
 	public static void removeFile(String filename) {
 		File file = new File(filename);
 		if (file.exists()) {
 			file.delete();
 		}
+	}
+
+	public static void removeFile(File file) {
+		removeFile(file.getAbsolutePath());
 	}
 
 	public static void removeFolderContent(File f) {

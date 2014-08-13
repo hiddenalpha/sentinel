@@ -286,6 +286,11 @@ public class QueryHelper {
 		}
 	}
 
+	/**
+	 * Gibt ALLE Konfigurations-Werte zurück.
+	 *
+	 * @return List - Alle Konfigurationswerte
+	 */
 	@SuppressWarnings("unchecked")
 	public List<ConfigurationValue> getConfigurationValues() {
 		Query q = em.createNamedQuery("getConfigurationValues");
@@ -373,4 +378,17 @@ public class QueryHelper {
 		return query.getResultList();
 	}
 
+	public void removeAllConfiguration() {
+		Query query = em.createNamedQuery(ConfigurationValue.QUERY_ALL_CONFIGURATION);
+		for (ConfigurationValue value : (List<ConfigurationValue>) query.getResultList()) {
+			em.remove(value);
+		}
+	}
+
+	public void persistAllConfiguration(List<ConfigurationValue> values) {
+		for (ConfigurationValue value : values) {
+			value.setId(null);
+			em.persist(value);
+		}
+	}
 }

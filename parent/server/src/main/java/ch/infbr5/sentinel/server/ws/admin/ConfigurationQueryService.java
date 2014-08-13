@@ -14,12 +14,16 @@ import javax.jws.soap.SOAPBinding;
 import javax.persistence.EntityManager;
 import javax.xml.ws.WebServiceContext;
 
+import org.apache.log4j.Logger;
+
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.db.PdfStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.exporter.AusweisDatenWriter;
+import ch.infbr5.sentinel.server.exporter.KonfigurationsDatenWriter;
 import ch.infbr5.sentinel.server.importer.AusweisDatenReader;
+import ch.infbr5.sentinel.server.importer.KonfigurationsDatenReader;
 import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.Einheit;
@@ -43,6 +47,8 @@ import ch.infbr5.sentinel.server.ws.ZoneDetails;
 @HandlerChain(file = "/META-INF/ws-handler-chain.xml")
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class ConfigurationQueryService {
+
+	private static final Logger log = Logger.getLogger(ConfigurationQueryService.class);
 
 	@Resource
 	private WebServiceContext context;
@@ -405,7 +411,6 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public ConfigurationResponse getPrintJobs() {
-
 		List<PrintJob> printJobs = getQueryHelper().getPrintJobs();
 
 		PrintJobDetails[] printJobDetails = new PrintJobDetails[printJobs.size()];
@@ -488,11 +493,6 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public byte[] exportConfigData(String password) {
-		return null;
-	}
-
-	@WebMethod
 	public byte[] exportPersonData(String password) {
 		List<Person> result = getQueryHelper().getPersonen();
 		return AusweisDatenWriter.export(password, result);
@@ -510,8 +510,23 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public boolean importConfigData(byte[] data, String password) {
-		return true;
+	public byte[] exportConfigData(@WebParam(name = "password") String password) {
+		log.debug("Exportiere Konfiguration");
+		List<ConfigurationValue> values = getQueryHelper().getConfigurationValues();
+		return KonfigurationsDatenWriter.export(password, values);
+	}
+
+	@WebMethod
+	public boolean importConfigData(@WebParam(name = "data") byte[] data, @WebParam(name = "password") String password) {
+		log.debug("Importiere Konfiguration");
+		KonfigurationsDatenReader reader = new KonfigurationsDatenReader(data, password);
+		List<ConfigurationValue> values = reader.importData();
+		if (!reader.hasError()) {
+			getQueryHelper().removeAllConfiguration();
+			getQueryHelper().persistAllConfiguration(values);
+			log.debug("Es wurde " + values.size() + " Konfigurationswerte importiert.");
+		}
+		return !reader.hasError();
 	}
 
 	@WebMethod

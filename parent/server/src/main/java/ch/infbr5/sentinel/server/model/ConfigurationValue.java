@@ -9,10 +9,11 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "findConfigurationValueByKey", query = "SELECT c FROM ConfigurationValue c WHERE c.key like :keyParam"),
-		@NamedQuery(name = "getConfigurationValueById", query = "SELECT c FROM ConfigurationValue c WHERE c.id = :idParam"), 
+		@NamedQuery(name = "getConfigurationValueById", query = "SELECT c FROM ConfigurationValue c WHERE c.id = :idParam"),
 		@NamedQuery(name = "getConfigurationValues", query = "SELECT c FROM ConfigurationValue c")})
 public class ConfigurationValue {
 
+	public static final String QUERY_ALL_CONFIGURATION = "getConfigurationValues";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

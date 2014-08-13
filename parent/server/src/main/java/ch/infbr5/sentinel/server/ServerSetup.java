@@ -9,7 +9,6 @@ import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Checkpoint;
-import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.ObjectFactory;
 import ch.infbr5.sentinel.server.model.Zone;
 import ch.infbr5.sentinel.server.model.Zutrittsregel;
@@ -50,15 +49,12 @@ public class ServerSetup {
 		Checkpoint checkpoint = ObjectFactory.createCheckpoint("Haupteingang", checkInZonen, checkOutZonen);
 		em.persist(checkpoint);
 
-		// Standart Passwort anlgen
-		ConfigurationValue v1 = ObjectFactory.createConfigurationValue(ConfigConstants.ADMIN_PASSWORD, "sentinel", 0, "");
-		em.persist(v1);
-
-		ConfigurationValue v2 = ObjectFactory.createConfigurationValue(ConfigConstants.IDENTITY_CARD_PASSWORD, "1nf8r5!", 0, "");
-		em.persist(v2);
+		// Konfiguration
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.ADMIN_PASSWORD, "leitnes", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.SUPERUSER_PASSWORD, "sentinel", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.IDENTITY_CARD_PASSWORD, "1nf8r5!", 0, ""));
 
 		em.getTransaction().commit();
-
 		em.close();
 	}
 

@@ -3,7 +3,6 @@ package ch.infbr5.sentinel.client.gui.components;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -13,11 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.KeyStroke;
 
+import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
-import ch.infbr5.sentinel.client.util.ServiceHelper;
-import ch.infbr5.sentinel.common.config.ConfigConstants;
-
-import com.google.common.collect.Lists;
 
 public class AppMenuBar extends JMenuBar {
 
@@ -44,6 +40,7 @@ public class AppMenuBar extends JMenuBar {
 	private ActionListener menuListener;
 
 	private boolean adminMode;
+	private boolean superUserMode;
 	private boolean adminOrSuperuserMode;
 
 	private JMenu menuStart;
@@ -52,22 +49,32 @@ public class AppMenuBar extends JMenuBar {
 
 	private JMenuItem itemDisableAdmin;
 	private JMenuItem itemEnableAdmin;
+	private JMenuItem itemDisableSuperuser;
+	private JMenuItem itemEnableSuperuser;
 	private JMenuItem itemEinstellungen;
-
-	private List<JMenuItem> itemsAdmin;
+	private JMenuItem itemAusweisdatenExportieren;
+	private JMenuItem itemAusweisdatenImportieren;
+	private JMenuItem itemPisaDatenBestand;
+	private JMenuItem itemPisaDatenEinrueckung;
+	private JMenuItem itemFotosImport;
+	private JMenuItem itemConfiguractionImport;
+	private JMenuItem itemConfigurationExport;
+	private JMenuItem itemImportAusweisVorlage;
+	private JMenuItem itemImportWasserzeichen;
 
 	public AppMenuBar(ActionListener startMenuListener, boolean adminMode, boolean superuserMode) {
 		super();
 
 		this.menuListener = startMenuListener;
-		this.adminMode = adminMode;
-		this.adminOrSuperuserMode = adminMode || superuserMode;
 
-		this.itemsAdmin = Lists.newArrayList();
+		this.adminMode = adminMode;
+		this.superUserMode = superuserMode;
 
 		this.createStartMenu();
 		this.createCheckpointMenu();
 		this.createAdminMenu();
+
+		configureActivation();
 	}
 
 	private void createStartMenu() {
@@ -78,19 +85,24 @@ public class AppMenuBar extends JMenuBar {
 
 		itemEinstellungen = createItem("Einstellungen", CMD_EINSTELLUNGEN, KeyEvent.VK_E);
 		itemEinstellungen.addActionListener(menuListener);
-		itemEinstellungen.setEnabled(adminOrSuperuserMode);
 		menuStart.add(itemEinstellungen);
 
 		menuStart.addSeparator();
 
-		itemEnableAdmin = createItem("Admin Modus starten", CMD_ENABLED_ADMIN_MODE);
+		itemEnableSuperuser = createItem("Superuser Modus starten");
+		itemEnableSuperuser.addActionListener(createEnableSuperuserModeListener());
+		menuStart.add(itemEnableSuperuser);
+
+		itemDisableSuperuser = createItem("Superuser Modus beenden");
+		itemDisableSuperuser.addActionListener(createDisableSuperuserModeListener());
+		menuStart.add(itemDisableSuperuser);
+
+		itemEnableAdmin = createItem("Admin Modus starten");
 		itemEnableAdmin.addActionListener(createEnableAdminModeListener());
-		itemEnableAdmin.setVisible(!adminMode);
 		menuStart.add(itemEnableAdmin);
 
-		itemDisableAdmin = createItem("Admin Modus beenden", CMD_DISABLE_ADMIN_MODE);
+		itemDisableAdmin = createItem("Admin Modus beenden");
 		itemDisableAdmin.addActionListener(createDisableAdminModeListener());
-		itemDisableAdmin.setVisible(adminMode);
 		menuStart.add(itemDisableAdmin);
 
 		menuStart.addSeparator();
@@ -125,39 +137,50 @@ public class AppMenuBar extends JMenuBar {
 		this.menuAdmin = new JMenu("Datenaustausch");
 		this.add(this.menuAdmin);
 
-		itemsAdmin.add(addItem("Ausweisdaten exportieren", menuAdmin, menuListener, CMD_EXPORT_PERSONDATA, adminOrSuperuserMode));
-		itemsAdmin.add(addItem("Ausweisdaten importieren", menuAdmin, menuListener, CMD_IMPORT_PERSONDATA, adminOrSuperuserMode));
+		itemAusweisdatenExportieren = addItem("Ausweisdaten exportieren", menuAdmin, menuListener, CMD_EXPORT_PERSONDATA);
+		itemAusweisdatenImportieren = addItem("Ausweisdaten importieren", menuAdmin, menuListener, CMD_IMPORT_PERSONDATA);
 
 		this.menuAdmin.addSeparator();
 
-		itemsAdmin.add(addItem("Pisadaten importieren (Bestandesliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_BESTAND,
-				adminMode));
-		itemsAdmin.add(addItem("Pisadaten importieren (Einrückungsliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_EINR,
-				adminMode));
-		this.menuAdmin.addSeparator();
-
-		itemsAdmin.add(addItem("Fotos importieren", menuAdmin, menuListener, CMD_IMPORT_FOTO, adminMode));
+		itemPisaDatenBestand = addItem("Pisadaten importieren (Bestandesliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_BESTAND);
+		itemPisaDatenEinrueckung = addItem("Pisadaten importieren (Einrückungsliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_EINR);
 
 		this.menuAdmin.addSeparator();
 
-		itemsAdmin.add(addItem("Configuration exportieren", menuAdmin, menuListener, CMD_EXPORT_CONFIG, adminMode));
-		itemsAdmin.add(addItem("Configuration importieren", menuAdmin, menuListener, CMD_IMPORT_CONFIG, adminMode));
+		itemFotosImport = addItem("Fotos importieren", menuAdmin, menuListener, CMD_IMPORT_FOTO);
 
 		this.menuAdmin.addSeparator();
 
-		itemsAdmin.add(addItem("Ausweisvorlage importieren", menuAdmin, menuListener, CMD_IMPORT_AUSWEISVORLAGE, adminMode));
-		itemsAdmin.add(addItem("Wasserzeichen importieren", menuAdmin, menuListener, CMD_IMPORT_WASSERZEICHEN, adminMode));
+		itemConfigurationExport = addItem("Configuration exportieren", menuAdmin, menuListener, CMD_EXPORT_CONFIG);
+		itemConfiguractionImport = addItem("Configuration importieren", menuAdmin, menuListener, CMD_IMPORT_CONFIG);
 
-		this.menuAdmin.setEnabled(adminOrSuperuserMode);
+		this.menuAdmin.addSeparator();
+
+		itemImportAusweisVorlage = addItem("Ausweisvorlage importieren", menuAdmin, menuListener, CMD_IMPORT_AUSWEISVORLAGE);
+		itemImportWasserzeichen = addItem("Wasserzeichen importieren", menuAdmin, menuListener, CMD_IMPORT_WASSERZEICHEN);
 	}
 
-	private JMenuItem addItem(String text, JMenu menu, ActionListener listener, String cmd, boolean isEnabled) {
-		JMenuItem item = new JMenuItem(text);
-		item.setActionCommand(cmd);
-		item.addActionListener(listener);
-		item.setEnabled(isEnabled);
-		menu.add(item);
-		return item;
+	private ActionListener createDisableSuperuserModeListener() {
+		return new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				changeSuperUserMode(false);
+			}
+		};
+	}
+
+	private ActionListener createEnableSuperuserModeListener() {
+		return new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String password = ConfigurationHelper.getSuperUserPassword();
+				if (askForPassword(password)) {
+					changeSuperUserMode(true);
+				}
+			}
+		};
 	}
 
 	private ActionListener createEnableAdminModeListener() {
@@ -165,19 +188,9 @@ public class AppMenuBar extends JMenuBar {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (enableAdminMode(ServiceHelper
-						.getConfigurationsService()
-						.getConfigurationValue(ConfigurationLocalHelper.getConfig().getCheckpointId(), ConfigConstants.ADMIN_PASSWORD)
-						.getConfigurationDetails().get(0).getStringValue())) {
-					menuAdmin.setEnabled(true);
-					itemEnableAdmin.setVisible(false);
-					itemDisableAdmin.setVisible(true);
-					itemEinstellungen.setEnabled(true);
-					for (JMenuItem item : itemsAdmin) {
-						item.setEnabled(true);
-					}
-					ConfigurationLocalHelper.getConfig().setAdminMode(true);
-					revalidate();
+				String password = ConfigurationHelper.getAdminPassword();
+				if (askForPassword(password)) {
+					changeAdminMode(true);
 				}
 			}
 		};
@@ -188,16 +201,66 @@ public class AppMenuBar extends JMenuBar {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				menuAdmin.setEnabled(false);
-				itemEnableAdmin.setVisible(true);
-				itemDisableAdmin.setVisible(false);
-				itemEinstellungen.setEnabled(false);
-				for (JMenuItem item : itemsAdmin) {
-					item.setEnabled(false);
-				}
-				ConfigurationLocalHelper.getConfig().setAdminMode(false);
+				changeAdminMode(false);
 			}
 		};
+	}
+
+	private void configureActivation() {
+		adminOrSuperuserMode = adminMode || superUserMode;
+
+		if (adminMode) {
+			itemEnableSuperuser.setVisible(false);
+			itemDisableSuperuser.setVisible(false);
+		} else {
+			itemEnableSuperuser.setVisible(!superUserMode);
+			itemDisableSuperuser.setVisible(superUserMode);
+		}
+		itemEnableAdmin.setVisible(!adminMode);
+		itemDisableAdmin.setVisible(adminMode);
+
+		itemEinstellungen.setEnabled(adminOrSuperuserMode);
+
+		itemAusweisdatenExportieren.setEnabled(adminOrSuperuserMode);
+		itemAusweisdatenImportieren.setEnabled(adminOrSuperuserMode);
+
+		itemPisaDatenBestand.setEnabled(adminMode);
+		itemPisaDatenEinrueckung.setEnabled(adminMode);
+
+		itemFotosImport.setEnabled(adminMode);
+		itemConfigurationExport.setEnabled(adminMode);
+		itemConfiguractionImport.setEnabled(adminMode);
+		itemImportAusweisVorlage.setEnabled(adminMode);
+		itemImportWasserzeichen.setEnabled(adminMode);
+
+		menuAdmin.setEnabled(adminOrSuperuserMode);
+	}
+
+
+	private void changeSuperUserMode(boolean value) {
+		superUserMode = value;
+		configureActivation();
+		ConfigurationLocalHelper.getConfig().setSuperuserMode(superUserMode);
+		revalidate();
+	}
+
+	private void changeAdminMode(boolean value) {
+		adminMode = value;
+		configureActivation();
+		ConfigurationLocalHelper.getConfig().setAdminMode(adminMode);
+		revalidate();
+	}
+
+	private JMenuItem addItem(String text, JMenu menu, ActionListener listener, String cmd) {
+		JMenuItem item = new JMenuItem(text);
+		item.setActionCommand(cmd);
+		item.addActionListener(listener);
+		menu.add(item);
+		return item;
+	}
+
+	private JMenuItem createItem(String name) {
+		return createItem(name, null);
 	}
 
 	private JMenuItem createItem(String name, String actionCommand) {
@@ -219,19 +282,23 @@ public class AppMenuBar extends JMenuBar {
 		item.setActionCommand(actionCommand);
 	}
 
-	private boolean enableAdminMode(String originalPassword) {
+	private boolean askForPassword(String originalPassword) {
+		if (originalPassword == null || originalPassword.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Auf dem Server ist kein Passwort definiert.", "Fehler", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+
 		JPasswordField field = new JPasswordField();
-		JLabel txt = new JLabel("Bitte Adminpasswort eingeben");
+		JLabel txt = new JLabel("Bitte Passwort eingeben");
+
 		Object[] fields = { txt, field };
-		JOptionPane.showConfirmDialog(this, fields, "Adminpasswort", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showConfirmDialog(null, fields, "Passwort", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 		String adminPassword = String.valueOf(field.getPassword());
 
 		if (adminPassword != null && adminPassword.equals(originalPassword)) {
 			return true;
 		} else {
-			JOptionPane.showMessageDialog(this, "Adminpasswort stimmt nicht korrekt.", "Adminpasswort falsch",
-					JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Passwort stimmt nicht korrekt.", "Adminpasswort falsch", JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
 	}

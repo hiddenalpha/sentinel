@@ -37,6 +37,16 @@ public class ConfigurationHelper {
 		return urls.toArray(new URL[0]);
 	}
 
+	public static String getAdminPassword() {
+		Long idCheckpoint = ConfigurationLocalHelper.getConfig().getCheckpointId();
+		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(idCheckpoint, ConfigConstants.ADMIN_PASSWORD);
+		if (response.getConfigurationDetails().isEmpty()) {
+			return null;
+		} else {
+			return response.getConfigurationDetails().get(0).getStringValue();
+		}
+	}
+
 	public static String getCheckpointName() {
 		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getCheckpoints();
 		List<CheckpointDetails> res = response.getCheckpointDetails();
@@ -47,6 +57,16 @@ public class ConfigurationHelper {
 			}
 		}
 		return ""; // TODO Darf nie eintreten, müsste sofort exceptoin geben
+	}
+
+	public static String getSuperUserPassword() {
+		Long idCheckpoint = ConfigurationLocalHelper.getConfig().getCheckpointId();
+		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(idCheckpoint, ConfigConstants.SUPERUSER_PASSWORD);
+		if (response.getConfigurationDetails().isEmpty()) {
+			return null;
+		} else {
+			return response.getConfigurationDetails().get(0).getStringValue();
+		}
 	}
 
 }
