@@ -17,6 +17,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
+import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
@@ -86,7 +87,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 				PdfContentByte cb = writer.getDirectContent();
 
 				String password = "";
-				List<ConfigurationValue> passwordList = getQueryHelper().findConfigurationValue("IdentityCardPassword");
+				List<ConfigurationValue> passwordList = getQueryHelper().findConfigurationValue(ConfigConstants.IDENTITY_CARD_PASSWORD);
 				if (passwordList.size() > 0) {
 					password = passwordList.get(0).getStringValue();
 				}

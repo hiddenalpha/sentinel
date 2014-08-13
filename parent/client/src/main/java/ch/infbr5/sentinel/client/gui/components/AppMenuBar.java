@@ -3,6 +3,7 @@ package ch.infbr5.sentinel.client.gui.components;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -11,6 +12,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.KeyStroke;
+
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
+import ch.infbr5.sentinel.client.util.ServiceHelper;
+import ch.infbr5.sentinel.common.config.ConfigConstants;
+
+import com.google.common.collect.Lists;
 
 public class AppMenuBar extends JMenuBar {
 
@@ -29,159 +36,203 @@ public class AppMenuBar extends JMenuBar {
 	public static final String CMD_IMPORT_AUSWEISVORLAGE = "CMD_IMPORT_AUSWEISVORLAGE";
 	public static final String CMD_IMPORT_WASSERZEICHEN = "CMD_IMPORT_WASSERZEICHEN";
 	public static final String CMD_CHECKPOINT_EINSTELLUNGEN = "CMD_CHECKPOINT_EINSTELLUNGEN";
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	private JMenu adminMenu;
-	private JMenuItem disableAdminItem;
-	private JMenuItem enableAdminItem;
-	private JMenuItem propertiesItem;
+	public static final String CMD_ENABLED_ADMIN_MODE = "CMD_ENABLED_ADMIN_MODE";
+	public static final String CMD_DISABLE_ADMIN_MODE = "CMD_DISABLE_ADMIN_MODE";
 
-	public AppMenuBar(ActionListener startMenuListener, boolean adminMode,
-			boolean superuserMode) {
+	private static final long serialVersionUID = 1L;
+
+	private ActionListener menuListener;
+
+	private boolean adminMode;
+	private boolean adminOrSuperuserMode;
+
+	private JMenu menuStart;
+	private JMenu menuCheckpoint;
+	private JMenu menuAdmin;
+
+	private JMenuItem itemDisableAdmin;
+	private JMenuItem itemEnableAdmin;
+	private JMenuItem itemEinstellungen;
+
+	private List<JMenuItem> itemsAdmin;
+
+	public AppMenuBar(ActionListener startMenuListener, boolean adminMode, boolean superuserMode) {
 		super();
 
-		this.createStartMenu(startMenuListener);
-		this.createCheckpointMenu(startMenuListener);
-		this.createAdminMenu(startMenuListener, adminMode, superuserMode);
+		this.menuListener = startMenuListener;
+		this.adminMode = adminMode;
+		this.adminOrSuperuserMode = adminMode || superuserMode;
 
-		this.adminMenu.setVisible(adminMode || superuserMode);
-		propertiesItem.setEnabled(adminMode || superuserMode);
+		this.itemsAdmin = Lists.newArrayList();
+
+		this.createStartMenu();
+		this.createCheckpointMenu();
+		this.createAdminMenu();
 	}
 
-	private void createAdminMenu(ActionListener startMenuListener,
-			boolean adminMode, boolean superuserMode) {
-		this.adminMenu = new JMenu("Datenaustausch");
-		this.add(this.adminMenu);
+	private void createStartMenu() {
+		menuStart = new JMenu("Start");
+		menuStart.setMnemonic(KeyEvent.VK_S);
+		menuStart.getAccessibleContext().setAccessibleDescription("Start");
+		this.add(menuStart);
 
-		addItem("Ausweisdaten exportieren", adminMenu, startMenuListener,
-				CMD_EXPORT_PERSONDATA, adminMode || superuserMode);
-		addItem("Ausweisdaten importieren", adminMenu, startMenuListener,
-				CMD_IMPORT_PERSONDATA, adminMode || superuserMode);
-		this.adminMenu.addSeparator();
+		itemEinstellungen = createItem("Einstellungen", CMD_EINSTELLUNGEN, KeyEvent.VK_E);
+		itemEinstellungen.addActionListener(menuListener);
+		itemEinstellungen.setEnabled(adminOrSuperuserMode);
+		menuStart.add(itemEinstellungen);
 
-		addItem("Pisadaten importieren (Bestandesliste)", adminMenu, startMenuListener,
-				CMD_IMPORT_PISADATA_BESTAND, adminMode );
-		addItem("Pisadaten importieren (Einrückungsliste)", adminMenu, startMenuListener,
-				CMD_IMPORT_PISADATA_EINR, adminMode );
-		this.adminMenu.addSeparator();
+		menuStart.addSeparator();
 
-		addItem("Fotos importieren", adminMenu, startMenuListener,
-				CMD_IMPORT_FOTO, adminMode );
-		this.adminMenu.addSeparator();
+		itemEnableAdmin = createItem("Admin Modus starten", CMD_ENABLED_ADMIN_MODE);
+		itemEnableAdmin.addActionListener(createEnableAdminModeListener());
+		itemEnableAdmin.setVisible(!adminMode);
+		menuStart.add(itemEnableAdmin);
 
-		addItem("Configuration exportieren", adminMenu, startMenuListener,
-				CMD_EXPORT_CONFIG, adminMode );
+		itemDisableAdmin = createItem("Admin Modus beenden", CMD_DISABLE_ADMIN_MODE);
+		itemDisableAdmin.addActionListener(createDisableAdminModeListener());
+		itemDisableAdmin.setVisible(adminMode);
+		menuStart.add(itemDisableAdmin);
 
-		addItem("Configuration importieren", adminMenu, startMenuListener,
-				CMD_IMPORT_CONFIG, adminMode );
+		menuStart.addSeparator();
 
-		this.adminMenu.addSeparator();
-
-		addItem("Ausweisvorlage importieren", adminMenu, startMenuListener,
-				CMD_IMPORT_AUSWEISVORLAGE, adminMode );
-
-		addItem("Wasserzeichen importieren", adminMenu, startMenuListener,
-				CMD_IMPORT_WASSERZEICHEN, adminMode );
+		JMenuItem itemBeenden = createItem("Beenden", CMD_EXIT, KeyEvent.VK_B);
+		itemBeenden.addActionListener(menuListener);
+		menuStart.add(itemBeenden);
 	}
 
-	private void addItem(String text, JMenu menu, ActionListener listener,
-			String cmd, boolean isEnabled) {
+	private void createCheckpointMenu() {
+		menuCheckpoint = new JMenu("Checkpoint");
+		menuCheckpoint.setMnemonic(KeyEvent.VK_C);
+		menuCheckpoint.getAccessibleContext().setAccessibleDescription("Checkpoint");
+		this.add(menuCheckpoint);
+
+		JMenuItem menuItem = createItem("Manuelle Auswahl", CMD_DISPLAY_PERSON_SELECTION_DLG, KeyEvent.VK_F6);
+		menuItem.addActionListener(menuListener);
+		menuCheckpoint.add(menuItem);
+
+		menuCheckpoint.addSeparator();
+
+		JMenuItem itemServerVerbindung = createItem("Server-Verbindung", CMD_SERVER_EINSTELLUNG);
+		itemServerVerbindung.addActionListener(menuListener);
+		menuCheckpoint.add(itemServerVerbindung);
+
+		JMenuItem itemCheckpointEinstellungen = createItem("Checkpoint-Einstellungen", CMD_CHECKPOINT_EINSTELLUNGEN);
+		itemCheckpointEinstellungen.addActionListener(menuListener);
+		menuCheckpoint.add(itemCheckpointEinstellungen);
+	}
+
+	private void createAdminMenu() {
+		this.menuAdmin = new JMenu("Datenaustausch");
+		this.add(this.menuAdmin);
+
+		itemsAdmin.add(addItem("Ausweisdaten exportieren", menuAdmin, menuListener, CMD_EXPORT_PERSONDATA, adminOrSuperuserMode));
+		itemsAdmin.add(addItem("Ausweisdaten importieren", menuAdmin, menuListener, CMD_IMPORT_PERSONDATA, adminOrSuperuserMode));
+
+		this.menuAdmin.addSeparator();
+
+		itemsAdmin.add(addItem("Pisadaten importieren (Bestandesliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_BESTAND,
+				adminMode));
+		itemsAdmin.add(addItem("Pisadaten importieren (Einrückungsliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_EINR,
+				adminMode));
+		this.menuAdmin.addSeparator();
+
+		itemsAdmin.add(addItem("Fotos importieren", menuAdmin, menuListener, CMD_IMPORT_FOTO, adminMode));
+
+		this.menuAdmin.addSeparator();
+
+		itemsAdmin.add(addItem("Configuration exportieren", menuAdmin, menuListener, CMD_EXPORT_CONFIG, adminMode));
+		itemsAdmin.add(addItem("Configuration importieren", menuAdmin, menuListener, CMD_IMPORT_CONFIG, adminMode));
+
+		this.menuAdmin.addSeparator();
+
+		itemsAdmin.add(addItem("Ausweisvorlage importieren", menuAdmin, menuListener, CMD_IMPORT_AUSWEISVORLAGE, adminMode));
+		itemsAdmin.add(addItem("Wasserzeichen importieren", menuAdmin, menuListener, CMD_IMPORT_WASSERZEICHEN, adminMode));
+
+		this.menuAdmin.setEnabled(adminOrSuperuserMode);
+	}
+
+	private JMenuItem addItem(String text, JMenu menu, ActionListener listener, String cmd, boolean isEnabled) {
 		JMenuItem item = new JMenuItem(text);
 		item.setActionCommand(cmd);
 		item.addActionListener(listener);
 		item.setEnabled(isEnabled);
 		menu.add(item);
+		return item;
 	}
 
-	private void createCheckpointMenu(ActionListener checkpointMenuListener) {
-		JMenu menu = new JMenu("Checkpoint");
-		menu.setMnemonic(KeyEvent.VK_C);
-		menu.getAccessibleContext().setAccessibleDescription("Checkpoint");
-		this.add(menu);
+	private ActionListener createEnableAdminModeListener() {
+		return new ActionListener() {
 
-		JMenuItem menuItem = new JMenuItem("Manuelle Auswahl", KeyEvent.VK_F6);
-		menuItem.setName(CMD_DISPLAY_PERSON_SELECTION_DLG);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6,
-				ActionEvent.ALT_MASK));
-		menuItem.setActionCommand(CMD_DISPLAY_PERSON_SELECTION_DLG);
-		menuItem.addActionListener(checkpointMenuListener);
-		menu.add(menuItem);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (enableAdminMode(ServiceHelper
+						.getConfigurationsService()
+						.getConfigurationValue(ConfigurationLocalHelper.getConfig().getCheckpointId(), ConfigConstants.ADMIN_PASSWORD)
+						.getConfigurationDetails().get(0).getStringValue())) {
+					menuAdmin.setEnabled(true);
+					itemEnableAdmin.setVisible(false);
+					itemDisableAdmin.setVisible(true);
+					itemEinstellungen.setEnabled(true);
+					for (JMenuItem item : itemsAdmin) {
+						item.setEnabled(true);
+					}
+					ConfigurationLocalHelper.getConfig().setAdminMode(true);
+					revalidate();
+				}
+			}
+		};
 	}
 
-	private void createStartMenu(ActionListener startMenuListener) {
-		JMenu menu = new JMenu("Start");
-		menu.setMnemonic(KeyEvent.VK_S);
-		menu.getAccessibleContext().setAccessibleDescription("Start");
-		this.add(menu);
+	private ActionListener createDisableAdminModeListener() {
+		return new ActionListener() {
 
-		propertiesItem = new JMenuItem("Einstellungen", KeyEvent.VK_E);
-		propertiesItem.setName(CMD_EINSTELLUNGEN);
-		propertiesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
-				ActionEvent.ALT_MASK));
-		propertiesItem.getAccessibleContext().setAccessibleDescription(
-				"Einstellungen");
-		propertiesItem.setActionCommand(CMD_EINSTELLUNGEN);
-		propertiesItem.addActionListener(startMenuListener);
-		menu.add(propertiesItem);
-
-		JMenuItem serverVerbindung = new JMenuItem("Server-Verbindung", KeyEvent.VK_V);
-		serverVerbindung.setName(CMD_SERVER_EINSTELLUNG);
-		serverVerbindung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-				ActionEvent.ALT_MASK));
-		serverVerbindung.getAccessibleContext().setAccessibleDescription(
-				"Server-Verbindung");
-		serverVerbindung.setActionCommand(CMD_SERVER_EINSTELLUNG);
-		serverVerbindung.addActionListener(startMenuListener);
-		menu.add(serverVerbindung);
-
-		JMenuItem checkpointEinstellungen = new JMenuItem("Checkpoint-Einstellungen", KeyEvent.VK_N);
-		checkpointEinstellungen.setName(CMD_CHECKPOINT_EINSTELLUNGEN);
-		checkpointEinstellungen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
-				ActionEvent.ALT_MASK));
-		checkpointEinstellungen.getAccessibleContext().setAccessibleDescription(
-				"Checkpoint-Einstellungen");
-		checkpointEinstellungen.setActionCommand(CMD_CHECKPOINT_EINSTELLUNGEN);
-		checkpointEinstellungen.addActionListener(startMenuListener);
-		menu.add(checkpointEinstellungen);
-
-		JMenuItem beendenItem = new JMenuItem("Beenden", KeyEvent.VK_B);
-		beendenItem.setName(CMD_EXIT);
-		beendenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
-				ActionEvent.ALT_MASK));
-		beendenItem.getAccessibleContext().setAccessibleDescription("Beenden");
-		beendenItem.setActionCommand(CMD_EXIT);
-		beendenItem.addActionListener(startMenuListener);
-		menu.add(beendenItem);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				menuAdmin.setEnabled(false);
+				itemEnableAdmin.setVisible(true);
+				itemDisableAdmin.setVisible(false);
+				itemEinstellungen.setEnabled(false);
+				for (JMenuItem item : itemsAdmin) {
+					item.setEnabled(false);
+				}
+				ConfigurationLocalHelper.getConfig().setAdminMode(false);
+			}
+		};
 	}
 
-	public void disableAdminMode() {
-		this.adminMenu.setVisible(false);
-		this.enableAdminItem.setVisible(true);
-		this.disableAdminItem.setVisible(false);
-
-		this.revalidate();
+	private JMenuItem createItem(String name, String actionCommand) {
+		JMenuItem item = new JMenuItem(name);
+		applyToItem(item, name, actionCommand);
+		return item;
 	}
 
-	public void enableAdminMode(String originalPassword) {
+	private JMenuItem createItem(String name, String actionCommand, int keyEvent) {
+		JMenuItem item = new JMenuItem(name, keyEvent);
+		item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, ActionEvent.ALT_MASK));
+		applyToItem(item, name, actionCommand);
+		return item;
+	}
+
+	private void applyToItem(JMenuItem item, String name, String actionCommand) {
+		item.setName(actionCommand);
+		item.getAccessibleContext().setAccessibleDescription(name);
+		item.setActionCommand(actionCommand);
+	}
+
+	private boolean enableAdminMode(String originalPassword) {
 		JPasswordField field = new JPasswordField();
 		JLabel txt = new JLabel("Bitte Adminpasswort eingeben");
 		Object[] fields = { txt, field };
-		JOptionPane.showConfirmDialog(this, fields, "Adminpasswort",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showConfirmDialog(this, fields, "Adminpasswort", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.INFORMATION_MESSAGE);
 		String adminPassword = String.valueOf(field.getPassword());
 
 		if (adminPassword != null && adminPassword.equals(originalPassword)) {
-			this.adminMenu.setVisible(true);
-			this.enableAdminItem.setVisible(false);
-			this.disableAdminItem.setVisible(true);
-
-			this.revalidate();
+			return true;
 		} else {
-			JOptionPane.showMessageDialog(this,
-					"Adminpasswort stimmt nicht überein.",
-					"Adminpasswort falsch", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Adminpasswort stimmt nicht korrekt.", "Adminpasswort falsch",
+					JOptionPane.WARNING_MESSAGE);
+			return false;
 		}
 	}
 }

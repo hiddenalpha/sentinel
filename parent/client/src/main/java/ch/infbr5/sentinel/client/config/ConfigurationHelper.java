@@ -12,13 +12,14 @@ import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
+import ch.infbr5.sentinel.common.config.ConfigConstants;
 
 public class ConfigurationHelper {
 
 	private static final Logger log = Logger.getLogger(ConfigurationHelper.class);
 
 	public static List<ConfigurationDetails> loadConfigurationIPCams() {
-		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getGlobalConfigurationValues("URL_IPCAM_%");
+		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getGlobalConfigurationValues(ConfigConstants.URL_IPCAM_ALL);
 		return response.getConfigurationDetails();
 	}
 

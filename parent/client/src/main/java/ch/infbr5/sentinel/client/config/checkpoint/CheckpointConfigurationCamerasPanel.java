@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationDetails;
+import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class CheckpointConfigurationCamerasPanel extends JPanel {
@@ -91,7 +92,7 @@ public class CheckpointConfigurationCamerasPanel extends JPanel {
 			}
 		}
 
-		return "URL_IPCAM_" + String.valueOf(newId);
+		return ConfigConstants.URL_IPCAM_ + String.valueOf(newId);
 	}
 
 	private ActionListener createRemoveListener() {
