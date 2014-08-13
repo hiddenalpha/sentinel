@@ -237,7 +237,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 			}
 
 			if (values.length > 0) {
-				String selected = (String) JOptionPane.showInputDialog(this, "WÃ¤hle Checkpoint", "Checkpoint Auswahl",
+				String selected = (String) JOptionPane.showInputDialog(this, "Wähle Checkpoint", "Checkpoint Auswahl",
 						JOptionPane.WARNING_MESSAGE, null, values, values[0]);
 				return selected;
 			} else {

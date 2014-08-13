@@ -6,21 +6,19 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
-import ch.infbr5.sentinel.common.config.ConfigConstants;
+import org.apache.log4j.Logger;
+
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
-import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.utils.FileHelper;
@@ -47,6 +45,18 @@ import com.thoughtworks.xstream.core.util.Base64Encoder;
 
 public class IdentityCardRenderer extends PrintingDocument {
 
+	private static final Logger log = Logger.getLogger(IdentityCardRenderer.class);
+
+	private List<Ausweis> ausweise;
+
+	private String password;
+
+	public IdentityCardRenderer(EntityManager em, List<Ausweis> ausweise, String password) {
+		super(em);
+		this.ausweise = ausweise;
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
 		return "Erstellte Ausweise";
@@ -57,80 +67,52 @@ public class IdentityCardRenderer extends PrintingDocument {
 		return "ausweise";
 	}
 
-
-
-	public IdentityCardRenderer(EntityManager em) {
-		super(em);
-	}
-
-
-
 	@Override
 	protected byte[] renderPdf() {
 
-		List<Ausweis> ausweise = getQueryHelper().findAusweiseZumDrucken();
+		if (ausweise.isEmpty()) {
+			return null;
+		}
 
-		if (!ausweise.isEmpty()) {
-			try {
+		try {
+			int offsetX = 50;
+			int offsetY = 40;
 
-				int offsetX = 50;
-				int offsetY = 40;
+			int counter = 0;
 
-				int counter = 0;
+			Rectangle A4_quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
+			Document document = new Document(A4_quer);
 
-				Rectangle A4_quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
-				Document document = new Document(A4_quer);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			PdfWriter writer = PdfWriter.getInstance(document, out);
+			document.open();
+			PdfContentByte cb = writer.getDirectContent();
 
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				PdfWriter writer = PdfWriter.getInstance(document, out);
-				document.open();
-				PdfContentByte cb = writer.getDirectContent();
+			for (Ausweis ausweis : ausweise) {
+				counter++;
 
-				String password = "";
-				List<ConfigurationValue> passwordList = getQueryHelper().findConfigurationValue(ConfigConstants.IDENTITY_CARD_PASSWORD);
-				if (passwordList.size() > 0) {
-					password = passwordList.get(0).getStringValue();
-				}
+				if (counter % 4 == 1)
+					printAusweis(offsetX, offsetY + 270, cb, ausweis);
+				if (counter % 4 == 2)
+					printAusweis(offsetX + 400, offsetY + 270, cb, ausweis);
+				if (counter % 4 == 3)
+					printAusweis(offsetX, offsetY, cb, ausweis);
+				if (counter % 4 == 0)
+					printAusweis(offsetX + 400, offsetY, cb, ausweis);
 
-				for (Iterator<Ausweis> iterator = ausweise.iterator(); iterator.hasNext();) {
-					Ausweis ausweis = iterator.next();
-					counter++;
+				if (counter % 4 == 0)
+					neueSeite(document);
 
-					if (counter % 4 == 1)
-						printAusweis(offsetX, offsetY + 270, cb, ausweis, password);
-					if (counter % 4 == 2)
-						printAusweis(offsetX + 400, offsetY + 270, cb, ausweis, password);
-					if (counter % 4 == 3)
-						printAusweis(offsetX, offsetY, cb, ausweis, password);
-					if (counter % 4 == 0)
-						printAusweis(offsetX + 400, offsetY, cb, ausweis, password);
-
-					if (counter % 4 == 0)
-						neueSeite(document);
-
-					ausweis.setErstellt(true);
-					getEntityManager().persist(ausweis);
-
-				}
-
-				document.close();
-				return out.toByteArray();
-
-			} catch (BadElementException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (DocumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
+				ausweis.setErstellt(true);
+				getEntityManager().persist(ausweis);
 
 			}
+
+			document.close();
+			return out.toByteArray();
+
+		} catch (Exception e) {
+			log.error(e);
 		}
 
 		return null;
@@ -141,8 +123,8 @@ public class IdentityCardRenderer extends PrintingDocument {
 		document.newPage();
 	}
 
-	private void printAusweis(int offsetX, int offsetY, PdfContentByte cb, Ausweis ausweis, String password)
-			throws BadElementException, IOException, DocumentException {
+	private void printAusweis(int offsetX, int offsetY, PdfContentByte cb, Ausweis ausweis) throws BadElementException,
+			IOException, DocumentException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		Person person = ausweis.getPerson();
 		Einheit einheit = person.getEinheit();
@@ -157,7 +139,8 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 		BaseFont bfBold = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-		//BaseFont bfSign = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+		// BaseFont bfSign = BaseFont.createFont(BaseFont.COURIER,
+		// BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 
 		dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		printText(offsetX + 6, offsetY + 200, cb, bfBold, 11, person.getVorname().concat(" ".concat(person.getName())));
@@ -171,18 +154,21 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 		byte[] bild = ImageStore.loadJpegImage(person.getAhvNr());
 		if (bild != null)
-			addPersonImage(cb, offsetX, offsetY, ImageStore.byteArrayToBufferedImage(bild), getNoOfCharMod10(person.getName()));
+			addPersonImage(cb, offsetX, offsetY, ImageStore.byteArrayToBufferedImage(bild),
+					getNoOfCharMod10(person.getName()));
 
-		printRectanleCodes(offsetX + 113, offsetY + 150 - 0 * 36, cb, bfBold, einheit.getRgbColor_GsVb(), einheit.getText_GsVb());
-		printRectanleCodes(offsetX + 113, offsetY + 150 - 1 * 36, cb, bfBold, einheit.getRgbColor_TrpK(), einheit.getText_TrpK());
-		printRectanleCodes(offsetX + 113, offsetY + 150 - 2 * 36, cb, bfBold, einheit.getRgbColor_Einh(), einheit.getText_Einh());
+		printRectanleCodes(offsetX + 113, offsetY + 150 - 0 * 36, cb, bfBold, einheit.getRgbColor_GsVb(),
+				einheit.getText_GsVb());
+		printRectanleCodes(offsetX + 113, offsetY + 150 - 1 * 36, cb, bfBold, einheit.getRgbColor_TrpK(),
+				einheit.getText_TrpK());
+		printRectanleCodes(offsetX + 113, offsetY + 150 - 2 * 36, cb, bfBold, einheit.getRgbColor_Einh(),
+				einheit.getText_Einh());
 		printRectanleCodes(offsetX + 113, offsetY + 150 - 3 * 36, cb, bfBold, "", "000");
-		String boxNr = String.valueOf(100 * getNoOfCharMod10(person.getVorname()) + 10 * getNoOfCharMod10(person.getName())
-				+ getNoOfCharMod10(person.getFunktion()));
+		String boxNr = String.valueOf(100 * getNoOfCharMod10(person.getVorname()) + 10
+				* getNoOfCharMod10(person.getName()) + getNoOfCharMod10(person.getFunktion()));
 		printRectanleCodes(offsetX + 113, offsetY + 150 - 4 * 36, cb, bfBold, "", boxNr);
 
-		addBackBarCode(cb, offsetX + 168, offsetY, getQrContent(person, ausweis, password));
-
+		addBackBarCode(cb, offsetX + 168, offsetY, getQrContent(person, ausweis));
 	}
 
 	private int getNoOfCharMod10(String text) {
@@ -194,7 +180,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 	}
 
 	/**
-	 * Generiert Content fÃ¼r QC Barcode auf RÃ¼ckseite
+	 * Generiert Content für QC Barcode auf Rückseite
 	 *
 	 * @param p
 	 *            Person
@@ -202,7 +188,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 	 *            Ausweis
 	 * @return
 	 */
-	private String getQrContent(Person p, Ausweis a, String password) {
+	private String getQrContent(Person p, Ausweis a) {
 
 		String c = "";
 
@@ -248,8 +234,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 			byte[] digest = sha1.digest(password.concat(c).getBytes());
 			c = c + "S" + new Base64Encoder().encode(digest);
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 		return c;
 	}
@@ -277,8 +262,8 @@ public class IdentityCardRenderer extends PrintingDocument {
 		cb.endText();
 	}
 
-	private void addPersonImage(PdfContentByte cb, int offsetWidth, int offsetHeight, BufferedImage img, int nofYellowBoxes)
-			throws IOException, DocumentException {
+	private void addPersonImage(PdfContentByte cb, int offsetWidth, int offsetHeight, BufferedImage img,
+			int nofYellowBoxes) throws IOException, DocumentException {
 
 		Image imgJpeg = new Jpeg(modifyImage(img, nofYellowBoxes).toByteArray());
 		cb.addImage(imgJpeg, 100, 0, 0, 133, offsetWidth + 6, offsetHeight + 48);
@@ -298,14 +283,14 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 	}
 
-	private void addBackBarCode(PdfContentByte cb, int offsetWidth, int offsetHeight, String content) throws DocumentException {
+	private void addBackBarCode(PdfContentByte cb, int offsetWidth, int offsetHeight, String content)
+			throws DocumentException {
 
 		try {
 			Image imgJpeg = new Jpeg(createQrCode(content, 150, 150).toByteArray());
 			cb.addImage(imgJpeg, imgJpeg.getWidth(), 0, 0, imgJpeg.getHeight(), offsetWidth + 13, offsetHeight + 6);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 
 	}
@@ -321,7 +306,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 	private Jpeg getAusweisVorlage() throws BadElementException, IOException {
 		File f = new File(FileHelper.FILE_AUSWEISVORLAGE_JPG);
-		if(f.exists()) {
+		if (f.exists()) {
 			return new Jpeg(f.toURI().toURL());
 		} else {
 			return new Jpeg(IdentityCardRenderer.class.getResource("/images/AusweisVorlage.jpg"));
@@ -330,7 +315,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 	private BufferedImage getWasserzeichen() throws IOException {
 		File f = new File(FileHelper.FILE_WASSERZEICHEN_PNG);
-		if(f.exists()) {
+		if (f.exists()) {
 			return ImageIO.read(f.toURI().toURL());
 		} else {
 			return ImageIO.read(IdentityCardRenderer.class.getResource("/images/emblem.png"));
@@ -370,7 +355,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 
 	}
 
-	public ByteArrayOutputStream createQrCode(String content, int width, int height) {
+	private ByteArrayOutputStream createQrCode(String content, int width, int height) {
 
 		QRCodeWriter writer = new QRCodeWriter();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -382,8 +367,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 			return stream;
 
 		} catch (WriterException | IOException e) {
-			e.printStackTrace();
-
+			log.error(e);
 		}
 		return null;
 	}

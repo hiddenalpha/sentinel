@@ -16,6 +16,7 @@ import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
 
+import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.db.PdfStore;
@@ -24,6 +25,7 @@ import ch.infbr5.sentinel.server.exporter.AusweisDatenWriter;
 import ch.infbr5.sentinel.server.exporter.KonfigurationsDatenWriter;
 import ch.infbr5.sentinel.server.importer.AusweisDatenReader;
 import ch.infbr5.sentinel.server.importer.KonfigurationsDatenReader;
+import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
 import ch.infbr5.sentinel.server.model.Einheit;
@@ -440,7 +442,14 @@ public class ConfigurationQueryService {
 	public ConfigurationResponse printAusweise() {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		IdentityCardRenderer renderer = new IdentityCardRenderer(getEntityManager());
+		List<Ausweis> ausweise = getQueryHelper().findAusweiseZumDrucken();
+		String password = "";
+		List<ConfigurationValue> passwordList = getQueryHelper().findConfigurationValue(ConfigConstants.IDENTITY_CARD_PASSWORD);
+		if (passwordList.size() > 0) {
+			password = passwordList.get(0).getStringValue();
+		}
+
+		IdentityCardRenderer renderer = new IdentityCardRenderer(getEntityManager(), ausweise, password);
 		PrintJob job = renderer.print();
 		if (job != null) {
 			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
