@@ -1,19 +1,11 @@
 Issues:
 
-- Maven Build
--- JRE auf einem anderem Server - Anbieter im Internet suchen, Software zur Verfügung stellen.
-
-- Installation
--- Update
---- Installations Verzeichnis wieder das gleiche? Nicht so tragisch.
---- Runtime Verzeichnise wieder das gleiche, sollte man fast...
+jvm auf anderem server
 
 - LinuxInsallation
 -- Update - Desktop Icons werden nicht ersetzt
 -- Rechte Mgmt.
 
 - Deinstallation
-- Software unter Programme
 -Wenn möglich als Servers, als Daemoens muss quasi als ROot user gestartet sein, 
 - Windows Service Install
-

@@ -25,6 +25,25 @@
 
 		<plugins>
 
+	<plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>properties-maven-plugin</artifactId>
+		<version>1.0-alpha-2</version>
+		<executions>
+			<execution>
+				<phase>initialize</phase>
+				<goals>
+					<goal>read-project-properties</goal>
+				</goals>
+				<configuration>
+					<files>
+						<file>download-url.properties</file>
+					</files>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
+
 			<!-- Staging Area -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -75,31 +94,10 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>http://www.handball-ktvm.ch/jvm/JRE-7-WINDOWS-32.zip</url>
+							<url>${jvm_url}</url>
 							<outputFileName>jvm.zip</outputFileName>
 							<unpack>true</unpack>
-							<outputDirectory>${izpack.staging}/windows-jvm</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
-				<plugin>
-				<groupId>com.googlecode.maven-download-plugin</groupId>
-				<artifactId>download-maven-plugin</artifactId>
-				<version>1.2.0</version>
-				<executions>
-					<execution>
-						<!-- the wget goal actually binds itself to this phase by default -->
-						<phase>process-resources</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>http://www.handball-ktvm.ch/jvm/JRE-7-UNIX-32.zip</url>
-							<outputFileName>jvm.zip</outputFileName>
-							<unpack>true</unpack>
-							<outputDirectory>${izpack.staging}/unix-jvm</outputDirectory>
+							<outputDirectory>${izpack.staging}/jvm</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -200,11 +198,11 @@
 								<copy file="${basedir}/src/izpack/install-paket/install-unix.sh" todir="${installationdisk}" />
 								
 								<copy todir="${installationdisk}/JVM-WINDOWS">
-    								<fileset dir="${izpack.staging}/windows-jvm/JRE-7-WINDOWS-32"/>
+    								<fileset dir="${izpack.staging}/jvm/windows/JRE-7-WINDOWS-32"/>
   								</copy>
 								
 								<copy todir="${installationdisk}/JVM-UNIX">
-    								<fileset dir="${izpack.staging}/unix-jvm"/>
+    								<fileset dir="${izpack.staging}/jvm/unix"/>
   								</copy>
 								
 							</tasks>
@@ -257,6 +255,27 @@
 										</versionRange>
 										<goals>
 											<goal>wget</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											properties-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0-alpha-2,)
+										</versionRange>
+										<goals>
+											<goal>
+												read-project-properties
+											</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
