@@ -21,28 +21,25 @@ public class ImageStore {
 	private static final String FOLDER_NAME = "images";
 
 	public static Image getImage(String imageId) {
+		Image image = null;
 		try {
-			Image image = ImageIO.read(new File(ImageStore.createFilename(imageId)));
-
-			return image;
+			image = ImageIO.read(new File(ImageStore.createFilename(imageId)));
 		} catch (IOException e) {
-			e.printStackTrace();
-
-			return null;
+			log.error(e);
 		}
+		return image;
 	}
 
 	public static ImageIcon getImageIcon(String ahvNr, int width, int height) {
+		ImageIcon imageIcon = null;
 		if (ImageStore.hasImage(ahvNr)) {
-			return new ImageIcon(ImageStore.createFilename(ahvNr));
+			imageIcon = new ImageIcon(ImageStore.createFilename(ahvNr));
 		}
-
-		return null;
+		return imageIcon;
 	}
 
 	public static boolean hasImage(String ahvNr) {
 		File jpegFile = new File(ImageStore.createFilename(ahvNr));
-
 		return jpegFile.exists();
 	}
 
@@ -58,17 +55,8 @@ public class ImageStore {
 			// create FileInputStream object
 			FileInputStream fin = new FileInputStream(file);
 
-			/*
-			 * Create byte array large enough to hold the content of the file.
-			 * Use File.length to determine size of the file in bytes.
-			 */
-
 			byte fileContent[] = new byte[(int) file.length()];
 
-			/*
-			 * To read content of the file in byte array, use int read(byte[]
-			 * byteArray) method of java FileInputStream class.
-			 */
 			fin.read(fileContent);
 			fin.close();
 
@@ -85,16 +73,18 @@ public class ImageStore {
 
 
 	public static BufferedImage byteArrayToBufferedImage(byte[] binaryData) {
-		if (binaryData == null || binaryData.length == 0)
+		if (binaryData == null || binaryData.length == 0) {
 			return null;
-
-		ByteArrayInputStream bais = new ByteArrayInputStream(binaryData);
-		try {
-			return ImageIO.read(bais);
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		return null;
+
+		BufferedImage image = null;
+		try {
+			ByteArrayInputStream bais = new ByteArrayInputStream(binaryData);
+			image = ImageIO.read(bais);
+		} catch (IOException e) {
+			log.error(e);
+		}
+		return image;
 	}
 
 	public static boolean saveJpegImage(String ahvNr, byte[] data) {
@@ -112,7 +102,7 @@ public class ImageStore {
 			return true;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 
 			return false;
 		}

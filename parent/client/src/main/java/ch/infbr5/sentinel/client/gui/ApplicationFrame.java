@@ -58,7 +58,7 @@ public class ApplicationFrame extends JFrame {
 
 	private StartupHandler startupHandler;
 
-	private ApplicationFrameController windowListener;
+	private ApplicationFrameController applicationFrameController;
 
 	private CheckInModel checkInModel;
 
@@ -66,14 +66,12 @@ public class ApplicationFrame extends JFrame {
 
 	public ApplicationFrame() {
 		applicationFrameModel = new ApplicationModelImpl();
+		startupHandler = new StartupHandler();
 
-		windowListener = new ApplicationFrameController(applicationFrameModel, this);
-		this.addWindowListener(windowListener);
-
-		this.startupHandler = new StartupHandler();
+		applicationFrameController = new ApplicationFrameController(applicationFrameModel, this);
+		this.addWindowListener(applicationFrameController.getWindowListener());
 
 		this.handleStartupProcess();
-
 		this.initComponents();
 	}
 
@@ -141,7 +139,7 @@ public class ApplicationFrame extends JFrame {
 		}
 
 		// Menubar
-		this.menuBar = new AppMenuBar(windowListener, ConfigurationLocalHelper.getConfig().isAdminMode(),
+		this.menuBar = new AppMenuBar(applicationFrameController, ConfigurationLocalHelper.getConfig().isAdminMode(),
 				ConfigurationLocalHelper.getConfig().isSuperuserMode());
 		setJMenuBar(this.menuBar);
 

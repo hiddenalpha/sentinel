@@ -40,9 +40,6 @@ public class ServerControl {
 
 	public void start(String ip, String port) {
 		this.startDerby();
-		if (ServerSetup.databaseIsEmpty()) {
-			ServerSetup.setupDatabase();
-		}
 		this.startWebServices(ip, port);
 	}
 

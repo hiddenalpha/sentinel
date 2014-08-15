@@ -40,28 +40,6 @@ public abstract class PrintingDocument {
 		return null;
 	}
 
-//	public PdfPCell addTextCell(String text, boolean withBorder) {
-//		return addTextCell(text, withBorder, 6, Font.NORMAL, null);
-//	}
-//
-//	public PdfPCell addTextCell(String text, boolean withBorder, float fontSize, int fontStyle, Color bgColor) {
-//		PdfPCell cell;
-//		if (text != null) {
-//			cell = new PdfPCell(new Phrase(new Chunk(text, FontFactory.getFont(FontFactory.COURIER, fontSize, fontStyle))));
-//
-//
-//			if (bgColor != null) {
-//				cell.setBackgroundColor(bgColor);
-//				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-//			}
-//		} else {
-//			cell = new PdfPCell(new Phrase());
-//		}
-//		if (!withBorder)
-//			cell.setBorder(0);
-//		return cell;
-//	}
-
 	protected abstract byte[] renderPdf();
 
 	protected abstract String getFileName();

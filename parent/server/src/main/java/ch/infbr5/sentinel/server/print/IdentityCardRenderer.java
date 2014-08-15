@@ -24,6 +24,7 @@ import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.utils.FileHelper;
 import ch.infbr5.sentinel.server.utils.RgbStringHelper;
 
+import com.google.common.io.Resources;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -308,7 +309,7 @@ public class IdentityCardRenderer extends PrintingDocument {
 		if (f.exists()) {
 			return new Jpeg(f.toURI().toURL());
 		} else {
-			return new Jpeg(IdentityCardRenderer.class.getResource("/images/AusweisVorlage.jpg"));
+			return new Jpeg(IdentityCardRenderer.class.getResource(PATH_AUSWEISVORLAGE));
 		}
 	}
 
@@ -317,13 +318,36 @@ public class IdentityCardRenderer extends PrintingDocument {
 		if (f.exists()) {
 			return ImageIO.read(f.toURI().toURL());
 		} else {
-			return ImageIO.read(IdentityCardRenderer.class.getResource("/images/emblem.png"));
+			return ImageIO.read(IdentityCardRenderer.class.getResource(PATH_WASSERZEICHEN));
+		}
+	}
+
+	private static final String PATH_WASSERZEICHEN = "/images/emblem.png";
+
+	private static final String PATH_AUSWEISVORLAGE = "/images/AusweisVorlage.jpg";
+
+	private static final String PATH_BOX_GELB = "/images/box_gelb.jpg";
+
+	public static final byte[] getDefaultWasserzeichen() {
+		return getResource(PATH_WASSERZEICHEN);
+	}
+
+	public static final byte[] getDefaultAusweisvorlage() {
+		return getResource(PATH_AUSWEISVORLAGE);
+	}
+
+	private static final byte[] getResource(String path) {
+		try {
+			return Resources.toByteArray(IdentityCardRenderer.class.getResource(path));
+		} catch (IOException e) {
+			log.error(e);
+			return null;
 		}
 	}
 
 	private ByteArrayOutputStream modifyImage(BufferedImage pic, int nofBoxGelb) throws IOException {
 
-		BufferedImage boxGelb = ImageIO.read(IdentityCardRenderer.class.getResource("/images/box_gelb.jpg"));
+		BufferedImage boxGelb = ImageIO.read(IdentityCardRenderer.class.getResource(PATH_BOX_GELB));
 
 		BufferedImage watermark = getWasserzeichen();
 		java.awt.Image watermarkScale = watermark.getScaledInstance(watermark.getWidth() * pic.getWidth() / 300,

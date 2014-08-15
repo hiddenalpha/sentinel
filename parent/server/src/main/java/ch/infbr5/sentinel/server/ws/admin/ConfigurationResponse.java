@@ -1,5 +1,7 @@
 package ch.infbr5.sentinel.server.ws.admin;
 
+import java.util.List;
+
 import ch.infbr5.sentinel.server.ws.CheckpointDetails;
 import ch.infbr5.sentinel.server.ws.ConfigurationDetails;
 import ch.infbr5.sentinel.server.ws.EinheitDetails;
@@ -12,8 +14,8 @@ public class ConfigurationResponse {
 	private CheckpointDetails[] checkpointDetails;
 	private ZoneDetails[] zoneDetails;
 	private ConfigurationDetails[] configurationDetails;
-	private PersonDetails[] personDetails;
-	private EinheitDetails[] einheitDetails;
+	private List<PersonDetails> personDetails;
+	private List<EinheitDetails> einheitDetails;
 	private PrintJobDetails[] printJobDetails;
 
 	public ConfigurationDetails[] getConfigurationDetails() {
@@ -40,26 +42,26 @@ public class ConfigurationResponse {
 		this.zoneDetails = zoneDetails;
 	}
 
-	public void setPersonDetails(PersonDetails[] personDetails) {
+	public void setPersonDetails(List<PersonDetails> personDetails) {
 		this.personDetails = personDetails;
 	}
-	
-	public PersonDetails[] getPersonDetails() {
+
+	public List<PersonDetails> getPersonDetails() {
 		return personDetails;
 	}
 
-	public void setEinheitDetails(EinheitDetails[] einheitDetails) {
+	public void setEinheitDetails(List<EinheitDetails> einheitDetails) {
 		this.einheitDetails = einheitDetails;
 	}
-	
-	public EinheitDetails[] getEinheitDetails() {
+
+	public List<EinheitDetails> getEinheitDetails() {
 		return einheitDetails;
 	}
-	
+
 	public void setPrintJobDetails(PrintJobDetails[] printJobDetails) {
 		this.printJobDetails = printJobDetails;
 	}
-	
+
 	public PrintJobDetails[] getPrintJobDetails() {
 		return printJobDetails;
 	}

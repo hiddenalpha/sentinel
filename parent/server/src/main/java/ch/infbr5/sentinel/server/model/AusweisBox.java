@@ -1,7 +1,5 @@
 package ch.infbr5.sentinel.server.model;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

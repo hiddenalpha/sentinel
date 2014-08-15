@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.apache.openjpa.persistence.jdbc.Unique;
+
 @Entity
 @NamedQueries({ @NamedQuery(name = "findConfigurationValueByKey", query = "SELECT c FROM ConfigurationValue c WHERE c.key like :keyParam"),
 		@NamedQuery(name = "getConfigurationValueById", query = "SELECT c FROM ConfigurationValue c WHERE c.id = :idParam"),
@@ -17,6 +19,7 @@ public class ConfigurationValue {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Unique
 	private String key;
 	private String stringValue;
 	private long longValue;

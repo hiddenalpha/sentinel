@@ -26,8 +26,12 @@ public class FileUpAndDownload {
 		frame = parent;
 	}
 
+	public String showImportConfigurationFileDialog() {
+		return showFileDialog(frame, "Konfiguration importieren", "\\.", "*.zip", FileDialog.LOAD);
+	}
+
 	public void importConfiguration() {
-		String filename = showFileDialog(frame, "Konfiguration importieren", "\\.", "*.zip", FileDialog.LOAD);
+		String filename = showImportConfigurationFileDialog();
 		if (filename != null) {
 			String password = promptPassword();
 			if (!isEmpty(password)) {

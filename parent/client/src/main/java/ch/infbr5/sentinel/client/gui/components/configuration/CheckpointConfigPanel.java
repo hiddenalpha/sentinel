@@ -10,12 +10,8 @@ import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
-public class CheckpointConfigPanel extends
-		AbstractAdminOverviewPanel<CheckpointDetails> {
+public class CheckpointConfigPanel extends AbstractAdminOverviewPanel<CheckpointDetails> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public CheckpointConfigPanel(boolean adminMode) {
@@ -27,13 +23,10 @@ public class CheckpointConfigPanel extends
 		return new MyTableModel();
 	}
 
-	public class MyTableModel extends
-			AbstractAdminTableModel<CheckpointDetails> {
+	public class MyTableModel extends AbstractAdminTableModel<CheckpointDetails> {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
+
 		private final String[] headerNames = { "Name" };
 
 		@Override
@@ -45,14 +38,12 @@ public class CheckpointConfigPanel extends
 		public CheckpointDetails getNewDataRecord() {
 			CheckpointDetails detail = new CheckpointDetails();
 			detail.setName("");
-
 			return detail;
 		}
 
 		@Override
 		public void removeBackendObject(CheckpointDetails object) {
-			ServiceHelper.getConfigurationsService().removeCheckpoint(
-					object.getId());
+			ServiceHelper.getConfigurationsService().removeCheckpoint(object.getId());
 		}
 
 		@Override
@@ -63,8 +54,7 @@ public class CheckpointConfigPanel extends
 
 		@Override
 		public List<CheckpointDetails> getBackendObjects() {
-			ConfigurationResponse response = ServiceHelper
-					.getConfigurationsService().getCheckpoints();
+			ConfigurationResponse response = ServiceHelper.getConfigurationsService().getCheckpoints();
 			return response.getCheckpointDetails();
 		}
 
@@ -79,31 +69,29 @@ public class CheckpointConfigPanel extends
 		return new MyDetailPanel();
 	}
 
-	public class MyDetailPanel extends
-			AbstractAdminDetailPanel<CheckpointDetails> {
+	public class MyDetailPanel extends AbstractAdminDetailPanel<CheckpointDetails> {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
+
 		private JTextField fieldName;
 
 		public MyDetailPanel() {
 			setLayout(new MigLayout("inset 20"));
-
 			SwingHelper.addSeparator(this, "Titel");
-
 			fieldName = createField("Name");
 		}
 
+		@Override
 		public void getFieldValues() {
 			data.setName(fieldName.getText());
 		}
 
+		@Override
 		public void setFieldValues() {
 			fieldName.setText(data.getName());
 		}
 
+		@Override
 		public void clearFieldValues() {
 			fieldName.setText("");
 		}

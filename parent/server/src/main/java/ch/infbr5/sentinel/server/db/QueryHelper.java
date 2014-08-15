@@ -275,6 +275,18 @@ public class QueryHelper {
 		return q.getResultList();
 	}
 
+	public ConfigurationValue findConfigurationValueByKey(String key) {
+		Query q = em.createNamedQuery("findConfigurationValueByKey");
+		q.setParameter("keyParam", key);
+
+		List<ConfigurationValue> result = q.getResultList();
+		if (result.isEmpty()) {
+			return null;
+		} else {
+			return (ConfigurationValue) result.get(0);
+		}
+	}
+
 	public ConfigurationValue getConfigurationValueById(Long id) {
 		Query q = em.createNamedQuery("getConfigurationValueById");
 		q.setParameter("idParam", id);
@@ -391,4 +403,5 @@ public class QueryHelper {
 			em.persist(value);
 		}
 	}
+
 }

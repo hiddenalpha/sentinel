@@ -33,7 +33,7 @@ public class CheckpointConfigurationPanel extends JPanel {
 		lblCheckpoint = SwingHelper.createLabel("Checkpoint");
 		setupDropdownCheckpoints(checkpoints);
 		groupPanel = new JPanel(new MigLayout());
-		cameraPanel = new CheckpointConfigurationCamerasPanel();
+		cameraPanel = new CheckpointConfigurationCamerasPanel(true, null);
 
 		SwingHelper.attachLabledBorder("Checkpoint-Konfiguration", groupPanel);
 		SwingHelper.attachLabledBorder("Infos", lblInfo);

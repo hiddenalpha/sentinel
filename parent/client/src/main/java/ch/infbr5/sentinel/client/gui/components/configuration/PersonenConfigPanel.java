@@ -3,10 +3,10 @@ package ch.infbr5.sentinel.client.gui.components.configuration;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -169,16 +169,19 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			fieldAhvNr = createField("AhvNr","[ahvnr]");
 
 			SwingHelper.addSeparator(this, "Ausweis");
-			JPanel ausweisPanel = new JPanel();
-			ausweisPanel.setLayout(new MigLayout("", "[][]", "[][]"));
+
+			JPanel ausweisPanel = new JPanel(new MigLayout("", "[][]", "[]"));
 			createFotoLabel();
+
 			ausweisPanel.add(fotoLabel, "spany");
 
-			ausweisPanel.add(getAusweisSperrenButton());
+			JPanel ausweisButtonPanel = new JPanel(new MigLayout("", "[]", "[]"));
+			ausweisButtonPanel.add(getAusweisSperrenButton(), "wrap, growx, aligny top");
+			ausweisButtonPanel.add(getNeuerAusweisButton(), "growx, aligny top");
 
-			ausweisPanel.add(getNeuerAusweisButton());
+			ausweisPanel.add(ausweisButtonPanel, "push, growy");
 
-			add(ausweisPanel);
+			add(ausweisPanel, "spanx, push, growx, aligny top");
 		}
 
 		private JButton getAusweisSperrenButton() {
@@ -253,28 +256,10 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			imageEditor = new ImageEditor(parentFrame);
 			imageEditor.setResizable(false);
 
-
-			imageEditor.addWindowListener(new WindowListener() {
-
+			imageEditor.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowOpened(WindowEvent arg0) {
 					parentFrame.setEnabled(false);
-				}
-
-				@Override
-				public void windowIconified(WindowEvent arg0) {
-				}
-
-				@Override
-				public void windowDeiconified(WindowEvent arg0) {
-				}
-
-				@Override
-				public void windowDeactivated(WindowEvent arg0) {
-				}
-
-				@Override
-				public void windowClosing(WindowEvent arg0) {
 				}
 
 				@Override
@@ -288,10 +273,6 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 					}
 
 					setFieldValues();
-				}
-
-				@Override
-				public void windowActivated(WindowEvent arg0) {
 				}
 			});
 
@@ -350,24 +331,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 			}
 
 			fotoLabel = new JLabel(this.noFotoIcon);
-			fotoLabel.addMouseListener(new MouseListener() {
-
-				@Override
-				public void mouseReleased(MouseEvent arg0) {
-				}
-
-				@Override
-				public void mousePressed(MouseEvent arg0) {
-				}
-
-				@Override
-				public void mouseExited(MouseEvent arg0) {
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent arg0) {
-				}
-
+			fotoLabel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
 					if (fotoLabel.isEnabled()) {

@@ -6,7 +6,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Version;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = Einheit.GET_EINHEIT_BY_ID_VALUE, query = "SELECT e FROM Einheit e WHERE e.id = :einheitId"),

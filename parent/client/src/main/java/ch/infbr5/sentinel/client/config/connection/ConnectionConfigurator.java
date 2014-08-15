@@ -1,13 +1,13 @@
-package ch.infbr5.sentinel.client.config.server;
+package ch.infbr5.sentinel.client.config.connection;
 
 import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 
-public class ServerConnectionConfigurator {
+public class ConnectionConfigurator {
 
-	private static Logger log = Logger.getLogger(ServerConnectionConfigurator.class);
+	private static Logger log = Logger.getLogger(ConnectionConfigurator.class);
 
 	private boolean isFirstConfiguration;
 
@@ -21,12 +21,12 @@ public class ServerConnectionConfigurator {
 	 * @param isConfigurationWhileStartup
 	 *            Gibt an, ob das eine Startup Konfiguration ist.
 	 */
-	public ServerConnectionConfigurator(boolean isFirstConfiguration, boolean isConfigurationWhileStartup) {
+	public ConnectionConfigurator(boolean isFirstConfiguration, boolean isConfigurationWhileStartup) {
 		this.isFirstConfiguration = isFirstConfiguration;
 		this.isConfigurationWhileStartup = isConfigurationWhileStartup;
 	}
 
-	public void configureServerConfiguration() {
+	public void configureConnectionConfiguration() {
 		if (!isConfigurationWhileStartup) {
 			askForServerConfiguration("Nach dem diese Einstellungen geändert wurden, starten Sie den Sentiel Client neu.");
 			return;
@@ -96,7 +96,7 @@ public class ServerConnectionConfigurator {
 	 */
 	private void askForServerConfiguration(String info) {
 		log.debug("Client nach Serverkonfiguration fragen.");
-		ServerConnectionConfigurationDialog dialog = new ServerConnectionConfigurationDialog(null, this, info, ConfigurationLocalHelper
+		ConnectionConfigurationDialog dialog = new ConnectionConfigurationDialog(null, this, info, ConfigurationLocalHelper
 				.getConfig().getServerHostname(), ConfigurationLocalHelper.getConfig().getServerPortnumber(), isConfigurationWhileStartup);
 		dialog.setVisible(true);
 	}

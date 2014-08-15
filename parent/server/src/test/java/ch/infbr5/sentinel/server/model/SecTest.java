@@ -44,7 +44,7 @@ public class SecTest {
 
 			/* Generate a DSA signature */
 
-			
+
 				try {
 
 					/* Generate a key pair */
@@ -65,7 +65,7 @@ public class SecTest {
 
 					Signature dsa = Signature.getInstance("SHA1withDSA", "SUN");
 					Signature dsa2 = Signature.getInstance("SHA1withDSA", "SUN");
-					
+
 					dsa.initSign(priv);
 					dsa2.initVerify(pub);
 
@@ -77,25 +77,25 @@ public class SecTest {
 					byte[] realSig = dsa.sign();
 					String result =new Base64Encoder().encode(realSig);
 					System.out.println(result);
-					
-					
+
+
 					System.out.println(result
 							);
-					
+
 					MessageDigest sha1b = MessageDigest.getInstance("SHA1");
 					byte[] digestb = sha1b.digest("Das ist ein Test bal bal".getBytes());
 					String resultb = new Base64Encoder().encode(digestb);
 					System.out.println(resultb			);
-					
-					
-					
-					
+
+
+
+
 					if (resultb.equals(result)){
 						System.out.println("OK");
 					} else {
 						System.out.println("FALSE");
 					}
-					
+
 
 				} catch (Exception e) {
 					System.err.println("Caught exception " + e.toString());
@@ -132,13 +132,13 @@ public class SecTest {
 
 	};
 
-	private static String bytes2String(byte[] bytes) {
-		StringBuilder string = new StringBuilder();
-		for (byte b : bytes) {
-			String hexString = Integer.toHexString(0x00FF & b);
-			string.append(hexString.length() == 1 ? "0" + hexString : hexString);
-		}
-		return string.toString();
-	}
+	//private static String bytes2String(byte[] bytes) {
+	//	StringBuilder string = new StringBuilder();
+	//	for (byte b : bytes) {
+	//		String hexString = Integer.toHexString(0x00FF & b);
+	//		string.append(hexString.length() == 1 ? "0" + hexString : hexString);
+	//	}
+	//	return string.toString();
+	//}
 
 }

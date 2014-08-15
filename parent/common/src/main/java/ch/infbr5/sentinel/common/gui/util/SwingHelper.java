@@ -30,10 +30,10 @@ public class SwingHelper {
 	private static final Color LABEL_COLOR = new Color(0, 70, 213);;
 
 	public static void addSeparator(JPanel panel, String text) {
-		JLabel l = createLabel(text);
-		l.setForeground(LABEL_COLOR);
+		JLabel label = createLabel(text);
+		label.setForeground(LABEL_COLOR);
 
-		panel.add(l, "gapbottom 1, span, split 2, aligny center");
+		panel.add(label, "gapbottom 1, span, split 2, aligny center");
 		panel.add(new JSeparator(), "gapleft rel, growx");
 	}
 

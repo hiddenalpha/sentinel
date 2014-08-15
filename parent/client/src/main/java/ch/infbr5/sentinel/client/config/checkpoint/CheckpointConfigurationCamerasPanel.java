@@ -2,6 +2,7 @@ package ch.infbr5.sentinel.client.config.checkpoint;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -16,10 +17,8 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.log4j.Logger;
 
-import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
-import ch.infbr5.sentinel.client.wsgen.ConfigurationDetails;
-import ch.infbr5.sentinel.common.config.ConfigConstants;
+import ch.infbr5.sentinel.client.wsgen.IpCams;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class CheckpointConfigurationCamerasPanel extends JPanel {
@@ -34,15 +33,19 @@ public class CheckpointConfigurationCamerasPanel extends JPanel {
 
 	private JButton btnRemove;
 
-	private JList<ConfigurationSelectionValue> cams;
+	private JList<String> cams;
 
-	public CheckpointConfigurationCamerasPanel() {
+	private boolean selfManaged;
+
+	public CheckpointConfigurationCamerasPanel(boolean selfManaged, List<String> camUrls) {
+		this.selfManaged = selfManaged;
+
 		lblCam = SwingHelper.createLabel("Kamera-URLs");
 		btnAdd = new JButton("+");
 		btnAdd.addActionListener(createAddListener());
 		btnRemove = new JButton("-");
 		btnRemove.addActionListener(createRemoveListener());
-		setupList();
+		setupList(camUrls);
 
 		setLayout(new MigLayout());
 
@@ -58,41 +61,15 @@ public class CheckpointConfigurationCamerasPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String option = JOptionPane.showInputDialog(null, "Trage die URL der Kamera ein.", "Neue Kamera", JOptionPane.OK_CANCEL_OPTION);
+				String option = JOptionPane.showInputDialog(null, "Trage die URL der Kamera ein.", "Neue Kamera",
+						JOptionPane.OK_CANCEL_OPTION);
 				if (option != null && !option.isEmpty()) {
-					String camKey = evaluateNewCamKey();
-					log.debug("Neue Kamera " + option + " am key " + camKey);
-					ConfigurationDetails detail = new ConfigurationDetails();
-					detail.setKey(camKey);
-					detail.setLongValue(0);
-					detail.setStringValue(option);
-					ServiceHelper.getConfigurationsService().updateConfigurationValue(detail);
-					detail.setId(ServiceHelper.getConfigurationsService().getGlobalConfigurationValue(camKey).getConfigurationDetails().get(0).getId());
-					((DefaultListModel<ConfigurationSelectionValue>) cams.getModel()).add(0, new ConfigurationSelectionValue(detail));
+					log.debug("Neue Kamera " + option);
+					((DefaultListModel<String>) cams.getModel()).add(0, option);
+					updateData();
 				}
 			}
 		};
-	}
-
-	// TODO Eventuell sollten die Kameras nicht über das Konfigurations Model verwaltet werden
-	// Darum bedarf es hier einer "key evaluation"
-	private String evaluateNewCamKey() {
-		List<ConfigurationDetails> details = ConfigurationHelper.loadConfigurationIPCams();
-		int newId = 1;
-		for (int id = 1; id < (details.size() + 2); id++) {
-			boolean foundForCurrentId = false;
-			for (ConfigurationDetails detail : details) {
-				if (Integer.valueOf(detail.getKey().substring(10)).intValue() == id) {
-					foundForCurrentId = true;
-				}
-			}
-			if (!foundForCurrentId) {
-				newId = id;
-				break;
-			}
-		}
-
-		return ConfigConstants.URL_IPCAM_ + String.valueOf(newId);
 	}
 
 	private ActionListener createRemoveListener() {
@@ -100,41 +77,63 @@ public class CheckpointConfigurationCamerasPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ConfigurationSelectionValue selectedValue = cams.getSelectedValue();
+				String selectedValue = cams.getSelectedValue();
 				if (selectedValue != null) {
-					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "Kamera wirklich löschen?", "Kamera löschen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-						ServiceHelper.getConfigurationsService().removeConfiguration(selectedValue.detail.getId());
-						log.debug("Kamera " + selectedValue.detail.getStringValue() + " entfernt");
-						((DefaultListModel<ConfigurationSelectionValue>) cams.getModel()).remove(cams.getSelectedIndex());
+					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "Kamera wirklich löschen?",
+							"Kamera löschen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+						log.debug("Kamera " + selectedValue + " entfernt");
+						((DefaultListModel<String>) cams.getModel()).remove(cams.getSelectedIndex());
+						updateData();
 					}
 				}
 			}
 		};
 	}
 
-	private void setupList() {
+	private void setupList(List<String> camUrls) {
 		cams = new JList<>();
-		List<ConfigurationDetails> details = ConfigurationHelper.loadConfigurationIPCams();
-		DefaultListModel<ConfigurationSelectionValue> model = new DefaultListModel<>();
-		for (ConfigurationDetails detail : details) {
-			model.addElement(new ConfigurationSelectionValue(detail));
+
+		if (selfManaged) {
+			IpCams ipCams = ServiceHelper.getConfigurationsService().getIPCams();
+			DefaultListModel<String> model = new DefaultListModel<>();
+			for (String url : ipCams.getCams()) {
+				model.addElement(url);
+			}
+			cams.setModel(model);
+		} else {
+			DefaultListModel<String> model = new DefaultListModel<>();
+			for (String url : camUrls) {
+				model.addElement(url);
+			}
+			cams.setModel(model);
 		}
-		cams.setModel(model);
 	}
 
-	class ConfigurationSelectionValue {
-
-		private ConfigurationDetails detail;
-
-		ConfigurationSelectionValue(ConfigurationDetails detail) {
-			this.detail = detail;
+	private void updateData() {
+		if (selfManaged) {
+			Enumeration<String> elements = ((DefaultListModel<String>) cams.getModel()).elements();
+			IpCams ipCams = new IpCams();
+			while (elements.hasMoreElements()) {
+				ipCams.getCams().add(elements.nextElement());
+			}
+			ServiceHelper.getConfigurationsService().setIPCams(ipCams);
 		}
+	}
 
-		@Override
-		public String toString() {
-			return detail.getStringValue();
+	public IpCams getUrls() {
+		IpCams urls = new IpCams();
+		Enumeration<String> elements = ((DefaultListModel<String>) cams.getModel()).elements();
+		while (elements.hasMoreElements()) {
+			urls.getCams().add(elements.nextElement());
 		}
+		return urls;
+	}
 
+	public void setUrls(List<String> urls) {
+		((DefaultListModel<String>) cams.getModel()).removeAllElements();
+		for (String url : urls) {
+			((DefaultListModel<String>) cams.getModel()).addElement(url);
+		}
 	}
 
 }

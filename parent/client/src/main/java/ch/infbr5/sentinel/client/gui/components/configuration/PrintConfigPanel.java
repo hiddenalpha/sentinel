@@ -17,6 +17,7 @@ import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 import ch.infbr5.sentinel.client.wsgen.EinheitDetails;
 import ch.infbr5.sentinel.client.wsgen.PrintJobDetails;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
+import ch.infbr5.sentinel.common.util.Formater;
 
 public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails> {
 
@@ -40,7 +41,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			if (columnIndex == 0) {
-				return getDataRecord(rowIndex).getPrintJobDate();
+				return Formater.formatDateTime(getDataRecord(rowIndex).getPrintJobDate());
 			} else if (columnIndex == 1) {
 				return getDataRecord(rowIndex).getPrintJobDesc();
 			} else if (columnIndex == 2) {
@@ -56,12 +57,12 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
 		@Override
 		public void removeBackendObject(PrintJobDetails object) {
-			// ServiceHelper.getConfigurationsService().removeEinheit(object.getId());
+
 		}
 
 		@Override
 		public void updateBackendObject(PrintJobDetails object) {
-			// ServiceHelper.getConfigurationsService().updateEinheit(object);
+
 		}
 
 		@Override
@@ -109,11 +110,6 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 		private JButton personenListeDruckenNachEinhButton;
 		private JButton ausweisboxInventarDruckenButton;
 		private JButton pdfOeffnenButton;
-
-		public void updateAusweisDruckenButtonName() {
-			int no = ServiceHelper.getConfigurationsService().anzahlAusstehendeZuDruckendeAusweise();
-			lblAusstehendeAusweise.setText("(" + no + " ausstehend)");
-		}
 
 		public MyDetailPanel() {
 			setLayout(new MigLayout("inset 20"));
@@ -215,13 +211,10 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 				response = ServiceHelper.getConfigurationsService().printAusweisListe(true, false, "");
 			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH)) {
 				response = ServiceHelper.getConfigurationsService().printAusweisListe(true, true, selectEinheit());
-
 			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR)) {
 				response = ServiceHelper.getConfigurationsService().printAusweisboxInventar(selectEinheit());
-
 			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME)) {
 				response = ServiceHelper.getConfigurationsService().printAusweisListe(false, false, "");
-
 			} else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH)) {
 				response = ServiceHelper.getConfigurationsService().printAusweisListe(false, true, selectEinheit());
 			} else if (e.getActionCommand().equals(CMD_BUTTON_PDF_OEFFNEN)) {
@@ -236,10 +229,14 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 					byte[] pdf = job.getPdf();
 					DesktopHelper.openPdfFile(job.getPintJobFile(), pdf);
 				} else {
-					JOptionPane.showMessageDialog(null, "Keine ausstehende Daten zum Drucken.", "Keine Daten",
-							JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Keine ausstehende Daten zum Drucken.", "Keine Daten", JOptionPane.WARNING_MESSAGE);
 				}
 			}
+		}
+
+		public void updateAusweisDruckenButtonName() {
+			int no = ServiceHelper.getConfigurationsService().anzahlAusstehendeZuDruckendeAusweise();
+			lblAusstehendeAusweise.setText("(" + no + " ausstehend)");
 		}
 
 		private String selectEinheit() {
@@ -251,8 +248,8 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 			}
 
 			if (values.length > 0) {
-				String selected = (String) JOptionPane.showInputDialog(this, "Wähle Checkpoint", "Checkpoint Auswahl",
-						JOptionPane.WARNING_MESSAGE, null, values, values[0]);
+				String selected = (String) JOptionPane.showInputDialog(this, "Wähle Einheit", "Einheit Auswahl",
+						JOptionPane.QUESTION_MESSAGE, null, values, values[0]);
 				return selected;
 			} else {
 				return "";

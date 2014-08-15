@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.config.server;
+package ch.infbr5.sentinel.client.config.connection;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 
-public class ServerConnectionConfigurationDialog extends JDialog {
+public class ConnectionConfigurationDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,9 +22,9 @@ public class ServerConnectionConfigurationDialog extends JDialog {
 
 	private JButton btnCancel;
 
-	private final ServerConfigurationPanel panel;
+	private final ConnectionConfigurationPanel panel;
 
-	public ServerConnectionConfigurationDialog(final JFrame parent, final ServerConnectionConfigurator config, String info, String serverName, String serverPort, final boolean isConfigurationWhileStartup) {
+	public ConnectionConfigurationDialog(final JFrame parent, final ConnectionConfigurator config, String info, String serverName, String serverPort, final boolean isConfigurationWhileStartup) {
 		super(parent);
 
 		setModal(true);
@@ -41,7 +41,7 @@ public class ServerConnectionConfigurationDialog extends JDialog {
 			}
 		});
 
-		panel = new ServerConfigurationPanel(info, serverName, serverPort);
+		panel = new ConnectionConfigurationPanel(info, serverName, serverPort);
 
 		btnSave = new JButton("Speichern");
 		btnSave.addActionListener(new ActionListener() {

@@ -78,7 +78,7 @@ public class BulkFotoImporter {
 								p.setImage(fileContent);
 								ServiceHelper.getConfigurationsService().updatePerson(p);
 								ServiceHelper.getSentinelService().neuerAusweis(p.getId());
-								sb.append("Hat die falsche GrÃ¶sse (" + img.getWidth() + " x " + img.getHeight()
+								sb.append("Hat die falsche Grösse (" + img.getWidth() + " x " + img.getHeight()
 										+ " anstatt 300 x 400).\n");
 							}
 						} catch (IOException e) {

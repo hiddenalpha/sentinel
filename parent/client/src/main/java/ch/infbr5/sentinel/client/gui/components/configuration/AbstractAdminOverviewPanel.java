@@ -2,40 +2,27 @@ package ch.infbr5.sentinel.client.gui.components.configuration;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableRowSorter;
 
 import net.miginfocom.swing.MigLayout;
+import ch.infbr5.sentinel.common.gui.table.FilterTablePanel;
+import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
-public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
-		ListSelectionListener, ActionListener {
+public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements ActionListener {
 
 	public static final String BUTTON_ADMINPANEL_CANCEL = "ADMINPANEL_CANCEL";
 
@@ -47,21 +34,17 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 
 	public static final String BUTTON_ADMINPANEL_NEW = "ADMINPANEL_NEW";
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
-
-	private static String FILTER_CHANGE_EVENT_NAME = "filterUpdate";
-	private static int TEXTFIELD_SPACE = 5;
-
-	private JTable table;
 
 	private AbstractAdminTableModel<T> model;
 
-	private JScrollPane scroll;
+	private FilterTablePanel tablePanel;
 
-	private AbstractAdminDetailPanel<T> details;
+	private AbstractAdminDetailPanel<T> detailPanel;
+
+	private JPanel buttonPanel;
+
+	private JTable table;
 
 	private JButton saveButton;
 	private JButton newButton;
@@ -72,12 +55,6 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 	private boolean editMode;
 
 	private int lastSelectedRow;
-
-	private TableRowSorter<AbstractAdminTableModel<T>> sorter;
-
-	private JPanel leftPanel;
-
-	private ArrayList<ColumnSearcher<T>> columnSearchers;
 
 	private boolean isAdminMode;
 
@@ -90,36 +67,13 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 		model.updateData();
 	}
 
-	public void clearAndHideFilter() {
-		clearFilters();
-
-		sorter.setRowFilter(null);
-	}
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		if (!e.getValueIsAdjusting() && isRowSelected()) {
-			if (isEditable()) {
-				if (lastSelectedRow != table.getSelectedRow()) {
-					table.setRowSelectionInterval(lastSelectedRow,
-							lastSelectedRow);
-				}
-			} else {
-				lastSelectedRow = table.getSelectedRow();
-				int modelRow = table.convertRowIndexToModel(lastSelectedRow);
-
-				details.setDataRecord(model.getDataRecord(modelRow));
-			}
-		}
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(BUTTON_ADMINPANEL_SAVE)) {
 			boolean isValid = true;
 			// TODO
 			// validieren
-			for (Component c : details.getComponents()) {
+			for (Component c : detailPanel.getComponents()) {
 				if (c instanceof JTextField) {
 					JTextField textfield = (JTextField) c;
 					Border b = textfield.getBorder();
@@ -131,253 +85,108 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 				}
 			}
 			if (isValid) {
-				model.updateDataRecord(details.getDataRecord());
+				model.updateDataRecord(detailPanel.getDataRecord());
 				setEditable(false);
-				details.setDataRecord(null);
+				detailPanel.setDataRecord(null);
 			} else {
-				JOptionPane.showMessageDialog(null,
-						"Die eingegebenen Daten sind nicht gültig.",
-						"Validierung", JOptionPane.CANCEL_OPTION);
+				JOptionPane.showMessageDialog(null, "Die eingegebenen Daten sind nicht gültig.", "Validierung",
+						JOptionPane.CANCEL_OPTION);
 			}
 		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_NEW)) {
-			details.setDataRecord(model.getNewDataRecord());
+			detailPanel.setDataRecord(model.getNewDataRecord());
 			setEditable(true);
 		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_CANCEL)) {
 			setEditable(false);
 			if (table.getSelectedRow() >= 0) {
-				int modelRow = table.convertRowIndexToModel(table
-						.getSelectedRow());
-				details.setDataRecord(model.getDataRecord(modelRow));
+				int modelRow = table.convertRowIndexToModel(table.getSelectedRow());
+				detailPanel.setDataRecord(model.getDataRecord(modelRow));
 			} else {
-				details.clearFieldValues();
+				detailPanel.clearFieldValues();
 			}
 		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_DELETE)) {
 			if (isRowSelected()) {
-				model.removeDataRecord(details.getDataRecord());
-				setEditable(false);
-				details.setDataRecord(null);
+				int result = JOptionPane.showConfirmDialog(null, "Möchten Sie den Eintrag wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (result == JOptionPane.YES_OPTION) {
+					model.removeDataRecord(detailPanel.getDataRecord());
+					setEditable(false);
+					detailPanel.setDataRecord(null);
+				}
 			}
 		} else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_EDIT)) {
 			if (isRowSelected()) {
-				int modelRow = table.convertRowIndexToModel(table
-						.getSelectedRow());
-				details.setDataRecord(model.getDataRecord(modelRow));
+				int modelRow = table.convertRowIndexToModel(table.getSelectedRow());
+				detailPanel.setDataRecord(model.getDataRecord(modelRow));
 				setEditable(true);
 			}
 		}
 	}
 
 	private void initComponents() {
-		setLayout(new MigLayout("", "[fill, grow][fill, grow]",
-				"[fill, grow][]"));
-
 		model = getTableModel();
+		detailPanel = getDetailPanel();
+
 		createAndIntitializeTable();
-
-		scroll = new JScrollPane();
-		scroll.setViewportView(table);
-
-		leftPanel = new JPanel();
-		leftPanel.setLayout(new MigLayout("", "[fill, grow]",
-				"[fill, grow][10][fill]"));
-		add(leftPanel, "spany, top");
-		leftPanel.add(scroll, "wrap");
-
-		JPanel filterPanel = new JPanel();
-		leftPanel.add(filterPanel, "growx");
-
-		details = getDetailPanel();
-		details.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createTitledBorder("Details"),
-				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		add(details, "spanx, wrap");
-
 		createButtons();
 
+		SwingHelper.attachLabledBorder("Details", detailPanel);
+
+		// Right Panel
+		JPanel rightPanel = new JPanel(new MigLayout("", "[fill, grow]", "[fill, grow][]"));
+		rightPanel.add(detailPanel, "wrap");
+		rightPanel.add(buttonPanel);
+
+		// Main - Layout
+		setLayout(new MigLayout("", "[fill, grow]", "[fill, grow]"));
+		JSplitPane splitpane = new JSplitPane();
+		splitpane.setLeftComponent(tablePanel);
+		splitpane.setRightComponent(rightPanel);
+		//splitpane.setOneTouchExpandable(true);
+		splitpane.setResizeWeight(1.0d); // erst nach pack aufrufen eigentlich...
+		splitpane.setDividerLocation(0.75d); // erst nach pack aufrufen eigentlich...
+		add(splitpane);
+
 		setEditable(false);
-
-		buildColumnSearchers(filterPanel);
-
-		sorter.setRowFilter(createRowFilter());
 	}
 
+
 	protected AbstractAdminDetailPanel<T> getInstalledDetailPanel() {
-		return details;
+		return detailPanel;
 	}
 
 	private void createAndIntitializeTable() {
 		DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
 		selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		selectionModel.addListSelectionListener(this);
-
+		selectionModel.addListSelectionListener(createSelectionListener());
 		table = new JTable(model);
 		table.setSelectionModel(selectionModel);
 		table.setRowSelectionAllowed(true);
-		table.setAutoCreateRowSorter(true);
-		sorter = new TableRowSorter<AbstractAdminTableModel<T>>(model);
-		table.setRowSorter(sorter);
-		addKeyListenerToTable();
-		addComponentListenerToTable();
-
-		PropertyChangeListener filterPropertyChangeListener = createFilterPropertyChangeListener();
-		table.addPropertyChangeListener(filterPropertyChangeListener);
+		tablePanel = new FilterTablePanel(table, null);
 	}
 
-	private void addKeyListenerToTable() {
-		table.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				showFilterBoxAndAddKey(e.getKeyCode(), e.getKeyChar());
-			}
-		});
-	}
-
-	private void addComponentListenerToTable() {
-		table.addComponentListener(new ComponentListener() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-			}
+	private ListSelectionListener createSelectionListener() {
+		return new ListSelectionListener() {
 
 			@Override
-			public void componentResized(ComponentEvent e) {
-				resizeFilterFields();
-			}
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting() && isRowSelected()) {
+					if (isEditable()) {
+						if (lastSelectedRow != table.getSelectedRow()) {
+							table.setRowSelectionInterval(lastSelectedRow, lastSelectedRow);
+						}
+					} else {
+						lastSelectedRow = table.getSelectedRow();
+						int modelRow = table.convertRowIndexToModel(lastSelectedRow);
+						detailPanel.setDataRecord(model.getDataRecord(modelRow));
 
-			@Override
-			public void componentMoved(ComponentEvent e) {
-			}
-
-			@Override
-			public void componentHidden(ComponentEvent e) {
-			}
-		});
-	}
-
-	private void buildColumnSearchers(JPanel filterPanel) {
-		columnSearchers = new ArrayList<ColumnSearcher<T>>();
-
-		for (int i = 0; i < table.getColumnCount(); ++i) {
-			JTextField filterField = new JTextField() {
-				/**
-				 *
-				 */
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void setBorder(Border border) {
-					// No border
-				}
-			};
-
-			filterField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					if (isAbortOnSpecialKey(e.getKeyCode())) {
-						clearAndHideFilter();
-						return;
+						editButton.setEnabled(isRowSelected());
+						deleteButton.setEnabled(isRowSelected());
 					}
-					// this.firePropertyChange is compiling, but not working.
-					// it has to be fired on a class object
-					table.firePropertyChange(FILTER_CHANGE_EVENT_NAME, false,
-							true);
-				}
-			});
-
-			filterPanel.add(filterField);
-			ColumnSearcher<T> columnSearcher = new ColumnSearcher<T>(i,
-					filterField);
-			columnSearchers.add(columnSearcher);
-		}
-	}
-
-	private PropertyChangeListener createFilterPropertyChangeListener() {
-		// Define PropertyChangeListener
-		PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-				String propertyName = propertyChangeEvent.getPropertyName();
-				if (propertyName.equals(FILTER_CHANGE_EVENT_NAME)) {
-					sorter.setRowFilter(createRowFilter());
+				} else {
+					editButton.setEnabled(isRowSelected());
+					deleteButton.setEnabled(isRowSelected());
 				}
 			}
 		};
-
-		return propertyChangeListener;
-	}
-
-	private void resizeFilterFields() {
-		for (int i = 0; i < columnSearchers.size(); ++i) {
-			ColumnSearcher<T> searcher = columnSearchers.get(i);
-
-			Dimension dimension = new Dimension(table.getColumn(
-					model.getColumnName(i)).getWidth()
-					- TEXTFIELD_SPACE, 20);
-			searcher.getTextField().setPreferredSize(dimension);
-			searcher.getTextField().setSize(dimension);
-			searcher.getTextField().setMargin(new Insets(0, 0, 0, 0));
-		}
-	}
-
-	private RowFilter<AbstractAdminTableModel<T>, Object> createRowFilter() {
-		RowFilter<AbstractAdminTableModel<T>, Object> ret;
-		List<RowFilter<AbstractAdminTableModel<T>, Object>> filters = new ArrayList<RowFilter<AbstractAdminTableModel<T>, Object>>(
-				columnSearchers.size());
-
-		for (ColumnSearcher<T> cs : columnSearchers) {
-			RowFilter<AbstractAdminTableModel<T>, Object> filter = cs
-					.createFilter();
-			if (filter != null) {
-				filters.add(filter);
-			}
-		}
-
-		if (filters.isEmpty()) {
-			ret = null;
-		} else {
-			ret = RowFilter.andFilter(filters);
-		}
-
-		return ret;
-	}
-
-	private void showFilterBoxAndAddKey(int keyCode, char keyChar) {
-		if (isAbortOnSpecialKey(keyCode)) {
-			clearAndHideFilter();
-
-			return;
-		}
-
-		int sortedColumn = getSortedColumn();
-
-		JTextField filterTextField = columnSearchers.get(sortedColumn)
-				.getTextField();
-		filterTextField.setText("" + keyChar);
-		filterTextField.grabFocus();
-	}
-
-	private boolean isAbortOnSpecialKey(int keyCode) {
-		if (keyCode == KeyEvent.VK_ESCAPE
-				|| (keyCode >= KeyEvent.VK_F1 && keyCode <= KeyEvent.VK_F19)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private int getSortedColumn() {
-		List<? extends SortKey> sortKeys = sorter.getSortKeys();
-		int sortedColumn = 0;
-		if (!sortKeys.isEmpty()) {
-			sortedColumn = sortKeys.get(0).getColumn();
-		}
-
-		return sortedColumn;
-	}
-
-	private void clearFilters() {
-		for (ColumnSearcher<T> columnSearcher : columnSearchers) {
-			columnSearcher.getTextField().setText("");
-		}
 	}
 
 	private boolean isRowSelected() {
@@ -390,7 +199,9 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 
 	private void setEditable(boolean mode) {
 		editMode = mode;
-		details.setEditable(mode);
+		detailPanel.setEditable(mode);
+
+		table.setEnabled(!mode);
 
 		if (mode) {
 			editButton.setEnabled(false);
@@ -409,38 +220,45 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements
 			saveButton.setEnabled(false);
 			cancelButton.setEnabled(false);
 		}
+
+		if (!isRowSelected()) {
+			editButton.setEnabled(false);
+			deleteButton.setEnabled(false);
+		}
 	}
 
 	private void createButtons() {
+		buttonPanel = new JPanel(new MigLayout());
+
 		newButton = new JButton("Neu");
 		newButton.setName(BUTTON_ADMINPANEL_NEW);
 		newButton.addActionListener(this);
 		newButton.setActionCommand(BUTTON_ADMINPANEL_NEW);
-		add(newButton);
+		buttonPanel.add(newButton);
 
 		editButton = new JButton("Bearbeiten");
 		editButton.setName(BUTTON_ADMINPANEL_EDIT);
 		editButton.addActionListener(this);
 		editButton.setActionCommand(BUTTON_ADMINPANEL_EDIT);
-		add(editButton);
+		buttonPanel.add(editButton);
 
 		saveButton = new JButton("Speichern");
 		saveButton.setName(BUTTON_ADMINPANEL_SAVE);
 		saveButton.addActionListener(this);
 		saveButton.setActionCommand(BUTTON_ADMINPANEL_SAVE);
-		add(saveButton);
+		buttonPanel.add(saveButton);
 
 		deleteButton = new JButton("Löschen");
 		deleteButton.setName(BUTTON_ADMINPANEL_DELETE);
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand(BUTTON_ADMINPANEL_DELETE);
-		add(deleteButton);
+		buttonPanel.add(deleteButton);
 
 		cancelButton = new JButton("Abbrechen");
 		cancelButton.setName(BUTTON_ADMINPANEL_CANCEL);
 		cancelButton.addActionListener(this);
 		cancelButton.setActionCommand(BUTTON_ADMINPANEL_CANCEL);
-		add(cancelButton);
+		buttonPanel.add(cancelButton);
 	}
 
 	protected abstract AbstractAdminTableModel<T> getTableModel();
