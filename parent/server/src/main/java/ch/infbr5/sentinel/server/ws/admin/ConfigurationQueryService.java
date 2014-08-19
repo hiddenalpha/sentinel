@@ -529,11 +529,9 @@ public class ConfigurationQueryService {
 			for (int i = 0; i < configurationValues.size(); i++) {
 				String regex = configurationValues.get(i).getValidFor();
 				// Falls Config für den Checkpoint gültig ist
-				if (regex != null) {
-					if (regex.equals("") || (isValidRegex(regex) && checkpoint.getName().matches(regex))) {
+					if (regex == null || (regex.equals("") || (isValidRegex(regex) && checkpoint.getName().matches(regex)))) {
 						temp.add(convert(configurationValues.get(i)));
 					}
-				}
 			}
 
 			response.setConfigurationDetails(temp.toArray(new ConfigurationDetails[0]));
