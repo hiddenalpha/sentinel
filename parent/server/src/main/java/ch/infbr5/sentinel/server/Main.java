@@ -7,6 +7,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import ch.infbr5.sentinel.server.db.DatabaseMigration;
 import ch.infbr5.sentinel.server.gui.ApplicationFrame;
+import ch.infbr5.sentinel.server.logging.SystemMeldungAppender;
 
 public class Main {
 
@@ -33,12 +34,16 @@ public class Main {
 			PropertyConfigurator.configure(inputStream);
 		}
 
-		// 2. UI Erstellen (bereits hier, das UI empfängt nun alle Logs)
-		ApplicationFrame frame = new ApplicationFrame();
-
-		// 3. Datenbank migrieren
+		// 2. Datenbank migrieren
 		DatabaseMigration migration = new DatabaseMigration();
 		migration.start();
+
+		// 3. Erst ab hier, darf aktiviert werden, dass Logs in die Datenbank geschrieben werden
+		// Falls das vorher schon der Fall ist, wird der EntityManager erstellt, welcher dann einfach die Datenbank anpasst.
+		SystemMeldungAppender.ENABLE = true;
+
+		// 3. UI Erstellen (bereits hier, das UI empfängt nun alle Logs)
+		ApplicationFrame frame = new ApplicationFrame();
 
 		// Comand Line
 		readCommandLine(args);

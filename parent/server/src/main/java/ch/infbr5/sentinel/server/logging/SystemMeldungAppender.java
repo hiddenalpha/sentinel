@@ -10,6 +10,8 @@ import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 
 public class SystemMeldungAppender extends AppenderSkeleton {
 
+	public static boolean ENABLE = false;
+
 	@Override
 	public void close() {
 		// Do nothing
@@ -22,6 +24,10 @@ public class SystemMeldungAppender extends AppenderSkeleton {
 
 	@Override
 	protected void append(LoggingEvent event) {
+		if (!ENABLE) {
+			return;
+		}
+
 		SystemMeldung meldung = new SystemMeldung();
 
 		// Generelle Informationen

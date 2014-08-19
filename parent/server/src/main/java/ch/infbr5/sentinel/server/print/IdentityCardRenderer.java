@@ -234,6 +234,8 @@ public class IdentityCardRenderer extends PrintingDocument {
 			MessageDigest sha1 = MessageDigest.getInstance("SHA1");
 			byte[] digest = sha1.digest(password.concat(c).getBytes());
 			c = c + "S" + new Base64Encoder().encode(digest);
+
+			a.setPasswort(password);
 		} catch (NoSuchAlgorithmException e) {
 			log.error(e);
 		}

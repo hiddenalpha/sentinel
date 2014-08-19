@@ -36,6 +36,8 @@ public class Ausweis {
 
 	private Date gueltigBis;
 
+	private String passwort;
+
 	@ManyToOne
 	private Person person;
 
@@ -111,5 +113,15 @@ public class Ausweis {
 		setGueltigBis(new Date());
 		setInvalid(true);
 	}
+
+	public String getPasswort() {
+		return passwort;
+	}
+
+	public void setPasswort(String passwort) {
+		this.passwort = passwort;
+	}
+
+
 
 }

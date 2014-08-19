@@ -19,7 +19,9 @@ public class ServerUIAppender extends AppenderSkeleton {
 
 	@Override
 	protected void append(LoggingEvent event) {
-		ApplicationFrame.app.addText(event);
+		if (ApplicationFrame.app != null) {
+			ApplicationFrame.app.addText(event);
+		}
 	}
 
 }

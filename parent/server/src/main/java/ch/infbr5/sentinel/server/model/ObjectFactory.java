@@ -20,7 +20,7 @@ public class ObjectFactory {
 		ausweis.setErstellt(false);
 		ausweis.setInvalid(false);
 		ausweis.setGueltigVon(new Date());
-
+		ausweis.setPasswort("");
 		return ausweis;
 	}
 

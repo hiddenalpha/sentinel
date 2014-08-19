@@ -41,19 +41,19 @@ public class EntityManagerHelper {
 		}
 	}
 
-	public static EntityManagerFactory getFactory() {
-		if (factory == null) {
-			createFactory();
-		}
-		return factory;
-	}
-
 	public static void setDebugMode(boolean mode) {
 		debugMode = mode;
 	}
 
 	public static void setInMemoryMode(boolean mode) {
 		inMemoryMode = mode;
+	}
+
+	private static EntityManagerFactory getFactory() {
+		if (factory == null) {
+			createFactory();
+		}
+		return factory;
 	}
 
 	private static synchronized void createFactory() {
