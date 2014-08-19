@@ -5,6 +5,7 @@ import java.io.InputStream;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import ch.infbr5.sentinel.server.db.DatabaseMigration;
 import ch.infbr5.sentinel.server.gui.ApplicationFrame;
 
 public class Main {
@@ -23,8 +24,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-
-		// log4j
+		// 1. log4j konfigurieren
 		InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES_DEV);
 		if (inputStream == null) {
 			System.out.println("WARNING: Could not open configuration file");
@@ -33,8 +33,12 @@ public class Main {
 			PropertyConfigurator.configure(inputStream);
 		}
 
-		// Creating UI
+		// 2. UI Erstellen (bereits hier, das UI empfängt nun alle Logs)
 		ApplicationFrame frame = new ApplicationFrame();
+
+		// 3. Datenbank migrieren
+		DatabaseMigration migration = new DatabaseMigration();
+		migration.start();
 
 		// Comand Line
 		readCommandLine(args);

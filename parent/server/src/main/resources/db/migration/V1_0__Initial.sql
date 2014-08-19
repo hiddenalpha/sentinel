@@ -1,0 +1,1 @@
+/* Sample - siehe parent/doc/entwickler.doc */

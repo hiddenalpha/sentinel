@@ -137,6 +137,11 @@
 			<artifactId>common</artifactId>
 			<version>${sentinel-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>3.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
