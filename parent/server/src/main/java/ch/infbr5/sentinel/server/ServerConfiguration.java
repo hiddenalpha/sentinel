@@ -8,4 +8,6 @@ public class ServerConfiguration {
 
 	public static final boolean DEBUG_MODE = false;
 
+	public static final boolean HEADLESS = false;
+
 }

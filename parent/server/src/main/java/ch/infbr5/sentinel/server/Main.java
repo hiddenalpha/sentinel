@@ -15,6 +15,8 @@ public class Main {
 
 	private static Logger log = Logger.getLogger(Main.class);
 
+	private static ApplicationFrame frame;
+
 	private static final String LOG4J_PROPERTIES_DEV = "/META-INF/log4j.properties";
 
 	private static String ipAddress;
@@ -22,6 +24,8 @@ public class Main {
 	private static String port;
 
 	private static boolean debugMode = false;
+
+	private static boolean headless = false;
 
 	public static void main(String[] args) {
 
@@ -43,7 +47,9 @@ public class Main {
 		SystemMeldungAppender.ENABLE = true;
 
 		// 3. UI Erstellen (bereits hier, das UI empfängt nun alle Logs)
-		ApplicationFrame frame = new ApplicationFrame();
+		if (!headless) {
+			frame = new ApplicationFrame();
+		}
 
 		// Comand Line
 		readCommandLine(args);
@@ -69,7 +75,9 @@ public class Main {
 		log.info(Version.getVersionDescription() + " " + getConfigString() + " gestartet");
 
 		// Erst GUI anzeigen nachdem, der Server sauber gestartet wurde.
-		frame.show();
+		if (!headless) {
+			frame.show();
+		}
 
 		// warten bis Server beendet ist
 		while (sentinelServer.isRunning()) {
@@ -88,14 +96,18 @@ public class Main {
 		if (debugMode) {
 			conf += ", debugMode";
 		}
+		if (headless) {
+			conf += ", headless";
+		}
 		return conf + ")";
 	}
 
 	private static void readCommandLine(String[] args) {
-		CommandLineReader reader = new CommandLineReader(args, ServerConfiguration.IP_ADDRESS, ServerConfiguration.PORT, ServerConfiguration.DEBUG_MODE);
+		CommandLineReader reader = new CommandLineReader(args, ServerConfiguration.IP_ADDRESS, ServerConfiguration.PORT, ServerConfiguration.DEBUG_MODE, ServerConfiguration.HEADLESS);
 		ipAddress = reader.getIp();
 		port = reader.getPort();
 		debugMode = reader.isDebugMode();
+		headless = reader.isHeadless();
 	}
 
 	private static void printJavaInfo() {

@@ -17,11 +17,14 @@ public class CommandLineReader {
 
 	private boolean defaultDebugMode;
 
-	public CommandLineReader(String[] args, String defaultIp, String defaultPort, boolean defaultDebugMode) {
+	private boolean defaultHeadless;
+
+	public CommandLineReader(String[] args, String defaultIp, String defaultPort, boolean defaultDebugMode, boolean defaultHeadless) {
 		this.args = args;
 		this.defaultIp = defaultIp;
 		this.defaultPort = defaultPort;
 		this.defaultDebugMode = defaultDebugMode;
+		this.defaultHeadless = defaultHeadless;
 	}
 
 	public String getIp() {
@@ -33,16 +36,24 @@ public class CommandLineReader {
 	}
 
 	public boolean isDebugMode() {
+		return getBooleanValue("debug", defaultDebugMode);
+	}
+
+	public boolean isHeadless() {
+		return getBooleanValue("headless", defaultHeadless);
+	}
+
+	private boolean getBooleanValue(String name, boolean defaultValue) {
 		CommandLineParser parser = createParser();
 		try {
 			CommandLine line = parser.parse(createOptions(), args);
-			if (line.hasOption("debug")) {
+			if (line.hasOption(name)) {
 				return true;
 			} else {
-				return false;
+				return defaultValue;
 			}
 		} catch (ParseException exp) {
-			return defaultDebugMode;
+			return defaultValue;
 		}
 	}
 
@@ -55,6 +66,7 @@ public class CommandLineReader {
 		options.addOption(new Option("port", true, "Server Port"));
 		options.addOption(new Option("ip", "ipAddress", true, "Server IP Adresse"));
 		options.addOption(new Option("debug", "Printing Debugging Informationen"));
+		options.addOption(new Option("headless", "Server ohne GUI"));
 		return options;
 	}
 
