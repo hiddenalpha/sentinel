@@ -51,18 +51,8 @@ public class AusweisDatenWriter {
 
 			// Weitere Dateien hinzfufügen
 			parameters.setSourceExternalStream(false);
-			zipFile.addFolder("images", parameters);
-
-			// Ausweisvorlage speichern
-			File f = new File(FileHelper.FILE_AUSWEISVORLAGE_JPG);
-			if (f.exists()){
-				zipFile.addFile(f, parameters);
-			}
-
-			// Wasserzeichnen speichern
-			f = new File(FileHelper.FILE_WASSERZEICHEN_PNG);
-			if (f.exists()){
-				zipFile.addFile(f, parameters);
+			if (new File("images").exists()) {
+				zipFile.addFolder("images", parameters);
 			}
 
 			return FileHelper.getAsByteArray(EXPORT_FILENAME);

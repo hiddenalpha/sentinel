@@ -51,6 +51,8 @@ public class PersonenImporterService {
 		persister.getState().setKompletterBestand(isKompletterBestand);
 		persister.save();
 
+		log.trace("initiat new import sessionkey " + sessionKey + " kompletterbestand " + isKompletterBestand);
+
 		return sessionKey;
 	}
 
@@ -146,7 +148,7 @@ public class PersonenImporterService {
 
 	@WebMethod
 	public void abortImport(@WebParam(name = "sessionKey") String sessionKey) {
-		log.info("abort import - sessionkey " + sessionKey);
+		log.debug("abort import - sessionkey " + sessionKey);
 		cleanup(sessionKey);
 	}
 
@@ -164,7 +166,7 @@ public class PersonenImporterService {
 
 	private String createNewUniqueSessionKey() {
 		String sessionKey = UUID.randomUUID().toString();
-		log.info("created new session key: " + sessionKey);
+		log.trace("created new session key: " + sessionKey);
 		return sessionKey;
 	}
 

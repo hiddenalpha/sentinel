@@ -5,22 +5,18 @@ import java.awt.Frame;
 public class PersonenImportDialog {
 
 	private Frame parent;
-	
-	private boolean isKompletterBestand;
-	
-	public PersonenImportDialog(Frame parent, boolean isKompletterBestand) {
+
+	public PersonenImportDialog(Frame parent) {
 		this.parent = parent;
-		this.isKompletterBestand = isKompletterBestand;
-	}	
-	
+	}
+
 	public void show() {
 		WorkflowDialog dialog = new WorkflowDialog();
-		
+
 		WorkflowData data = new WorkflowData();
-		data.setKompletterBestand(isKompletterBestand);
-		
+
 		WorkflowInterceptor interceptor = dialog.getWorkflowInterceptor();
-		
+
 		dialog.addWorkflowStep(new WorkflowStepFile(parent, data, interceptor));
 		dialog.addWorkflowStep(new WorkflowStepMapping(parent, data, interceptor));
 		dialog.addWorkflowStep(new WorkflowStepModification(parent, data, interceptor));
@@ -28,5 +24,5 @@ public class PersonenImportDialog {
 
 		dialog.show();
 	}
-	
+
 }

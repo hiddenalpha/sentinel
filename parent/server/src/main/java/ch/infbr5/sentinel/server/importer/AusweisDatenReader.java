@@ -33,8 +33,6 @@ public class AusweisDatenReader extends ZipDatenReader {
 		initiate();
 		FileHelper.removeFolderContent(new File("images"));
 		copyFiles("images", "images");
-		copyFile(FileHelper.FILE_WASSERZEICHEN_PNG, FileHelper.FILE_WASSERZEICHEN_PNG);
-		copyFile(FileHelper.FILE_AUSWEISVORLAGE_JPG, FileHelper.FILE_AUSWEISVORLAGE_JPG);
 		close();
 	}
 

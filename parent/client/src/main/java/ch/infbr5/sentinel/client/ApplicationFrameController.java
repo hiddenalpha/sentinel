@@ -48,12 +48,8 @@ public class ApplicationFrameController implements ActionListener {
 				new FileUpAndDownload(appFrame).importPersonData();
 				break;
 
-			case AppMenuBar.CMD_IMPORT_PISADATA_BESTAND:
-				new PersonenImportDialog(appFrame, true).show();
-				break;
-
-			case AppMenuBar.CMD_IMPORT_PISADATA_EINR:
-				new PersonenImportDialog(appFrame, false).show();
+			case AppMenuBar.CMD_IMPORT_PISADATA:
+				new PersonenImportDialog(appFrame).show();
 				break;
 
 			case AppMenuBar.CMD_IMPORT_AUSWEISVORLAGE:

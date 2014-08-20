@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
 
 import org.apache.log4j.Logger;
 
@@ -43,7 +44,21 @@ public class KonfigurationsDatenWriter {
 
 			// Zip Datei erstellen
 			ZipFile zipFile = new ZipFile(fileZip);
-			zipFile.addStream(new ByteArrayInputStream(byteStream.toByteArray()), ZipUtil.createZipParameters(password, EXPORT_FILENAME_XML));
+			ZipParameters parameters = ZipUtil.createZipParameters(password, EXPORT_FILENAME_XML);
+			zipFile.addStream(new ByteArrayInputStream(byteStream.toByteArray()), parameters);
+
+			// Ausweisvorlage speichern
+			parameters.setSourceExternalStream(false);
+			File f = new File(FileHelper.FILE_AUSWEISVORLAGE_JPG);
+			if (f.exists()) {
+				zipFile.addFile(f, parameters);
+			}
+
+			// Wasserzeichnen speichern
+			f = new File(FileHelper.FILE_WASSERZEICHEN_PNG);
+			if (f.exists()) {
+				zipFile.addFile(f, parameters);
+			}
 
 			return Files.toByteArray(fileZip);
 		} catch (ZipException | IOException e) {

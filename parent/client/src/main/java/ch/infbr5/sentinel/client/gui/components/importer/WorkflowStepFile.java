@@ -6,9 +6,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
@@ -20,30 +22,40 @@ import com.google.common.io.Files;
 public class WorkflowStepFile extends WorkflowStep {
 
 	private JPanel panel;
-	
+
 	private JButton btnOpenFile;
-	 
+
 	private JLabel lblInfo;
-	
+
+	private JLabel lblInfoArt;
+
+	private JLabel lblInfoBestand;
+
+	private JLabel lblInfoEinrueckung;
+
 	private JLabel lblFilename;
-	
+
 	private String sessionKey = null;
-	
+
 	private String currentFilename;
-	
+
 	private String lastUploadedFilename;
-	
+
+	private JRadioButton bestandedsImport;
+
+	private JRadioButton einrueckungsImport;
+
 	private String[] allowedExtensions;
-	
+
 	public WorkflowStepFile(Frame parent, WorkflowData data, WorkflowInterceptor interceptor) {
 		super(parent, data, interceptor);
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Datei";
 	}
-	
+
 	@Override
 	public String getUserInfo() {
 		return "Wählen Sie die zu importierende Datei aus. Es sind nur CSV, XLS und XLSX Dateien erlaubt. Die Datei muss eine Überschrift haben, 7 Spalten besitzen und Daten beinhalten.";
@@ -53,14 +65,17 @@ public class WorkflowStepFile extends WorkflowStep {
 	public JPanel getPanel() {
 		if (panel == null) {
 			panel = new JPanel(new MigLayout());
-			
+
 			// Extensions
 			StringArray array = ServiceHelper.getPersonenImporterService().getSupportedExtensions();
 			allowedExtensions = array.getItem().toArray(new String[array.getItem().size()]);
-			
+
 			lblInfo = new JLabel("<html>Nachfolgend können Sie eine Datei mit <b>Personendaten</b> auswählen:</html>");
+			lblInfoArt = new JLabel("<html>Wählen Sie die Importierungs-Art aus.</html>");
+			lblInfoBestand = new JLabel("<html>Betrachtet die Personen in der Datei als kompletten Bestand der Truppe. Bestehende Personen im System, welche in der Datei nicht mehr vorhanden sind, werden der Einheit 'ArchivEinheit' zugewiesen.</html>");
+			lblInfoEinrueckung = new JLabel("<html>Die Personen in der Datei sind 'nur' Personen, welche einrücken werden. Personen mit unbekannten Einheiten werden der Einheit 'GastEinheit' zugewiesen (Personen, welche einen Gast-WK machen).</html>");
 			lblFilename = new JLabel("<html><b>Datei:</b> keine Datei ausgewählt</html>");
-			
+
 			btnOpenFile = new JButton("Datei auswählen");
 			btnOpenFile.addActionListener(new ActionListener() {
 				@Override
@@ -69,23 +84,51 @@ public class WorkflowStepFile extends WorkflowStep {
 					if (file != null && file.exists()) {
 						currentFilename = file.getAbsolutePath();
 						updateLblFilename();
-						checkFile();
+						validateDialog();
 					}
 				}
 			});
-			
-			panel.add(lblInfo, "wrap");
-			panel.add(btnOpenFile, "wrap, gaptop 10");
-			panel.add(lblFilename, "wrap, gaptop 10");
+
+			bestandedsImport = new JRadioButton();
+			bestandedsImport.setText("Bestandesliste");
+			einrueckungsImport = new JRadioButton();
+			einrueckungsImport.setText("Einrückungsliste");
+
+			einrueckungsImport.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					validateDialog();
+				}
+			});
+			bestandedsImport.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					validateDialog();
+				}
+			});
+
+			ButtonGroup group = new ButtonGroup();
+			group.add(bestandedsImport);
+			group.add(einrueckungsImport);
+
+			panel.add(lblInfoArt, "wrap, spanx, gaptop 10");
+			panel.add(bestandedsImport, "wrap, gaptop 10");
+			panel.add(lblInfoBestand, "wrap, gaptop 10");
+			panel.add(einrueckungsImport, "wrap, gaptop 10");
+			panel.add(lblInfoEinrueckung, "wrap, gaptop 10");
+
+			panel.add(lblInfo, "wrap, spanx, gaptop 10");
+			panel.add(btnOpenFile, "wrap, spanx, gaptop 10");
+			panel.add(lblFilename, "wrap, spanx, gaptop 10");
 		}
 		return panel;
 	}
-	
+
 	@Override
 	public void init() {
-		// Falls ZurÃ¼ck
+		// Falls Zurück
 		if (sessionKey != null) {
-			checkFile();
+			validateDialog();
 			// btnOpenFile.setEnabled(false);
 		}
 	}
@@ -94,15 +137,18 @@ public class WorkflowStepFile extends WorkflowStep {
 	public void finishReturn() {
 		finishNext();
 	}
-	
+
 	@Override
 	public void finishNext() {
-		if (lastUploadedFilename == null || !lastUploadedFilename.equals(currentFilename)) {
-			lastUploadedFilename = currentFilename;
-			byte[] byteData = loadFile(currentFilename);
-			sessionKey = ServiceHelper.getPersonenImporterService().initiatImport((new File(currentFilename)).getName(), byteData, getData().isKompletterBestand());
-			getData().setSessionKey(sessionKey);
+		if (sessionKey != null) {
+			abort();
 		}
+
+		lastUploadedFilename = currentFilename;
+		getData().setKompletterBestand(bestandedsImport.isSelected());
+		byte[] byteData = loadFile(currentFilename);
+		sessionKey = ServiceHelper.getPersonenImporterService().initiatImport((new File(currentFilename)).getName(), byteData, getData().isKompletterBestand());
+		getData().setSessionKey(sessionKey);
 	}
 
 	@Override
@@ -115,7 +161,7 @@ public class WorkflowStepFile extends WorkflowStep {
 			}
 		}
 	}
-	
+
 	private byte[] loadFile(String filename) {
 		try {
 			return Files.toByteArray(new File(filename));
@@ -129,13 +175,13 @@ public class WorkflowStepFile extends WorkflowStep {
 	private void updateLblFilename() {
 		lblFilename.setText("<html><b>Datei:</b> " + currentFilename + "</html>");
 	}
-	
-	private void checkFile() {
-		if (currentFilename != null && new File(currentFilename).exists()) {
+
+	private void validateDialog() {
+		if (currentFilename != null && new File(currentFilename).exists() && (einrueckungsImport.isSelected() || bestandedsImport.isSelected())) {
 			getInterceptor().activateNext();
 		} else {
 			getInterceptor().deactivateNext();
 		}
 	}
-	
+
 }

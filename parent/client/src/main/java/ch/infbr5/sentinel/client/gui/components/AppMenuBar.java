@@ -27,8 +27,7 @@ public class AppMenuBar extends JMenuBar {
 	public static final String CMD_EXPORT_CONFIG = "EXPORT_CONFIG";
 	public static final String CMD_IMPORT_CONFIG = "IMPORT_CONFIG";
 	public static final String CMD_IMPORT_FOTO = "FOTO_IMPORT";
-	public static final String CMD_IMPORT_PISADATA_BESTAND = "IMPORT_PISADATA_BESTAND";
-	public static final String CMD_IMPORT_PISADATA_EINR = "IMPORT_PISADATA_EINR";
+	public static final String CMD_IMPORT_PISADATA = "IMPORT_PISADATA";
 	public static final String CMD_IMPORT_AUSWEISVORLAGE = "CMD_IMPORT_AUSWEISVORLAGE";
 	public static final String CMD_IMPORT_WASSERZEICHEN = "CMD_IMPORT_WASSERZEICHEN";
 	public static final String CMD_CHECKPOINT_EINSTELLUNGEN = "CMD_CHECKPOINT_EINSTELLUNGEN";
@@ -54,8 +53,7 @@ public class AppMenuBar extends JMenuBar {
 	private JMenuItem itemEinstellungen;
 	private JMenuItem itemAusweisdatenExportieren;
 	private JMenuItem itemAusweisdatenImportieren;
-	private JMenuItem itemPisaDatenBestand;
-	private JMenuItem itemPisaDatenEinrueckung;
+	private JMenuItem itemPisaDatenImport;
 	private JMenuItem itemFotosImport;
 	private JMenuItem itemConfiguractionImport;
 	private JMenuItem itemConfigurationExport;
@@ -137,13 +135,15 @@ public class AppMenuBar extends JMenuBar {
 		this.menuAdmin = new JMenu("Datenaustausch");
 		this.add(this.menuAdmin);
 
-		itemAusweisdatenExportieren = addItem("Ausweisdaten exportieren", menuAdmin, menuListener, CMD_EXPORT_PERSONDATA);
-		itemAusweisdatenImportieren = addItem("Ausweisdaten importieren", menuAdmin, menuListener, CMD_IMPORT_PERSONDATA);
+		itemAusweisdatenExportieren = addItem("Ausweisdaten exportieren", menuAdmin, menuListener,
+				CMD_EXPORT_PERSONDATA);
+		itemAusweisdatenImportieren = addItem("Ausweisdaten importieren", menuAdmin, menuListener,
+				CMD_IMPORT_PERSONDATA);
 
 		this.menuAdmin.addSeparator();
 
-		itemPisaDatenBestand = addItem("Pisadaten importieren (Bestandesliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_BESTAND);
-		itemPisaDatenEinrueckung = addItem("Pisadaten importieren (Einrückungsliste)", menuAdmin, menuListener, CMD_IMPORT_PISADATA_EINR);
+		itemPisaDatenImport = addItem("Pisadaten importieren", menuAdmin, menuListener,
+				CMD_IMPORT_PISADATA);
 
 		this.menuAdmin.addSeparator();
 
@@ -156,8 +156,10 @@ public class AppMenuBar extends JMenuBar {
 
 		this.menuAdmin.addSeparator();
 
-		itemImportAusweisVorlage = addItem("Ausweisvorlage importieren", menuAdmin, menuListener, CMD_IMPORT_AUSWEISVORLAGE);
-		itemImportWasserzeichen = addItem("Wasserzeichen importieren", menuAdmin, menuListener, CMD_IMPORT_WASSERZEICHEN);
+		itemImportAusweisVorlage = addItem("Ausweisvorlage importieren", menuAdmin, menuListener,
+				CMD_IMPORT_AUSWEISVORLAGE);
+		itemImportWasserzeichen = addItem("Wasserzeichen importieren", menuAdmin, menuListener,
+				CMD_IMPORT_WASSERZEICHEN);
 	}
 
 	private ActionListener createDisableSuperuserModeListener() {
@@ -224,8 +226,7 @@ public class AppMenuBar extends JMenuBar {
 		itemAusweisdatenExportieren.setEnabled(adminOrSuperuserMode);
 		itemAusweisdatenImportieren.setEnabled(adminOrSuperuserMode);
 
-		itemPisaDatenBestand.setEnabled(adminMode);
-		itemPisaDatenEinrueckung.setEnabled(adminMode);
+		itemPisaDatenImport.setEnabled(adminMode);
 
 		itemFotosImport.setEnabled(adminMode);
 		itemConfigurationExport.setEnabled(adminMode);
@@ -235,7 +236,6 @@ public class AppMenuBar extends JMenuBar {
 
 		menuAdmin.setEnabled(adminOrSuperuserMode);
 	}
-
 
 	private void changeSuperUserMode(boolean value) {
 		superUserMode = value;
@@ -284,7 +284,8 @@ public class AppMenuBar extends JMenuBar {
 
 	private boolean askForPassword(String originalPassword) {
 		if (originalPassword == null || originalPassword.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Auf dem Server ist kein Passwort definiert.", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Auf dem Server ist kein Passwort definiert.", "Fehler",
+					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 
@@ -292,13 +293,15 @@ public class AppMenuBar extends JMenuBar {
 		JLabel txt = new JLabel("Bitte Passwort eingeben");
 
 		Object[] fields = { txt, field };
-		JOptionPane.showConfirmDialog(null, fields, "Passwort", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showConfirmDialog(null, fields, "Passwort", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.INFORMATION_MESSAGE);
 		String adminPassword = String.valueOf(field.getPassword());
 
 		if (adminPassword != null && adminPassword.equals(originalPassword)) {
 			return true;
 		} else {
-			JOptionPane.showMessageDialog(null, "Passwort stimmt nicht korrekt.", "Adminpasswort falsch", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Passwort stimmt nicht korrekt.", "Adminpasswort falsch",
+					JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
 	}

@@ -628,6 +628,7 @@ public class ConfigurationQueryService {
 		if (!reader.hasError()) {
 			getQueryHelper().removeAllConfiguration();
 			getQueryHelper().persistAllConfiguration(values);
+			reader.importVorlagen();
 			log.debug("Es wurde " + values.size() + " Konfigurationswerte importiert.");
 		}
 		return !reader.hasError();
