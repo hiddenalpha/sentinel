@@ -203,17 +203,24 @@ public class ConfigurationQueryService {
 		value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.SUPERUSER_PASSWORD);
 		info.setSuperUserPassword(value == null ? "" : value.getStringValue());
 
+		// Achtung, das IdendityCardPassword wird momentan noch speziell behandelt.
+		info.setIdentityCardPassword(ConfigConstants.DEFAULT_IDENTITY_CARD_PASSWORD);
+		info.calculateServerSetup();
+
 		// Identity Password
-		value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.IDENTITY_CARD_PASSWORD);
-		info.setIdentityCardPassword(value == null ? "" : value.getStringValue());
+		// Achtung, das IdendityCardPassword wird momentan noch speziell behandelt.
+		if (info.isServerIsConfigured()) {
+			value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.IDENTITY_CARD_PASSWORD);
+			if (value == null) {
+				info.setServerIsConfigured(false);
+			}
+		}
 
 		// IP Cams
 		List<ConfigurationValue> values = getQueryHelper().findConfigurationValue(ConfigConstants.URL_IPCAM_ALL);
 		for (ConfigurationValue v : values) {
 			info.getIpCamUrls().add(v.getStringValue());
 		}
-
-		info.calculateServerSetup();
 
 		return info;
 	}
@@ -307,115 +314,6 @@ public class ConfigurationQueryService {
 			i++;
 		}
 	}
-
-	/*
-	 * @WebMethod public InitialConfig calculateInitialConfig(byte[]
-	 * exportedConfigFile, String password1, byte[] exportedAusweisdaten, String
-	 * password2) {
-	 *
-	 * log.debug("Erstelle Initial Config"); InitialConfig initialConfig = new
-	 * InitialConfig();
-	 *
-	 * // Generelle Daten initialConfig.setCheckpointName("Haupteingang");
-	 * initialConfig.setZonenName("Kommandoposten");
-	 *
-	 * // Konfigurations Daten if (exportedConfigFile != null &&
-	 * exportedConfigFile.length > 0) { log.debug("Konfigurationsdatei laden");
-	 * KonfigurationsDatenReader reader = new
-	 * KonfigurationsDatenReader(exportedConfigFile, password1);
-	 * List<ConfigurationValue> values = reader.readData(); for
-	 * (ConfigurationValue value : values) { if
-	 * (value.getKey().equals(ConfigConstants.SUPERUSER_PASSWORD)) {
-	 * initialConfig.setSuperUserPw(value.getStringValue()); } else if
-	 * (value.getKey().equals(ConfigConstants.ADMIN_PASSWORD)) {
-	 * initialConfig.setAdminPw(value.getStringValue()); } else if
-	 * (value.getKey().equals(ConfigConstants.IDENTITY_CARD_PASSWORD)) {
-	 * initialConfig.setIdendityCardPwConfigFile(value.getStringValue()); } else
-	 * { initialConfig.getDetails().add(Mapper.
-	 * mapConfigurationValuetoConfigurationDetails().apply(value)); } } }
-	 *
-	 * // Ausweisdaten (Wasserzeichen, Vorlage) if (exportedAusweisdaten != null
-	 * && exportedAusweisdaten.length > 0) { log.debug("Ausweisdaten laden");
-	 * AusweisDatenReader reader = new AusweisDatenReader(exportedAusweisdaten,
-	 * password2);
-	 * initialConfig.setVorlageAusweisDaten(reader.readAusweisVorlage());
-	 * initialConfig.setWasserzeichenAusweisDaten(reader.readWasserzeichen()); }
-	 *
-	 * // Per Default immer die Sentinel Vorgaben verwenden
-	 * initialConfig.setTakeDefaultVorlage(true);
-	 * initialConfig.setTakeDefaultWasserzeichen(true);
-	 *
-	 * // Effektives PW if (initialConfig.getIdendityCardPwAusweisDaten() !=
-	 * null && !initialConfig.getIdendityCardPwAusweisDaten().isEmpty()) {
-	 * initialConfig
-	 * .setIdendityCardPwEffective(initialConfig.getIdendityCardPwAusweisDaten
-	 * ()); } else { initialConfig.setIdendityCardPwEffective(initialConfig.
-	 * getIdendityCardPwConfigFile()); }
-	 *
-	 * // Default Wasserzeichen und Vorlage
-	 * initialConfig.setWasserzeichenDefaultDaten
-	 * (IdentityCardRenderer.getDefaultWasserzeichen());
-	 * initialConfig.setVorlageDefaultDaten
-	 * (IdentityCardRenderer.getDefaultAusweisvorlage());
-	 *
-	 * return initialConfig; }
-	 *
-	 * @WebMethod public void applyInitialConfig(InitialConfig config) {
-	 *
-	 * // Zutrittsregeln Zutrittsregel regel =
-	 * ObjectFactory.createZutrittsregel(); getEntityManager().persist(regel);
-	 *
-	 * List<Zutrittsregel> regeln = new ArrayList<Zutrittsregel>();
-	 * regeln.add(regel);
-	 *
-	 * // Zone Zone zone = ObjectFactory.createZone(config.getZonenName(),
-	 * regeln, false); getEntityManager().persist(zone);
-	 *
-	 * // Checkpoint List<Zone> checkInZonen = new ArrayList<Zone>();
-	 * checkInZonen.add(zone); List<Zone> checkOutZonen = new ArrayList<Zone>();
-	 * Checkpoint checkpoint =
-	 * ObjectFactory.createCheckpoint(config.getCheckpointName(), checkInZonen,
-	 * checkOutZonen); getEntityManager().persist(checkpoint);
-	 *
-	 * // Configurations List<ConfigurationValue> values = Lists.newArrayList();
-	 *
-	 * removeConfigValue(ConfigConstants.SUPERUSER_PASSWORD); ConfigurationValue
-	 * value = new ConfigurationValue();
-	 * value.setKey(ConfigConstants.SUPERUSER_PASSWORD);
-	 * value.setStringValue(config.getSuperUserPw()); values.add(value);
-	 *
-	 * removeConfigValue(ConfigConstants.ADMIN_PASSWORD); value = new
-	 * ConfigurationValue(); value.setKey(ConfigConstants.ADMIN_PASSWORD);
-	 * value.setStringValue(config.getAdminPw()); values.add(value);
-	 *
-	 * removeConfigValue(ConfigConstants.IDENTITY_CARD_PASSWORD); value = new
-	 * ConfigurationValue();
-	 * value.setKey(ConfigConstants.IDENTITY_CARD_PASSWORD);
-	 * value.setStringValue(config.getIdendityCardPwEffective());
-	 * values.add(value);
-	 *
-	 * for (ConfigurationDetails detail : config.getDetails()) {
-	 * values.add(Mapper
-	 * .mapConfigurationDetailsToConfigurationValue().apply(detail)); }
-	 *
-	 * getQueryHelper().persistAllConfiguration(values);
-	 *
-	 * // Vorlage if (!config.isTakeDefaultVorlage()) { try {
-	 * Files.write(config.getVorlageEffective(), new
-	 * File(FileHelper.FILE_AUSWEISVORLAGE_JPG)); } catch (Exception e) {
-	 * log.error(e); } }
-	 *
-	 * // Wasserzeichen if (!config.isTakeDefaultWasserzeichen()) { try {
-	 * Files.write(config.getWasserzeichenEffective(), new
-	 * File(FileHelper.FILE_WASSERZEICHEN_PNG)); } catch (Exception e) {
-	 * log.error(e); } } }
-	 */
-
-	/*
-	 * private void removeConfigValue(String key) { for (ConfigurationValue
-	 * value : getQueryHelper().getConfigurationValues()) { if
-	 * (value.getKey().equals(key)) { getEntityManager().remove(value); } } }
-	 */
 
 	@WebMethod
 	public ConfigurationResponse getZonen() {

@@ -52,6 +52,7 @@ public class FileUpAndDownload {
 	}
 
 	public void importPersonData() {
+		showHinweis("Hinweis: Bestehende Daten werden gelöscht (Personendaten, Ausweisdaten, Personenbilder).");
 		String filename = showFileDialog(frame, "Ausweisdaten importieren", "\\.", "*.zip", FileDialog.LOAD);
 		if (filename != null) {
 			String password = promptPassword();
@@ -70,6 +71,10 @@ public class FileUpAndDownload {
 				saveFileTo(filename, ServiceHelper.getConfigurationsService().exportPersonData(password));
 			}
 		}
+	}
+
+	private void showHinweis(String text) {
+		JOptionPane.showMessageDialog(frame, text, "Hinweis", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public void importAusweisvorlage() {

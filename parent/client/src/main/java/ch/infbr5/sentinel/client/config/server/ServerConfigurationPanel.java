@@ -120,6 +120,7 @@ public class ServerConfigurationPanel extends JPanel {
 		txtAdminPw = SwingHelper.createTextField(info.getAdminPassword());
 		txtSuperUserPw = SwingHelper.createTextField(info.getSuperUserPassword());
 		txtIdentityCardPw = SwingHelper.createTextField(info.getIdentityCardPassword());
+		txtIdentityCardPw.setEnabled(false); // Momentan deaktiviert, das muss man in einem grösseren Refactoring betrachten.
 
 		cameraPanel = new CheckpointConfigurationCamerasPanel(false, ServiceHelper.getConfigurationsService().getIPCams().getCams());
 

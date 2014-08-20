@@ -104,6 +104,10 @@ public abstract class ZipDatenReader {
 	protected void copyFiles(String source, String pathDestination) {
 		File f = new File(getTempDirectory() + source);
 		if (f.exists()) {
+			File destFolder = new File(pathDestination);
+			if (!destFolder.exists()) {
+				destFolder.mkdirs();
+			}
 			for (File k : f.listFiles()){
 				if (k.isFile()) {
 					try {
