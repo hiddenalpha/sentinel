@@ -27,6 +27,10 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 
 	private int currentRow = 1;
 
+	private int firstColumnIndex = 0;
+
+	private int lastColumnIndex;
+
 	public PersonenDataExcelImporter(EntityManager em, String filenameData, boolean isKompletteEinheit) {
 		super(em, filenameData, isKompletteEinheit);
 	}
@@ -34,12 +38,16 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 	@Override
 	public String[] getHeaderLine() {
 		Sheet sheet = getSheet();
-		String[] headerLine = createArray(sheet.getRow(0));
+		String[] headerLine = createArrayHeader(sheet.getRow(0));
+		if (headerLine != null) {
+			lastColumnIndex = headerLine.length - 1;
+		}
 		close();
 		return headerLine;
 	}
 
-	private String[] createArray(Row row) {
+	private String[] createArrayHeader(Row row) {
+		// Celliterator überspringt empty cells!!! Darum zwei Implementationen! Aber die Erste Zeil muss einfach bündig und komplett sein.
 		List<String> headers = new ArrayList<>();
 		if (row == null) {
 			return null;
@@ -60,6 +68,37 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 				headers.add(cell.getStringCellValue());
 			}
 		}
+
+		return headers.toArray(new String[headers.size()]);
+	}
+
+	private String[] createArray(Row row) {
+		List<String> headers = new ArrayList<>();
+		if (row == null) {
+			return null;
+		}
+
+		for (int i = firstColumnIndex; i < lastColumnIndex; i++) {
+			Cell cell = row.getCell(i, Row.RETURN_BLANK_AS_NULL);
+			if (cell == null) {
+				headers.add("");
+			} else {
+				if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+					if (HSSFDateUtil.isCellDateFormatted(cell)) {
+						Date date = cell.getDateCellValue();
+						headers.add(new SimpleDateFormat("dd.MM.yyyy").format(date));
+					} else {
+						cell.setCellType(Cell.CELL_TYPE_STRING);
+						headers.add(cell.getStringCellValue());
+					}
+				} else {
+					cell.setCellType(Cell.CELL_TYPE_STRING);
+					headers.add(cell.getStringCellValue());
+				}
+			}
+
+		}
+
 		return headers.toArray(new String[headers.size()]);
 	}
 

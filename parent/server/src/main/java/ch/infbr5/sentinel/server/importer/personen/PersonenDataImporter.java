@@ -148,7 +148,7 @@ abstract class PersonenDataImporter {
 		// Alle Attribute durchlaufen
 		for (PersonenAttribute attribute : map.keySet()) {
 
-			// MÃ¶gliche Kolonen fÃ¼r Attribut auf Basis der Daten
+			// Mögliche Kolonen für Attribut auf Basis der Daten
 			List<PersonenImportColumn> possibleColumns = calculatePossibleColumns(attribute);
 
 			// Auf Basis des Headers die Kolone suchen
@@ -160,7 +160,7 @@ abstract class PersonenDataImporter {
 				}
 			}
 
-			// PrÃ¼fen ob die Header Kolone in der mÃ¶gliche Kolone enthalten ist
+			// Prüfen ob die Header Kolone in der mögliche Kolone enthalten ist
 			if (!possibleColumns.contains(columnToMap)) {
 				columnToMap = null;
 			}

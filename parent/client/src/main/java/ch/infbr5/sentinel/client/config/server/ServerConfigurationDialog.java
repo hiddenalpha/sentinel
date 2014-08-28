@@ -79,7 +79,9 @@ public class ServerConfigurationDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				System.exit(0);
+				if (closeAppOnExit) {
+					System.exit(0);
+				}
 			}
 		});
 

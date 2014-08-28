@@ -147,27 +147,58 @@ public class IdentityCardSingleImageRenderer {
 
 		// TODO Should be configurable!
 		String defaultEinheitColor = "#000";
+		Color defaultColor = Color.decode(defaultEinheitColor);
 
 		String colorGsVb = defaultEinheitColor;
 		if (einheit.getRgbColor_GsVb() != null && !einheit.getRgbColor_GsVb().isEmpty()) {
 			colorGsVb = einheit.getRgbColor_GsVb();
+			if (!colorGsVb.startsWith("#")) {
+				colorGsVb = "#" + colorGsVb;
+			}
 		}
 
 		String colorTrpK = defaultEinheitColor;
 		if (einheit.getRgbColor_TrpK() != null && !einheit.getRgbColor_TrpK().isEmpty()) {
 			colorTrpK = einheit.getRgbColor_TrpK();
+			if (!colorTrpK.startsWith("#")) {
+				colorTrpK = "#" + colorTrpK;
+			}
 		}
 
 		String colorEinh = defaultEinheitColor;
 		if (einheit.getRgbColor_Einh() != null && !einheit.getRgbColor_Einh().isEmpty()) {
 			colorEinh = einheit.getRgbColor_Einh();
+			if (!colorEinh.startsWith("#")) {
+				colorEinh = "#" + colorEinh;
+			}
 		}
 
-		drawEinheitKasten(Color.decode(colorGsVb), yStart + height * 0 + gap * 0);
-		drawEinheitKasten(Color.decode(colorTrpK), yStart + height * 1 + gap * 1);
-		drawEinheitKasten(Color.decode(colorEinh), yStart + height * 2 + gap * 2);
-		drawEinheitKasten(Color.decode(defaultEinheitColor), yStart + height * 3 + gap * 3);
-		drawEinheitKasten(Color.decode(defaultEinheitColor), yStart + height * 4 + gap * 4);
+		Color cGsVb;
+		try {
+			cGsVb = Color.decode(colorGsVb);
+		} catch (NumberFormatException e) {
+			cGsVb = defaultColor;
+		}
+
+		Color cTrpK;
+		try {
+			cTrpK = Color.decode(colorTrpK);
+		} catch (NumberFormatException e) {
+			cTrpK = defaultColor;
+		}
+
+		Color cEinh;
+		try {
+			cEinh = Color.decode(colorEinh);
+		} catch (NumberFormatException e) {
+			cEinh = defaultColor;
+		}
+
+		drawEinheitKasten(cGsVb, yStart + height * 0 + gap * 0);
+		drawEinheitKasten(cTrpK, yStart + height * 1 + gap * 1);
+		drawEinheitKasten(cEinh, yStart + height * 2 + gap * 2);
+		drawEinheitKasten(defaultColor, yStart + height * 3 + gap * 3);
+		drawEinheitKasten(defaultColor, yStart + height * 4 + gap * 4);
 	}
 
 	private void drawEinheitKasten(Color color, int y) {
