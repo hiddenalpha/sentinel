@@ -18,14 +18,14 @@ public class BewegungsJournalTable extends JTable {
 	public void adjustColumnWidthBewegung() {
 		getColumnModel().getColumn(0).setWidth(100);
 		getColumnModel().getColumn(0).setPreferredWidth(100);
-		getColumnModel().getColumn(0).setMaxWidth(100);
+		//getColumnModel().getColumn(0).setMaxWidth(100);
 
 		getColumnModel().getColumn(1).setPreferredWidth(150);
-		getColumnModel().getColumn(1).setMaxWidth(150);
+		//getColumnModel().getColumn(1).setMaxWidth(150);
 
 		getColumnModel().getColumn(3).setWidth(80);
 		getColumnModel().getColumn(3).setPreferredWidth(80);
-		getColumnModel().getColumn(3).setMaxWidth(80);
+		//getColumnModel().getColumn(3).setMaxWidth(80);
 	}
 
 }

@@ -103,17 +103,17 @@ public class GefechtsJournalTable extends JTable {
 	private void adjustColumnWidthGefecht() {
 		getColumnModel().getColumn(0).setWidth(70);
 		getColumnModel().getColumn(0).setPreferredWidth(70);
-		getColumnModel().getColumn(0).setMaxWidth(70);
+		//getColumnModel().getColumn(0).setMaxWidth(70);
 
 		getColumnModel().getColumn(1).setPreferredWidth(100);
-		getColumnModel().getColumn(1).setMaxWidth(100);
+		//getColumnModel().getColumn(1).setMaxWidth(100);
 
 		getColumnModel().getColumn(4).setPreferredWidth(100);
-		getColumnModel().getColumn(4).setMaxWidth(100);
+		//getColumnModel().getColumn(4).setMaxWidth(100);
 
 		getColumnModel().getColumn(5).setWidth(70);
 		getColumnModel().getColumn(5).setPreferredWidth(70);
-		getColumnModel().getColumn(5).setMaxWidth(70);
+		//getColumnModel().getColumn(5).setMaxWidth(70);
 	}
 
 }
