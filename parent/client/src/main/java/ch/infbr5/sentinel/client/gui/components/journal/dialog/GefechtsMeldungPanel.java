@@ -28,7 +28,7 @@ import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
 import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
-import ch.infbr5.sentinel.common.util.Formater;
+import ch.infbr5.sentinel.common.util.DateFormater;
 
 import com.google.common.base.Strings;
 
@@ -130,7 +130,7 @@ public class GefechtsMeldungPanel extends JPanel {
 		txtAreaMassnahmen.setText(meldung.getMassnahme());
 		ckbStatus.setSelected(meldung.isIstErledigt());
 		if (meldung.isIstErledigt()) {
-			ckbStatus.setText(Formater.formatWithTime(meldung.getZeitpunktErledigt()));
+			ckbStatus.setText(DateFormater.formatToDateWithTime(meldung.getZeitpunktErledigt()));
 		}
 		if (meldung.getWeiterleitenAnPerson() != null) {
 			for (int i = 0; i < cmbMeldungIstFuer.getModel().getSize(); i++) {

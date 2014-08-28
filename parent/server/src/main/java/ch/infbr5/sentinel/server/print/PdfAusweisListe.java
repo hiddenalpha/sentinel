@@ -4,10 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import ch.infbr5.sentinel.common.util.DateFormater;
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Person;
-import ch.infbr5.sentinel.server.utils.DateHelper;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -118,7 +118,7 @@ public class PdfAusweisListe extends PDFRenderer {
 
 		// ---- Gueltig ab ----
 		if (ausweis.getGueltigVon() != null)
-			p.add(new Chunk(DateHelper.getFormatedString(ausweis.getGueltigVon()) + "\n", FontFactory.getFont(
+			p.add(new Chunk(DateFormater.formatToDate(ausweis.getGueltigVon()) + "\n", FontFactory.getFont(
 					FontFactory.COURIER, 5, Font.NORMAL)));
 
 		// ---- Box ----
@@ -162,7 +162,7 @@ public class PdfAusweisListe extends PDFRenderer {
 
 		// ---- Geburtsdatum ----
 		if (person.getGeburtsdatum() != null) {
-			p.add(new Chunk(DateHelper.getFormatedString(person.getGeburtsdatum()), FontFactory.getFont(FontFactory.COURIER,
+			p.add(new Chunk(DateFormater.formatToDate(person.getGeburtsdatum()), FontFactory.getFont(FontFactory.COURIER,
 					5, Font.NORMAL)));
 		}
 

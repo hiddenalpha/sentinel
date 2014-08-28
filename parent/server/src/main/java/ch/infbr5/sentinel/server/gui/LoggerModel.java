@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import ch.infbr5.sentinel.common.util.Formater;
+import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class LoggerModel extends AbstractTableModel {
 
@@ -45,7 +45,7 @@ public class LoggerModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		LoggingEvent meldung = events.get(rowIndex);
 		if (columnIndex == 0) {
-			return Formater.formatWithTime(new Date(meldung.getTimeStamp()));
+			return DateFormater.formatToDateWithTime(new Date(meldung.getTimeStamp()));
 		}
 		if (columnIndex == 1) {
 			return meldung.getLevel();

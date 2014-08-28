@@ -13,7 +13,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
-import ch.infbr5.sentinel.server.utils.DateHelper;
+import ch.infbr5.sentinel.common.util.DateFormater;
 
 @Entity
 @NamedQueries({
@@ -131,7 +131,7 @@ public class Person {
 		}
 		res = res + getName() + " " + getVorname() + ", ";
 		if (getGeburtsdatum() != null) {
-			res = res + DateHelper.getFormatedString(getGeburtsdatum()) + ", ";
+			res = res + DateFormater.formatToDate(getGeburtsdatum()) + ", ";
 		}
 		if (getFunktion() != null) {
 			res = res + getFunktion() + ", ";

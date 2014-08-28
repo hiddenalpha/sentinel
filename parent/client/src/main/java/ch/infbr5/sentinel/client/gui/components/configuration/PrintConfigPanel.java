@@ -17,7 +17,7 @@ import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 import ch.infbr5.sentinel.client.wsgen.EinheitDetails;
 import ch.infbr5.sentinel.client.wsgen.PrintJobDetails;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
-import ch.infbr5.sentinel.common.util.Formater;
+import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails> {
 
@@ -41,7 +41,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			if (columnIndex == 0) {
-				return Formater.formatDateTime(getDataRecord(rowIndex).getPrintJobDate());
+				return DateFormater.formatToDateWithTime(getDataRecord(rowIndex).getPrintJobDate());
 			} else if (columnIndex == 1) {
 				return getDataRecord(rowIndex).getPrintJobDesc();
 			} else if (columnIndex == 2) {

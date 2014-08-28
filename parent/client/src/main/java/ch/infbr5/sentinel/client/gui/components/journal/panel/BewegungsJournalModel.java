@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 import ch.infbr5.sentinel.client.util.PersonDetailsFormater;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
-import ch.infbr5.sentinel.common.util.Formater;
+import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class BewegungsJournalModel extends AbstractTableModel {
 
@@ -45,7 +45,7 @@ public class BewegungsJournalModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		JournalBewegungsMeldung meldung = meldungen.get(rowIndex);
 		if (columnIndex == 0) {
-			return Formater.formatWithTime(new Date(meldung.getMillis()));
+			return DateFormater.formatToDateWithTime(new Date(meldung.getMillis()));
 		}
 		if (columnIndex == 1) {
 			return meldung.getCheckpoint().getName();

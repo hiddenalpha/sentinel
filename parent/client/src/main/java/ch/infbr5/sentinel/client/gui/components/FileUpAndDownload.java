@@ -31,7 +31,7 @@ public class FileUpAndDownload {
 	public void exportConfiguration() {
 		String filename = showFileDialog(frame, "Konfiguration exportieren", "\\.", "*.zip", FileDialog.SAVE);
 		if (filename != null) {
-			String password = promptPassword();
+			String password = promptPassword("Passwort setzen");
 			if (!isEmpty(password)) {
 				saveFileTo(filename, ServiceHelper.getConfigurationsService().exportConfigData(password));
 			}
@@ -42,7 +42,7 @@ public class FileUpAndDownload {
 		showHinweis("Hinweis: Bestehende Daten werden gelöscht (Personendaten, Ausweisdaten, Personenbilder).");
 		String filename = showFileDialog(frame, "Ausweisdaten importieren", "\\.", "*.zip", FileDialog.LOAD);
 		if (filename != null) {
-			String password = promptPassword();
+			String password = promptPassword("Passwort eingeben");
 			if (!isEmpty(password)) {
 				boolean result = ServiceHelper.getConfigurationsService().importPersonData(loadFile(filename), password);
 				importSuccess(result);
@@ -53,7 +53,7 @@ public class FileUpAndDownload {
 	public void exportPersonData() {
 		String filename = showFileDialog(frame, "Ausweisdaten exportieren", "\\.", "*.zip", FileDialog.SAVE);
 		if (filename != null) {
-			String password = promptPassword();
+			String password = promptPassword("Passwort setzen");
 			if (!isEmpty(password)) {
 				saveFileTo(filename, ServiceHelper.getConfigurationsService().exportPersonData(password));
 			}
@@ -72,11 +72,11 @@ public class FileUpAndDownload {
 		}
 	}
 
-	private String promptPassword() {
+	private String promptPassword(String title) {
 		final JPasswordField passwordField = new JPasswordField(10);
 		passwordField.setEchoChar('#');
 		passwordField.addAncestorListener(new RequestFocusListener());
-		JOptionPane.showMessageDialog(frame, passwordField, "Passwort setzen", JOptionPane.QUESTION_MESSAGE);
+		JOptionPane.showMessageDialog(frame, passwordField, title, JOptionPane.QUESTION_MESSAGE);
 		String password = new String(passwordField.getPassword());
 		if (isEmpty(password)) {
 			JOptionPane.showMessageDialog(frame, "Passwort darf nicht leer sein.", "Fehler", JOptionPane.ERROR_MESSAGE);

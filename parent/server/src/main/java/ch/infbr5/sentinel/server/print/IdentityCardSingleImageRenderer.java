@@ -55,7 +55,23 @@ public class IdentityCardSingleImageRenderer {
 			throw new IllegalArgumentException("Ungültige Parameter");
 		}
 
-		backgroundColor = Color.decode(config.getColorBackground());
+		// TODO Schöner machen!
+		Color c;
+		String color = config.getColorBackground();
+		try {
+			if (color == null || color.isEmpty()) {
+				c = Color.white;
+			} else if (!color.startsWith("#")) {
+				color = "#" + color;
+				c = Color.decode(color);
+			} else {
+				c = Color.decode(color);
+			}
+		} catch (NumberFormatException e) {
+			c = Color.white;
+		}
+
+		backgroundColor = c;
 	}
 
 	public BufferedImage createImage() {
@@ -213,15 +229,26 @@ public class IdentityCardSingleImageRenderer {
 		int yStart = 200;
 
 		// Bild - Wasserzeichen
-		addWasserzeichen(imagePerson);
+		Image watermark = addWasserzeichen();
 
 		// Bild - Kleine Pünktchen hinzufügen
 		addDots(imagePerson);
 
 		// Bild - Bild
-		// Aus Sicherheitsgründen wird hier höhe und breite dennoch mitgegeben, dass es
+		// Aus Sicherheitsgründen wird hier höhe und breite dennoch mitgegeben,
+		// dass es
 		// bei falsch abgespeicherten Bildern zu keinen Problemen kommt!
 		g.drawImage(imagePerson, xStart, yStart, 300, 400, null);
+
+		// Wasserzeichen nun über Person legen
+		// Transparenz
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+
+		// Wasserzeichen in die obere linke ecke zeiichnen
+		g.drawImage(watermark, xStart, yStart, null);
+
+		// Alpha Kanel wieder zurückstellen
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 	}
 
 	private void addDots(Image image) {
@@ -243,7 +270,24 @@ public class IdentityCardSingleImageRenderer {
 	private void drawSpecialArea() {
 		int xStart = 540;
 		int width = 390;
-		g.setColor(Color.decode(config.getColorAreaBackside()));
+
+		Color c;
+
+		String color = config.getColorAreaBackside();
+		try {
+			if (color == null || color.isEmpty()) {
+				c = Color.white;
+			} else if (!color.startsWith("#")) {
+				color = "#" + color;
+				c = Color.decode(color);
+			} else {
+				c = Color.decode(color);
+			}
+		} catch (NumberFormatException e) {
+			c = Color.white;
+		}
+
+		g.setColor(c);
 		g.fillRect(xStart, 113, width, 187);
 	}
 
@@ -255,7 +299,9 @@ public class IdentityCardSingleImageRenderer {
 				logo = ImageUtil.scaleImage(logo, 135, 140);
 
 				int logoWidth = logo.getWidth(null);
-				// Start bei Höhe der Einheitskästchen, addieren der halben maximalen Grösse des Bildes subtrahieren der Halben effektiven Grösse des Bildes!
+				// Start bei Höhe der Einheitskästchen, addieren der halben
+				// maximalen Grösse des Bildes subtrahieren der Halben
+				// effektiven Grösse des Bildes!
 				int x = 355 + (135 / 2) - (logoWidth / 2);
 
 				g.drawImage(logo, x, 45, null);
@@ -265,11 +311,12 @@ public class IdentityCardSingleImageRenderer {
 		}
 	}
 
-	private void addWasserzeichen(Image image) {
+	private Image addWasserzeichen() {
 		// Bild - Wasserzeichen
 		Image watermark;
 		try {
-			if (!config.isUseUserWasserzeichen() || config.getWasserzeichen() == null || config.getWasserzeichen().length == 0) {
+			if (!config.isUseUserWasserzeichen() || config.getWasserzeichen() == null
+					|| config.getWasserzeichen().length == 0) {
 				watermark = ImageIO.read(new ByteArrayInputStream(config.getDefaultWasserzeichen()));
 			} else {
 
@@ -280,19 +327,10 @@ public class IdentityCardSingleImageRenderer {
 		}
 
 		// Skalieren
+		// Wenn ich hier eine fixe höhe und breite definieren, dann gibt es ein problem.
 		Image watermarkScale = ImageUtil.scaleImage(watermark, 130, 130);
 
-		// Transparenz
-		Graphics2D gImage = (Graphics2D) image.getGraphics();
-		gImage.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-
-		// Wasserzeichen in die obere linke ecke zeiichnen
-		gImage.drawImage(watermarkScale, 0, 0, null);
-
-		// Alpha Kanel wieder zurückstellen
-		gImage.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		return watermarkScale;
 	}
-
-
 
 }

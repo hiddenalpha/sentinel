@@ -12,7 +12,6 @@ import ch.infbr5.sentinel.client.config.connection.ConnectionConfigurator;
 import ch.infbr5.sentinel.client.config.server.ServerConfigurationDialog;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
-import ch.infbr5.sentinel.client.gui.components.BulkFotoImporter;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
 import ch.infbr5.sentinel.client.gui.components.importer.PersonenImportDialog;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
@@ -56,9 +55,9 @@ public class ApplicationFrameController implements ActionListener {
 				new PersonenImportDialog(appFrame).show();
 				break;
 
-			case AppMenuBar.CMD_IMPORT_FOTO:
-				new BulkFotoImporter(appFrame).importFotos();
-				break;
+			//case AppMenuBar.CMD_IMPORT_FOTO:
+			//	new BulkFotoImporter(appFrame).importFotos();
+			//	break;
 
 			case AppMenuBar.CMD_EINSTELLUNGEN:
 				AdminstrationFrame.getInstance().setVisible(true);

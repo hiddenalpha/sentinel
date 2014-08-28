@@ -7,9 +7,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import ch.infbr5.sentinel.common.util.DateFormater;
 import ch.infbr5.sentinel.server.model.Grad;
 import ch.infbr5.sentinel.server.model.Person;
-import ch.infbr5.sentinel.server.utils.DateHelper;
+import ch.infbr5.sentinel.server.utils.DateParser;
 import ch.infbr5.sentinel.server.ws.PersonDetails;
 import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenAttribute;
 import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenImportColumnMapping;
@@ -29,7 +30,7 @@ public class DataRow {
 		this.data = data;
 		this.mappings = mappings;
 		try {
-			this.geburtstag = DateHelper.getCalendar(this.getValue(PersonenAttribute.Geburtstag));
+			this.geburtstag = DateParser.parseDateStringToCalendar(this.getValue(PersonenAttribute.Geburtstag));
 		} catch (ParseException e) {
 			log.warn("Geburtsdatum von " + getValue(PersonenAttribute.Geburtstag) + " konnte nicht geparst werden.");
 			this.geburtstag = Calendar.getInstance();
@@ -148,10 +149,10 @@ public class DataRow {
 			diffs.add(createDiff(PersonenAttribute.Grad, oldValue, this.getValue(PersonenAttribute.Grad)));
 		}
 
-		if ((oldPerson.getGeburtsdatum() == null) || (!DateHelper.getFormatedString(oldPerson.getGeburtsdatum()).equals(this.getValue(PersonenAttribute.Geburtstag)))) {
+		if ((oldPerson.getGeburtsdatum() == null) || (!DateFormater.formatToDate(oldPerson.getGeburtsdatum()).equals(this.getValue(PersonenAttribute.Geburtstag)))) {
 			String oldValue = "";
 			if (oldPerson.getGeburtsdatum() != null) {
-				oldValue = DateHelper.getFormatedString(oldPerson.getGeburtsdatum());
+				oldValue = DateFormater.formatToDate(oldPerson.getGeburtsdatum());
 			}
 			diffs.add(createDiff(PersonenAttribute.Geburtstag, oldValue, this.getValue(PersonenAttribute.Geburtstag)));
 		}

@@ -5,7 +5,7 @@ import java.text.ParseException;
 import ch.infbr5.sentinel.common.validator.AhvNrValidator;
 import ch.infbr5.sentinel.common.validator.CommonValidator;
 import ch.infbr5.sentinel.server.model.Grad;
-import ch.infbr5.sentinel.server.utils.DateHelper;
+import ch.infbr5.sentinel.server.utils.DateParser;
 
 public class ValidationRules {
 
@@ -21,7 +21,7 @@ public class ValidationRules {
 
 		boolean isValid = true;
 		try {
-			DateHelper.getCalendar(string);
+			DateParser.parseDateStringToCalendar(string);
 		} catch (ParseException e) {
 			isValid = false;
 		}

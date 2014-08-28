@@ -115,7 +115,9 @@ public class Mapper {
 				target.setId(source.getId());
 				target.setCheckpoint(mapCheckpointToCheckpointDetails().apply(source.getCheckpoint()));
 				target.setMillis(source.getMillis());
-				target.setPerson(mapPersonToPersonDetails().apply(source.getPerson()));
+				if (source.getPerson() != null) {
+					target.setPerson(mapPersonToPersonDetails().apply(source.getPerson()));
+				}
 				target.setPraesenzStatus(source.getOperatorAktion().name());
 				return target;
 			}

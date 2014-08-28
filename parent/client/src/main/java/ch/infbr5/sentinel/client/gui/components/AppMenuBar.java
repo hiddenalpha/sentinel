@@ -26,7 +26,7 @@ public class AppMenuBar extends JMenuBar {
 	public static final String CMD_IMPORT_PERSONDATA = "IMPORT_PERSONDATA";
 	public static final String CMD_EXPORT_CONFIG = "EXPORT_CONFIG";
 	public static final String CMD_IMPORT_CONFIG = "IMPORT_CONFIG";
-	public static final String CMD_IMPORT_FOTO = "FOTO_IMPORT";
+	//public static final String CMD_IMPORT_FOTO = "FOTO_IMPORT";
 	public static final String CMD_IMPORT_PISADATA = "IMPORT_PISADATA";
 	public static final String CMD_CHECKPOINT_EINSTELLUNGEN = "CMD_CHECKPOINT_EINSTELLUNGEN";
 	public static final String CMD_ENABLED_ADMIN_MODE = "CMD_ENABLED_ADMIN_MODE";
@@ -52,7 +52,7 @@ public class AppMenuBar extends JMenuBar {
 	private JMenuItem itemAusweisdatenExportieren;
 	private JMenuItem itemAusweisdatenImportieren;
 	private JMenuItem itemPisaDatenImport;
-	private JMenuItem itemFotosImport;
+	//private JMenuItem itemFotosImport;
 	private JMenuItem itemConfiguractionImport;
 	private JMenuItem itemConfigurationExport;
 	private JMenuItem itemServerVerbindung;
@@ -145,9 +145,9 @@ public class AppMenuBar extends JMenuBar {
 
 		this.menuAdmin.addSeparator();
 
-		itemFotosImport = addItem("Fotos importieren", menuAdmin, menuListener, CMD_IMPORT_FOTO);
+		//itemFotosImport = addItem("Fotos importieren", menuAdmin, menuListener, CMD_IMPORT_FOTO);
 
-		this.menuAdmin.addSeparator();
+		//this.menuAdmin.addSeparator();
 
 		itemConfigurationExport = addItem("Konfiguration exportieren", menuAdmin, menuListener, CMD_EXPORT_CONFIG);
 		itemConfiguractionImport = addItem("Konfiguration importieren / bearbeiten", menuAdmin, menuListener, CMD_IMPORT_CONFIG);
@@ -221,7 +221,7 @@ public class AppMenuBar extends JMenuBar {
 
 		itemPisaDatenImport.setEnabled(adminMode);
 
-		itemFotosImport.setEnabled(adminMode);
+		//itemFotosImport.setEnabled(adminMode);
 		itemConfigurationExport.setEnabled(adminMode);
 		itemConfiguractionImport.setEnabled(adminMode);
 

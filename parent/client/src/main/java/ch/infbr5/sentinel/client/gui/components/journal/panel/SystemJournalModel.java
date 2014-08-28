@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
-import ch.infbr5.sentinel.common.util.Formater;
+import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class SystemJournalModel extends AbstractTableModel {
 
@@ -44,7 +44,7 @@ public class SystemJournalModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		JournalSystemMeldung meldung = meldungen.get(rowIndex);
 		if (columnIndex == 0) {
-			return Formater.formatWithTime(new Date(meldung.getMillis()));
+			return DateFormater.formatToDateWithTime(new Date(meldung.getMillis()));
 		}
 		if (columnIndex == 1) {
 			if (meldung.getCheckpoint() == null) {
