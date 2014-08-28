@@ -34,7 +34,7 @@ public class ServerConfigurationDialog extends JDialog {
 	public ServerConfigurationDialog(final JFrame parent, ServerSetupInformation info, final boolean closeAppOnExit) {
 		super(parent);
 
-		tabbedPane = new JTabbedPane();
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
 		setModal(true);
 		setTitle("Server Konfiguration");
@@ -94,7 +94,8 @@ public class ServerConfigurationDialog extends JDialog {
 		add(tabbedPane, "push, span, growx, wrap, growy");
 		add(btnSave, "tag ok, span, split");
 		add(btnCancel, "tag cancel");
-		setSize(430, 700);
+		setSize(500, 700);
+		//pack();
 		setLocationRelativeTo(null);
 	}
 

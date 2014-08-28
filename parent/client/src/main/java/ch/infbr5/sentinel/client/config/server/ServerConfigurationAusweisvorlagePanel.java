@@ -20,10 +20,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
+import ch.infbr5.sentinel.client.gui.util.ColorChooserLabel;
 import ch.infbr5.sentinel.client.wsgen.AusweisvorlageKonfiguration;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 import ch.infbr5.sentinel.common.util.ImageUtil;
@@ -34,39 +34,12 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private JPanel groupPanel;
-
-	private JButton btnOpenWasserzeichen;
-
-	private JButton btnOpenLogo;
-
+	// Wasserzeichen
 	private JPanel wasserzeichenPanel;
 
 	private JPanel wasserzeichenDefaultPanel;
 
 	private JPanel wasserzeichenUserPanel;
-
-	private JPanel logoPanel;
-
-	private JPanel logoDefaultPanel;
-
-	private JPanel logoUserPanel;
-
-	private JLabel lblBackgroundColor;
-
-	private JTextField txtBackgroundColor;
-
-	private JLabel lblShowAreaBackside;
-
-	private JCheckBox chkShowAreaBackside;
-
-	private JLabel lblColorAreaBackside;
-
-	private JTextField txtColorAreaBackside;
-
-	private JLabel lblShowQRCode;
-
-	private JCheckBox chkShowQRCode;
 
 	private JRadioButton rbDefaultWasserzeichen;
 
@@ -80,26 +53,59 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 
 	private JLabel lblWasserzeichenImage;
 
+	private JButton btnOpenWasserzeichen;
+
+	// Logo
+	private JPanel logoPanel;
+
+	private JPanel logoDefaultPanel;
+
+	private JPanel logoUserPanel;
+
 	private JLabel lblLogo;
 
 	private JLabel lblLogoImage;
 
+	private JButton btnOpenLogo;
+
 	private JCheckBox ckbUseLogo;
 
+	// Components
+	private JPanel groupPanel;
+
+	private ColorChooserLabel chooserColorBackground;
+
+	private ColorChooserLabel chooserColorBacksideArea;
+
+	private JLabel lblBackgroundColor;
+
+	private JLabel lblShowAreaBackside;
+
+	private JCheckBox chkShowAreaBackside;
+
+	private JLabel lblColorAreaBackside;
+
+	private JLabel lblShowQRCode;
+
+	private JCheckBox chkShowQRCode;
+
+	// Data
 	private AusweisvorlageKonfiguration config;
 
 	public ServerConfigurationAusweisvorlagePanel(AusweisvorlageKonfiguration config) {
 		this.config = config;
 
 		lblBackgroundColor = SwingHelper.createLabel("Hintergrundfarbe");
+		chooserColorBackground = new ColorChooserLabel();
 
-		lblShowAreaBackside = SwingHelper.createLabel("Zusätzliche Fläche Rückseite");
+		lblShowAreaBackside = SwingHelper.createLabel("Zusätzliche Fläche Rückseite verwenden?");
 		chkShowAreaBackside = new JCheckBox();
 
-		lblShowQRCode = SwingHelper.createLabel("QR Code");
+		lblShowQRCode = SwingHelper.createLabel("QR Code anzeigen?");
 		chkShowQRCode = new JCheckBox();
 
 		lblColorAreaBackside = SwingHelper.createLabel("Zusätzliche Fläche Rückseite Farbe");
+		chooserColorBacksideArea = new ColorChooserLabel();
 
 		lblStandardWasserzeichen = SwingHelper.createLabel("Standard");
 		rbDefaultWasserzeichen = new JRadioButton();
@@ -117,7 +123,8 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 		btnOpenWasserzeichen.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String filename = new FileUpAndDownload(null).showFileDialog(null, "Wasserzeichen importieren", "\\.", "*.png", FileDialog.LOAD);
+				String filename = new FileUpAndDownload(null).showFileDialog(null, "Wasserzeichen importieren", "\\.",
+						"*.png", FileDialog.LOAD);
 
 				if (filename != null) {
 					File f = new File(filename);
@@ -137,7 +144,8 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 		btnOpenLogo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String filename = new FileUpAndDownload(null).showFileDialog(null, "Logo importieren", "\\.", "*.png", FileDialog.LOAD);
+				String filename = new FileUpAndDownload(null).showFileDialog(null, "Logo importieren", "\\.", "*.png",
+						FileDialog.LOAD);
 
 				if (filename != null) {
 					File f = new File(filename);
@@ -176,33 +184,33 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 		logoUserPanel = new JPanel(new MigLayout());
 
 		groupPanel.add(lblBackgroundColor, "");
-		groupPanel.add(txtBackgroundColor, "push, growx, wrap");
-
-		groupPanel.add(lblShowAreaBackside, "");
-		groupPanel.add(chkShowAreaBackside, "growx, wrap");
-
-		groupPanel.add(lblColorAreaBackside, "");
-		groupPanel.add(txtColorAreaBackside, "growx, wrap");
+		groupPanel.add(chooserColorBackground, "gapx 10, wrap");
 
 		groupPanel.add(lblShowQRCode, "");
-		groupPanel.add(chkShowQRCode, "growx, wrap");
+		groupPanel.add(chkShowQRCode, "gapx 10, growx, wrap");
+
+		groupPanel.add(lblShowAreaBackside, "");
+		groupPanel.add(chkShowAreaBackside, "gapx 10, growx, wrap");
+
+		groupPanel.add(lblColorAreaBackside, "");
+		groupPanel.add(chooserColorBacksideArea, "gapx 10, wrap");
 
 		wasserzeichenDefaultPanel.add(rbDefaultWasserzeichen, "split");
 		wasserzeichenDefaultPanel.add(lblStandardWasserzeichen, "wrap");
-		wasserzeichenDefaultPanel.add(lblStandardWasserzeichenImage, "");
+		wasserzeichenDefaultPanel.add(lblStandardWasserzeichenImage, "alignx center");
 
 		wasserzeichenUserPanel.add(rbUserWasserzeichen, "split");
 		wasserzeichenUserPanel.add(lblWasserzeichen, "wrap");
-		wasserzeichenUserPanel.add(lblWasserzeichenImage, "wrap");
-		wasserzeichenUserPanel.add(btnOpenWasserzeichen, "spanx, push, growx");
+		wasserzeichenUserPanel.add(lblWasserzeichenImage, "alignx center, wrap");
+		wasserzeichenUserPanel.add(btnOpenWasserzeichen, "alignx center, spanx, push, growx");
 
 		wasserzeichenPanel.add(wasserzeichenDefaultPanel, "width 50%, aligny top");
 		wasserzeichenPanel.add(wasserzeichenUserPanel, "aligny top, wrap");
 
 		logoUserPanel.add(ckbUseLogo, "split");
 		logoUserPanel.add(lblLogo, "wrap");
-		logoUserPanel.add(lblLogoImage, "wrap");
-		logoUserPanel.add(btnOpenLogo, "spanx, push, growx");
+		logoUserPanel.add(lblLogoImage, "alignx center, wrap");
+		logoUserPanel.add(btnOpenLogo, "alignx center, spanx, push, growx");
 
 		logoPanel.add(logoDefaultPanel, "width 50%, aligny top");
 		logoPanel.add(logoUserPanel, "aligny top, wrap");
@@ -213,9 +221,10 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 	}
 
 	public void appyInfosFromFile(AusweisvorlageKonfiguration config) {
-		txtBackgroundColor = new JTextField(config.getColorBackground());
+		chooserColorBackground.setBackgroundHtmlColor(config.getColorBackground());
+
 		chkShowAreaBackside.setSelected(config.isShowAreaBackside());
-		txtColorAreaBackside = new JTextField(config.getColorAreaBackside());
+		chooserColorBacksideArea.setBackgroundHtmlColor(config.getColorAreaBackside());
 		chkShowQRCode.setSelected(config.isShowQRCode());
 
 		rbDefaultWasserzeichen.setSelected(!config.isUseUserWasserzeichen());
@@ -240,18 +249,23 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 		tmpUserWasserzeichen = array;
 		createImageLabel(lblWasserzeichenImage, tmpUserWasserzeichen);
 		config.setWasserzeichen(array);
+		rbUserWasserzeichen.setEnabled(true);
+		rbUserWasserzeichen.setSelected(true);
 	}
 
 	private void updateLogo(byte[] array) {
 		tmpUserLogo = array;
 		createImageLabel(lblLogoImage, tmpUserLogo);
 		config.setLogo(array);
+		ckbUseLogo.setEnabled(true);
+		ckbUseLogo.setSelected(true);
 	}
 
 	public AusweisvorlageKonfiguration readConfig() {
-		config.setColorBackground(txtBackgroundColor.getText());
+		config.setColorBackground(chooserColorBackground.getBackgroundHtmlColor());
+		config.setColorAreaBackside(chooserColorBacksideArea.getBackgroundHtmlColor());
 		config.setShowAreaBackside(chkShowAreaBackside.isSelected());
-		config.setColorAreaBackside(txtColorAreaBackside.getText());
+
 		config.setShowQRCode(chkShowQRCode.isSelected());
 		config.setDefaultWasserzeichen(tmpDefaultWasserzeichen);
 		config.setLogo(tmpUserLogo);
@@ -281,23 +295,15 @@ public class ServerConfigurationAusweisvorlagePanel extends JPanel {
 		}
 	}
 
-	// TODO Validierung optimieren.
 	public boolean validateInfo() {
 		boolean isValid = true;
-		if (!validateComponent(txtBackgroundColor)) {
+		if (chooserColorBackground.getBackground() == null) {
 			isValid = false;
+			chooserColorBackground.setBorder(BorderFactory.createLineBorder(Color.red));
 		}
-		if (!validateComponent(txtColorAreaBackside)) {
+		if (chooserColorBacksideArea.getBackground() == null) {
 			isValid = false;
-		}
-		return isValid;
-	}
-
-	private boolean validateComponent(JTextField txtField) {
-		boolean isValid = true;;
-		if (txtField.getText() == null || txtField.getText().isEmpty()) {
-			isValid = false;
-			txtField.setBorder(BorderFactory.createLineBorder(Color.red));
+			chooserColorBacksideArea.setBorder(BorderFactory.createLineBorder(Color.red));
 		}
 		return isValid;
 	}
