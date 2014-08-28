@@ -16,16 +16,14 @@ public class SystemJournalTable extends JTable {
 	}
 
 	public void adjustColumnWidthBewegung() {
-		getColumnModel().getColumn(0).setWidth(100);
-		getColumnModel().getColumn(0).setPreferredWidth(100);
-		//getColumnModel().getColumn(0).setMaxWidth(100);
+		getColumnModel().getColumn(0).setPreferredWidth(120);
+		getColumnModel().getColumn(0).setMaxWidth(120);
 
 		getColumnModel().getColumn(1).setPreferredWidth(150);
-		//getColumnModel().getColumn(1).setMaxWidth(150);
+		getColumnModel().getColumn(1).setMaxWidth(150);
 
-		getColumnModel().getColumn(2).setWidth(80);
 		getColumnModel().getColumn(2).setPreferredWidth(80);
-		//getColumnModel().getColumn(2).setMaxWidth(80);
+		getColumnModel().getColumn(2).setMaxWidth(80);
 	}
 
 }
