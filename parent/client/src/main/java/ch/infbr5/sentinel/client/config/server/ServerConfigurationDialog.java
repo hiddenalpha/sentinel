@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
@@ -22,10 +23,18 @@ public class ServerConfigurationDialog extends JDialog {
 
 	private JButton btnCancel;
 
-	private final ServerConfigurationPanel panel;
+	private final JTabbedPane tabbedPane;
 
-	public ServerConfigurationDialog(final JFrame parent, ServerSetupInformation info) {
+	private final ServerConfigurationKonfigurationsWertePanel configWertePanel;
+
+	private final ServerConfigurationAusweisvorlagePanel configAusweisvorlagePanel;
+
+	private final ServerConfigurationKonfigurationsFilePanel configFilePanel;
+
+	public ServerConfigurationDialog(final JFrame parent, ServerSetupInformation info, final boolean closeAppOnExit) {
 		super(parent);
+
+		tabbedPane = new JTabbedPane();
 
 		setModal(true);
 		setTitle("Server Konfiguration");
@@ -35,22 +44,30 @@ public class ServerConfigurationDialog extends JDialog {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				dispose();
-				System.exit(0);
+				if (closeAppOnExit) {
+					System.exit(0);
+				}
 			}
 		});
 
-		panel = new ServerConfigurationPanel(info);
+		configWertePanel = new ServerConfigurationKonfigurationsWertePanel(info);
+		configAusweisvorlagePanel = new ServerConfigurationAusweisvorlagePanel(info.getAusweisvorlageConfig());
+		configFilePanel = new ServerConfigurationKonfigurationsFilePanel(configWertePanel, configAusweisvorlagePanel);
 
 		btnSave = new JButton("Speichern");
 		btnSave.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (panel.validateInfo()) {
+				if (configWertePanel.validateInfo() && configAusweisvorlagePanel.validateInfo()) {
 					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent, "Möchten Sie die Einstellung wirklich speichern?", "Konfiguration speichern", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-						ServiceHelper.getConfigurationsService().applyServerSetupInformation(panel.getInfo());
+						ServerSetupInformation newInfo = configWertePanel.getInfo();
+						newInfo.setAusweisvorlageConfig(configAusweisvorlagePanel.readConfig());
+						ServiceHelper.getConfigurationsService().applyServerSetupInformation(newInfo);
 						dispose();
 					}
+				} else {
+					JOptionPane.showMessageDialog(parent, "Ungültige Eingaben. Bitte überprüfen Sie alle Tabs.", "Ungültige Eingaben", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 
@@ -67,10 +84,15 @@ public class ServerConfigurationDialog extends JDialog {
 		});
 
 		setLayout(new MigLayout());
-		add(panel, "push, span, growx, wrap");
+
+		tabbedPane.addTab("Konfigurationswerte", configWertePanel);
+		tabbedPane.addTab("Ausweisvorlage", configAusweisvorlagePanel);
+		tabbedPane.addTab("Datei laden", configFilePanel);
+
+		add(tabbedPane, "push, span, growx, wrap, growy");
 		add(btnSave, "tag ok, span, split");
 		add(btnCancel, "tag cancel");
-		setSize(430, 520);
+		setSize(430, 700);
 		setLocationRelativeTo(null);
 	}
 

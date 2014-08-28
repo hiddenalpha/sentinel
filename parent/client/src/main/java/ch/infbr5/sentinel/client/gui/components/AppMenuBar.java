@@ -28,8 +28,6 @@ public class AppMenuBar extends JMenuBar {
 	public static final String CMD_IMPORT_CONFIG = "IMPORT_CONFIG";
 	public static final String CMD_IMPORT_FOTO = "FOTO_IMPORT";
 	public static final String CMD_IMPORT_PISADATA = "IMPORT_PISADATA";
-	public static final String CMD_IMPORT_AUSWEISVORLAGE = "CMD_IMPORT_AUSWEISVORLAGE";
-	public static final String CMD_IMPORT_WASSERZEICHEN = "CMD_IMPORT_WASSERZEICHEN";
 	public static final String CMD_CHECKPOINT_EINSTELLUNGEN = "CMD_CHECKPOINT_EINSTELLUNGEN";
 	public static final String CMD_ENABLED_ADMIN_MODE = "CMD_ENABLED_ADMIN_MODE";
 	public static final String CMD_DISABLE_ADMIN_MODE = "CMD_DISABLE_ADMIN_MODE";
@@ -57,8 +55,8 @@ public class AppMenuBar extends JMenuBar {
 	private JMenuItem itemFotosImport;
 	private JMenuItem itemConfiguractionImport;
 	private JMenuItem itemConfigurationExport;
-	private JMenuItem itemImportAusweisVorlage;
-	private JMenuItem itemImportWasserzeichen;
+	private JMenuItem itemServerVerbindung;
+	private JMenuItem itemCheckpointEinstellungen;
 
 	public AppMenuBar(ActionListener startMenuListener, boolean adminMode, boolean superuserMode) {
 		super();
@@ -122,11 +120,11 @@ public class AppMenuBar extends JMenuBar {
 
 		menuCheckpoint.addSeparator();
 
-		JMenuItem itemServerVerbindung = createItem("Server-Verbindung", CMD_SERVER_EINSTELLUNG);
+		itemServerVerbindung = createItem("Server-Verbindung", CMD_SERVER_EINSTELLUNG);
 		itemServerVerbindung.addActionListener(menuListener);
 		menuCheckpoint.add(itemServerVerbindung);
 
-		JMenuItem itemCheckpointEinstellungen = createItem("Checkpoint-Einstellungen", CMD_CHECKPOINT_EINSTELLUNGEN);
+		itemCheckpointEinstellungen = createItem("Checkpoint-Einstellungen", CMD_CHECKPOINT_EINSTELLUNGEN);
 		itemCheckpointEinstellungen.addActionListener(menuListener);
 		menuCheckpoint.add(itemCheckpointEinstellungen);
 	}
@@ -151,15 +149,10 @@ public class AppMenuBar extends JMenuBar {
 
 		this.menuAdmin.addSeparator();
 
-		itemConfigurationExport = addItem("Configuration exportieren", menuAdmin, menuListener, CMD_EXPORT_CONFIG);
-		itemConfiguractionImport = addItem("Configuration importieren", menuAdmin, menuListener, CMD_IMPORT_CONFIG);
+		itemConfigurationExport = addItem("Konfiguration exportieren", menuAdmin, menuListener, CMD_EXPORT_CONFIG);
+		itemConfiguractionImport = addItem("Konfiguration importieren / bearbeiten", menuAdmin, menuListener, CMD_IMPORT_CONFIG);
 
 		this.menuAdmin.addSeparator();
-
-		itemImportAusweisVorlage = addItem("Ausweisvorlage importieren", menuAdmin, menuListener,
-				CMD_IMPORT_AUSWEISVORLAGE);
-		itemImportWasserzeichen = addItem("Wasserzeichen importieren", menuAdmin, menuListener,
-				CMD_IMPORT_WASSERZEICHEN);
 	}
 
 	private ActionListener createDisableSuperuserModeListener() {
@@ -231,8 +224,9 @@ public class AppMenuBar extends JMenuBar {
 		itemFotosImport.setEnabled(adminMode);
 		itemConfigurationExport.setEnabled(adminMode);
 		itemConfiguractionImport.setEnabled(adminMode);
-		itemImportAusweisVorlage.setEnabled(adminMode);
-		itemImportWasserzeichen.setEnabled(adminMode);
+
+		itemServerVerbindung.setEnabled(adminOrSuperuserMode);
+		itemCheckpointEinstellungen.setEnabled(adminOrSuperuserMode);
 
 		menuAdmin.setEnabled(adminOrSuperuserMode);
 	}

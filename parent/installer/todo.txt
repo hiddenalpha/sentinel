@@ -1,11 +1,33 @@
-Issues:
+TODO
+Personen Löschen/Aufräumen besser machen (im Bezug auf Gast, Archiv)
+Personen Abhängigkeiten zwischen Gast, Archiv Einheiten analysieren
 
-jvm auf anderem server
+Konfigurationsidalog Export/Import Wasserzeichen, Logo, Ausweisvorlage
 
-- LinuxInsallation
--- Update - Desktop Icons werden nicht ersetzt
--- Rechte Mgmt.
+Setup einer Workstation für Betrieb
 
-- Deinstallation
--Wenn möglich als Servers, als Daemoens muss quasi als ROot user gestartet sein, 
-- Windows Service Install
+UserManual Installation
+UserManual Konfiguration
+UserManual Betrieb
+
+Installation Deinstallation anschauen
+Installation JVM auf anderen Server zur Verfügung stellen
+Testing Unit Tests
+Testing Int-Tests zum Laufen bringen
+Installation Windows Service
+Installation Linux Service
+Installation Linux Desktop Icons Replacement
+Installation Linux Rechte Mgmt.
+BUG: Neuer Ausweis NPE wenn kein Bild
+
+IN WORK
+Konfigurationsdialog Ausweisvorlage
+
+DONE
+XPisdatenimporte besser beschreiben
+XWassrzeichen und Ausweisvorlage in Konfigurationsdaten
+Xbei ausweisdaten import bilder ordner erstellen
+XMeldung bei Ausweisdaten import, dass alle Daten wegfliegen
+XPasswort von Ausweis entfernen
+XServer headless starten und testen
+XKonfigurationsdialog deaktivieren identitycard password - default setzen

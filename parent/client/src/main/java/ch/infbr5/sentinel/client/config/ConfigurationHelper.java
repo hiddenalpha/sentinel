@@ -39,7 +39,7 @@ public class ConfigurationHelper {
 
 	public static String getAdminPassword() {
 		Long idCheckpoint = ConfigurationLocalHelper.getConfig().getCheckpointId();
-		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(idCheckpoint, ConfigConstants.ADMIN_PASSWORD);
+		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(idCheckpoint, ConfigConstants.PASSWORD_ADMIN);
 		if (response.getConfigurationDetails().isEmpty()) {
 			return null;
 		} else {
@@ -61,7 +61,7 @@ public class ConfigurationHelper {
 
 	public static String getSuperUserPassword() {
 		Long idCheckpoint = ConfigurationLocalHelper.getConfig().getCheckpointId();
-		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(idCheckpoint, ConfigConstants.SUPERUSER_PASSWORD);
+		ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValue(idCheckpoint, ConfigConstants.PASSWORD_SUPERUSER);
 		if (response.getConfigurationDetails().isEmpty()) {
 			return null;
 		} else {

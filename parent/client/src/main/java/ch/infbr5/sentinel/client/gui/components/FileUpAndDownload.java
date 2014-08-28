@@ -2,13 +2,11 @@ package ch.infbr5.sentinel.client.gui.components;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -28,17 +26,6 @@ public class FileUpAndDownload {
 
 	public String showImportConfigurationFileDialog() {
 		return showFileDialog(frame, "Konfiguration importieren", "\\.", "*.zip", FileDialog.LOAD);
-	}
-
-	public void importConfiguration() {
-		String filename = showImportConfigurationFileDialog();
-		if (filename != null) {
-			String password = promptPassword();
-			if (!isEmpty(password)) {
-				boolean result = ServiceHelper.getConfigurationsService().importConfigData(loadFile(filename), password);
-				importSuccess(result);
-			}
-		}
 	}
 
 	public void exportConfiguration() {
@@ -75,91 +62,6 @@ public class FileUpAndDownload {
 
 	private void showHinweis(String text) {
 		JOptionPane.showMessageDialog(frame, text, "Hinweis", JOptionPane.INFORMATION_MESSAGE);
-	}
-
-	public void importAusweisvorlage() {
-		String filename = showFileDialog(frame, "Ausweisvorlage (1000 x 743 px) importieren", "\\.", "*.jpg",
-				FileDialog.LOAD);
-
-		if (filename != "") {
-			File imageFile = new File(filename);
-
-			BufferedImage image;
-			try {
-				image = ImageIO.read(imageFile);
-			} catch (IOException e) {
-				image = null;
-			}
-
-			if (image != null) {
-
-				if ((image.getWidth() == 1000) && (image.getHeight() == 743)) {
-
-					byte[] data = loadFile(filename);
-					boolean result = ServiceHelper.getConfigurationsService().importAusweisVorlage(data);
-
-					if (result) {
-						JOptionPane.showMessageDialog(null, "Die Auseisvorlage wurde gespeichert.",
-								"Ausweisvorlage importieren", JOptionPane.INFORMATION_MESSAGE);
-					} else {
-						JOptionPane.showMessageDialog(null, "Die Auseisvorlage konnte nicht gespeichert werden.",
-								"Ausweisvorlage importieren", JOptionPane.ERROR_MESSAGE);
-					}
-
-				} else {
-					JOptionPane.showMessageDialog(null,
-							"Das Bild hat nicht die geforderte Grösse von 1000 x 743 Pixel!",
-							"Ausweisvorlage importieren", JOptionPane.ERROR_MESSAGE);
-				}
-			} else {
-				JOptionPane.showMessageDialog(null, "Bild konnte nicht dekodiert werden!",
-						"Ausweisvorlage importieren", JOptionPane.ERROR_MESSAGE);
-
-			}
-		}
-
-	}
-
-	public void importWasserzeichen() {
-		String filename = showFileDialog(frame, "Ausweisvorlage (116 x dd 125) importieren", "\\.", "*.png",
-				FileDialog.LOAD);
-
-		if (filename != "") {
-			File imageFile = new File(filename);
-
-			BufferedImage image;
-			try {
-				image = ImageIO.read(imageFile);
-			} catch (IOException e) {
-				image = null;
-			}
-
-			if (image != null) {
-
-				if ((image.getWidth() == 116) && (image.getHeight() == 125)) {
-
-					byte[] data = loadFile(filename);
-					boolean result = ServiceHelper.getConfigurationsService().importWasserzeichen(data);
-
-					if (result) {
-						JOptionPane.showMessageDialog(null, "Das Wasserzeichen wurde gespeichert.",
-								"Wasserzeichen importieren", JOptionPane.INFORMATION_MESSAGE);
-					} else {
-						JOptionPane.showMessageDialog(null, "Das Wasserzeichen konnte nicht gespeichert werden.",
-								"Wasserzeichen importieren", JOptionPane.ERROR_MESSAGE);
-					}
-
-				} else {
-					JOptionPane.showMessageDialog(null,
-							"Das Wasserzeichen hat nicht die geforderte Grösse von 116 x 125 Pixel!",
-							"Wasserzeichen importieren", JOptionPane.ERROR_MESSAGE);
-				}
-			} else {
-				JOptionPane.showMessageDialog(null, "Bild konnte nicht dekodiert werden!", "Wasserzeichen importieren",
-						JOptionPane.ERROR_MESSAGE);
-
-			}
-		}
 	}
 
 	private void saveFileTo(String filename, byte[] data) {

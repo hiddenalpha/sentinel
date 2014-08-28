@@ -24,6 +24,8 @@ public class ServerSetupInformation {
 
 	private List<String> ipCamUrls = Lists.newArrayList();
 
+	private AusweisvorlageKonfiguration ausweisvorlageConfig;
+
 	public boolean isCheckpointConfigured() {
 		return checkpointConfigured;
 	}
@@ -88,26 +90,6 @@ public class ServerSetupInformation {
 		this.serverIsConfigured = serverIsConfigured;
 	}
 
-	public void calculateServerSetup() {
-		boolean configured = true;
-		if (!checkpointConfigured) {
-			configured = false;
-		}
-		if (!zoneConfigured) {
-			configured = false;
-		}
-		if (adminPassword == null || adminPassword.isEmpty()) {
-			configured = false;
-		}
-		if (superUserPassword == null || superUserPassword.isEmpty()) {
-			configured = false;
-		}
-		if (identityCardPassword == null || identityCardPassword.isEmpty()) {
-			configured = false;
-		}
-		this.serverIsConfigured = configured;
-	}
-
 	public List<String> getIpCamUrls() {
 		return ipCamUrls;
 	}
@@ -116,5 +98,12 @@ public class ServerSetupInformation {
 		this.ipCamUrls = ipCamUrls;
 	}
 
+	public AusweisvorlageKonfiguration getAusweisvorlageConfig() {
+		return ausweisvorlageConfig;
+	}
+
+	public void setAusweisvorlageConfig(AusweisvorlageKonfiguration ausweisvorlageConfig) {
+		this.ausweisvorlageConfig = ausweisvorlageConfig;
+	}
 
 }

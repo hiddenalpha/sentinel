@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Person;
@@ -22,14 +20,16 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-public class PdfAusweisListe extends PrintingDocument {
+public class PdfAusweisListe extends PDFRenderer {
 
 	private boolean nurMitAusweis = true;
 	private boolean nachEinheit = false;
 	private String einheitName;
 
-	public PdfAusweisListe(EntityManager em, boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
-		super(em);
+	private List<Person> personen;
+
+	public PdfAusweisListe(List<Person> personen, boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
+		this.personen = personen;
 		this.nurMitAusweis = nurMitAusweis;
 		this.nachEinheit = nachEinheit;
 		this.einheitName = einheitName;
@@ -41,7 +41,7 @@ public class PdfAusweisListe extends PrintingDocument {
 	}
 
 	@Override
-	public String toString() {
+	public String getBeschreibung() {
 		String parameter = "";
 
 		if (nurMitAusweis)
@@ -58,8 +58,6 @@ public class PdfAusweisListe extends PrintingDocument {
 
 	@Override
 	protected byte[] renderPdf() {
-
-		List<Person> personen = getQueryHelper().getPersonen(nurMitAusweis, nachEinheit, einheitName);
 
 		if (personen.isEmpty()) {
 			return null;

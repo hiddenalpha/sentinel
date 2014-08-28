@@ -14,11 +14,17 @@ import javax.swing.ImageIcon;
 
 import org.apache.log4j.Logger;
 
+import ch.infbr5.sentinel.server.model.Person;
+
 public class ImageStore {
 
 	private static Logger log = Logger.getLogger(ImageStore.class);
 
 	private static final String FOLDER_NAME = "images";
+
+	public static Image getImage(Person person) {
+		return getImage(person.getAhvNr());
+	}
 
 	public static Image getImage(String imageId) {
 		Image image = null;

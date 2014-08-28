@@ -1,6 +1,5 @@
 package ch.infbr5.sentinel.server.importer;
 
-import java.io.File;
 import java.util.List;
 
 import ch.infbr5.sentinel.server.exporter.KonfigurationsDatenWriter;
@@ -23,10 +22,23 @@ public class KonfigurationsDatenReader extends ZipDatenReader {
 
 	public void importVorlagen() {
 		initiate();
-		FileHelper.removeFolderContent(new File("images"));
-		copyFile(FileHelper.FILE_WASSERZEICHEN_PNG, FileHelper.FILE_WASSERZEICHEN_PNG);
-		copyFile(FileHelper.FILE_AUSWEISVORLAGE_JPG, FileHelper.FILE_AUSWEISVORLAGE_JPG);
+		copyFile(FileHelper.FILE_AUSWEISVORLAGE_WASSERZEICHEN, FileHelper.FILE_AUSWEISVORLAGE_WASSERZEICHEN);
+		copyFile(FileHelper.FILE_AUSWEISVORLAGE_LOGO, FileHelper.FILE_AUSWEISVORLAGE_LOGO);
 		close();
+	}
+
+	public byte[] getWasserzeichen() {
+		initiate();
+		byte[] data = toByteArray(FileHelper.FILE_AUSWEISVORLAGE_WASSERZEICHEN);
+		close();
+		return data;
+	}
+
+	public byte[] getLogo() {
+		initiate();
+		byte[] data = toByteArray(FileHelper.FILE_AUSWEISVORLAGE_LOGO);
+		close();
+		return data;
 	}
 
 

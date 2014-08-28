@@ -17,6 +17,7 @@ import javax.xml.ws.WebServiceContext;
 import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.common.config.ConfigConstants;
+import ch.infbr5.sentinel.server.ServerConfiguration;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.db.PdfStore;
@@ -36,10 +37,10 @@ import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.model.PrintJob;
 import ch.infbr5.sentinel.server.model.Zone;
 import ch.infbr5.sentinel.server.model.Zutrittsregel;
-import ch.infbr5.sentinel.server.print.IdentityCardRenderer;
+import ch.infbr5.sentinel.server.print.IdendityCardRenderer;
 import ch.infbr5.sentinel.server.print.PdfAusweisBoxInventar;
 import ch.infbr5.sentinel.server.print.PdfAusweisListe;
-import ch.infbr5.sentinel.server.utils.FileHelper;
+import ch.infbr5.sentinel.server.ws.AusweisvorlageKonfiguration;
 import ch.infbr5.sentinel.server.ws.CheckpointDetails;
 import ch.infbr5.sentinel.server.ws.ConfigurationDetails;
 import ch.infbr5.sentinel.server.ws.EinheitDetails;
@@ -61,6 +62,10 @@ public class ConfigurationQueryService {
 	@Resource
 	private WebServiceContext context;
 
+	/**
+	 * Gibt alle Einheiten zurück.
+	 * @return Alle Einheiten.
+	 */
 	@WebMethod
 	public ConfigurationResponse getEinheiten() {
 		List<Einheit> einheiten = getQueryHelper().getEinheiten();
@@ -73,7 +78,14 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public void updateEinheit(@WebParam(name = "EinheitDetails") EinheitDetails details) {
-		Einheit einheit = Mapper.mapEinheitDetailsToEinheit().apply(details);
+		Einheit einheit = getQueryHelper().getEinheitById(details.getId());
+		einheit.setName(details.getName());
+		einheit.setRgbColor_Einh(details.getRgbColor_Einh());
+		einheit.setRgbColor_GsVb(details.getRgbColor_GsVb());
+		einheit.setRgbColor_TrpK(details.getRgbColor_TrpK());
+		einheit.setText_Einh(details.getText_Einh());
+		einheit.setText_GsVb(details.getText_GsVb());
+		einheit.setText_TrpK(details.getText_TrpK());
 		getEntityManager().persist(einheit);
 	}
 
@@ -153,21 +165,67 @@ public class ConfigurationQueryService {
 
 	@WebMethod
 	public ServerSetupInformation getServerSetupInformationFromConfigFile(byte[] data, String password) {
-		ServerSetupInformation info = new ServerSetupInformation();
+		// Default Daten laden oder bereits konfigurierte Daten laden
+		ServerSetupInformation info = getServerSetupInformation();
+
+		// Nun gegenebenfalls Daten überschreiben
 		KonfigurationsDatenReader reader = new KonfigurationsDatenReader(data, password);
-		info.setCheckpointName("");
-		info.setZonenName("");
 		for (ConfigurationValue value : reader.readData()) {
-			if (value.getKey().equals(ConfigConstants.ADMIN_PASSWORD)) {
-				info.setAdminPassword(value == null ? "" : value.getStringValue());
-			} else if (value.getKey().equals(ConfigConstants.SUPERUSER_PASSWORD)) {
-				info.setSuperUserPassword(value == null ? "" : value.getStringValue());
-			} else if (value.getKey().equals(ConfigConstants.IDENTITY_CARD_PASSWORD)) {
-				info.setIdentityCardPassword(value == null ? "" : value.getStringValue());
+			if (value.getKey().equals(ConfigConstants.PASSWORD_ADMIN)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.setAdminPassword(value.getStringValue());
+				}
+			} else if (value.getKey().equals(ConfigConstants.PASSWORD_SUPERUSER)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.setSuperUserPassword(value.getStringValue());
+				}
+			} else if (value.getKey().equals(ConfigConstants.PASSWORD_IDENTITY_CARD)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.setIdentityCardPassword(value.getStringValue());
+				}
 			} else if (value.getKey().startsWith(ConfigConstants.URL_IPCAM_)) {
-				info.getIpCamUrls().add(value.getStringValue());
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					if (!info.getIpCamUrls().contains(value.getStringValue())) {
+						info.getIpCamUrls().add(value.getStringValue());
+					}
+				}
+			} else if (value.getKey().equals(ConfigConstants.AUSWEISVORLAGE_BACKGROUND_COLOR)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.getAusweisvorlageConfig().setColorBackground(value.getStringValue());
+				}
+			} else if (value.getKey().equals(ConfigConstants.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.getAusweisvorlageConfig().setColorAreaBackside(value.getStringValue());
+				}
+			} else if (value.getKey().equals(ConfigConstants.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.getAusweisvorlageConfig().setShowAreaBackside(Boolean.parseBoolean(value.getStringValue()));
+				}
+			} else if (value.getKey().equals(ConfigConstants.AUSWEISVORLAGE_SHOW_QR_CODE)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.getAusweisvorlageConfig().setShowQRCode(Boolean.parseBoolean(value.getStringValue()));
+				}
+			} else if (value.getKey().equals(ConfigConstants.AUSWEISVORLAGE_USE_USER_LOGO)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.getAusweisvorlageConfig().setUseUserLogo(Boolean.parseBoolean(value.getStringValue()));
+				}
+			} else if (value.getKey().equals(ConfigConstants.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN)) {
+				if (value.getStringValue() != null && !value.getStringValue().isEmpty()) {
+					info.getAusweisvorlageConfig().setUseUserWasserzeichen(Boolean.parseBoolean(value.getStringValue()));
+				}
 			}
 		}
+
+		byte[] logo = reader.getLogo();
+		if (logo != null && logo.length > 0) {
+			info.getAusweisvorlageConfig().setLogo(logo);
+		}
+
+		byte[] wasserzeichen = reader.getWasserzeichen();
+		if (wasserzeichen != null && wasserzeichen.length > 0) {
+			info.getAusweisvorlageConfig().setWasserzeichen(wasserzeichen);
+		}
+
 		return info;
 	}
 
@@ -179,7 +237,7 @@ public class ConfigurationQueryService {
 		List<Checkpoint> checkpoints = getQueryHelper().getCheckpoints();
 		if (checkpoints.isEmpty()) {
 			info.setCheckpointConfigured(false);
-			info.setCheckpointName(ConfigConstants.DEFAULT_CHECKPOINT_NAME);
+			info.setCheckpointName(ServerConfiguration.DEFAULT_CHECKPOINT_NAME);
 		} else {
 			info.setCheckpointConfigured(true);
 			info.setCheckpointName(checkpoints.get(0).getName());
@@ -189,40 +247,96 @@ public class ConfigurationQueryService {
 		List<Zone> zonen = getQueryHelper().getZonen();
 		if (zonen.isEmpty()) {
 			info.setZoneConfigured(false);
-			info.setZonenName(ConfigConstants.DEFAULT_ZONEN_NAME);
+			info.setZonenName(ServerConfiguration.DEFAULT_ZONEN_NAME);
 		} else {
 			info.setZoneConfigured(true);
 			info.setZonenName(zonen.get(0).getName());
 		}
 
 		// Admin Password
-		ConfigurationValue value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.ADMIN_PASSWORD);
-		info.setAdminPassword(value == null ? "" : value.getStringValue());
+		info.setAdminPassword(getConfigurationValueString(ConfigConstants.PASSWORD_ADMIN, ServerConfiguration.DEFAULT_ADMIN_PASSWORD));
 
 		// Superuser Password
-		value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.SUPERUSER_PASSWORD);
-		info.setSuperUserPassword(value == null ? "" : value.getStringValue());
+		info.setSuperUserPassword(getConfigurationValueString(ConfigConstants.PASSWORD_SUPERUSER, ServerConfiguration.DEFAULT_SUPERUSER_PASSWORD));
 
-		// Achtung, das IdendityCardPassword wird momentan noch speziell behandelt.
-		info.setIdentityCardPassword(ConfigConstants.DEFAULT_IDENTITY_CARD_PASSWORD);
-		info.calculateServerSetup();
+		// Achtung, das IdendityCardPassword ist momentan immer fix gesetzt!
+		info.setIdentityCardPassword(ServerConfiguration.DEFAULT_IDENTITY_CARD_PASSWORD);
 
-		// Identity Password
-		// Achtung, das IdendityCardPassword wird momentan noch speziell behandelt.
-		if (info.isServerIsConfigured()) {
-			value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.IDENTITY_CARD_PASSWORD);
-			if (value == null) {
-				info.setServerIsConfigured(false);
-			}
-		}
+		// Ausweisvorlage Konfiguration
+		info.setAusweisvorlageConfig(createAusweisvorlageKonfiguration());
 
 		// IP Cams
 		List<ConfigurationValue> values = getQueryHelper().findConfigurationValue(ConfigConstants.URL_IPCAM_ALL);
-		for (ConfigurationValue v : values) {
-			info.getIpCamUrls().add(v.getStringValue());
+		for (ConfigurationValue value : values) {
+			info.getIpCamUrls().add(value.getStringValue());
 		}
 
+		// Calculate Server ist konfiguriert
+		if (!info.isCheckpointConfigured() || !info.isZoneConfigured()) {
+			info.setServerIsConfigured(false);
+		} else {
+			List<String> keys = Lists.newArrayList();
+			keys.add(ConfigConstants.PASSWORD_ADMIN);
+			keys.add(ConfigConstants.PASSWORD_IDENTITY_CARD);
+			keys.add(ConfigConstants.PASSWORD_SUPERUSER);
+			keys.add(ConfigConstants.AUSWEISVORLAGE_BACKGROUND_COLOR);
+			keys.add(ConfigConstants.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE);
+			keys.add(ConfigConstants.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE);
+			keys.add(ConfigConstants.AUSWEISVORLAGE_SHOW_QR_CODE);
+			keys.add(ConfigConstants.AUSWEISVORLAGE_USE_USER_LOGO);
+			keys.add(ConfigConstants.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN);
+			info.setServerIsConfigured(checkConfigurationsExists(keys));
+		}
+
+
 		return info;
+	}
+
+	private boolean checkConfigurationsExists(List<String> keys) {
+		for (String key : keys) {
+			String value = getConfigurationValueString(key, null);
+			if (value == null || value.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private AusweisvorlageKonfiguration createAusweisvorlageKonfiguration() {
+		AusweisvorlageKonfiguration config = new AusweisvorlageKonfiguration();
+
+		config.setColorBackground(getConfigurationValueString(ConfigConstants.AUSWEISVORLAGE_BACKGROUND_COLOR, ServerConfiguration.AUSWEISVORLAGE_BACKGROUND_COLOR));
+
+		config.setShowAreaBackside(getConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE, ServerConfiguration.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE));
+		config.setColorAreaBackside(getConfigurationValueString(ConfigConstants.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE, ServerConfiguration.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE));
+
+		config.setShowQRCode(getConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_SHOW_QR_CODE, ServerConfiguration.AUSWEISVORLAGE_SHOW_QR_CODE));
+
+		config.setUseUserLogo(getConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_USE_USER_LOGO, ServerConfiguration.AUSWEISVORLAGE_USE_USER_LOGO));
+		config.setUseUserWasserzeichen(getConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN, ServerConfiguration.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN));
+
+		config.setDefaultWasserzeichen(ServerConfiguration.getDefaultWasserzeichen());
+		config.setWasserzeichen(ServerConfiguration.getUserWasserzeichen());
+
+		config.setLogo(ServerConfiguration.getUserLogo());
+
+		return config;
+	}
+
+	private String getConfigurationValueString(String key, String defaultValue) {
+		ConfigurationValue value = getQueryHelper().findConfigurationValueByKey(key);
+		if (value == null || value.getStringValue() == null || value.getStringValue().isEmpty()) {
+			return defaultValue;
+		}
+		return value.getStringValue();
+	}
+
+	private boolean getConfigurationValueBoolean(String key, boolean defaultValue) {
+		ConfigurationValue value = getQueryHelper().findConfigurationValueByKey(key);
+		if (value == null || value.getStringValue() == null || value.getStringValue().isEmpty()) {
+			return defaultValue;
+		}
+		return Boolean.parseBoolean(value.getStringValue());
 	}
 
 	@WebMethod
@@ -274,28 +388,28 @@ public class ConfigurationQueryService {
 		}
 
 		// Admin Password
-		ConfigurationValue value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.ADMIN_PASSWORD);
+		ConfigurationValue value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.PASSWORD_ADMIN);
 		if (value == null) {
 			value = new ConfigurationValue();
-			value.setKey(ConfigConstants.ADMIN_PASSWORD);
+			value.setKey(ConfigConstants.PASSWORD_ADMIN);
 		}
 		value.setStringValue(info.getAdminPassword());
 		getEntityManager().persist(value);
 
 		// Superuser Password
-		value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.SUPERUSER_PASSWORD);
+		value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.PASSWORD_SUPERUSER);
 		if (value == null) {
 			value = new ConfigurationValue();
-			value.setKey(ConfigConstants.SUPERUSER_PASSWORD);
+			value.setKey(ConfigConstants.PASSWORD_SUPERUSER);
 		}
 		value.setStringValue(info.getSuperUserPassword());
 		getEntityManager().persist(value);
 
 		// Identity Password
-		value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.IDENTITY_CARD_PASSWORD);
+		value = getQueryHelper().findConfigurationValueByKey(ConfigConstants.PASSWORD_IDENTITY_CARD);
 		if (value == null) {
 			value = new ConfigurationValue();
-			value.setKey(ConfigConstants.IDENTITY_CARD_PASSWORD);
+			value.setKey(ConfigConstants.PASSWORD_IDENTITY_CARD);
 		}
 		value.setStringValue(info.getIdentityCardPassword());
 		getEntityManager().persist(value);
@@ -313,6 +427,44 @@ public class ConfigurationQueryService {
 			getEntityManager().persist(v);
 			i++;
 		}
+
+		// Ausweisvorlage
+		applyAusweisvorlageKonfiguration(info.getAusweisvorlageConfig());
+	}
+
+	private void applyAusweisvorlageKonfiguration(AusweisvorlageKonfiguration config) {
+		setConfigurationValueString(ConfigConstants.AUSWEISVORLAGE_BACKGROUND_COLOR, config.getColorBackground());
+
+		setConfigurationValueString(ConfigConstants.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE, config.getColorAreaBackside());
+		setConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE, config.isShowAreaBackside());
+
+		setConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_SHOW_QR_CODE, config.isShowQRCode());
+
+		setConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_USE_USER_LOGO, config.isUseUserLogo());
+		setConfigurationValueBoolean(ConfigConstants.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN, config.isUseUserWasserzeichen());
+
+		ServerConfiguration.saveUserLogo(config.getLogo());
+		ServerConfiguration.saveUserWasserzeichen(config.getWasserzeichen());
+	}
+
+	private void setConfigurationValueBoolean(String key, boolean value) {
+		ConfigurationValue configValue = getQueryHelper().findConfigurationValueByKey(key);
+		if (configValue == null) {
+			configValue = new ConfigurationValue();
+			configValue.setKey(key);
+		}
+		configValue.setStringValue(String.valueOf(value));
+		getEntityManager().persist(configValue);
+	}
+
+	private void setConfigurationValueString(String key, String value) {
+		ConfigurationValue configValue = getQueryHelper().findConfigurationValueByKey(key);
+		if (configValue == null) {
+			configValue = new ConfigurationValue();
+			configValue.setKey(key);
+		}
+		configValue.setStringValue(value);
+		getEntityManager().persist(configValue);
 	}
 
 	@WebMethod
@@ -533,14 +685,24 @@ public class ConfigurationQueryService {
 		List<Ausweis> ausweise = getQueryHelper().findAusweiseZumDrucken();
 		String password = "";
 		List<ConfigurationValue> passwordList = getQueryHelper().findConfigurationValue(
-				ConfigConstants.IDENTITY_CARD_PASSWORD);
+				ConfigConstants.PASSWORD_IDENTITY_CARD);
 		if (passwordList.size() > 0) {
 			password = passwordList.get(0).getStringValue();
 		}
 
-		IdentityCardRenderer renderer = new IdentityCardRenderer(getEntityManager(), ausweise, password);
+		AusweisvorlageKonfiguration config = createAusweisvorlageKonfiguration();
+
+		IdendityCardRenderer renderer = new IdendityCardRenderer(ausweise, password, config);
 		PrintJob job = renderer.print();
 		if (job != null) {
+			// In diesem Fall hat es Funktioniert und die Ausweise wurden erstellt.
+			for (Ausweis ausweis : ausweise) {
+				ausweis.setErstellt(true);
+				getEntityManager().persist(ausweis);
+			}
+
+			getEntityManager().persist(job);
+
 			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 			printJobDetails[0] = convert(job);
 			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
@@ -553,9 +715,12 @@ public class ConfigurationQueryService {
 	public ConfigurationResponse printAusweisListe(boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisListe ausweisList = new PdfAusweisListe(getEntityManager(), nurMitAusweis, nachEinheit, einheitName);
+		List<Person> personen = getQueryHelper().getPersonen(nurMitAusweis, nachEinheit, einheitName);
+		PdfAusweisListe ausweisList = new PdfAusweisListe(personen, nurMitAusweis, nachEinheit, einheitName);
 		PrintJob job = ausweisList.print();
 		if (job != null) {
+			getEntityManager().persist(job);
+
 			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 			printJobDetails[0] = convert(job);
 			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
@@ -569,9 +734,12 @@ public class ConfigurationQueryService {
 	public ConfigurationResponse printAusweisboxInventar(String einheitName) {
 		ConfigurationResponse response = new ConfigurationResponse();
 
-		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(getEntityManager(), einheitName);
+		List<Person> personen = getQueryHelper().getPersonen(true, true, einheitName);
+		PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(personen, einheitName);
 		PrintJob job = ausweisBoxListen.print();
 		if (job != null) {
+			getEntityManager().persist(job);
+
 			PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
 			printJobDetails[0] = convert(job);
 			printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
@@ -582,6 +750,7 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
+	// TODO Man sollte nicht mit toString() arbeiten. Besser wäre wohl getGradText().
 	public String[] getGradValues() {
 		String[] result = new String[Grad.values().length];
 		for (int i = 0; i < Grad.values().length; i++) {
@@ -621,30 +790,6 @@ public class ConfigurationQueryService {
 	}
 
 	@WebMethod
-	public boolean importConfigData(@WebParam(name = "data") byte[] data, @WebParam(name = "password") String password) {
-		log.debug("Importiere Konfiguration");
-		KonfigurationsDatenReader reader = new KonfigurationsDatenReader(data, password);
-		List<ConfigurationValue> values = reader.readData();
-		if (!reader.hasError()) {
-			getQueryHelper().removeAllConfiguration();
-			getQueryHelper().persistAllConfiguration(values);
-			reader.importVorlagen();
-			log.debug("Es wurde " + values.size() + " Konfigurationswerte importiert.");
-		}
-		return !reader.hasError();
-	}
-
-	@WebMethod
-	public boolean importAusweisVorlage(byte[] data) {
-		return FileHelper.saveAsFile(FileHelper.FILE_AUSWEISVORLAGE_JPG, data);
-	}
-
-	@WebMethod
-	public boolean importWasserzeichen(byte[] data) {
-		return FileHelper.saveAsFile(FileHelper.FILE_WASSERZEICHEN_PNG, data);
-	}
-
-	@WebMethod
 	public String getLocalImagePath() {
 		return ImageStore.getLocalImagePath();
 	}
@@ -657,8 +802,7 @@ public class ConfigurationQueryService {
 		try {
 			Pattern.compile(pattern);
 		} catch (PatternSyntaxException exception) {
-			// TODO LOG
-			System.err.println(exception.getDescription());
+			log.error(exception);
 			return false;
 		}
 		return true;

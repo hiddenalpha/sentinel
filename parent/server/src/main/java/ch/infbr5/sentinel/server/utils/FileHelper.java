@@ -8,8 +8,9 @@ import com.google.common.io.Files;
 
 public class FileHelper {
 
-	public static final String FILE_WASSERZEICHEN_PNG = "Wasserzeichen.png";
-	public static final String FILE_AUSWEISVORLAGE_JPG = "AusweisVorlage.jpg";
+	public static final String FILE_AUSWEISVORLAGE_WASSERZEICHEN = "ausweisvorlage_wasserzeichen.png";
+
+	public static final String FILE_AUSWEISVORLAGE_LOGO = "ausweisvorlage_logo.png";
 
 	public static byte[] getAsByteArray(String filename) throws IOException {
 		return Files.toByteArray(new File(filename));

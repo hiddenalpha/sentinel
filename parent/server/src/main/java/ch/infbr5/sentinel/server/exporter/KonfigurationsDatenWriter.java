@@ -49,13 +49,13 @@ public class KonfigurationsDatenWriter {
 
 			// Ausweisvorlage speichern
 			parameters.setSourceExternalStream(false);
-			File f = new File(FileHelper.FILE_AUSWEISVORLAGE_JPG);
+			File f = new File(FileHelper.FILE_AUSWEISVORLAGE_LOGO);
 			if (f.exists()) {
 				zipFile.addFile(f, parameters);
 			}
 
 			// Wasserzeichnen speichern
-			f = new File(FileHelper.FILE_WASSERZEICHEN_PNG);
+			f = new File(FileHelper.FILE_AUSWEISVORLAGE_WASSERZEICHEN);
 			if (f.exists()) {
 				zipFile.addFile(f, parameters);
 			}

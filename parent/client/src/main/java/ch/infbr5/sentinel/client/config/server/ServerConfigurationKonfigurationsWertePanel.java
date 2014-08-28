@@ -1,41 +1,23 @@
 package ch.infbr5.sentinel.client.config.server;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.config.checkpoint.CheckpointConfigurationCamerasPanel;
-import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.ServerSetupInformation;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
-import com.google.common.io.Files;
-
-public class ServerConfigurationPanel extends JPanel {
+public class ServerConfigurationKonfigurationsWertePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private JPanel groupPanel;
-
-	private JLabel lblConfigFile;
-
-	private JLabel lblConfigFilePassword;
-
-	private JButton btnConfigFile;
-
-	private JTextField txtConfigFilePassword;
-
-	private JButton btnLoadConfig;
 
 	private JLabel lblCheckpointName;
 
@@ -61,53 +43,8 @@ public class ServerConfigurationPanel extends JPanel {
 
 	private CheckpointConfigurationCamerasPanel cameraPanel;
 
-	private String currentSelectedFilePath;
-
-	public ServerConfigurationPanel(ServerSetupInformation info) {
+	public ServerConfigurationKonfigurationsWertePanel(ServerSetupInformation info) {
 		this.info = info;
-
-		lblConfigFile = new JLabel();
-		lblConfigFilePassword = SwingHelper.createLabel("Passwort");
-		btnLoadConfig = new JButton("Konfiguration laden");
-		btnLoadConfig.setEnabled(false);
-		btnLoadConfig.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (txtConfigFilePassword.getText() == null || txtConfigFilePassword.getText().isEmpty()) {
-					txtConfigFilePassword.setBorder(BorderFactory.createLineBorder(Color.red));
-					return;
-				} else {
-					txtConfigFilePassword.setBorder(BorderFactory.createLineBorder(Color.black));
-				}
-				File f = new File(currentSelectedFilePath);
-				byte[] data;
-				try {
-					data = Files.toByteArray(f);
-					ServerSetupInformation infoFromFile = ServiceHelper.getConfigurationsService().getServerSetupInformationFromConfigFile(data, txtConfigFilePassword.getText());
-					txtAdminPw.setText(infoFromFile.getAdminPassword());
-					txtSuperUserPw.setText(infoFromFile.getSuperUserPassword());
-					txtIdentityCardPw.setText(infoFromFile.getIdentityCardPassword());
-					cameraPanel.setUrls(infoFromFile.getIpCamUrls());
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "Fehler beim laden der Konfigurationsdatei. Eventuell Passwort falsch: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-		btnConfigFile = new JButton("Datei wählen");
-		btnConfigFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String filepath = new FileUpAndDownload(null).showImportConfigurationFileDialog();
-				if (filepath != null && (new File(filepath)).exists()) {
-					currentSelectedFilePath = filepath;
-					lblConfigFile.setText(new File(filepath).getName());
-					btnLoadConfig.setEnabled(true);
-				} else {
-					btnLoadConfig.setEnabled(false);
-				}
-			}
-		});
-		txtConfigFilePassword = new JTextField();
 
 		lblCheckpointName = SwingHelper.createLabel("Checkpoint-Name");
 		lblZoneName = SwingHelper.createLabel("Zonen-Name");
@@ -128,14 +65,6 @@ public class ServerConfigurationPanel extends JPanel {
 		SwingHelper.attachLabledBorder("Server Setup", groupPanel);
 
 		setLayout(new MigLayout());
-
-		JPanel filePanel = new JPanel(new MigLayout());
-		filePanel.add(btnConfigFile, "");
-		filePanel.add(lblConfigFile, "wrap");
-		filePanel.add(lblConfigFilePassword, "");
-		filePanel.add(txtConfigFilePassword, "growx, push, wrap");
-		filePanel.add(btnLoadConfig, "spanx, align right");
-		SwingHelper.attachLabledBorder("Konfigurationsdatei laden", filePanel);
 
 		groupPanel.add(lblCheckpointName, "");
 		groupPanel.add(txtCheckpointName, "push, growx, wrap");
@@ -161,7 +90,6 @@ public class ServerConfigurationPanel extends JPanel {
 			txtZoneName.setEnabled(false);
 		}
 
-		add(filePanel, "growx, push, wrap");
 		add(groupPanel, "growx, push");
 	}
 
@@ -206,6 +134,13 @@ public class ServerConfigurationPanel extends JPanel {
 			info.getIpCamUrls().add(url);
 		}
 		return info;
+	}
+
+	public void applyInfosFromFile(ServerSetupInformation infoFromFile) {
+		txtAdminPw.setText(infoFromFile.getAdminPassword());
+		txtSuperUserPw.setText(infoFromFile.getSuperUserPassword());
+		txtIdentityCardPw.setText(infoFromFile.getIdentityCardPassword());
+		cameraPanel.setUrls(infoFromFile.getIpCamUrls());
 	}
 
 }

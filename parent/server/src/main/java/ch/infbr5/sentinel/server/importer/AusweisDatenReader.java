@@ -36,17 +36,4 @@ public class AusweisDatenReader extends ZipDatenReader {
 		close();
 	}
 
-	public byte[] readAusweisVorlage() {
-		initiate();
-		byte[] data = toByteArray(FileHelper.FILE_AUSWEISVORLAGE_JPG);
-		close();
-		return data;
-	}
-
-	public byte[] readWasserzeichen() {
-		initiate();
-		byte[] data = toByteArray(FileHelper.FILE_WASSERZEICHEN_PNG);
-		close();
-		return data;
-	}
 }
