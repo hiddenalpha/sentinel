@@ -79,6 +79,9 @@ public class ConfigurationQueryService {
 	@WebMethod
 	public void updateEinheit(@WebParam(name = "EinheitDetails") EinheitDetails details) {
 		Einheit einheit = getQueryHelper().getEinheitById(details.getId());
+		if (einheit == null) {
+			einheit = new Einheit();
+		}
 		einheit.setName(details.getName());
 		einheit.setRgbColor_Einh(details.getRgbColor_Einh());
 		einheit.setRgbColor_GsVb(details.getRgbColor_GsVb());

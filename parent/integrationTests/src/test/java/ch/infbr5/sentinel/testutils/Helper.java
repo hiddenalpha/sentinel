@@ -3,14 +3,24 @@ package ch.infbr5.sentinel.testutils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+
+import javax.persistence.EntityManager;
 
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
 
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
+import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.ServerControl;
+import ch.infbr5.sentinel.server.db.EntityManagerHelper;
+import ch.infbr5.sentinel.server.model.Checkpoint;
+import ch.infbr5.sentinel.server.model.ObjectFactory;
+import ch.infbr5.sentinel.server.model.Zone;
+import ch.infbr5.sentinel.server.model.Zutrittsregel;
 
 public class Helper {
 
@@ -22,6 +32,48 @@ public class Helper {
 
 		server = new ServerControl(false, true);
 		server.start("127.0.0.1", "8080");
+
+		// Setup Database, so kommt kein Config Dialog zu beginn
+		setupDatabase();
+	}
+
+	private static void setupDatabase() {
+
+		EntityManager em = EntityManagerHelper.createEntityManager();
+		em.getTransaction().begin();
+
+		// Zutrittsregeln
+		Zutrittsregel regel = ObjectFactory.createZutrittsregel();
+		em.persist(regel);
+
+		List<Zutrittsregel> regeln = new ArrayList<Zutrittsregel>();
+		regeln.add(regel);
+
+		// Zone
+		Zone zone = ObjectFactory.createZone("Kommandoposten", regeln, false);
+		em.persist(zone);
+
+		// Checkpoint
+		List<Zone> checkInZonen = new ArrayList<Zone>();
+		checkInZonen.add(zone);
+		List<Zone> checkOutZonen = new ArrayList<Zone>();
+		Checkpoint checkpoint = ObjectFactory.createCheckpoint("Haupteingang", checkInZonen, checkOutZonen);
+		em.persist(checkpoint);
+
+		// Konfiguration
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_ADMIN, "leitnes", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_SUPERUSER, "sentinel", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_IDENTITY_CARD, "1nf8r5!", 0, ""));
+
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_BACKGROUND_COLOR, "#ddd", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE, "#eee", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE, "false", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_SHOW_QR_CODE, "true", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_USE_USER_LOGO, "false", 0, ""));
+		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN, "false", 0, ""));
+
+		em.getTransaction().commit();
+		em.close();
 
 	}
 
@@ -35,7 +87,7 @@ public class Helper {
 		new File("derby.log").delete();
 	}
 
-	public static FrameFixture getWindow(){
+	public static FrameFixture getWindow() {
 		ApplicationFrame frame = GuiActionRunner.execute(new GuiQuery<ApplicationFrame>() {
 			@Override
 			protected ApplicationFrame executeInEDT() {

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.infbr5.sentinel.server.ServerConfiguration;
@@ -142,6 +143,7 @@ public class IdentityCardRenderer2Test {
 	}
 
 	@Test
+	@Ignore
 	public void testCreate() throws IOException {
 		AusweisvorlageKonfiguration config = new AusweisvorlageKonfiguration();
 		config.setShowQRCode(false);
