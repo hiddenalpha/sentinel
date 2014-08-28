@@ -46,13 +46,13 @@ public class Main {
 		// Falls das vorher schon der Fall ist, wird der EntityManager erstellt, welcher dann einfach die Datenbank anpasst.
 		SystemMeldungAppender.ENABLE = true;
 
+		// Comand Line
+		readCommandLine(args);
+
 		// 3. UI Erstellen (bereits hier, das UI empfängt nun alle Logs)
 		if (!headless) {
 			frame = new ApplicationFrame();
 		}
-
-		// Comand Line
-		readCommandLine(args);
 
 		// Java Info
 		printJavaInfo();
