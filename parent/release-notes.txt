@@ -1,0 +1,53 @@
+/***************************************/
+/* 			Version 0.8.0			   */
+/***************************************/
+- PISA Import optimiert.
+-- 	Automatische Erkennung der Tabellenspalten. Erkennung zwischen Geburtsdatum,
+	Grad, AHV-Nr und anderen Text-Attributen.
+--	Anzeigen der Änderungen, welche durch den Import verursacht werden. Es wird
+	zwischen "Person archivieren", "Person aktualisieren", "Person aktualisieren
+	und neuer Ausweis" und "neue Person" unterschieden.
+--	Möglichkeit, dass einzelne Änderungen deaktiviert werden können.
+--  Es können Excel (xls, xlsx), sowie CSV Dateien importiert werden.
+
+- Hauptansicht mit Sliders ausgerüstet. 
+- Hauptansicht sowie Einstellungsansicht startet im Full-Screen Modus.
+
+- Gefechtsmeldungen können erstellt werden. Die Gefechtsmeldungen können für eine
+  Person im System angelegt werden. Beim passieren des Checkpoints wird der Operator
+  über die Gefechtsmeldung informiert.
+- Systemmeldungen werden in der Hauptansicht angezeigt.
+- Bewegungsmeldungen werden erfasst und in der Hauptansicht angezeigt.
+
+- Der Sentinel-Client kann nun über das GUI in den Admin Modus oder Super Modus
+  versetzt werden.
+ 
+- Beim Starten des Sentinel Clients:
+--	Falls der Client das erste Mal startet oder falls keine Verbindung zum Server
+	vorliegt, erscheint ein Dialog, in welcher man die IP-Adresse und den Port eintragen
+	kann.
+--  Falls der Client das erste Mal startet oder falls keine gültige Checkpoint
+	Konfiguration vorliegt, erscheint ein Dialog, in welcher man den aktuellen Check-
+	point auswählen kann. Ausserdem kann man gleich noch IP-Cams definieren.
+--  Falls der Server Inital noch nicht konfiguriert ist oder falls eine Fehlkonfiguration
+	vorliegt, erscheint ein Dialog in welchem man grundlegende Serverkonfigurations-
+	daten konfigurieren kann. (Passwörter, Ausweisvorlage-Konfiguration, IP-Cams, Inital-
+	Checkpoint-Name, Initial-Zone-Name) Mit der Möglichkeit ein zuvor exportiere
+	Konfiguration zu exportieren.
+
+- Entfernung des Menüpunktes Fotos importieren.
+
+- Konfiguration nun über Dialog mit entsprechender Validierung möglich. Alternativ steht
+  aber auch immer noch die alte Konfigurations-Ansicht unter Einstellunge zur Verfügung.
+ 
+- Ausweisvorlage Konfiguration: Die gesamte Ausweisvorlage kann nun konfiguriert werden.
+  Hintergrundfarbe, Anzeigen des QR-Codes, Spezialfläche auf Rückseite (+ Farbe).
+  Ausserdem kann man nun über das Konfigurations GUI ein Wasserzeichen und ein Logo
+  hinterlegen. Aktuell werden nur PNG Formate unterstützt. Die Grösse ist jedoch egal, es
+  wird skaliert (optimal sollte es wenn möglich quadratisch sein).
+
+- Einige Bugfixes und GUI-Optimierungen.
+
+- Technische Changes:
+-- Neues Modul "common" etabliert. Gemeine Codebasis für Client und Server.
+-- Neues Modul "installer" etabliert. Erstellt ein Installationspaket auf Basis von izpack.
