@@ -1,4 +1,11 @@
 /***************************************/
+/* 			Version x.x.x			   */
+/***************************************/
+- Shutdown Hook für Client
+- Volltext Suche auf Filter Tabellen erweitert. Ein Leerschlag bedeutet, dass eine AND-Verknüpfung
+  gemacht wird.
+
+/***************************************/
 /* 			Version 0.8.0			   */
 /***************************************/
 - PISA Import optimiert.

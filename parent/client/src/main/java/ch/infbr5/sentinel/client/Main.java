@@ -19,7 +19,8 @@ public class Main {
 	public static void main(String[] args) {
 
 		// log4j
-		InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES_PRD);
+		InputStream inputStream = Main.class
+				.getResourceAsStream(LOG4J_PROPERTIES_PRD);
 		if (inputStream == null) {
 			System.out.println("WARNING: Could not open configuration file");
 			System.out.println("WARNING: Logging not configured");
@@ -27,8 +28,17 @@ public class Main {
 			PropertyConfigurator.configure(inputStream);
 		}
 
-		log.info("Starting Sentinel Client, Version " + Version.get().getVersion() + " ("
+		log.info("Starting Sentinel Client, Version "
+				+ Version.get().getVersion() + " ("
 				+ Version.get().getBuildTimestamp() + ")");
+
+		// Shutdown Hook installieren
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				log.info("Client ist beendet.");
+			}
+		});
 
 		// Schedule a job for the event dispatch thread:
 		// creating and showing this application's GUI.

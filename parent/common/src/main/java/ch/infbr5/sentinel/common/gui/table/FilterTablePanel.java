@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -26,10 +28,12 @@ public class FilterTablePanel extends JPanel {
 	private JButton btnFilter;
 
 	private JButton btnReset;
+	
+	private final TableRowSorter<TableModel> sorter;
 
 	public FilterTablePanel(JTable table, JButton additionalButton) {
 
-		final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+		sorter = new TableRowSorter<TableModel>(table.getModel());
 	    table.setRowSorter(sorter);
 
 		txtFilter = new JTextField();
@@ -49,7 +53,7 @@ public class FilterTablePanel extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				int key = e.getKeyCode();
                 if (key == KeyEvent.VK_ENTER) {
-                	sorter.setRowFilter(RowFilter.regexFilter("(?i)" + txtFilter.getText()));
+                	applyFilter();
                 }
 
 			}
@@ -61,7 +65,7 @@ public class FilterTablePanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + txtFilter.getText()));
+				applyFilter();
 			}
 		});
 
@@ -89,6 +93,22 @@ public class FilterTablePanel extends JPanel {
 		}
 
 		add(new JScrollPane(table), "spanx,push,grow");
+	}
+	
+	private void applyFilter() {
+		txtFilter.setText(txtFilter.getText().trim());
+		
+		String search = txtFilter.getText();
+    	String[] searches = search.split(" ");
+    	
+    	List<RowFilter<Object,Object>> filters = new ArrayList<RowFilter<Object,Object>>();
+    	for (String s : searches) {
+    		// (?i) => case insenstive!
+    		filters.add(RowFilter.regexFilter("(?i)" + s));
+    	}
+   	   	
+    	RowFilter<Object,Object> filter = RowFilter.andFilter(filters);
+    	sorter.setRowFilter(filter);
 	}
 
 }
