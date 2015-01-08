@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>ch.infbr5.sentinel</groupId>
 		<artifactId>parent</artifactId>
-		<version>${sentinel-version}</version>
+		<version>0.8.2</version>
 	</parent>
 
 	<artifactId>server</artifactId>
@@ -135,7 +135,7 @@
 		<dependency>
 			<groupId>ch.infbr5.sentinel</groupId>
 			<artifactId>common</artifactId>
-			<version>${sentinel-version}</version>
+			<version>0.8.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
