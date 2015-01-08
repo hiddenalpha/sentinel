@@ -1,9 +1,15 @@
 /***************************************/
-/* 			Version x.x.x			   */
+/* 			Version 0.8.2		   	   */
 /***************************************/
 - Shutdown Hook für Client
 - Volltext Suche auf Filter Tabellen erweitert. Ein Leerschlag bedeutet, dass eine AND-Verknüpfung
   gemacht wird.
+  
+/***************************************/
+/* 			Version 0.8.1		   	   */
+/***************************************/
+- Beim Druck eines Ausweises ist die Dimensions des Personen Fotos für das Wasserzeichen 
+  nicht mehr relevant.
 
 /***************************************/
 /* 			Version 0.8.0			   */
