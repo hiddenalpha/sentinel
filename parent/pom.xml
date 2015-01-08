@@ -5,6 +5,8 @@
 	<artifactId>parent</artifactId>
 	<version>0.8.2</version>
 
+
+
 	<packaging>pom</packaging>
 	<modules>
 		<module>common</module>

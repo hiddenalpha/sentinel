@@ -11,7 +11,7 @@
 	<artifactId>common</artifactId>
 
 	<properties>
-		<project.build.sourceEncoding>CP1252</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
