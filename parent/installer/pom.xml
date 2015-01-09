@@ -291,10 +291,7 @@
 	</build>
 
 
-
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	
 		<izpack.version>5.0.0-rc2</izpack.version>
 		<izpack.staging>${project.build.directory}/staging</izpack.staging>
 		

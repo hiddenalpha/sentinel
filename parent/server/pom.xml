@@ -11,10 +11,6 @@
 
 	<artifactId>server</artifactId>
 
-	<properties>
-		<!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
-	</properties>
-
 	<dependencies>
 
 		<dependency>
@@ -237,13 +233,6 @@
 
 				</executions>
 
-				<dependencies>
-					<dependency>
-						<groupId>com.sun.xml.ws</groupId>
-						<artifactId>jaxws-tools</artifactId>
-						<version>2.2.5</version>
-					</dependency>
-				</dependencies>
 
 			</plugin>
 
