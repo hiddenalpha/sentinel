@@ -8,7 +8,8 @@
 	Generierung). Die Klassen sind mittlerweile im Core (JDK).
 #49 Abhängigkeiten aktualisiert:
 		guava 18.0
-		miglayout-swing ?
+		miglayout-swing 5.0
+		junit 4.12
 
 /***************************************/
 /* 			Version 0.8.2		   	   */
