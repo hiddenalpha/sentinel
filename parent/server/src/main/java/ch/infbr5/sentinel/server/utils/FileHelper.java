@@ -8,71 +8,72 @@ import com.google.common.io.Files;
 
 public class FileHelper {
 
-	public static final String FILE_AUSWEISVORLAGE_WASSERZEICHEN = "ausweisvorlage_wasserzeichen.png";
+   public static final String FILE_AUSWEISVORLAGE_WASSERZEICHEN = "ausweisvorlage_wasserzeichen.png";
 
-	public static final String FILE_AUSWEISVORLAGE_LOGO = "ausweisvorlage_logo.png";
+   public static final String FILE_AUSWEISVORLAGE_LOGO = "ausweisvorlage_logo.png";
 
-	public static byte[] getAsByteArray(String filename) throws IOException {
-		return Files.toByteArray(new File(filename));
-	}
+   public static byte[] getAsByteArray(final String filename) throws IOException {
+      return Files.toByteArray(new File(filename));
+   }
 
-	/**
-	 * Löscht das File sofern es existiert.
-	 *
-	 * @param filename Datei zu löschen.
-	 */
-	public static void removeFile(String filename) {
-		File file = new File(filename);
-		if (file.exists()) {
-			file.delete();
-		}
-	}
+   /**
+    * Loescht das File sofern es existiert.
+    *
+    * @param filename
+    *           Datei zu loeschen.
+    */
+   public static void removeFile(final String filename) {
+      final File file = new File(filename);
+      if (file.exists()) {
+         file.delete();
+      }
+   }
 
-	public static void removeFile(File file) {
-		removeFile(file.getAbsolutePath());
-	}
+   public static void removeFile(final File file) {
+      removeFile(file.getAbsolutePath());
+   }
 
-	public static void removeFolderContent(File f) {
-		if (f.isDirectory()) {
-			for (File c : f.listFiles()) {
-				c.delete();
-			}
-		}
-	}
+   public static void removeFolderContent(final File f) {
+      if (f.isDirectory()) {
+         for (final File c : f.listFiles()) {
+            c.delete();
+         }
+      }
+   }
 
-	public static boolean saveAsFile(String filename, byte[] data) {
-		try {
-			if ((data != null) && (data.length > 0)) {
-				createParentDirectoryIfRequired(filename);
+   public static boolean saveAsFile(final String filename, final byte[] data) {
+      try {
+         if ((data != null) && (data.length > 0)) {
+            createParentDirectoryIfRequired(filename);
 
-				FileOutputStream fos = new FileOutputStream(filename);
+            final FileOutputStream fos = new FileOutputStream(filename);
 
-				fos.write(data);
-				fos.close();
-			}
-			return true;
+            fos.write(data);
+            fos.close();
+         }
+         return true;
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+      } catch (final Exception e) {
+         e.printStackTrace();
+         return false;
+      }
+   }
 
-	public static String getExtension(String filename) {
-		int lastIndexOfPoint = filename.lastIndexOf(".");
-		return filename.substring(lastIndexOfPoint + 1);
-	}
+   public static String getExtension(final String filename) {
+      final int lastIndexOfPoint = filename.lastIndexOf(".");
+      return filename.substring(lastIndexOfPoint + 1);
+   }
 
-	private static void createParentDirectoryIfRequired(String filename) {
-		File fileHelper = new File(filename);
-		String parentDirectory = fileHelper.getParent();
-		if (parentDirectory != null) {
-			File directoryHelper = new File(parentDirectory);
-			boolean directoryExists = directoryHelper.exists();
-			if (!directoryExists) {
-				directoryHelper.mkdirs();
-			}
-		}
-	}
+   private static void createParentDirectoryIfRequired(final String filename) {
+      final File fileHelper = new File(filename);
+      final String parentDirectory = fileHelper.getParent();
+      if (parentDirectory != null) {
+         final File directoryHelper = new File(parentDirectory);
+         final boolean directoryExists = directoryHelper.exists();
+         if (!directoryExists) {
+            directoryHelper.mkdirs();
+         }
+      }
+   }
 
 }

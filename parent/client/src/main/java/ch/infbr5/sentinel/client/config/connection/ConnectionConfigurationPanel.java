@@ -9,52 +9,53 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class ConnectionConfigurationPanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	// UI Components
-	private JPanel groupPanel;
+   // UI Components
+   private final JPanel groupPanel;
 
-	private JLabel lblInfo;
+   private final JLabel lblInfo;
 
-	private JLabel lblServerName;
+   private final JLabel lblServerName;
 
-	private JLabel lblServerPort;
+   private final JLabel lblServerPort;
 
-	private JTextField txtServerName;
+   private final JTextField txtServerName;
 
-	private JTextField txtServerPort;
+   private final JTextField txtServerPort;
 
-	public ConnectionConfigurationPanel(String info, String serverName, String serverPort) {
-		lblInfo = SwingHelper.createLabel("<html>" + "Nachfolgend können Sie die Server-Verbindungsdaten eintragen.<br /><br />" + info + "</html>");
-		lblServerName = SwingHelper.createLabel("Server IP-Adresse");
-		lblServerPort = SwingHelper.createLabel("Server Port");
-		groupPanel = new JPanel(new MigLayout());
+   public ConnectionConfigurationPanel(final String info, final String serverName, final String serverPort) {
+      lblInfo = SwingHelper.createLabel("<html>"
+            + "Nachfolgend kÃ¶nnen Sie die Server-Verbindungsdaten eintragen.<br /><br />" + info + "</html>");
+      lblServerName = SwingHelper.createLabel("Server IP-Adresse");
+      lblServerPort = SwingHelper.createLabel("Server Port");
+      groupPanel = new JPanel(new MigLayout());
 
-		txtServerName = SwingHelper.createTextField(serverName);
-		txtServerPort = SwingHelper.createTextField(serverPort);
+      txtServerName = SwingHelper.createTextField(serverName);
+      txtServerPort = SwingHelper.createTextField(serverPort);
 
-		SwingHelper.attachLabledBorder("Server-Verbindung", groupPanel);
-		SwingHelper.attachLabledBorder("Infos", lblInfo);
+      SwingHelper.attachLabledBorder("Server-Verbindung", groupPanel);
+      SwingHelper.attachLabledBorder("Infos", lblInfo);
 
-		setLayout(new MigLayout());
+      setLayout(new MigLayout());
 
-		groupPanel.add(lblServerName, "");
-		groupPanel.add(txtServerName, "push, growx, wrap");
+      groupPanel.add(lblServerName, "");
+      groupPanel.add(txtServerName, "push, growx, wrap");
 
-		groupPanel.add(lblServerPort, "");
-		groupPanel.add(txtServerPort, "growx, wrap");
+      groupPanel.add(lblServerPort, "");
+      groupPanel.add(txtServerPort, "growx, wrap");
 
-		add(lblInfo, "growx, wrap");
-		add(groupPanel, "growx, push");
+      add(lblInfo, "growx, wrap");
+      add(groupPanel, "growx, push");
 
-	}
+   }
 
-	public String getServerName() {
-		return txtServerName.getText().trim();
-	}
+   public String getServerName() {
+      return txtServerName.getText().trim();
+   }
 
-	public String getServerPort() {
-		return txtServerPort.getText().trim();
-	}
+   public String getServerPort() {
+      return txtServerPort.getText().trim();
+   }
 
 }

@@ -27,158 +27,166 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class WorkflowStepModification extends WorkflowStep {
 
-	private JPanel panel;
+   private JPanel panel;
 
-	private Map<JCheckBox, Modification> checkboxes = new HashMap<>();
+   private final Map<JCheckBox, Modification> checkboxes = new HashMap<>();
 
-	private ModificationDto dto;
+   private ModificationDto dto;
 
-	public WorkflowStepModification(Frame parent, WorkflowData data, WorkflowInterceptor interceptor) {
-		super(parent, data, interceptor);
-	}
+   public WorkflowStepModification(final Frame parent, final WorkflowData data, final WorkflowInterceptor interceptor) {
+      super(parent, data, interceptor);
+   }
 
-	@Override
-	public String getName() {
-		return "Änderungen";
-	}
+   @Override
+   public String getName() {
+      return "ï¿½nderungen";
+   }
 
-	@Override
-	public String getUserInfo() {
-		return "Hier sind alle Änderungen aufgelistet. Jede Änderung kann deaktiviert werden, so wird diese im"
-				+ " Import nicht berücksichtigt.";
-	}
+   @Override
+   public String getUserInfo() {
+      return "Hier sind alle Ã„nderungen aufgelistet. Jede Ã„nderung kann deaktiviert werden, so wird diese im"
+            + " Import nicht berÃ¼cksichtigt.";
+   }
 
-	@Override
-	public JPanel getPanel() {
-		panel = new JPanel(new MigLayout());
+   @Override
+   public JPanel getPanel() {
+      panel = new JPanel(new MigLayout());
 
-		boolean hasMods = false;
+      boolean hasMods = false;
 
-		String layoutoptions = "width 100%, wrap";
-		for (int i = 0; i < dto.getModificationErrors().size(); i++) {
-			panel.add(createPanelModification(dto.getModificationErrors().get(i)), layoutoptions);
-			hasMods = true;
-		}
-		for (int i = 0; i < dto.getModificationNewPersons().size(); i++) {
-			panel.add(createPanelModification(dto.getModificationNewPersons().get(i)), layoutoptions);
-			hasMods = true;
-		}
+      final String layoutoptions = "width 100%, wrap";
+      for (int i = 0; i < dto.getModificationErrors().size(); i++) {
+         panel.add(createPanelModification(dto.getModificationErrors().get(i)), layoutoptions);
+         hasMods = true;
+      }
+      for (int i = 0; i < dto.getModificationNewPersons().size(); i++) {
+         panel.add(createPanelModification(dto.getModificationNewPersons().get(i)), layoutoptions);
+         hasMods = true;
+      }
 
-		for (int i = 0; i < dto.getModificationUpdatePersons().size(); i++) {
-			panel.add(createPanelModification(dto.getModificationUpdatePersons().get(i)), layoutoptions);
-			hasMods = true;
-		}
+      for (int i = 0; i < dto.getModificationUpdatePersons().size(); i++) {
+         panel.add(createPanelModification(dto.getModificationUpdatePersons().get(i)), layoutoptions);
+         hasMods = true;
+      }
 
-		for (int i = 0; i < dto.getModificationNewAusweise().size(); i++) {
-			panel.add(createPanelModification(dto.getModificationNewAusweise().get(i)), layoutoptions);
-			hasMods = true;
-		}
+      for (int i = 0; i < dto.getModificationNewAusweise().size(); i++) {
+         panel.add(createPanelModification(dto.getModificationNewAusweise().get(i)), layoutoptions);
+         hasMods = true;
+      }
 
-		for (int i = 0; i < dto.getModificationArchivePersons().size(); i++) {
-			panel.add(createPanelModification(dto.getModificationArchivePersons().get(i)), layoutoptions);
-			hasMods = true;
-		}
+      for (int i = 0; i < dto.getModificationArchivePersons().size(); i++) {
+         panel.add(createPanelModification(dto.getModificationArchivePersons().get(i)), layoutoptions);
+         hasMods = true;
+      }
 
-		if (!hasMods) {
-			panel.add(new JLabel("Dieser Import bringt keine Änderungen mit sich."));
-		}
+      if (!hasMods) {
+         panel.add(new JLabel("Dieser Import bringt keine ï¿½nderungen mit sich."));
+      }
 
-		return panel;
-	}
+      return panel;
+   }
 
-	@Override
-	public void init() {
-		dto = ServiceHelper.getPersonenImporterService().getModifications(getData().getSessionKey());
-		getInterceptor().activateNext();
-	}
+   @Override
+   public void init() {
+      dto = ServiceHelper.getPersonenImporterService().getModifications(getData().getSessionKey());
+      getInterceptor().activateNext();
+   }
 
-	@Override
-	public void abort() {
-		if (getData().getSessionKey() != null) {
-			try {
-				ServiceHelper.getPersonenImporterService().abortImport(getData().getSessionKey());
-			} catch (RuntimeException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+   @Override
+   public void abort() {
+      if (getData().getSessionKey() != null) {
+         try {
+            ServiceHelper.getPersonenImporterService().abortImport(getData().getSessionKey());
+         } catch (final RuntimeException e) {
+            e.printStackTrace();
+         }
+      }
+   }
 
-	@Override
-	public void finishNext() {
-		for (JCheckBox ckbox : checkboxes.keySet()) {
-			if (ckbox.isSelected()) {
-				checkboxes.get(ckbox).setToModify(true);
-			} else {
-				checkboxes.get(ckbox).setToModify(false);
-			}
-		}
-		ServiceHelper.getPersonenImporterService().setModifications(getData().getSessionKey(), dto);
-	}
+   @Override
+   public void finishNext() {
+      for (final JCheckBox ckbox : checkboxes.keySet()) {
+         if (ckbox.isSelected()) {
+            checkboxes.get(ckbox).setToModify(true);
+         } else {
+            checkboxes.get(ckbox).setToModify(false);
+         }
+      }
+      ServiceHelper.getPersonenImporterService().setModifications(getData().getSessionKey(), dto);
+   }
 
-	@Override
-	public void finishReturn() {
-		finishNext();
-	}
+   @Override
+   public void finishReturn() {
+      finishNext();
+   }
 
-	private JPanel createPanel(JLabel label, Modification modification, boolean isSelected, boolean enabled) {
-		JPanel panel = new JPanel(new MigLayout());
-		panel.setBorder(BorderFactory.createLineBorder(Color.black));
+   private JPanel createPanel(final JLabel label, final Modification modification, final boolean isSelected,
+         final boolean enabled) {
+      final JPanel panel = new JPanel(new MigLayout());
+      panel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-		JCheckBox checkbox = new JCheckBox();
-		checkbox.setSelected(isSelected);
-		checkbox.setEnabled(enabled);
+      final JCheckBox checkbox = new JCheckBox();
+      checkbox.setSelected(isSelected);
+      checkbox.setEnabled(enabled);
 
-		if (enabled == false) {
-			panel.setBackground(SwingHelper.COLOR_RED);
-			checkbox.setBackground(SwingHelper.COLOR_RED);
-		}
+      if (enabled == false) {
+         panel.setBackground(SwingHelper.COLOR_RED);
+         checkbox.setBackground(SwingHelper.COLOR_RED);
+      }
 
-		panel.add(checkbox, "aligny top");
-		panel.add(label);
+      panel.add(checkbox, "aligny top");
+      panel.add(label);
 
-		checkboxes.put(checkbox, modification);
+      checkboxes.put(checkbox, modification);
 
-		return panel;
-	}
+      return panel;
+   }
 
-	private JLabel createLabel(String typ, PersonDetails person, String additional) {
-		return new JLabel("<html><b>"+typ+" </b><br />" + personString(person) + " <br /> " + additional + "</html>");
-	}
+   private JLabel createLabel(final String typ, final PersonDetails person, final String additional) {
+      return new JLabel("<html><b>" + typ + " </b><br />" + personString(person) + " <br /> " + additional + "</html>");
+   }
 
-	private JPanel createPanelModification(ModificationNewPerson mod) {
-		return createPanel(createLabel("Neue Person", mod.getPersonDetails(), ""), mod, mod.isToModify(), true);
-	}
+   private JPanel createPanelModification(final ModificationNewPerson mod) {
+      return createPanel(createLabel("Neue Person", mod.getPersonDetails(), ""), mod, mod.isToModify(), true);
+   }
 
-	private JPanel createPanelModification(ModificationError mod) {
-		return createPanel(createLabel("Fehlerhafter Datensatz (Datensatz wird nicht berücksichtigt)", mod.getPersonDetails(), "<br/><b>Fehler</b>:<br />" + mod.getErrorMessage()), mod, false, false);
-	}
+   private JPanel createPanelModification(final ModificationError mod) {
+      return createPanel(
+            createLabel("Fehlerhafter Datensatz (Datensatz wird nicht berÃ¼cksichtigt)", mod.getPersonDetails(),
+                  "<br/><b>Fehler</b>:<br />" + mod.getErrorMessage()), mod, false, false);
+   }
 
-	private JPanel createPanelModification(ModificationArchivePerson mod) {
-		return createPanel(createLabel("Person archivieren", mod.getPersonDetails(), ""), mod, mod.isToModify(), true);
-	}
+   private JPanel createPanelModification(final ModificationArchivePerson mod) {
+      return createPanel(createLabel("Person archivieren", mod.getPersonDetails(), ""), mod, mod.isToModify(), true);
+   }
 
-	private JPanel createPanelModification(ModificationUpdatePersonAndNewAusweis mod) {
-		return createPanel(createLabel("Person aktualisieren und neuer Ausweis", mod.getPersonDetailsOld(), "<br /><b>Änderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true);
-	}
+   private JPanel createPanelModification(final ModificationUpdatePersonAndNewAusweis mod) {
+      return createPanel(
+            createLabel("Person aktualisieren und neuer Ausweis", mod.getPersonDetailsOld(),
+                  "<br /><b>ï¿½nderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true);
+   }
 
-	private JPanel createPanelModification(ModificationUpdatePerson mod) {
-		return createPanel(createLabel("Person aktualisieren", mod.getPersonDetailsNew(), "<br /><b>Änderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true);
-	}
+   private JPanel createPanelModification(final ModificationUpdatePerson mod) {
+      return createPanel(
+            createLabel("Person aktualisieren", mod.getPersonDetailsNew(), "<br /><b>Ã„nderungen</b>:<br />"
+                  + personDiff(mod)), mod, mod.isToModify(), true);
+   }
 
-	private String personString(PersonDetails person) {
-		return person.getGrad() + " " + person.getName() + " " + person.getVorname() + "<br/>" + person.getAhvNr() + ", " + toString(person.getGeburtsdatum()) + "<br/>"  + person.getEinheitText() + ", " + person.getFunktion();
-	}
+   private String personString(final PersonDetails person) {
+      return person.getGrad() + " " + person.getName() + " " + person.getVorname() + "<br/>" + person.getAhvNr() + ", "
+            + toString(person.getGeburtsdatum()) + "<br/>" + person.getEinheitText() + ", " + person.getFunktion();
+   }
 
-	private String toString(XMLGregorianCalendar calendar) {
-		return new SimpleDateFormat("dd.MM.yyyy").format(calendar.toGregorianCalendar().getTime());
-	}
+   private String toString(final XMLGregorianCalendar calendar) {
+      return new SimpleDateFormat("dd.MM.yyyy").format(calendar.toGregorianCalendar().getTime());
+   }
 
-	private String personDiff(ModificationUpdatePerson mod) {
-		String diff = "";
-		for (UpdatePersonAttributeDiff d : mod.getUpdatePersonenDiffs()) {
-			diff += d.getPersonenAttribute().value() + ": " + d.getOldValue() + " >>> " + d.getNewValue() + "<br />";
-		}
-		return diff;
-	}
+   private String personDiff(final ModificationUpdatePerson mod) {
+      String diff = "";
+      for (final UpdatePersonAttributeDiff d : mod.getUpdatePersonenDiffs()) {
+         diff += d.getPersonenAttribute().value() + ": " + d.getOldValue() + " >>> " + d.getNewValue() + "<br />";
+      }
+      return diff;
+   }
 
 }

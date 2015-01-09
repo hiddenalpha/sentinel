@@ -17,86 +17,89 @@ import ch.infbr5.sentinel.client.wsgen.ServerSetupInformation;
 
 public class ServerConfigurationDialog extends JDialog {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private JButton btnSave;
+   private final JButton btnSave;
 
-	private JButton btnCancel;
+   private final JButton btnCancel;
 
-	private final JTabbedPane tabbedPane;
+   private final JTabbedPane tabbedPane;
 
-	private final ServerConfigurationKonfigurationsWertePanel configWertePanel;
+   private final ServerConfigurationKonfigurationsWertePanel configWertePanel;
 
-	private final ServerConfigurationAusweisvorlagePanel configAusweisvorlagePanel;
+   private final ServerConfigurationAusweisvorlagePanel configAusweisvorlagePanel;
 
-	private final ServerConfigurationKonfigurationsFilePanel configFilePanel;
+   private final ServerConfigurationKonfigurationsFilePanel configFilePanel;
 
-	public ServerConfigurationDialog(final JFrame parent, ServerSetupInformation info, final boolean closeAppOnExit) {
-		super(parent);
+   public ServerConfigurationDialog(final JFrame parent, final ServerSetupInformation info, final boolean closeAppOnExit) {
+      super(parent);
 
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+      tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-		setModal(true);
-		setTitle("Server Konfiguration");
-		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		setResizable(false);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				dispose();
-				if (closeAppOnExit) {
-					System.exit(0);
-				}
-			}
-		});
+      setModal(true);
+      setTitle("Server Konfiguration");
+      setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+      setResizable(false);
+      addWindowListener(new WindowAdapter() {
+         @Override
+         public void windowClosing(final WindowEvent e) {
+            dispose();
+            if (closeAppOnExit) {
+               System.exit(0);
+            }
+         }
+      });
 
-		configWertePanel = new ServerConfigurationKonfigurationsWertePanel(info);
-		configAusweisvorlagePanel = new ServerConfigurationAusweisvorlagePanel(info.getAusweisvorlageConfig());
-		configFilePanel = new ServerConfigurationKonfigurationsFilePanel(configWertePanel, configAusweisvorlagePanel);
+      configWertePanel = new ServerConfigurationKonfigurationsWertePanel(info);
+      configAusweisvorlagePanel = new ServerConfigurationAusweisvorlagePanel(info.getAusweisvorlageConfig());
+      configFilePanel = new ServerConfigurationKonfigurationsFilePanel(configWertePanel, configAusweisvorlagePanel);
 
-		btnSave = new JButton("Speichern");
-		btnSave.addActionListener(new ActionListener() {
+      btnSave = new JButton("Speichern");
+      btnSave.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (configWertePanel.validateInfo() && configAusweisvorlagePanel.validateInfo()) {
-					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent, "Möchten Sie die Einstellung wirklich speichern?", "Konfiguration speichern", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-						ServerSetupInformation newInfo = configWertePanel.getInfo();
-						newInfo.setAusweisvorlageConfig(configAusweisvorlagePanel.readConfig());
-						ServiceHelper.getConfigurationsService().applyServerSetupInformation(newInfo);
-						dispose();
-					}
-				} else {
-					JOptionPane.showMessageDialog(parent, "Ungültige Eingaben. Bitte überprüfen Sie alle Tabs.", "Ungültige Eingaben", JOptionPane.ERROR_MESSAGE);
-				}
-			}
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            if (configWertePanel.validateInfo() && configAusweisvorlagePanel.validateInfo()) {
+               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent,
+                     "MÃ¶chten Sie die Einstellung wirklich speichern?", "Konfiguration speichern",
+                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+                  final ServerSetupInformation newInfo = configWertePanel.getInfo();
+                  newInfo.setAusweisvorlageConfig(configAusweisvorlagePanel.readConfig());
+                  ServiceHelper.getConfigurationsService().applyServerSetupInformation(newInfo);
+                  dispose();
+               }
+            } else {
+               JOptionPane.showMessageDialog(parent, "UngÃ¼ltige Eingaben. Bitte Ã¼berprÃ¼fen Sie alle Tabs.",
+                     "UngÃ¼ltige Eingaben", JOptionPane.ERROR_MESSAGE);
+            }
+         }
 
-		});
+      });
 
-		btnCancel = new JButton("Abbrechen");
-		btnCancel.addActionListener(new ActionListener() {
+      btnCancel = new JButton("Abbrechen");
+      btnCancel.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-				if (closeAppOnExit) {
-					System.exit(0);
-				}
-			}
-		});
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            dispose();
+            if (closeAppOnExit) {
+               System.exit(0);
+            }
+         }
+      });
 
-		setLayout(new MigLayout());
+      setLayout(new MigLayout());
 
-		tabbedPane.addTab("Konfigurationswerte", configWertePanel);
-		tabbedPane.addTab("Ausweisvorlage", configAusweisvorlagePanel);
-		tabbedPane.addTab("Datei laden", configFilePanel);
+      tabbedPane.addTab("Konfigurationswerte", configWertePanel);
+      tabbedPane.addTab("Ausweisvorlage", configAusweisvorlagePanel);
+      tabbedPane.addTab("Datei laden", configFilePanel);
 
-		add(tabbedPane, "push, span, growx, wrap, growy");
-		add(btnSave, "tag ok, span, split");
-		add(btnCancel, "tag cancel");
-		setSize(500, 700);
-		//pack();
-		setLocationRelativeTo(null);
-	}
+      add(tabbedPane, "push, span, growx, wrap, growy");
+      add(btnSave, "tag ok, span, split");
+      add(btnCancel, "tag cancel");
+      setSize(500, 700);
+      // pack();
+      setLocationRelativeTo(null);
+   }
 
 }

@@ -15,57 +15,58 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class CheckpointConfigurationPanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	// UI Components
-	private JPanel groupPanel;
+   // UI Components
+   private final JPanel groupPanel;
 
-	private CheckpointConfigurationCamerasPanel cameraPanel;
+   private final CheckpointConfigurationCamerasPanel cameraPanel;
 
-	private JLabel lblCheckpoint;
+   private final JLabel lblCheckpoint;
 
-	private JComboBox<CheckpointSelectionValue> cmbCheckpoints;
+   private JComboBox<CheckpointSelectionValue> cmbCheckpoints;
 
-	private JLabel lblInfo;
+   private final JLabel lblInfo;
 
-	public CheckpointConfigurationPanel(String info, List<CheckpointDetails> checkpoints) {
-		lblInfo = SwingHelper.createLabel("<html>Nachfolgend können Sie den Checkpoint konfigurieren.<br/><br/>"+info+"</html>");
-		lblCheckpoint = SwingHelper.createLabel("Checkpoint");
-		setupDropdownCheckpoints(checkpoints);
-		groupPanel = new JPanel(new MigLayout());
-		cameraPanel = new CheckpointConfigurationCamerasPanel(true, null);
+   public CheckpointConfigurationPanel(final String info, final List<CheckpointDetails> checkpoints) {
+      lblInfo = SwingHelper.createLabel("<html>Nachfolgend kÃ¶nnen Sie den Checkpoint konfigurieren.<br/><br/>" + info
+            + "</html>");
+      lblCheckpoint = SwingHelper.createLabel("Checkpoint");
+      setupDropdownCheckpoints(checkpoints);
+      groupPanel = new JPanel(new MigLayout());
+      cameraPanel = new CheckpointConfigurationCamerasPanel(true, null);
 
-		SwingHelper.attachLabledBorder("Checkpoint-Konfiguration", groupPanel);
-		SwingHelper.attachLabledBorder("Infos", lblInfo);
+      SwingHelper.attachLabledBorder("Checkpoint-Konfiguration", groupPanel);
+      SwingHelper.attachLabledBorder("Infos", lblInfo);
 
-		setLayout(new MigLayout());
+      setLayout(new MigLayout());
 
-		JPanel ckPanel = new JPanel(new MigLayout());
-		ckPanel.add(lblCheckpoint, "");
-		ckPanel.add(cmbCheckpoints, "push, wrap, align right");
+      final JPanel ckPanel = new JPanel(new MigLayout());
+      ckPanel.add(lblCheckpoint, "");
+      ckPanel.add(cmbCheckpoints, "push, wrap, align right");
 
-		groupPanel.add(ckPanel, "push, growx, wrap");
-		groupPanel.add(cameraPanel, "push, growx");
+      groupPanel.add(ckPanel, "push, growx, wrap");
+      groupPanel.add(cameraPanel, "push, growx");
 
-		add(lblInfo, "growx, push, wrap");
-		add(groupPanel, "push, growx");
-	}
+      add(lblInfo, "growx, push, wrap");
+      add(groupPanel, "push, growx");
+   }
 
-	private void setupDropdownCheckpoints(List<CheckpointDetails> checkpoints) {
-		Vector<CheckpointSelectionValue> values = new Vector<>();
-		for (CheckpointDetails checkpoint : checkpoints) {
-			CheckpointSelectionValue value = new CheckpointSelectionValue();
-			value.setId(checkpoint.getId());
-			value.setName(checkpoint.getName());
-			values.add(value);
-		}
+   private void setupDropdownCheckpoints(final List<CheckpointDetails> checkpoints) {
+      final Vector<CheckpointSelectionValue> values = new Vector<>();
+      for (final CheckpointDetails checkpoint : checkpoints) {
+         final CheckpointSelectionValue value = new CheckpointSelectionValue();
+         value.setId(checkpoint.getId());
+         value.setName(checkpoint.getName());
+         values.add(value);
+      }
 
-		cmbCheckpoints = new JComboBox<CheckpointSelectionValue>();
-		cmbCheckpoints.setModel(new DefaultComboBoxModel<>(values));
-	}
+      cmbCheckpoints = new JComboBox<CheckpointSelectionValue>();
+      cmbCheckpoints.setModel(new DefaultComboBoxModel<>(values));
+   }
 
-	public Long getCheckpointId() {
-		return ((CheckpointSelectionValue) cmbCheckpoints.getModel().getSelectedItem()).getId();
-	}
+   public Long getCheckpointId() {
+      return ((CheckpointSelectionValue) cmbCheckpoints.getModel().getSelectedItem()).getId();
+   }
 
 }

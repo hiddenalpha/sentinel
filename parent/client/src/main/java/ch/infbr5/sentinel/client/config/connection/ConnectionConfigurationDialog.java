@@ -15,74 +15,79 @@ import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 
 public class ConnectionConfigurationDialog extends JDialog {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	// UI Components
-	private JButton btnSave;
+   // UI Components
+   private final JButton btnSave;
 
-	private JButton btnCancel;
+   private final JButton btnCancel;
 
-	private final ConnectionConfigurationPanel panel;
+   private final ConnectionConfigurationPanel panel;
 
-	public ConnectionConfigurationDialog(final JFrame parent, final ConnectionConfigurator config, String info, String serverName, String serverPort, final boolean isConfigurationWhileStartup) {
-		super(parent);
+   public ConnectionConfigurationDialog(final JFrame parent, final ConnectionConfigurator config, final String info,
+         final String serverName, final String serverPort, final boolean isConfigurationWhileStartup) {
+      super(parent);
 
-		setModal(true);
-		setTitle("Server-Verbindung konfigurieren");
-		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		setResizable(false);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				dispose();
-				if (isConfigurationWhileStartup) {
-					System.exit(0);
-				}
-			}
-		});
+      setModal(true);
+      setTitle("Server-Verbindung konfigurieren");
+      setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+      setResizable(false);
+      addWindowListener(new WindowAdapter() {
+         @Override
+         public void windowClosing(final WindowEvent e) {
+            dispose();
+            if (isConfigurationWhileStartup) {
+               System.exit(0);
+            }
+         }
+      });
 
-		panel = new ConnectionConfigurationPanel(info, serverName, serverPort);
+      panel = new ConnectionConfigurationPanel(info, serverName, serverPort);
 
-		btnSave = new JButton("Speichern");
-		btnSave.addActionListener(new ActionListener() {
+      btnSave = new JButton("Speichern");
+      btnSave.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!isConfigurationWhileStartup) {
-					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent, "Möchten Sie die Einstellung wirklich speichern? Der Client wird automatisch beendet. Starten Sie diesen dannach neu.", "Konfiguration speichern", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-						saveConfig();
-						System.exit(0);
-					}
-				} else {
-					saveConfig();
-					dispose();
-				}
-			}
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            if (!isConfigurationWhileStartup) {
+               if (JOptionPane.YES_OPTION == JOptionPane
+                     .showConfirmDialog(
+                           parent,
+                           "MÃ¶chten Sie die Einstellung wirklich speichern? Der Client wird automatisch beendet. Starten Sie diesen dannach neu.",
+                           "Konfiguration speichern", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+                  saveConfig();
+                  System.exit(0);
+               }
+            } else {
+               saveConfig();
+               dispose();
+            }
+         }
 
-			private void saveConfig() {
-				ConfigurationLocalHelper.getConfig().setServerHostname(panel.getServerName());
-				ConfigurationLocalHelper.getConfig().setServerPortnumber(panel.getServerPort());
-			}
-		});
+         private void saveConfig() {
+            ConfigurationLocalHelper.getConfig().setServerHostname(panel.getServerName());
+            ConfigurationLocalHelper.getConfig().setServerPortnumber(panel.getServerPort());
+         }
+      });
 
-		btnCancel = new JButton("Abbrechen");
-		btnCancel.addActionListener(new ActionListener() {
+      btnCancel = new JButton("Abbrechen");
+      btnCancel.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-				if (isConfigurationWhileStartup) {
-					System.exit(0);
-				}
-			}
-		});
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            dispose();
+            if (isConfigurationWhileStartup) {
+               System.exit(0);
+            }
+         }
+      });
 
-		setLayout(new MigLayout());
-		add(panel, "push, span, growx, wrap");
-		add(btnSave, "tag ok, span, split");
-		add(btnCancel, "tag cancel");
-		setSize(430, 340);
-		setLocationRelativeTo(null);
-	}
+      setLayout(new MigLayout());
+      add(panel, "push, span, growx, wrap");
+      add(btnSave, "tag ok, span, split");
+      add(btnCancel, "tag cancel");
+      setSize(430, 340);
+      setLocationRelativeTo(null);
+   }
 
 }

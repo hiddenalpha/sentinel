@@ -10,143 +10,136 @@ import ch.infbr5.sentinel.client.wsgen.ConfigurationDetails;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
-public class ConfigurationValuePanel extends
-		AbstractAdminOverviewPanel<ConfigurationDetails> {
+public class ConfigurationValuePanel extends AbstractAdminOverviewPanel<ConfigurationDetails> {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+   /**
+    *
+    */
+   private static final long serialVersionUID = 1L;
 
-	public ConfigurationValuePanel(boolean adminMode) {
-		super(adminMode);
-	}
+   public ConfigurationValuePanel(final boolean adminMode) {
+      super(adminMode);
+   }
 
-	@Override
-	protected AbstractAdminTableModel<ConfigurationDetails> getTableModel() {
-		return new MyTableModel();
-	}
+   @Override
+   protected AbstractAdminTableModel<ConfigurationDetails> getTableModel() {
+      return new MyTableModel();
+   }
 
-	public class MyTableModel extends
-			AbstractAdminTableModel<ConfigurationDetails> {
+   public class MyTableModel extends AbstractAdminTableModel<ConfigurationDetails> {
 
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		private final String[] headerNames = { "Key", "String Value",
-				"Long Value", "Gültig für" };
+      /**
+       *
+       */
+      private static final long serialVersionUID = 1L;
+      private final String[] headerNames = { "Key", "String Value", "Long Value", "GÃ¼ltig fÃ¼r" };
 
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			if (columnIndex == 0) {
-				return getDataRecord(rowIndex).getKey();
-			} else if (columnIndex == 1) {
-				return getDataRecord(rowIndex).getStringValue();
-			} else if (columnIndex == 2) {
-				return getDataRecord(rowIndex).getLongValue();
-			} else if (columnIndex == 3) {
-				return getDataRecord(rowIndex).getValidFor();
-			}
-			return null;
-		}
+      @Override
+      public Object getValueAt(final int rowIndex, final int columnIndex) {
+         if (columnIndex == 0) {
+            return getDataRecord(rowIndex).getKey();
+         } else if (columnIndex == 1) {
+            return getDataRecord(rowIndex).getStringValue();
+         } else if (columnIndex == 2) {
+            return getDataRecord(rowIndex).getLongValue();
+         } else if (columnIndex == 3) {
+            return getDataRecord(rowIndex).getValidFor();
+         }
+         return null;
+      }
 
-		@Override
-		public String[] getHeaderNames() {
-			return headerNames;
-		}
+      @Override
+      public String[] getHeaderNames() {
+         return headerNames;
+      }
 
-		@Override
-		public ConfigurationDetails getNewDataRecord() {
-			ConfigurationDetails c = new ConfigurationDetails();
-			c.setKey("");
-			c.setValidFor("");
+      @Override
+      public ConfigurationDetails getNewDataRecord() {
+         final ConfigurationDetails c = new ConfigurationDetails();
+         c.setKey("");
+         c.setValidFor("");
 
-			return c;
-		}
+         return c;
+      }
 
-		@Override
-		public void removeBackendObject(ConfigurationDetails object) {
-			ServiceHelper.getConfigurationsService().removeConfiguration(
-					object.getId());
-		}
+      @Override
+      public void removeBackendObject(final ConfigurationDetails object) {
+         ServiceHelper.getConfigurationsService().removeConfiguration(object.getId());
+      }
 
-		@Override
-		public void updateBackendObject(ConfigurationDetails object) {
-			ServiceHelper.getConfigurationsService().updateConfigurationValue(
-					object);
-		}
+      @Override
+      public void updateBackendObject(final ConfigurationDetails object) {
+         ServiceHelper.getConfigurationsService().updateConfigurationValue(object);
+      }
 
-		@Override
-		public List<ConfigurationDetails> getBackendObjects() {
-			ConfigurationResponse response = ServiceHelper
-					.getConfigurationsService().getConfigurationValues();
-			return response.getConfigurationDetails();
-		}
+      @Override
+      public List<ConfigurationDetails> getBackendObjects() {
+         final ConfigurationResponse response = ServiceHelper.getConfigurationsService().getConfigurationValues();
+         return response.getConfigurationDetails();
+      }
 
-	}
+   }
 
-	@Override
-	protected AbstractAdminDetailPanel<ConfigurationDetails> getDetailPanel() {
-		return new MyDetailPanel();
-	}
+   @Override
+   protected AbstractAdminDetailPanel<ConfigurationDetails> getDetailPanel() {
+      return new MyDetailPanel();
+   }
 
-	public class MyDetailPanel extends
-			AbstractAdminDetailPanel<ConfigurationDetails> {
+   public class MyDetailPanel extends AbstractAdminDetailPanel<ConfigurationDetails> {
 
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		private JTextField fieldKey;
-		private JTextField fieldValidFor;
-		private JTextField fieldValueString;
-		private JTextField fieldValueLong;
+      /**
+       *
+       */
+      private static final long serialVersionUID = 1L;
+      private final JTextField fieldKey;
+      private final JTextField fieldValidFor;
+      private final JTextField fieldValueString;
+      private final JTextField fieldValueLong;
 
-		public MyDetailPanel() {
-			setLayout(new MigLayout("inset 20"));
+      public MyDetailPanel() {
+         setLayout(new MigLayout("inset 20"));
 
-			SwingHelper.addSeparator(this, "Configuration");
+         SwingHelper.addSeparator(this, "Configuration");
 
-			fieldKey = createField("Key");
-			fieldValidFor = createField("Gültig für");
+         fieldKey = createField("Key");
+         fieldValidFor = createField("Gï¿½ltig fï¿½r");
 
-			SwingHelper.addSeparator(this, "Werte");
+         SwingHelper.addSeparator(this, "Werte");
 
-			fieldValueString = createField("String Value");
-			fieldValueLong = createField("Long Value");
-		}
+         fieldValueString = createField("String Value");
+         fieldValueLong = createField("Long Value");
+      }
 
-		@Override
-		public void getFieldValues() {
-			data.setKey(fieldKey.getText());
-			data.setStringValue(fieldValueString.getText());
-			data.setLongValue(Long.valueOf(fieldValueLong.getText()));
-			data.setValidFor(fieldValidFor.getText());
-		}
+      @Override
+      public void getFieldValues() {
+         data.setKey(fieldKey.getText());
+         data.setStringValue(fieldValueString.getText());
+         data.setLongValue(Long.valueOf(fieldValueLong.getText()));
+         data.setValidFor(fieldValidFor.getText());
+      }
 
-		@Override
-		public void setFieldValues() {
-			fieldKey.setText(data.getKey());
-			fieldValueString.setText(data.getStringValue());
-			fieldValueLong.setText(String.valueOf(data.getLongValue()));
-			fieldValidFor.setText(data.getValidFor());
-		}
+      @Override
+      public void setFieldValues() {
+         fieldKey.setText(data.getKey());
+         fieldValueString.setText(data.getStringValue());
+         fieldValueLong.setText(String.valueOf(data.getLongValue()));
+         fieldValidFor.setText(data.getValidFor());
+      }
 
-		@Override
-		public void clearFieldValues() {
-			fieldKey.setText("");
-			fieldValueString.setText("");
-			fieldValueLong.setText("");
-			fieldValidFor.setText("");
-		}
+      @Override
+      public void clearFieldValues() {
+         fieldKey.setText("");
+         fieldValueString.setText("");
+         fieldValueLong.setText("");
+         fieldValidFor.setText("");
+      }
 
-		@Override
-		public void setEditable(boolean mode) {
-			fieldKey.setEditable(mode);
-			fieldValueString.setEditable(mode);
-			fieldValueLong.setEditable(mode);
-			fieldValidFor.setEditable(mode);
-		}
-	}
+      @Override
+      public void setEditable(final boolean mode) {
+         fieldKey.setEditable(mode);
+         fieldValueString.setEditable(mode);
+         fieldValueLong.setEditable(mode);
+         fieldValidFor.setEditable(mode);
+      }
+   }
 }

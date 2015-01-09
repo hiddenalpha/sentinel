@@ -16,73 +16,79 @@ import ch.infbr5.sentinel.client.util.ServiceHelper;
 
 public class CheckpointConfigurationDialog extends JDialog {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	// UI Components
-	private JButton btnSave;
+   // UI Components
+   private final JButton btnSave;
 
-	private JButton btnCancel;
+   private final JButton btnCancel;
 
-	private final CheckpointConfigurationPanel panel;
+   private final CheckpointConfigurationPanel panel;
 
-	public CheckpointConfigurationDialog(final JFrame parent, final CheckpointConfigurator config, String info, final boolean isConfigurationWhileStartup) {
-		super(parent);
+   public CheckpointConfigurationDialog(final JFrame parent, final CheckpointConfigurator config, final String info,
+         final boolean isConfigurationWhileStartup) {
+      super(parent);
 
-		setModal(true);
-		setTitle("Checkpoint konfigurieren");
-		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		setResizable(false);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				dispose();
-				if (isConfigurationWhileStartup) {
-					System.exit(0);
-				}
-			}
-		});
+      setModal(true);
+      setTitle("Checkpoint konfigurieren");
+      setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+      setResizable(false);
+      addWindowListener(new WindowAdapter() {
+         @Override
+         public void windowClosing(final WindowEvent e) {
+            dispose();
+            if (isConfigurationWhileStartup) {
+               System.exit(0);
+            }
+         }
+      });
 
-		panel = new CheckpointConfigurationPanel(info, ServiceHelper.getConfigurationsService().getCheckpoints().getCheckpointDetails());
+      panel = new CheckpointConfigurationPanel(info, ServiceHelper.getConfigurationsService().getCheckpoints()
+            .getCheckpointDetails());
 
-		btnSave = new JButton("Speichern");
-		btnSave.addActionListener(new ActionListener() {
+      btnSave = new JButton("Speichern");
+      btnSave.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (isConfigurationWhileStartup) {
-					save();
-					dispose();
-				} else {
-					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent, "Möchten Sie die Einstellung wirklich speichern? Der Client wird automatisch beendet. Starten Sie diesen dannach neu.", "Konfiguration speichern", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-						save();
-						System.exit(0);
-					}
-				}
-			}
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            if (isConfigurationWhileStartup) {
+               save();
+               dispose();
+            } else {
+               if (JOptionPane.YES_OPTION == JOptionPane
+                     .showConfirmDialog(
+                           parent,
+                           "MÃ¶chten Sie die Einstellung wirklich speichern? Der Client wird automatisch beendet. Starten Sie diesen dannach neu.",
+                           "Konfiguration speichern", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+                  save();
+                  System.exit(0);
+               }
+            }
+         }
 
-			private void save() {
-				ConfigurationLocalHelper.getConfig().setCheckpointId(panel.getCheckpointId());
-			}
-		});
+         private void save() {
+            ConfigurationLocalHelper.getConfig().setCheckpointId(panel.getCheckpointId());
+         }
+      });
 
-		btnCancel = new JButton("Abbrechen");
-		btnCancel.addActionListener(new ActionListener() {
+      btnCancel = new JButton("Abbrechen");
+      btnCancel.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-				if (isConfigurationWhileStartup) {
-					System.exit(0);
-				}
-			}
-		});
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            dispose();
+            if (isConfigurationWhileStartup) {
+               System.exit(0);
+            }
+         }
+      });
 
-		setLayout(new MigLayout());
-		add(panel, "push, span, growx, wrap");
-		add(btnSave, "tag ok, span, split");
-		add(btnCancel, "tag cancel");
-		setSize(500, 420);
-		setLocationRelativeTo(null);
-	}
+      setLayout(new MigLayout());
+      add(panel, "push, span, growx, wrap");
+      add(btnSave, "tag ok, span, split");
+      add(btnCancel, "tag cancel");
+      setSize(500, 420);
+      setLocationRelativeTo(null);
+   }
 
 }
