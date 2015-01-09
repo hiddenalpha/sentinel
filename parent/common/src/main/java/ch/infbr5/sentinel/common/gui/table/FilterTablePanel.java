@@ -21,94 +21,94 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class FilterTablePanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private JTextField txtFilter;
+   private final JTextField txtFilter;
 
-	private JButton btnFilter;
+   private final JButton btnFilter;
 
-	private JButton btnReset;
-	
-	private final TableRowSorter<TableModel> sorter;
+   private final JButton btnReset;
 
-	public FilterTablePanel(JTable table, JButton additionalButton) {
+   private final TableRowSorter<TableModel> sorter;
 
-		sorter = new TableRowSorter<TableModel>(table.getModel());
-	    table.setRowSorter(sorter);
+   public FilterTablePanel(final JTable table, final JButton additionalButton) {
 
-		txtFilter = new JTextField();
-		txtFilter.addKeyListener(new KeyListener() {
+      sorter = new TableRowSorter<TableModel>(table.getModel());
+      table.setRowSorter(sorter);
 
-			@Override
-			public void keyTyped(KeyEvent e) {
+      txtFilter = new JTextField();
+      txtFilter.addKeyListener(new KeyListener() {
 
-			}
+         @Override
+         public void keyTyped(final KeyEvent e) {
 
-			@Override
-			public void keyReleased(KeyEvent e) {
+         }
 
-			}
+         @Override
+         public void keyReleased(final KeyEvent e) {
 
-			@Override
-			public void keyPressed(KeyEvent e) {
-				int key = e.getKeyCode();
-                if (key == KeyEvent.VK_ENTER) {
-                	applyFilter();
-                }
+         }
 
-			}
-		});
+         @Override
+         public void keyPressed(final KeyEvent e) {
+            final int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ENTER) {
+               applyFilter();
+            }
 
-		btnFilter = new JButton("Filter");
-		btnFilter.setFont(SwingHelper.smaller(btnFilter.getFont()));
-		btnFilter.addActionListener(new ActionListener() {
+         }
+      });
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				applyFilter();
-			}
-		});
+      btnFilter = new JButton("Filter");
+      btnFilter.setFont(SwingHelper.smaller(btnFilter.getFont()));
+      btnFilter.addActionListener(new ActionListener() {
 
-		btnReset = new JButton("Zurücksetzen");
-		btnReset.setFont(SwingHelper.smaller(btnReset.getFont()));
-		btnReset.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            applyFilter();
+         }
+      });
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				txtFilter.setText("");
-				sorter.setRowFilter(RowFilter.regexFilter(txtFilter.getText()));
-			}
-		});
+      btnReset = new JButton("ZurÃ¼cksetzen");
+      btnReset.setFont(SwingHelper.smaller(btnReset.getFont()));
+      btnReset.addActionListener(new ActionListener() {
 
-		setLayout(new MigLayout());
-		add(txtFilter, "growx, aligny center");
-		if (additionalButton == null) {
-			add(btnFilter);
-			add(btnReset, "wrap");
-		} else {
-			additionalButton.setFont(SwingHelper.smaller(additionalButton.getFont()));
-			add(btnFilter);
-			add(btnReset);
-			add(additionalButton, "wrap");
-		}
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            txtFilter.setText("");
+            sorter.setRowFilter(RowFilter.regexFilter(txtFilter.getText()));
+         }
+      });
 
-		add(new JScrollPane(table), "spanx,push,grow");
-	}
-	
-	private void applyFilter() {
-		txtFilter.setText(txtFilter.getText().trim());
-		
-		String search = txtFilter.getText();
-    	String[] searches = search.split(" ");
-    	
-    	List<RowFilter<Object,Object>> filters = new ArrayList<RowFilter<Object,Object>>();
-    	for (String s : searches) {
-    		// (?i) => case insenstive!
-    		filters.add(RowFilter.regexFilter("(?i)" + s));
-    	}
-   	   	
-    	RowFilter<Object,Object> filter = RowFilter.andFilter(filters);
-    	sorter.setRowFilter(filter);
-	}
+      setLayout(new MigLayout());
+      add(txtFilter, "growx, aligny center");
+      if (additionalButton == null) {
+         add(btnFilter);
+         add(btnReset, "wrap");
+      } else {
+         additionalButton.setFont(SwingHelper.smaller(additionalButton.getFont()));
+         add(btnFilter);
+         add(btnReset);
+         add(additionalButton, "wrap");
+      }
+
+      add(new JScrollPane(table), "spanx,push,grow");
+   }
+
+   private void applyFilter() {
+      txtFilter.setText(txtFilter.getText().trim());
+
+      final String search = txtFilter.getText();
+      final String[] searches = search.split(" ");
+
+      final List<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>();
+      for (final String s : searches) {
+         // (?i) => case insenstive!
+         filters.add(RowFilter.regexFilter("(?i)" + s));
+      }
+
+      final RowFilter<Object, Object> filter = RowFilter.andFilter(filters);
+      sorter.setRowFilter(filter);
+   }
 
 }
