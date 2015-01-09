@@ -39,8 +39,6 @@ public class WorkflowStepFile extends WorkflowStep {
 
    private String currentFilename;
 
-   private String lastUploadedFilename;
-
    private JRadioButton bestandedsImport;
 
    private JRadioButton einrueckungsImport;
@@ -58,7 +56,7 @@ public class WorkflowStepFile extends WorkflowStep {
 
    @Override
    public String getUserInfo() {
-      return "W�hlen Sie die zu importierende Datei aus. Es sind nur CSV, XLS und XLSX Dateien erlaubt. Die Datei muss eine �berschrift haben, 7 Spalten besitzen und Daten beinhalten.";
+      return "Wählen Sie die zu importierende Datei aus. Es sind nur CSV, XLS und XLSX Dateien erlaubt. Die Datei muss eine �berschrift haben, 7 Spalten besitzen und Daten beinhalten.";
    }
 
    @Override
@@ -146,7 +144,6 @@ public class WorkflowStepFile extends WorkflowStep {
          abort();
       }
 
-      lastUploadedFilename = currentFilename;
       getData().setKompletterBestand(bestandedsImport.isSelected());
       final byte[] byteData = loadFile(currentFilename);
       sessionKey = ServiceHelper.getPersonenImporterService().initiatImport((new File(currentFilename)).getName(),
