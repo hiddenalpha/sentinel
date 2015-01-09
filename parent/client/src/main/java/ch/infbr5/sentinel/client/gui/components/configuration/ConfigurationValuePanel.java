@@ -102,7 +102,7 @@ public class ConfigurationValuePanel extends AbstractAdminOverviewPanel<Configur
          SwingHelper.addSeparator(this, "Configuration");
 
          fieldKey = createField("Key");
-         fieldValidFor = createField("G�ltig f�r");
+         fieldValidFor = createField("Gültig");
 
          SwingHelper.addSeparator(this, "Werte");
 

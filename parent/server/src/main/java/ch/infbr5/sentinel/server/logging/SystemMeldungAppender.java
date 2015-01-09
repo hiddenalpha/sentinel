@@ -10,47 +10,47 @@ import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 
 public class SystemMeldungAppender extends AppenderSkeleton {
 
-	public static boolean ENABLE = false;
+   public static boolean ENABLE = false;
 
-	@Override
-	public void close() {
-		// Do nothing
-	}
+   @Override
+   public void close() {
+      // Do nothing
+   }
 
-	@Override
-	public boolean requiresLayout() {
-		return false;
-	}
+   @Override
+   public boolean requiresLayout() {
+      return false;
+   }
 
-	@Override
-	protected void append(LoggingEvent event) {
-		if (!ENABLE) {
-			return;
-		}
+   @Override
+   protected void append(final LoggingEvent event) {
+      if (!ENABLE) {
+         return;
+      }
 
-		SystemMeldung meldung = new SystemMeldung();
+      final SystemMeldung meldung = new SystemMeldung();
 
-		// Generelle Informationen
-		meldung.setCheckpoint(null); // TODO In der Regel l‰uft ein Serveraktion
-										// im Kontext eines Client-Requests ab.
-										// Hier sollte man dann den Checkpoint
-										// eintragen.
-		meldung.setMessage(event.getMessage().toString());
-		meldung.setLevel(event.getLevel().toString());
-		meldung.setMillis(event.getTimeStamp());
+      // Generelle Informationen
+      meldung.setCheckpoint(null); // TODO In der Regel laeuft ein Serveraktion
+      // im Kontext eines Client-Requests ab.
+      // Hier sollte man dann den Checkpoint
+      // eintragen.
+      meldung.setMessage(event.getMessage().toString());
+      meldung.setLevel(event.getLevel().toString());
+      meldung.setMillis(event.getTimeStamp());
 
-		// Zus‰tzliche Informationen
-		meldung.setLoggerClass(event.getFQNOfLoggerClass());
-		meldung.setCallerClass(event.getLocationInformation().getClassName());
-		meldung.setCallerMethod(event.getLocationInformation().getMethodName());
-		meldung.setCallerLineNumber(event.getLocationInformation().getLineNumber());
-		meldung.setCallerFilename(event.getLocationInformation().getFileName());
+      // Zus√§tzliche Informationen
+      meldung.setLoggerClass(event.getFQNOfLoggerClass());
+      meldung.setCallerClass(event.getLocationInformation().getClassName());
+      meldung.setCallerMethod(event.getLocationInformation().getMethodName());
+      meldung.setCallerLineNumber(event.getLocationInformation().getLineNumber());
+      meldung.setCallerFilename(event.getLocationInformation().getFileName());
 
-		EntityManager em = EntityManagerHelper.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(meldung);
-		em.getTransaction().commit();
-		em.close();
-	}
+      final EntityManager em = EntityManagerHelper.createEntityManager();
+      em.getTransaction().begin();
+      em.persist(meldung);
+      em.getTransaction().commit();
+      em.close();
+   }
 
 }

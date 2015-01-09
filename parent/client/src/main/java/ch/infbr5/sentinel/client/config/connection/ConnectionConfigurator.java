@@ -51,7 +51,7 @@ public class ConnectionConfigurator {
 
    /**
     * Konfiguriert die Services. Setzt die Endpoint-Adresse. Falls eine
-    * Exception auftritt, sind die EndpointAdressen ung�ltig.
+    * Exception auftritt, sind die EndpointAdressen ungültig.
     *
     * @return true, falls die Konfiguration erfolgreich war, anderenfalls false.
     */
@@ -97,7 +97,7 @@ public class ConnectionConfigurator {
       log.debug("Client nach Serverkonfiguration fragen.");
       final ConnectionConfigurationDialog dialog = new ConnectionConfigurationDialog(null, this, info,
             ConfigurationLocalHelper.getConfig().getServerHostname(), ConfigurationLocalHelper.getConfig()
-                  .getServerPortnumber(), isConfigurationWhileStartup);
+            .getServerPortnumber(), isConfigurationWhileStartup);
       dialog.setVisible(true);
    }
 

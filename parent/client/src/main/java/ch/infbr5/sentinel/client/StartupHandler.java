@@ -7,20 +7,20 @@ import ch.infbr5.sentinel.client.config.server.ServerConfigurator;
 
 public class StartupHandler {
 
-	public void startConfig() {
-		boolean isFirstConfiguration = ConfigurationLocalHelper.isFirstConfiguration();
+   public void startConfig() {
+      final boolean isFirstConfiguration = ConfigurationLocalHelper.isFirstConfiguration();
 
-		// Server Connection -> Inital + Keine Verbindung
-		ConnectionConfigurator srvConfig = new ConnectionConfigurator(isFirstConfiguration, true);
-		srvConfig.configureConnectionConfiguration();
+      // Server Connection -> Inital + Keine Verbindung
+      final ConnectionConfigurator srvConfig = new ConnectionConfigurator(isFirstConfiguration, true);
+      srvConfig.configureConnectionConfiguration();
 
-		// Server Setup -> Falls Server sagt er sei nicht setted up!
-		ServerConfigurator serverConfig = new ServerConfigurator();
-		serverConfig.configureServerConfiguration();
+      // Server Setup -> Falls Server sagt er sei nicht setted up!
+      final ServerConfigurator serverConfig = new ServerConfigurator();
+      serverConfig.configureServerConfiguration();
 
-		// Checkpoint -> Initial + kein g¸ltiger Checkpoint lokal konfiguriert
-		CheckpointConfigurator ckpConfig = new CheckpointConfigurator(isFirstConfiguration, true);
-		ckpConfig.configureCheckpointConfiguration();
-	}
+      // Checkpoint -> Initial + kein g√ºltiger Checkpoint lokal konfiguriert
+      final CheckpointConfigurator ckpConfig = new CheckpointConfigurator(isFirstConfiguration, true);
+      ckpConfig.configureCheckpointConfiguration();
+   }
 
 }

@@ -29,134 +29,135 @@ import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 
 public class ApplicationFrame {
 
-	private static Logger log = Logger.getLogger(ApplicationFrame.class);
+   private static Logger log = Logger.getLogger(ApplicationFrame.class);
 
-	public static ApplicationFrame app;
+   public static ApplicationFrame app;
 
-	private JFrame frame;
+   private final JFrame frame;
 
-	private LoggerModel loggerModel;
+   private final LoggerModel loggerModel;
 
-	private FilterTablePanel filterTablePanel;
+   private final FilterTablePanel filterTablePanel;
 
-	public ApplicationFrame() {
-		frame = new JFrame("Sentinel-Server");
-		frame.setSize(600, 400);
-		frame.setIconImage(loadSentinelIcon());
-		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+   public ApplicationFrame() {
+      frame = new JFrame("Sentinel-Server");
+      frame.setSize(600, 400);
+      frame.setIconImage(loadSentinelIcon());
+      frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-		if (isSystemtraySupported()) {
-			frame.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosing(WindowEvent e) {
-					frame.setVisible(false);
-				}
-			});
-		} else {
-			frame.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosing(WindowEvent e) {
-					if (closeServerReally()) {
-						frame.dispose();
-						System.exit(0);
-					}
-				}
-			});
-		}
+      if (isSystemtraySupported()) {
+         frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent e) {
+               frame.setVisible(false);
+            }
+         });
+      } else {
+         frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent e) {
+               if (closeServerReally()) {
+                  frame.dispose();
+                  System.exit(0);
+               }
+            }
+         });
+      }
 
-		createMenubar();
+      createMenubar();
 
-		loggerModel = new LoggerModel(new ArrayList<LoggingEvent>());
-		filterTablePanel = new FilterTablePanel(new LoggerTable(loggerModel), null);
+      loggerModel = new LoggerModel(new ArrayList<LoggingEvent>());
+      filterTablePanel = new FilterTablePanel(new LoggerTable(loggerModel), null);
 
-		frame.setLayout(new MigLayout());
-		frame.add(filterTablePanel, "push, grow");
+      frame.setLayout(new MigLayout());
+      frame.add(filterTablePanel, "push, grow");
 
-		app = this;
-	}
+      app = this;
+   }
 
-	public void show() {
-		createSystemtray();
-		if (!isSystemtraySupported()) {
-			frame.setVisible(true);
-		}
-	}
+   public void show() {
+      createSystemtray();
+      if (!isSystemtraySupported()) {
+         frame.setVisible(true);
+      }
+   }
 
-	public void addText(LoggingEvent event) {
-		loggerModel.add(event);
-	}
+   public void addText(final LoggingEvent event) {
+      loggerModel.add(event);
+   }
 
-	private boolean isSystemtraySupported() {
-		// return false;
-		return SystemTray.isSupported();
-	}
+   private boolean isSystemtraySupported() {
+      // return false;
+      return SystemTray.isSupported();
+   }
 
-	private void createSystemtray() {
-		if (isSystemtraySupported()) {
-			TrayIcon trayIcon = new TrayIcon(loadSentinelIcon());
-			trayIcon.displayMessage("Sentinel-Server", "Sentinel Server gestartet.", MessageType.INFO);
-			trayIcon.setToolTip("Sentinel-Server");
-			trayIcon.setImageAutoSize(true);
+   private void createSystemtray() {
+      if (isSystemtraySupported()) {
+         final TrayIcon trayIcon = new TrayIcon(loadSentinelIcon());
+         trayIcon.displayMessage("Sentinel-Server", "Sentinel Server gestartet.", MessageType.INFO);
+         trayIcon.setToolTip("Sentinel-Server");
+         trayIcon.setImageAutoSize(true);
 
-			MenuItem menuCloseServer = new MenuItem("Server beenden");
-			menuCloseServer.addActionListener(createCloseListener());
+         final MenuItem menuCloseServer = new MenuItem("Server beenden");
+         menuCloseServer.addActionListener(createCloseListener());
 
-			MenuItem menuShowServer = new MenuItem("Server anzeigen");
-			menuShowServer.addActionListener(createShowListener());
+         final MenuItem menuShowServer = new MenuItem("Server anzeigen");
+         menuShowServer.addActionListener(createShowListener());
 
-			PopupMenu popup = new PopupMenu();
-			popup.add(menuShowServer);
-			popup.add(menuCloseServer);
-			trayIcon.setPopupMenu(popup);
-			try {
-				SystemTray.getSystemTray().add(trayIcon);
-			} catch (AWTException e) {
-				log.error(e);
-			}
-		}
-	}
+         final PopupMenu popup = new PopupMenu();
+         popup.add(menuShowServer);
+         popup.add(menuCloseServer);
+         trayIcon.setPopupMenu(popup);
+         try {
+            SystemTray.getSystemTray().add(trayIcon);
+         } catch (final AWTException e) {
+            log.error(e);
+         }
+      }
+   }
 
-	private void createMenubar() {
-		JMenuItem menuItem = new JMenuItem("Server beenden");
-		menuItem.addActionListener(createCloseListener());
+   private void createMenubar() {
+      final JMenuItem menuItem = new JMenuItem("Server beenden");
+      menuItem.addActionListener(createCloseListener());
 
-		JMenu menu = new JMenu("Server");
-		menu.add(menuItem);
+      final JMenu menu = new JMenu("Server");
+      menu.add(menuItem);
 
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(menu);
+      final JMenuBar menuBar = new JMenuBar();
+      menuBar.add(menu);
 
-		frame.setJMenuBar(menuBar);
-	}
+      frame.setJMenuBar(menuBar);
+   }
 
-	private ActionListener createCloseListener() {
-		return (new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (closeServerReally()) {
-					frame.dispose();
-					System.exit(0);
-				}
-			}
-		});
-	}
+   private ActionListener createCloseListener() {
+      return (new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            if (closeServerReally()) {
+               frame.dispose();
+               System.exit(0);
+            }
+         }
+      });
+   }
 
-	private boolean closeServerReally() {
-		int answer = JOptionPane.showConfirmDialog(frame, "Möchten Sie den Server wirklich ganz beenden?", "Server beenden", JOptionPane.YES_NO_OPTION);
-		return answer == JOptionPane.YES_OPTION;
-	}
+   private boolean closeServerReally() {
+      final int answer = JOptionPane.showConfirmDialog(frame, "MÃ¶chten Sie den Server wirklich ganz beenden?",
+            "Server beenden", JOptionPane.YES_NO_OPTION);
+      return answer == JOptionPane.YES_OPTION;
+   }
 
-	private ActionListener createShowListener() {
-		return (new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.setVisible(true);
-			}
-		});
-	}
+   private ActionListener createShowListener() {
+      return (new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            frame.setVisible(true);
+         }
+      });
+   }
 
-	private BufferedImage loadSentinelIcon() {
-		return ImageLoader.loadSentinelIcon();
-	}
+   private BufferedImage loadSentinelIcon() {
+      return ImageLoader.loadSentinelIcon();
+   }
 
 }

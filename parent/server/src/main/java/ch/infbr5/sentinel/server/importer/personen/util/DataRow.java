@@ -78,17 +78,17 @@ public class DataRow {
 
       str = this.getValue(PersonenAttribute.AHVNr);
       if (!ValidationRules.isValidString(str) || !ValidationRules.isValidAhvNr(str)) {
-         return "AHVNr nicht gesetzt oder nicht g�ltig (" + str + ").";
+         return "AHVNr nicht gesetzt oder nicht gültig (" + str + ").";
       }
 
       str = this.getValue(PersonenAttribute.Geburtstag);
       if (!ValidationRules.isValidString(str) || !ValidationRules.isValidGeburtstag(str)) {
-         return "Geburtstag nicht gesetzt oder nicht g�ltig (" + str + ").";
+         return "Geburtstag nicht gesetzt oder nicht gültig (" + str + ").";
       }
 
       str = this.getValue(PersonenAttribute.Grad);
       if (!ValidationRules.isValidString(str) || !ValidationRules.isValidGrad(str)) {
-         return "Grad nicht gesetzt oder nicht g�ltig (" + str + ").";
+         return "Grad nicht gesetzt oder nicht gültig (" + str + ").";
       }
 
       return errorMessage;
@@ -120,7 +120,7 @@ public class DataRow {
 
    /**
     * Prüft ob es Differenzen hat.
-    * 
+    *
     * @param person
     *           Personen.
     * @return True, falls es Differenzen hat, anderenfalls false.

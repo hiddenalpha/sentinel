@@ -31,213 +31,220 @@ import com.google.common.collect.Lists;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class PersonenImporterService {
 
-	private static Logger log = Logger.getLogger(PersonenImporterService.class);
+   private static Logger log = Logger.getLogger(PersonenImporterService.class);
 
-	@Resource
-	private WebServiceContext context;
+   @Resource
+   private WebServiceContext context;
 
-	@WebMethod
-	public String initiatImport(@WebParam(name = "filename") String filename, @WebParam(name = "data") byte[] data, @WebParam(name = "isKompletterBestand") boolean isKompletterBestand) {
-		// Create key
-		String sessionKey = createNewUniqueSessionKey();
+   @WebMethod
+   public String initiatImport(@WebParam(name = "filename") final String filename,
+         @WebParam(name = "data") final byte[] data,
+         @WebParam(name = "isKompletterBestand") final boolean isKompletterBestand) {
+      // Create key
+      final String sessionKey = createNewUniqueSessionKey();
 
-		// Save data file
-		String tmpFileData = getFileData(sessionKey, FileHelper.getExtension(filename));
-		FileHelper.saveAsFile(tmpFileData, data);
+      // Save data file
+      final String tmpFileData = getFileData(sessionKey, FileHelper.getExtension(filename));
+      FileHelper.saveAsFile(tmpFileData, data);
 
-		// Persist State
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		persister.getState().setFilenameData(tmpFileData);
-		persister.getState().setKompletterBestand(isKompletterBestand);
-		persister.save();
+      // Persist State
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
+      persister.getState().setFilenameData(tmpFileData);
+      persister.getState().setKompletterBestand(isKompletterBestand);
+      persister.save();
 
-		log.trace("initiat new import sessionkey " + sessionKey + " kompletterbestand " + isKompletterBestand);
+      log.trace("initiat new import sessionkey " + sessionKey + " kompletterbestand " + isKompletterBestand);
 
-		return sessionKey;
-	}
+      return sessionKey;
+   }
 
-	@WebMethod
-	public String fileHasMinimalRequirements(@WebParam(name = "sessionKey") String sessionKey) {
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		PersonenImporter importer = createImporter(persister);
+   @WebMethod
+   public String fileHasMinimalRequirements(@WebParam(name = "sessionKey") final String sessionKey) {
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
+      final PersonenImporter importer = createImporter(persister);
 
-		String result = importer.fileHasMinimalRequirements();
-		if (result == null) {
-			return "";
-		} else {
-			return result;
-		}
-	}
+      final String result = importer.fileHasMinimalRequirements();
+      if (result == null) {
+         return "";
+      } else {
+         return result;
+      }
+   }
 
-	@WebMethod
-	public ColumnMappingResponse getColumnMappings(@WebParam(name = "sessionKey") String sessionKey) {
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		PersonenImporter importer = createImporter(persister);
+   @WebMethod
+   public ColumnMappingResponse getColumnMappings(@WebParam(name = "sessionKey") final String sessionKey) {
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
+      final PersonenImporter importer = createImporter(persister);
 
-		// Falls keine Mappings vorhanden sind, dann erstelle Mappings
-		if (importer.getColumnMappings().isEmpty()) {
-			importer.calculateColumnMappings();
-		}
+      // Falls keine Mappings vorhanden sind, dann erstelle Mappings
+      if (importer.getColumnMappings().isEmpty()) {
+         importer.calculateColumnMappings();
+      }
 
-		// Importer Status speichern
-		saveState(persister, importer);
+      // Importer Status speichern
+      saveState(persister, importer);
 
-		// Response
-		ColumnMappingResponse response = new ColumnMappingResponse();
-		response.setColumns(toArrayColumn(importer.getColumns()));
-		response.setMappings(toArrayMappings(importer.getColumnMappings()));
+      // Response
+      final ColumnMappingResponse response = new ColumnMappingResponse();
+      response.setColumns(toArrayColumn(importer.getColumns()));
+      response.setMappings(toArrayMappings(importer.getColumnMappings()));
 
-		return response;
-	}
+      return response;
+   }
 
-	@WebMethod
-	public void setColumnMappings(@WebParam(name = "sessionKey") String sessionKey, @WebParam(name = "mappings") PersonenImportColumnMapping[] mappings) {
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
+   @WebMethod
+   public void setColumnMappings(@WebParam(name = "sessionKey") final String sessionKey,
+         @WebParam(name = "mappings") final PersonenImportColumnMapping[] mappings) {
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
 
-		if (hasColumnMappingsChanged(persister.getState().getColumnMappings(), mappings)) {
-			PersonenImporter importer = createImporter(persister);
-			importer.setColumnMappings(toListMappings(mappings));
-			if (importer.isValidImportData()) {
-				importer.calculateModifications();
-			}
-			saveState(persister, importer);
-		}
-	}
+      if (hasColumnMappingsChanged(persister.getState().getColumnMappings(), mappings)) {
+         final PersonenImporter importer = createImporter(persister);
+         importer.setColumnMappings(toListMappings(mappings));
+         if (importer.isValidImportData()) {
+            importer.calculateModifications();
+         }
+         saveState(persister, importer);
+      }
+   }
 
-	@WebMethod
-	public ModificationDto getModifications(@WebParam(name = "sessionKey") String sessionKey) {
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		PersonenImporter importer = createImporter(persister);
+   @WebMethod
+   public ModificationDto getModifications(@WebParam(name = "sessionKey") final String sessionKey) {
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
+      final PersonenImporter importer = createImporter(persister);
 
-		// Modifikationen berechnen, falls keine vorhanden sind
-		if (importer.getModifications() == null || !importer.getModifications().hasModifications()) {
-			importer.calculateModifications();
-		}
+      // Modifikationen berechnen, falls keine vorhanden sind
+      if (importer.getModifications() == null || !importer.getModifications().hasModifications()) {
+         importer.calculateModifications();
+      }
 
-		saveState(persister, importer);
+      saveState(persister, importer);
 
-		return importer.getModifications();
-	}
+      return importer.getModifications();
+   }
 
-	@WebMethod
-	public void setModifications(@WebParam(name = "sessionKey") String sessionKey, @WebParam(name = "modificationDto") ModificationDto modificationDto) {
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		persister.getState().setModifications(modificationDto);
-		persister.save();
-	}
+   @WebMethod
+   public void setModifications(@WebParam(name = "sessionKey") final String sessionKey,
+         @WebParam(name = "modificationDto") final ModificationDto modificationDto) {
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
+      persister.getState().setModifications(modificationDto);
+      persister.save();
+   }
 
-	@WebMethod
-	public boolean startImport(@WebParam(name = "sessionKey") String sessionKey) {
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		PersonenImporter importer = createImporter(persister);
+   @WebMethod
+   public boolean startImport(@WebParam(name = "sessionKey") final String sessionKey) {
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
+      final PersonenImporter importer = createImporter(persister);
 
-		if (importer.isValidImportData()) {
-			importer.importData();
-			cleanup(sessionKey);
-			return true;
-		} else {
-			log.warn("Daten konnten nicht importiert werden, da der Import ungültig ist.");
-			return false;
-		}
-	}
+      if (importer.isValidImportData()) {
+         importer.importData();
+         cleanup(sessionKey);
+         return true;
+      } else {
+         log.warn("Daten konnten nicht importiert werden, da der Import ungueltig ist.");
+         return false;
+      }
+   }
 
-	@WebMethod
-	public String[] getSupportedExtensions() {
-		return PersonenImporter.SUPPORTED_EXTENSIONS;
-	}
+   @WebMethod
+   public String[] getSupportedExtensions() {
+      return PersonenImporter.SUPPORTED_EXTENSIONS;
+   }
 
-	@WebMethod
-	public void abortImport(@WebParam(name = "sessionKey") String sessionKey) {
-		log.debug("abort import - sessionkey " + sessionKey);
-		cleanup(sessionKey);
-	}
+   @WebMethod
+   public void abortImport(@WebParam(name = "sessionKey") final String sessionKey) {
+      log.debug("abort import - sessionkey " + sessionKey);
+      cleanup(sessionKey);
+   }
 
-	private void cleanup(String sessionKey) {
-		PersonenImporterStatePersister persister = createPersister(sessionKey);
-		String filenameData = persister.getState().getFilenameData();
-		if (filenameData != null) {
-			File file = new File(filenameData);
-			if (file.exists()) {
-				file.delete();
-			}
-		}
-		persister.remove();
-	}
+   private void cleanup(final String sessionKey) {
+      final PersonenImporterStatePersister persister = createPersister(sessionKey);
+      final String filenameData = persister.getState().getFilenameData();
+      if (filenameData != null) {
+         final File file = new File(filenameData);
+         if (file.exists()) {
+            file.delete();
+         }
+      }
+      persister.remove();
+   }
 
-	private String createNewUniqueSessionKey() {
-		String sessionKey = UUID.randomUUID().toString();
-		log.trace("created new session key: " + sessionKey);
-		return sessionKey;
-	}
+   private String createNewUniqueSessionKey() {
+      final String sessionKey = UUID.randomUUID().toString();
+      log.trace("created new session key: " + sessionKey);
+      return sessionKey;
+   }
 
-	private PersonenImportColumn[] toArrayColumn(List<PersonenImportColumn> list) {
-		return list.toArray(new PersonenImportColumn[list.size()]);
-	}
+   private PersonenImportColumn[] toArrayColumn(final List<PersonenImportColumn> list) {
+      return list.toArray(new PersonenImportColumn[list.size()]);
+   }
 
-	private PersonenImportColumnMapping[] toArrayMappings(List<PersonenImportColumnMapping> list) {
-		return list.toArray(new PersonenImportColumnMapping[list.size()]);
-	}
+   private PersonenImportColumnMapping[] toArrayMappings(final List<PersonenImportColumnMapping> list) {
+      return list.toArray(new PersonenImportColumnMapping[list.size()]);
+   }
 
-	private List<PersonenImportColumnMapping> toListMappings(PersonenImportColumnMapping[] array) {
-		 return Lists.newArrayList(array);
-	}
+   private List<PersonenImportColumnMapping> toListMappings(final PersonenImportColumnMapping[] array) {
+      return Lists.newArrayList(array);
+   }
 
-	private PersonenImporter createImporter(PersonenImporterStatePersister persister) {
-		PersonenImporter importer = new PersonenImporter(getEntityManager(), persister.getState().getFilenameData(), persister.getState().isKompletterBestand());
-		importer.setColumnMappings(toListMappings(persister.getState().getColumnMappings()));
-		importer.setModifications(persister.getState().getModifications());
-		return importer;
-	}
+   private PersonenImporter createImporter(final PersonenImporterStatePersister persister) {
+      final PersonenImporter importer = new PersonenImporter(getEntityManager(),
+            persister.getState().getFilenameData(), persister.getState().isKompletterBestand());
+      importer.setColumnMappings(toListMappings(persister.getState().getColumnMappings()));
+      importer.setModifications(persister.getState().getModifications());
+      return importer;
+   }
 
-	private PersonenImporterStatePersister createPersister(String sessionKey) {
-		return new PersonenImporterStatePersister(getFileState(sessionKey));
-	}
+   private PersonenImporterStatePersister createPersister(final String sessionKey) {
+      return new PersonenImporterStatePersister(getFileState(sessionKey));
+   }
 
-	private void saveState(PersonenImporterStatePersister persister, PersonenImporter importer) {
-		persister.getState().setFilenameData(importer.getFilenameData());
-		persister.getState().setKompletterBestand(importer.isKompletterBestand());
-		persister.getState().setColumns(toArrayColumn(importer.getColumns()));
-		persister.getState().setColumnMappings(toArrayMappings(importer.getColumnMappings()));
-		persister.getState().setModifications(importer.getModifications());
-		persister.save();
-	}
+   private void saveState(final PersonenImporterStatePersister persister, final PersonenImporter importer) {
+      persister.getState().setFilenameData(importer.getFilenameData());
+      persister.getState().setKompletterBestand(importer.isKompletterBestand());
+      persister.getState().setColumns(toArrayColumn(importer.getColumns()));
+      persister.getState().setColumnMappings(toArrayMappings(importer.getColumnMappings()));
+      persister.getState().setModifications(importer.getModifications());
+      persister.save();
+   }
 
-	private boolean hasMappingChanged(PersonenImportColumnMapping[] mapping1, PersonenImportColumnMapping[] mapping2) {
-		boolean hasChanged = false;
-		for (PersonenImportColumnMapping m1 : mapping1) {
-			boolean foundOuterMapping = false;
-			for (PersonenImportColumnMapping m2 : mapping2) {
-				if (m1.getPersonenAttribute().equals(m2.getPersonenAttribute())) {
-					if (m1.getColumn() == null && m2.getColumn() == null) {
-						foundOuterMapping = true;
-					} else if (m1.getColumn() == null || m2.getColumn() == null) {
+   private boolean hasMappingChanged(final PersonenImportColumnMapping[] mapping1,
+         final PersonenImportColumnMapping[] mapping2) {
+      boolean hasChanged = false;
+      for (final PersonenImportColumnMapping m1 : mapping1) {
+         boolean foundOuterMapping = false;
+         for (final PersonenImportColumnMapping m2 : mapping2) {
+            if (m1.getPersonenAttribute().equals(m2.getPersonenAttribute())) {
+               if (m1.getColumn() == null && m2.getColumn() == null) {
+                  foundOuterMapping = true;
+               } else if (m1.getColumn() == null || m2.getColumn() == null) {
 
-					} else if (m1.getColumn().getIndex() == m2.getColumn().getIndex()) {
-						foundOuterMapping = true;
-					}
-				}
-			}
-			if (!foundOuterMapping) {
-				hasChanged = true;
-			}
-		}
-		return hasChanged;
-	}
+               } else if (m1.getColumn().getIndex() == m2.getColumn().getIndex()) {
+                  foundOuterMapping = true;
+               }
+            }
+         }
+         if (!foundOuterMapping) {
+            hasChanged = true;
+         }
+      }
+      return hasChanged;
+   }
 
-	private boolean hasColumnMappingsChanged(PersonenImportColumnMapping[] mapping1, PersonenImportColumnMapping[] mapping2) {
-		return (hasMappingChanged(mapping1, mapping2)) || (hasMappingChanged(mapping2, mapping1));
-	}
+   private boolean hasColumnMappingsChanged(final PersonenImportColumnMapping[] mapping1,
+         final PersonenImportColumnMapping[] mapping2) {
+      return (hasMappingChanged(mapping1, mapping2)) || (hasMappingChanged(mapping2, mapping1));
+   }
 
-	private String getFileState(String sessionKey) {
-		return "import/" + sessionKey + "-state" + ".xml";
-	}
+   private String getFileState(final String sessionKey) {
+      return "import/" + sessionKey + "-state" + ".xml";
+   }
 
-	private String getFileData(String sessionKey, String extension) {
-		return "import/" + sessionKey + "-data." + extension;
-	}
+   private String getFileData(final String sessionKey, final String extension) {
+      return "import/" + sessionKey + "-data." + extension;
+   }
 
-	private EntityManager getEntityManager() {
-		return EntityManagerHelper.getEntityManager(context);
-	}
+   private EntityManager getEntityManager() {
+      return EntityManagerHelper.getEntityManager(context);
+   }
 
 }
