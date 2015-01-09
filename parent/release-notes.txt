@@ -6,6 +6,9 @@
 	plattformunbhängige Entwikcklung.
 #38 Maven-Build: Entfernung der SUN-Abhängigkeiten beim WSGen (Webservice
 	Generierung). Die Klassen sind mittlerweile im Core (JDK).
+#49 Abhängigkeiten aktualisiert:
+		guava 18.0
+		miglayout-swing ?
 
 /***************************************/
 /* 			Version 0.8.2		   	   */
