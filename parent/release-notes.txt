@@ -9,9 +9,12 @@
 #49 Abhängigkeiten aktualisiert:
 		guava 18.0
 		junit 4.12
-#34 Personendaten Import: Slider Speed im Step Modifikationen erhöht
+#34 Personendaten Import: Slider Speed im Step Modifikationen erhöht. Der Scroll
+	war langsam und unbrauchbar.
 #35 Personendaten Import: Nach dem Import erscheint eine Dialogsmeldung. Diese
 	Meldung erscheint nun mit dem korrekten Icon. Auch die Fehlermeldung.
+#51 PrintJobs: Es wurden bei den Listen überall Headers hinzugefügt. Im Header ist
+	der Inhalt definiert (bspw. Name der Einheit), Seitenzahl und Datum. 
 
 /***************************************/
 /* 			Version 0.8.2		   	   */

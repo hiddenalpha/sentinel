@@ -18,106 +18,111 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfAusweisBoxInventar extends PDFRenderer {
 
-	private static final int NOF_SLOTS_IN_BOX = 132;
+   private static final int NOF_SLOTS_IN_BOX = 132;
 
-	private List<Person> personen;
+   private final List<Person> personen;
 
-	private String einheitName;
+   private final String einheitName;
 
-	public PdfAusweisBoxInventar(List<Person> personen, String einheitName) {
-		this.personen = personen;
-		this.einheitName = einheitName;
-	}
+   public PdfAusweisBoxInventar(final List<Person> personen, final String einheitName) {
+      this.personen = personen;
+      this.einheitName = einheitName;
+   }
 
-	@Override
-	protected String getFileName() {
-		return "ausweisboxInventar";
-	}
+   @Override
+   protected String getFileName() {
+      return "ausweisbox_"; // TODO Einheitsname
+   }
 
-	@Override
-	protected String getBeschreibung() {
-		return "Ausweisbox Inventar";
-	}
+   @Override
+   protected String getBeschreibung() {
+      return "Ausweisbox " + einheitName;
+   }
 
-	@Override
-	protected byte[] renderPdf() {
+   @Override
+   protected byte[] renderPdf() {
 
-		if (personen.isEmpty()) {
-			return null;
-		}
+      if (personen.isEmpty()) {
+         return null;
+      }
 
-		Document document = new Document();
-		document.setPageSize(PageSize.A4.rotate());
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			PdfWriter.getInstance(document, out);
-			document.open();
+      final Document document = new Document();
+      document.setPageSize(PageSize.A4.rotate());
+      final ByteArrayOutputStream out = new ByteArrayOutputStream();
+      final Font font = FontFactory.getFont(FontFactory.COURIER, 8, Font.NORMAL);
 
-			int seiten = ((personen.size() - 1) / NOF_SLOTS_IN_BOX) + 1;
+      try {
+         PdfWriter.getInstance(document, out);
+         document.setHeader(createHeader());
+         document.open();
 
-			for (int s = 1; s <= seiten; s++) {
-				// Tabellen Layout
-				PdfPTable table = new PdfPTable(5);
-				float[] columnWidth = { 150, 150, 150, 150, 150 };
-				table.setTotalWidth(columnWidth);
-				table.setLockedWidth(true);
+         final int seiten = ((personen.size() - 1) / NOF_SLOTS_IN_BOX) + 1;
 
-				for (int i = 1; i <= 27; i++) {
-					for (int j = 1; j <= 5; j++) {
+         for (int s = 1; s <= seiten; s++) {
+            // Tabellen Layout
+            final PdfPTable table = new PdfPTable(5);
+            final float[] columnWidth = { 150, 150, 150, 150, 150 };
+            table.setTotalWidth(columnWidth);
+            table.setLockedWidth(true);
 
-						Phrase p = new Phrase();
+            for (int i = 1; i <= 27; i++) {
+               for (int j = 1; j <= 5; j++) {
 
-						p.add(new Chunk(getAusweisAt(i, j, s, personen),
-								FontFactory.getFont(FontFactory.COURIER, 8,
-										Font.NORMAL)));
-						PdfPCell c = new PdfPCell(p);
-						c.setFixedHeight(18);
-						table.addCell(c);
-					}
+                  final Phrase p = new Phrase();
 
-				}
-				document.add(table);
-				document.newPage();
-			}
+                  p.add(new Chunk(getAusweisAt(i, j, s), font));
 
-		} catch (DocumentException e) {
-			e.printStackTrace();
-			// } catch (IOException e) {
-			// e.printStackTrace();
-		}
-		document.close();
-		return out.toByteArray();
-	}
+                  final PdfPCell c = new PdfPCell(p);
+                  c.setFixedHeight(18);
+                  table.addCell(c);
+               }
 
-	private String getAusweisAt(int row, int col, int page,
-			List<Person> personen) {
-		if ((col == 3) && (row > 24)) {
-			return "";
-		}
+            }
+            document.add(table);
+            document.newPage();
+         }
 
-		int nr = (col - 1) * 27 + row;
-		if (col > 3) {
-			nr = nr - 3;
-		}
+      } catch (final DocumentException e) {
+         e.printStackTrace();
+      }
+      document.close();
+      return out.toByteArray();
+   }
 
-		int AusweisNr = nr - 1 + (NOF_SLOTS_IN_BOX * (page - 1));
+   private String getAusweisAt(final int row, final int col, final int page) {
+      if ((col == 3) && (row > 24)) {
+         return "";
+      }
 
-		String txt = "";
-		if (AusweisNr < personen.size()) {
-			Person p = personen.get(AusweisNr);
-			if (p != null) {
-				txt = String.valueOf(nr) + ". ";
-				if (p.getName() != null)
-					txt = txt + p.getName() + " ";
-				if (p.getVorname() != null)
-					txt = txt + p.getVorname() + " ";
-				if (p.getGrad() != null)
-					txt = txt + "(" + p.getGrad().toString() + ")";
-			}
-		}
+      int nr = (col - 1) * 27 + row;
+      if (col > 3) {
+         nr = nr - 3;
+      }
 
-		return txt.trim();
-	}
+      final int AusweisNr = nr - 1 + (NOF_SLOTS_IN_BOX * (page - 1));
 
+      String txt = "";
+      if (AusweisNr < personen.size()) {
+         txt = getPersonDescription(nr, personen.get(AusweisNr));
+      }
+      return txt;
+   }
+
+   private String getPersonDescription(final int nr, final Person person) {
+      String description = "";
+      if (person != null) {
+         description = String.valueOf(nr) + ". ";
+         if (person.getName() != null) {
+            description += person.getName() + " ";
+         }
+         if (person.getVorname() != null) {
+            description += person.getVorname() + " ";
+         }
+         if (person.getGrad() != null) {
+            description += "(" + person.getGrad().getGradText() + ")";
+         }
+      }
+      return description.trim();
+   }
 
 }

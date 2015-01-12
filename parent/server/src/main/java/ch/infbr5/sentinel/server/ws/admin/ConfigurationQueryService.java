@@ -64,7 +64,7 @@ public class ConfigurationQueryService {
 
    /**
     * Gibt alle Einheiten zurück.
-    * 
+    *
     * @return Alle Einheiten.
     */
    @WebMethod
@@ -744,6 +744,15 @@ public class ConfigurationQueryService {
       return response;
    }
 
+   /**
+    * Erstellung eines PrintJobs, welches ein PDF repräsentiert. Der Inhalt des
+    * PDFs ist eine Liste mit Personen, welche einen Ausweis besitzen. Es werden
+    * nur Personen mit der entsprechenden Einheit berücksichtigt.
+    *
+    * @param einheitName
+    *           Name der Einheit.
+    * @return ConfiguraitonResponse in welcher PrintJobDetails abgefüllt ist.
+    */
    @WebMethod
    public ConfigurationResponse printAusweisboxInventar(final String einheitName) {
       final ConfigurationResponse response = new ConfigurationResponse();
@@ -764,7 +773,7 @@ public class ConfigurationQueryService {
    }
 
    @WebMethod
-   // TODO Man sollte nicht mit toString() arbeiten. Besser w�re wohl
+   // TODO Man sollte nicht mit toString() arbeiten. Besser wäre wohl
    // getGradText().
    public String[] getGradValues() {
       final String[] result = new String[Grad.values().length];

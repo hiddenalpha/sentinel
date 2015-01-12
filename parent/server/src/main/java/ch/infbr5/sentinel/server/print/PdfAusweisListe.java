@@ -22,152 +22,163 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfAusweisListe extends PDFRenderer {
 
-	private boolean nurMitAusweis = true;
-	private boolean nachEinheit = false;
-	private String einheitName;
+   private boolean nurMitAusweis = true;
+   private boolean nachEinheit = false;
+   private final String einheitName;
 
-	private List<Person> personen;
+   private final List<Person> personen;
 
-	public PdfAusweisListe(List<Person> personen, boolean nurMitAusweis, boolean nachEinheit, String einheitName) {
-		this.personen = personen;
-		this.nurMitAusweis = nurMitAusweis;
-		this.nachEinheit = nachEinheit;
-		this.einheitName = einheitName;
-	}
+   public PdfAusweisListe(final List<Person> personen, final boolean nurMitAusweis, final boolean nachEinheit,
+         final String einheitName) {
+      this.personen = personen;
+      this.nurMitAusweis = nurMitAusweis;
+      this.nachEinheit = nachEinheit;
+      this.einheitName = einheitName;
+   }
 
-	@Override
-	protected String getFileName() {
-		return "ausweisListe";
-	}
+   @Override
+   protected String getFileName() {
+      return "ausweisListe";
+   }
 
-	@Override
-	public String getBeschreibung() {
-		String parameter = "";
+   @Override
+   public String getBeschreibung() {
+      String parameter = "";
 
-		if (nurMitAusweis)
-			parameter = "nur Ausweise ";
+      if (nurMitAusweis) {
+         parameter += "nur Ausweise ";
+      }
 
-		if (nachEinheit) {
-			parameter = parameter + "nach Einheit";
-		} else {
-			parameter = parameter + "nach Name";
-		}
+      if (nachEinheit) {
+         parameter += "nach Einheit " + einheitName + " ";
+      } else {
+         parameter += "nach Name ";
+      }
 
-		return "Ausweisliste ("+parameter+")";
-	}
+      return ("Ausweisliste " + parameter).trim();
+   }
 
-	@Override
-	protected byte[] renderPdf() {
+   @Override
+   protected byte[] renderPdf() {
 
-		if (personen.isEmpty()) {
-			return null;
-		}
+      if (personen.isEmpty()) {
+         return null;
+      }
 
-		Document document = new Document();
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			PdfWriter.getInstance(document, out);
-			document.open();
+      final Document document = new Document();
+      final ByteArrayOutputStream out = new ByteArrayOutputStream();
+      try {
+         PdfWriter.getInstance(document, out);
+         document.setHeader(createHeader());
+         document.open();
 
-			// Tabellen Layout
-			PdfPTable table = new PdfPTable(4);
-			float[] columnWidth = { 30, 130, 130, 200 };
-			table.setTotalWidth(columnWidth);
-			table.setLockedWidth(true);
+         // Tabellen Layout
+         final PdfPTable table = new PdfPTable(4);
+         final float[] columnWidth = { 30, 130, 130, 200 };
+         table.setTotalWidth(columnWidth);
+         table.setLockedWidth(true);
 
-			for (Person person : personen) {
-				// Spalte 1 --- Foto ---
-				Image imgJpeg;
-				byte[] bild = ImageStore.loadJpegImage(person.getAhvNr());
-				if (bild != null) {
-					imgJpeg = new Jpeg(bild);
-					table.addCell(imgJpeg);
-				} else {
-					table.addCell("");
-				}
+         for (final Person person : personen) {
+            // Spalte 1 --- Foto ---
+            Image imgJpeg;
+            final byte[] bild = ImageStore.loadJpegImage(person.getAhvNr());
+            if (bild != null) {
+               imgJpeg = new Jpeg(bild);
+               table.addCell(imgJpeg);
+            } else {
+               table.addCell("");
+            }
 
-				// Spalte 2 --- Personendaten ---
-				table.addCell(createPersPhrase(person));
+            // Spalte 2 --- Personendaten ---
+            table.addCell(createPersPhrase(person));
 
-				// Spalte 3 --- Ausweisinformationen ---
-				if (person.getValidAusweis() != null) {
-					table.addCell(createAusweisPhrase(person.getValidAusweis()));
-				} else {
-					table.addCell("");
-				}
+            // Spalte 3 --- Ausweisinformationen ---
+            if (person.getValidAusweis() != null) {
+               table.addCell(createAusweisPhrase(person.getValidAusweis()));
+            } else {
+               table.addCell("");
+            }
 
-				// Spalte 4 --- Leer ---
-				table.addCell("");
+            // Spalte 4 --- Leer ---
+            table.addCell("");
 
-			}
+         }
 
-			document.add(table);
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		document.close();
-		return out.toByteArray();
-	}
+         document.add(table);
+      } catch (final DocumentException e) {
+         e.printStackTrace();
+      } catch (final IOException e) {
+         e.printStackTrace();
+      }
+      document.close();
+      return out.toByteArray();
+   }
 
-	private Phrase createAusweisPhrase(Ausweis ausweis) {
-		Phrase p = new Phrase();
+   private Phrase createAusweisPhrase(final Ausweis ausweis) {
+      final Phrase p = new Phrase();
 
-		p.add(new Chunk(ausweis.getBarcode() + "\n", FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL)));
+      p.add(new Chunk(ausweis.getBarcode() + "\n", createCourierNormal()));
 
-		// ---- Gueltig ab ----
-		if (ausweis.getGueltigVon() != null)
-			p.add(new Chunk(DateFormater.formatToDate(ausweis.getGueltigVon()) + "\n", FontFactory.getFont(
-					FontFactory.COURIER, 5, Font.NORMAL)));
+      // ---- Gueltig ab ----
+      if (ausweis.getGueltigVon() != null) {
+         p.add(new Chunk(DateFormater.formatToDate(ausweis.getGueltigVon()) + "\n", createCourierNormal()));
+      }
 
-		// ---- Box ----
-		if (ausweis.getBox() != null)
-			p.add(new Chunk(ausweis.getBox().getName() + "\n", FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL)));
+      // ---- Box ----
+      if (ausweis.getBox() != null) {
+         p.add(new Chunk(ausweis.getBox().getName() + "\n", createCourierNormal()));
+      }
 
-		return p;
-	}
+      return p;
+   }
 
-	private Phrase createPersPhrase(Person person) {
-		Phrase p = new Phrase();
+   private Phrase createPersPhrase(final Person person) {
+      final Phrase p = new Phrase();
 
-		// ---- AHV Nr ----
-		if (person.getAhvNr() != null)
-			p.add(new Chunk(person.getAhvNr() + "\n", FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL)));
+      // ---- AHV Nr ----
+      if (person.getAhvNr() != null) {
+         p.add(new Chunk(person.getAhvNr() + "\n", createCourierNormal()));
+      }
 
-		// ---- Name Vorname ----
-		String name = "";
-		if (person.getName() != null) {
-			name = name.concat(person.getName());
-			name = name.concat(" ");
-		}
-		if (person.getVorname() != null)
-			name = name.concat(person.getVorname());
-		p.add(new Chunk(name + "\n", FontFactory.getFont(FontFactory.COURIER, 8, Font.BOLD)));
+      // ---- Name Vorname ----
+      String name = "";
+      if (person.getName() != null) {
+         name = name.concat(person.getName());
+         name = name.concat(" ");
+      }
+      if (person.getVorname() != null) {
+         name = name.concat(person.getVorname());
+      }
+      p.add(new Chunk(name + "\n", FontFactory.getFont(FontFactory.COURIER, 8, Font.BOLD)));
 
-		// ---- Funktion ----
-		if (person.getFunktion() != null)
-			p.add(new Chunk(person.getFunktion() + ", ", FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL)));
+      // ---- Funktion ----
+      if (person.getFunktion() != null) {
+         p.add(new Chunk(person.getFunktion() + ", ", createCourierNormal()));
+      }
 
-		// ---- Grad ----
-		if (person.getGrad() != null) {
-			p.add(new Chunk(person.getGrad().toString() + "\n", FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL)));
-		} else {
-			p.add(new Chunk("\n", FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL)));
-		}
+      // ---- Grad ----
+      if (person.getGrad() != null) {
+         p.add(new Chunk(person.getGrad().toString() + "\n", createCourierNormal()));
+      } else {
+         p.add(new Chunk("\n", createCourierNormal()));
+      }
 
-		// ---- Einheit ----
-		if (person.getEinheit() != null)
-			p.add(new Chunk(person.getEinheit().getName() + "\n", FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL)));
+      // ---- Einheit ----
+      if (person.getEinheit() != null) {
+         p.add(new Chunk(person.getEinheit().getName() + "\n", createCourierNormal()));
+      }
 
-		// ---- Geburtsdatum ----
-		if (person.getGeburtsdatum() != null) {
-			p.add(new Chunk(DateFormater.formatToDate(person.getGeburtsdatum()), FontFactory.getFont(FontFactory.COURIER,
-					5, Font.NORMAL)));
-		}
+      // ---- Geburtsdatum ----
+      if (person.getGeburtsdatum() != null) {
+         p.add(new Chunk(DateFormater.formatToDate(person.getGeburtsdatum()), createCourierNormal()));
+      }
 
-		return p;
+      return p;
 
-	}
+   }
+
+   private Font createCourierNormal() {
+      return FontFactory.getFont(FontFactory.COURIER, 5, Font.NORMAL);
+   }
 
 }
