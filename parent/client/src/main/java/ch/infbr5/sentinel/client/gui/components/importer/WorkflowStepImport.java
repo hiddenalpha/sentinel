@@ -104,13 +104,18 @@ public class WorkflowStepImport extends WorkflowStep {
    public void finishNext() {
       final boolean result = ServiceHelper.getPersonenImporterService().startImport(getData().getSessionKey());
 
+      final String title = "Pisadaten importieren";
+      int messageType = 0;
+      String message = null;
       if (result) {
-         JOptionPane.showMessageDialog(null, "Die Datei wurde gespeichert.", "Pisadaten importieren",
-               JOptionPane.OK_OPTION);
+         message = "Die Datei wurde gespeichert.";
+         messageType = JOptionPane.INFORMATION_MESSAGE;
       } else {
-         JOptionPane.showMessageDialog(null, "Die Datei konnte nicht erfolgreich gespeichert werden.",
-               "Pisadaten importieren", JOptionPane.CANCEL_OPTION);
+         message = "Die Datei konnte nicht erfolgreich gespeichert werden.";
+         messageType = JOptionPane.WARNING_MESSAGE;
       }
+
+      JOptionPane.showMessageDialog(null, message, title, messageType);
    }
 
 }
