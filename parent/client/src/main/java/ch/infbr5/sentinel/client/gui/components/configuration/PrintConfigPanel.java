@@ -2,7 +2,6 @@ package ch.infbr5.sentinel.client.gui.components.configuration;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -25,14 +24,30 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
    private MyTableModel tableModel;
 
-   public PrintConfigPanel(final boolean adminMode) {
-      super(adminMode);
-   }
-
    @Override
    protected AbstractAdminTableModel<PrintJobDetails> getTableModel() {
       tableModel = new MyTableModel();
       return tableModel;
+   }
+
+   @Override
+   protected boolean isSaveButtonAvailable() {
+      return false;
+   }
+
+   @Override
+   protected boolean isNewButtonAvailable() {
+      return false;
+   }
+
+   @Override
+   protected boolean isEditButtonAvailable() {
+      return false;
+   }
+
+   @Override
+   protected boolean isCancelButtonAvailable() {
+      return false;
    }
 
    public class MyTableModel extends AbstractAdminTableModel<PrintJobDetails> {
@@ -60,7 +75,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
       @Override
       public void removeBackendObject(final PrintJobDetails object) {
-
+         // TODO Allow
       }
 
       @Override
@@ -88,15 +103,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
       return new MyDetailPanel();
    }
 
-   public class MyDetailPanel extends AbstractAdminDetailPanel<PrintJobDetails> implements ActionListener {
-
-      private static final String CMD_BUTTON_PDF_OEFFNEN = "CMD_BUTTON_PDF_OEFFNEN";
-      private static final String CMD_BUTTON_DRUCKE_AUSWEISE = "CMD_BUTTON_DRUCKE_AUSWEISE";
-      private static final String CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME = "CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NAME";
-      private static final String CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH = "CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_EINH";
-      private static final String CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME = "CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME";
-      private static final String CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH = "CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH";
-      private static final String CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR = "CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR";
+   public class MyDetailPanel extends AbstractAdminDetailPanel<PrintJobDetails> {
 
       private static final long serialVersionUID = 1L;
 
@@ -106,71 +113,109 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
       private final JTextField beschreibung;
       private final JTextField dateiname;
 
-      private final JButton ausweiseDruckenButton;
-      private final JButton ausweisListeDruckenNachNameButton;
-      private final JButton ausweisListeDruckenNachEinhButton;
-      private final JButton personenListeDruckenNachNameButton;
-      private final JButton personenListeDruckenNachEinhButton;
-      private final JButton ausweisboxInventarDruckenButton;
       private final JButton pdfOeffnenButton;
 
       public MyDetailPanel() {
          setLayout(new MigLayout("inset 20"));
 
-         druckdatum = createField("Druckdatum");
-         druckdatum.setEditable(false);
-         beschreibung = createField("Beschreibung");
-         beschreibung.setEditable(false);
-         dateiname = createField("Dateiname");
-         dateiname.setEditable(false);
+         // Details pro PrintJob
+         druckdatum = createFieldNotEditable("Druckdatum");
+         beschreibung = createFieldNotEditable("Beschreibung");
+         dateiname = createFieldNotEditable("Dateiname");
 
          pdfOeffnenButton = new JButton("PDF öffnen");
-         pdfOeffnenButton.addActionListener(this);
-         pdfOeffnenButton.setActionCommand(CMD_BUTTON_PDF_OEFFNEN);
+         pdfOeffnenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               if (data != null) {
+                  final ConfigurationResponse response = ServiceHelper.getConfigurationsService().getPrintJob(
+                        data.getPrintJobId());
+                  showPrintJob(response);
+               }
+            }
+         });
          this.add(SwingHelper.createLabel(""), "gap para");
          this.add(pdfOeffnenButton, "span, growx");
 
+         // Druckaufträge starten
          SwingHelper.addSeparator(this, "Druckauftrag starten");
 
-         this.add(SwingHelper.createLabel("Ausweise"), "gap para");
-
-         ausweiseDruckenButton = new JButton("neu erstellt");
-         ausweiseDruckenButton.addActionListener(this);
-         ausweiseDruckenButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEISE);
-         this.add(ausweiseDruckenButton);
-
+         // Ausweise
+         addPrintSectionLabel("Ausweise");
+         addPrintSectionButton("neu erstellt", new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               final ConfigurationResponse response = ServiceHelper.getConfigurationsService().printAusweise();
+               handleResponse(response);
+               updateAusweisDruckenButtonName();
+            }
+         });
          lblAusstehendeAusweise = SwingHelper.createLabel("");
          updateAusweisDruckenButtonName();
          this.add(lblAusstehendeAusweise);
 
-         this.add(SwingHelper.createLabel("Ausweisliste"), "newline, gap para");
+         // Ausweisboxen
+         addPrintSectionLabel("Ausweisboxen");
+         addPrintSectionButton("Alle", new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               final ConfigurationResponse response = ServiceHelper.getConfigurationsService().printAusweisboxAlle();
+               handleResponse(response);
+            }
+         });
+         addPrintSectionButton("nach Einheit", new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               final String einheit = selectEinheit();
+               if (einheit != null && !"".equals(einheit)) {
+                  final ConfigurationResponse response = ServiceHelper.getConfigurationsService()
+                        .printAusweisboxNachEinheit(einheit);
+                  handleResponse(response);
+               }
+            }
+         });
 
-         ausweisListeDruckenNachNameButton = new JButton("nach Name");
-         ausweisListeDruckenNachNameButton.addActionListener(this);
-         ausweisListeDruckenNachNameButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME);
-         this.add(ausweisListeDruckenNachNameButton);
+         // Ausweislisten
+         addPrintSectionLabel("Ausweisliste");
+         addPrintSectionButton("Alle", new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               final ConfigurationResponse response = ServiceHelper.getConfigurationsService().printAusweisListeAlle();
+               handleResponse(response);
+            }
+         });
+         addPrintSectionButton("nach Einheit", new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               final String einheit = selectEinheit();
+               if (einheit != null && !"".equals(einheit)) {
+                  final ConfigurationResponse response = ServiceHelper.getConfigurationsService()
+                        .printAusweisListeNachEinheit(einheit);
+                  handleResponse(response);
+               }
+            }
+         });
 
-         ausweisListeDruckenNachEinhButton = new JButton("nach Einheit");
-         ausweisListeDruckenNachEinhButton.addActionListener(this);
-         ausweisListeDruckenNachEinhButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH);
-         this.add(ausweisListeDruckenNachEinhButton);
-
-         ausweisboxInventarDruckenButton = new JButton("Ausweisboxen");
-         ausweisboxInventarDruckenButton.addActionListener(this);
-         ausweisboxInventarDruckenButton.setActionCommand(CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR);
-         this.add(ausweisboxInventarDruckenButton);
-
-         this.add(SwingHelper.createLabel("Personenliste"), "newline, gap para");
-
-         personenListeDruckenNachNameButton = new JButton("nach Name");
-         personenListeDruckenNachNameButton.addActionListener(this);
-         personenListeDruckenNachNameButton.setActionCommand(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME);
-         this.add(personenListeDruckenNachNameButton);
-
-         personenListeDruckenNachEinhButton = new JButton("nach Einheit");
-         personenListeDruckenNachEinhButton.addActionListener(this);
-         personenListeDruckenNachEinhButton.setActionCommand(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH);
-         this.add(personenListeDruckenNachEinhButton);
+         // Personen Liste
+         addPrintSectionLabel("Personenliste");
+         addPrintSectionButton("Alle", new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               final ConfigurationResponse response = ServiceHelper.getConfigurationsService().printPersonenListeAlle();
+               handleResponse(response);
+            }
+         });
+         addPrintSectionButton("nach Einheit", new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+               final String einheit = selectEinheit();
+               if (einheit != null && !"".equals(einheit)) {
+                  final ConfigurationResponse response = ServiceHelper.getConfigurationsService()
+                        .printPersonenListeNachEinheit(einheit);
+                  handleResponse(response);
+               }
+            }
+         });
       }
 
       @Override
@@ -180,13 +225,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
       @Override
       public void setFieldValues() {
-         if (data.getPrintJobDate() != null) {
-            final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-            druckdatum.setText(sdf.format(data.getPrintJobDate().toGregorianCalendar().getTime()));
-         } else {
-            druckdatum.setText("");
-         }
-
+         druckdatum.setText(DateFormater.formatToDateWithDetailTime(data.getPrintJobDate()));
          beschreibung.setText(data.getPrintJobDesc());
          dateiname.setText(data.getPintJobFile());
       }
@@ -203,33 +242,12 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
       }
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-         ConfigurationResponse response = null;
+      private void handleResponse(final ConfigurationResponse response) {
+         showPrintJob(response);
+         tableModel.updateData();
+      }
 
-         boolean updateData = true;
-
-         if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEISE)) {
-            response = ServiceHelper.getConfigurationsService().printAusweise();
-            updateAusweisDruckenButtonName();
-            updateData = false;
-         } else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME)) {
-            response = ServiceHelper.getConfigurationsService().printAusweisListe(true, false, "");
-         } else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH)) {
-            response = ServiceHelper.getConfigurationsService().printAusweisListe(true, true, selectEinheit());
-         } else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEISBOX_INVENTAR)) {
-            response = ServiceHelper.getConfigurationsService().printAusweisboxInventar(selectEinheit());
-         } else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_NAME)) {
-            response = ServiceHelper.getConfigurationsService().printAusweisListe(false, false, "");
-         } else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_PERSONEN_LISTE_NACH_EINH)) {
-            response = ServiceHelper.getConfigurationsService().printAusweisListe(false, true, selectEinheit());
-         } else if (e.getActionCommand().equals(CMD_BUTTON_PDF_OEFFNEN)) {
-            if (data != null) {
-               response = ServiceHelper.getConfigurationsService().getPrintJob(data.getPrintJobId());
-            }
-            updateData = false;
-         }
-
+      private void showPrintJob(final ConfigurationResponse response) {
          if (response != null) {
             if (response.getPrintJobDetails() != null && response.getPrintJobDetails().size() > 0) {
                final PrintJobDetails job = response.getPrintJobDetails().get(0);
@@ -240,15 +258,27 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
                      JOptionPane.WARNING_MESSAGE);
             }
          }
-
-         if (updateData) {
-            tableModel.updateData();
-         }
       }
 
       public void updateAusweisDruckenButtonName() {
          final int no = ServiceHelper.getConfigurationsService().anzahlAusstehendeZuDruckendeAusweise();
          lblAusstehendeAusweise.setText("(" + no + " ausstehend)");
+      }
+
+      private JTextField createFieldNotEditable(final String name) {
+         final JTextField field = createField(name);
+         field.setEditable(false);
+         return field;
+      }
+
+      private void addPrintSectionButton(final String text, final ActionListener actionListener) {
+         final JButton button = new JButton(text);
+         button.addActionListener(actionListener);
+         this.add(button);
+      }
+
+      private void addPrintSectionLabel(final String text) {
+         this.add(SwingHelper.createLabel(text), "newline, gap para");
       }
 
       private String selectEinheit() {
@@ -260,8 +290,8 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
          }
 
          if (values.length > 0) {
-            final String selected = (String) JOptionPane.showInputDialog(this, "Wähle Einheit", "Einheit Auswahl",
-                  JOptionPane.QUESTION_MESSAGE, null, values, values[0]);
+            final String selected = (String) JOptionPane.showInputDialog(this, "Wähle eine Einheit aus",
+                  "Einheit Auswahl", JOptionPane.QUESTION_MESSAGE, null, values, values[0]);
             return selected;
          } else {
             return "";

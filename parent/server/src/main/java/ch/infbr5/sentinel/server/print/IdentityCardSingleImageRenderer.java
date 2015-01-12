@@ -55,7 +55,7 @@ public class IdentityCardSingleImageRenderer {
       this.config = config;
       this.imagePerson = ImageStore.getImage(person);
       if (person == null || einheit == null || imagePerson == null) {
-         throw new IllegalArgumentException("Ung�ltige Parameter");
+         throw new IllegalArgumentException("Ungültige Parameter");
       }
 
       // TODO Schoener machen!

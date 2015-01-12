@@ -22,18 +22,13 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfRendererPersonenListe extends PdfRenderer {
 
-   private boolean nurMitAusweis = true;
-   private boolean nachEinheit = false;
-   private final String einheitName;
-
    private final List<Person> personen;
 
-   public PdfRendererPersonenListe(final List<Person> personen, final boolean nurMitAusweis, final boolean nachEinheit,
-         final String einheitName) {
+   private final String beschreibung;
+
+   public PdfRendererPersonenListe(final List<Person> personen, final String beschreibung) {
       this.personen = personen;
-      this.nurMitAusweis = nurMitAusweis;
-      this.nachEinheit = nachEinheit;
-      this.einheitName = einheitName;
+      this.beschreibung = beschreibung;
    }
 
    @Override
@@ -43,23 +38,7 @@ public class PdfRendererPersonenListe extends PdfRenderer {
 
    @Override
    public String getBeschreibung() {
-      final StringBuffer buffer = new StringBuffer();
-
-      if (nurMitAusweis) {
-         buffer.append("Ausweisliste ");
-      } else {
-         buffer.append("Personenliste ");
-      }
-
-      if (nachEinheit) {
-         buffer.append("von ");
-         buffer.append(einheitName);
-         buffer.append(" ");
-      } else {
-         buffer.append("nach Name ");
-      }
-
-      return buffer.toString().trim();
+      return this.beschreibung;
    }
 
    @Override

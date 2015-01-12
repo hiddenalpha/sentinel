@@ -13,110 +13,108 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class ZoneConfigPanel extends AbstractAdminOverviewPanel<ZoneDetails> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+   /**
+    *
+    */
+   private static final long serialVersionUID = 1L;
 
-	public ZoneConfigPanel(boolean adminMode) {
-		super(adminMode);
-	}
+   @Override
+   protected AbstractAdminTableModel<ZoneDetails> getTableModel() {
+      return new MyTableModel();
+   }
 
-	@Override
-	protected AbstractAdminTableModel<ZoneDetails> getTableModel() {
-		return new MyTableModel();
-	}
+   public class MyTableModel extends AbstractAdminTableModel<ZoneDetails> {
 
-	public class MyTableModel extends AbstractAdminTableModel<ZoneDetails> {
+      /**
+       *
+       */
+      private static final long serialVersionUID = 1L;
+      private final String[] headerNames = { "Name" };
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private final String[] headerNames = { "Name" };
+      @Override
+      public Object getValueAt(final int rowIndex, final int columnIndex) {
+         return getDataRecord(rowIndex).getName();
+      }
 
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			return getDataRecord(rowIndex).getName();
-		}
+      @Override
+      public ZoneDetails getNewDataRecord() {
+         final ZoneDetails detail = new ZoneDetails();
+         detail.setName("");
+         detail.setUndOpRegeln(false);
 
-		@Override
-		public ZoneDetails getNewDataRecord() {
-			ZoneDetails detail = new ZoneDetails();
-			detail.setName("");
-			detail.setUndOpRegeln(false);
+         return detail;
+      }
 
-			return detail;
-		}
+      @Override
+      public void removeBackendObject(final ZoneDetails object) {
+         // todo
+         // ServiceHelper.getConfigurationsService().removeZone(object.getId());
+      }
 
-		@Override
-		public void removeBackendObject(ZoneDetails object) {
-			// todo
-			// ServiceHelper.getConfigurationsService().removeZone(object.getId());
-		}
+      @Override
+      public void updateBackendObject(final ZoneDetails object) {
+         // todo
+         // ServiceHelper.getConfigurationsService().updateZone(object);
+      }
 
-		@Override
-		public void updateBackendObject(ZoneDetails object) {
-			// todo
-			// ServiceHelper.getConfigurationsService().updateZone(object);
-		}
+      @Override
+      public List<ZoneDetails> getBackendObjects() {
+         // todo
+         final ConfigurationResponse response = ServiceHelper.getConfigurationsService().getZonen();
+         return response.getZoneDetails();
+      }
 
-		@Override
-		public List<ZoneDetails> getBackendObjects() {
-			// todo
-			ConfigurationResponse response = ServiceHelper
-					.getConfigurationsService().getZonen();
-			return response.getZoneDetails();
-		}
+      @Override
+      public String[] getHeaderNames() {
+         return headerNames;
+      }
+   }
 
-		@Override
-		public String[] getHeaderNames() {
-			return headerNames;
-		}
-	}
+   @Override
+   protected AbstractAdminDetailPanel<ZoneDetails> getDetailPanel() {
+      return new MyDetailPanel();
+   }
 
-	@Override
-	protected AbstractAdminDetailPanel<ZoneDetails> getDetailPanel() {
-		return new MyDetailPanel();
-	}
+   public class MyDetailPanel extends AbstractAdminDetailPanel<ZoneDetails> {
 
-	public class MyDetailPanel extends AbstractAdminDetailPanel<ZoneDetails> {
+      /**
+       *
+       */
+      private static final long serialVersionUID = 1L;
+      private final JTextField fieldName;
+      private final JCheckBox undOpRegelnCheckBox;
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private JTextField fieldName;
-		private JCheckBox undOpRegelnCheckBox;
+      public MyDetailPanel() {
+         setLayout(new MigLayout("inset 20"));
 
-		public MyDetailPanel() {
-			setLayout(new MigLayout("inset 20"));
+         SwingHelper.addSeparator(this, "Titel");
 
-			SwingHelper.addSeparator(this, "Titel");
+         fieldName = createField("Name");
+         undOpRegelnCheckBox = createCheckbox("UndOpRegeln");
+      }
 
-			fieldName = createField("Name");
-			undOpRegelnCheckBox = createCheckbox("UndOpRegeln");
-		}
+      @Override
+      public void getFieldValues() {
+         data.setName(fieldName.getText());
+         data.setUndOpRegeln(undOpRegelnCheckBox.isSelected());
+      }
 
-		public void getFieldValues() {
-			data.setName(fieldName.getText());
-			data.setUndOpRegeln(undOpRegelnCheckBox.isSelected());
-		}
+      @Override
+      public void setFieldValues() {
+         fieldName.setText(data.getName());
+         undOpRegelnCheckBox.setSelected(data.isUndOpRegeln());
+      }
 
-		public void setFieldValues() {
-			fieldName.setText(data.getName());
-			undOpRegelnCheckBox.setSelected(data.isUndOpRegeln());
-		}
+      @Override
+      public void clearFieldValues() {
+         fieldName.setText("");
+         undOpRegelnCheckBox.setSelected(false);
+      }
 
-		public void clearFieldValues() {
-			fieldName.setText("");
-			undOpRegelnCheckBox.setSelected(false);
-		}
-
-		@Override
-		public void setEditable(boolean mode) {
-			fieldName.setEditable(mode);
-			undOpRegelnCheckBox.setEnabled(mode);
-		}
-	}
+      @Override
+      public void setEditable(final boolean mode) {
+         fieldName.setEditable(mode);
+         undOpRegelnCheckBox.setEnabled(mode);
+      }
+   }
 }

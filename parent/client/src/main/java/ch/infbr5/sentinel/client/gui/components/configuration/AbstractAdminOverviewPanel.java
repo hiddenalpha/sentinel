@@ -56,10 +56,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
 
    private int lastSelectedRow;
 
-   private final boolean isAdminMode;
-
-   public AbstractAdminOverviewPanel(final boolean adminMode) {
-      isAdminMode = adminMode;
+   public AbstractAdminOverviewPanel() {
       initComponents();
    }
 
@@ -106,7 +103,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
       } else if (e.getActionCommand().equals(BUTTON_ADMINPANEL_DELETE)) {
          if (isRowSelected()) {
             final int result = JOptionPane.showConfirmDialog(null, "Möchten Sie den Eintrag wirklich löschen?",
-                  "Best�tigung", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                  "Bestätigung", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (result == JOptionPane.YES_OPTION) {
                model.removeDataRecord(detailPanel.getDataRecord());
                setEditable(false);
@@ -200,32 +197,40 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
 
    private void setEditable(final boolean mode) {
       editMode = mode;
-      detailPanel.setEditable(mode);
 
+      detailPanel.setEditable(mode);
       table.setEnabled(!mode);
 
-      if (mode) {
-         editButton.setEnabled(false);
-         newButton.setEnabled(false);
-         deleteButton.setEnabled(false);
-         saveButton.setEnabled(true);
-         cancelButton.setEnabled(true);
-      } else {
-         editButton.setEnabled(true);
-         newButton.setEnabled(true);
-         if (isAdminMode) {
-            deleteButton.setEnabled(true);
-         } else {
-            deleteButton.setEnabled(false);
-         }
-         saveButton.setEnabled(false);
-         cancelButton.setEnabled(false);
-      }
+      editButton.setEnabled(!mode);
+      newButton.setEnabled(!mode);
+      deleteButton.setEnabled(!mode);
+      saveButton.setEnabled(mode);
+      cancelButton.setEnabled(mode);
 
       if (!isRowSelected()) {
          editButton.setEnabled(false);
          deleteButton.setEnabled(false);
       }
+   }
+
+   protected boolean isEditButtonAvailable() {
+      return true;
+   }
+
+   protected boolean isNewButtonAvailable() {
+      return true;
+   }
+
+   protected boolean isDeleteButtonAvailable() {
+      return true;
+   }
+
+   protected boolean isSaveButtonAvailable() {
+      return true;
+   }
+
+   protected boolean isCancelButtonAvailable() {
+      return true;
    }
 
    private void createButtons() {
@@ -235,30 +240,35 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
       newButton.setName(BUTTON_ADMINPANEL_NEW);
       newButton.addActionListener(this);
       newButton.setActionCommand(BUTTON_ADMINPANEL_NEW);
+      newButton.setVisible(isNewButtonAvailable());
       buttonPanel.add(newButton);
 
       editButton = new JButton("Bearbeiten");
       editButton.setName(BUTTON_ADMINPANEL_EDIT);
       editButton.addActionListener(this);
       editButton.setActionCommand(BUTTON_ADMINPANEL_EDIT);
+      editButton.setVisible(isEditButtonAvailable());
       buttonPanel.add(editButton);
 
       saveButton = new JButton("Speichern");
       saveButton.setName(BUTTON_ADMINPANEL_SAVE);
       saveButton.addActionListener(this);
       saveButton.setActionCommand(BUTTON_ADMINPANEL_SAVE);
+      saveButton.setVisible(isSaveButtonAvailable());
       buttonPanel.add(saveButton);
 
       deleteButton = new JButton("Löschen");
       deleteButton.setName(BUTTON_ADMINPANEL_DELETE);
       deleteButton.addActionListener(this);
       deleteButton.setActionCommand(BUTTON_ADMINPANEL_DELETE);
+      deleteButton.setVisible(isDeleteButtonAvailable());
       buttonPanel.add(deleteButton);
 
       cancelButton = new JButton("Abbrechen");
       cancelButton.setName(BUTTON_ADMINPANEL_CANCEL);
       cancelButton.addActionListener(this);
       cancelButton.setActionCommand(BUTTON_ADMINPANEL_CANCEL);
+      cancelButton.setVisible(isCancelButtonAvailable());
       buttonPanel.add(cancelButton);
    }
 

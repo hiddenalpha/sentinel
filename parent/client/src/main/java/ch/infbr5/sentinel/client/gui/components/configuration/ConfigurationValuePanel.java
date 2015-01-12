@@ -12,14 +12,7 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class ConfigurationValuePanel extends AbstractAdminOverviewPanel<ConfigurationDetails> {
 
-   /**
-    *
-    */
    private static final long serialVersionUID = 1L;
-
-   public ConfigurationValuePanel(final boolean adminMode) {
-      super(adminMode);
-   }
 
    @Override
    protected AbstractAdminTableModel<ConfigurationDetails> getTableModel() {
@@ -28,10 +21,8 @@ public class ConfigurationValuePanel extends AbstractAdminOverviewPanel<Configur
 
    public class MyTableModel extends AbstractAdminTableModel<ConfigurationDetails> {
 
-      /**
-       *
-       */
       private static final long serialVersionUID = 1L;
+
       private final String[] headerNames = { "Key", "String Value", "Long Value", "Gültig für" };
 
       @Override

@@ -37,8 +37,8 @@ import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.model.PrintJob;
 import ch.infbr5.sentinel.server.model.Zone;
 import ch.infbr5.sentinel.server.model.Zutrittsregel;
-import ch.infbr5.sentinel.server.print.PdfRendererIdendityCards;
 import ch.infbr5.sentinel.server.print.PdfRendererAusweisBox;
+import ch.infbr5.sentinel.server.print.PdfRendererIdendityCards;
 import ch.infbr5.sentinel.server.print.PdfRendererPersonenListe;
 import ch.infbr5.sentinel.server.ws.AusweisvorlageKonfiguration;
 import ch.infbr5.sentinel.server.ws.CheckpointDetails;
@@ -693,8 +693,6 @@ public class ConfigurationQueryService {
 
    @WebMethod
    public ConfigurationResponse printAusweise() {
-      final ConfigurationResponse response = new ConfigurationResponse();
-
       final List<Ausweis> ausweise = getQueryHelper().findAusweiseZumDrucken();
       String password = "";
       final List<ConfigurationValue> passwordList = getQueryHelper().findConfigurationValue(
@@ -706,42 +704,39 @@ public class ConfigurationQueryService {
       final AusweisvorlageKonfiguration config = createAusweisvorlageKonfiguration();
 
       final PdfRendererIdendityCards renderer = new PdfRendererIdendityCards(ausweise, password, config);
-      final PrintJob job = renderer.print();
-      if (job != null) {
-         // In diesem Fall hat es Funktioniert und die Ausweise wurden erstellt.
+
+      final ConfigurationResponse response = processJob(renderer.print());
+      if (response.getPrintJobDetails() != null && response.getPrintJobDetails().length > 0) {
          for (final Ausweis ausweis : ausweise) {
             ausweis.setErstellt(true);
             getEntityManager().persist(ausweis);
          }
-
-         getEntityManager().persist(job);
-
-         final PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
-         printJobDetails[0] = convert(job);
-         printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
-         response.setPrintJobDetails(printJobDetails);
       }
       return response;
    }
 
    @WebMethod
-   public ConfigurationResponse printAusweisListe(final boolean nurMitAusweis, final boolean nachEinheit,
-         final String einheitName) {
-      final ConfigurationResponse response = new ConfigurationResponse();
+   public ConfigurationResponse printPersonenListeAlle() {
+      final List<Person> personen = getQueryHelper().getPersonen(false, false, "");
+      return printPersonenListe(personen, "Personenliste nach Name");
+   }
 
-      final List<Person> personen = getQueryHelper().getPersonen(nurMitAusweis, nachEinheit, einheitName);
-      final PdfRendererPersonenListe ausweisList = new PdfRendererPersonenListe(personen, nurMitAusweis, nachEinheit, einheitName);
-      final PrintJob job = ausweisList.print();
-      if (job != null) {
-         getEntityManager().persist(job);
+   @WebMethod
+   public ConfigurationResponse printPersonenListeNachEinheit(final String einheit) {
+      final List<Person> personen = getQueryHelper().getPersonen(false, true, einheit);
+      return printPersonenListe(personen, "Personenliste " + einheit);
+   }
 
-         final PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
-         printJobDetails[0] = convert(job);
-         printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
-         response.setPrintJobDetails(printJobDetails);
-      }
+   @WebMethod
+   public ConfigurationResponse printAusweisListeAlle() {
+      final List<Person> personen = getQueryHelper().getPersonen(false, false, "");
+      return printPersonenListe(personen, "Ausweisliste nach Name");
+   }
 
-      return response;
+   @WebMethod
+   public ConfigurationResponse printAusweisListeNachEinheit(final String einheit) {
+      final List<Person> personen = getQueryHelper().getPersonen(true, true, einheit);
+      return printPersonenListe(personen, "Ausweisliste " + einheit);
    }
 
    /**
@@ -754,31 +749,23 @@ public class ConfigurationQueryService {
     * @return ConfiguraitonResponse in welcher PrintJobDetails abgefüllt ist.
     */
    @WebMethod
-   public ConfigurationResponse printAusweisboxInventar(final String einheitName) {
-      final ConfigurationResponse response = new ConfigurationResponse();
-
+   public ConfigurationResponse printAusweisboxNachEinheit(final String einheitName) {
       final List<Person> personen = getQueryHelper().getPersonen(true, true, einheitName);
       final PdfRendererAusweisBox ausweisBoxListen = new PdfRendererAusweisBox(personen, einheitName);
       final PrintJob job = ausweisBoxListen.print();
-      if (job != null) {
-         getEntityManager().persist(job);
-
-         final PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
-         printJobDetails[0] = convert(job);
-         printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
-         response.setPrintJobDetails(printJobDetails);
-      }
-
-      return response;
+      return processJob(job);
    }
 
    @WebMethod
-   // TODO Man sollte nicht mit toString() arbeiten. Besser wäre wohl
-   // getGradText().
+   public ConfigurationResponse printAusweisboxAlle() {
+      return null;
+   }
+
+   @WebMethod
    public String[] getGradValues() {
       final String[] result = new String[Grad.values().length];
       for (int i = 0; i < Grad.values().length; i++) {
-         result[i] = Grad.values()[i].toString();
+         result[i] = Grad.values()[i].getGradText();
       }
       return result;
    }
@@ -850,6 +837,24 @@ public class ConfigurationQueryService {
       configurationDetail.setValidFor(config.getValidFor());
 
       return configurationDetail;
+   }
+
+   private ConfigurationResponse printPersonenListe(final List<Person> personen, final String beschreibung) {
+      final PdfRendererPersonenListe ausweisList = new PdfRendererPersonenListe(personen, beschreibung);
+      return processJob(ausweisList.print());
+   }
+
+   private ConfigurationResponse processJob(final PrintJob job) {
+      final ConfigurationResponse response = new ConfigurationResponse();
+      if (job != null) {
+         getEntityManager().persist(job);
+
+         final PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
+         printJobDetails[0] = convert(job);
+         printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
+         response.setPrintJobDetails(printJobDetails);
+      }
+      return response;
    }
 
    private EntityManager getEntityManager() {

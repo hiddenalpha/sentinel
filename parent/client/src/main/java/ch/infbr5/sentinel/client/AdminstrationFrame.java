@@ -8,7 +8,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.components.configuration.AbstractAdminOverviewPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.CheckpointConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.ConfigurationValuePanel;
@@ -63,14 +62,12 @@ public class AdminstrationFrame extends JFrame {
          }
       });
 
-      final boolean isAdminMode = ConfigurationLocalHelper.getConfig().isAdminMode();
-
-      tabbedPane.addTab("Personen", new PersonenConfigPanel(this, isAdminMode));
-      tabbedPane.addTab("Einheiten", new EinheitenConfigPanel(isAdminMode));
-      tabbedPane.addTab("Printjobs", new PrintConfigPanel(isAdminMode));
-      tabbedPane.addTab("Checkpoints", new CheckpointConfigPanel(isAdminMode));
-      tabbedPane.addTab("Zonen", new ZoneConfigPanel(isAdminMode));
-      tabbedPane.addTab("Configuration", new ConfigurationValuePanel(isAdminMode));
+      tabbedPane.addTab("Personen", new PersonenConfigPanel(this));
+      tabbedPane.addTab("Einheiten", new EinheitenConfigPanel());
+      tabbedPane.addTab("Druckaufträge", new PrintConfigPanel());
+      tabbedPane.addTab("Checkpoints", new CheckpointConfigPanel());
+      tabbedPane.addTab("Zonen", new ZoneConfigPanel());
+      tabbedPane.addTab("Konfiguration", new ConfigurationValuePanel());
 
       this.setContentPane(tabbedPane);
       pack();

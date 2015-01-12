@@ -51,8 +51,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 
    private final JFrame parentFrame;
 
-   public PersonenConfigPanel(final JFrame parentFrame, final boolean adminMode) {
-      super(adminMode);
+   public PersonenConfigPanel(final JFrame parentFrame) {
       this.parentFrame = parentFrame;
    }
 

@@ -20,110 +20,112 @@ import ch.infbr5.sentinel.client.wsgen.PraesenzStatus;
 
 public class CheckInTabbedPanels extends JTabbedPane implements ChangeListener, ImageChangeListener {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private CheckInModel model;
+   private static final long serialVersionUID = 1L;
 
-	private String[] tabNames = { "Ausweis", "IN", "OUT", "Urlaub", "Angemeldet" };
-	private CheckInTableModel[] tableModels = new CheckInTableModel[5];
+   private final CheckInModel model;
 
-	public CheckInTabbedPanels(CheckInModel model) {
-		super();
-		this.model = model;
-		this.initComponents();
-	}
+   private final String[] tabNames = { "Ausweis", "IN", "OUT", "Urlaub", "Angemeldet" };
 
-	private void createCheckInTablePane(int i, PraesenzStatus status) {
-		JScrollPane scrollPane = new JScrollPane();
-		this.tableModels[i] = new CheckInTableModel(status, model);
-		final JTable table = new JTable();
-		scrollPane.setViewportView(table);
-		table.setModel(this.tableModels[i]);
+   private final CheckInTableModel[] tableModels = new CheckInTableModel[5];
 
-		// Datumsfomat
-		TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer() {
+   public CheckInTabbedPanels(final CheckInModel model) {
+      super();
+      this.model = model;
+      this.initComponents();
+   }
 
-			private static final long serialVersionUID = 1L;
-			SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy  HH:mm");
+   private void createCheckInTablePane(final int i, final PraesenzStatus status) {
+      final JScrollPane scrollPane = new JScrollPane();
+      this.tableModels[i] = new CheckInTableModel(status, model);
+      final JTable table = new JTable();
+      scrollPane.setViewportView(table);
+      table.setModel(this.tableModels[i]);
 
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-					int row, int column) {
-				if (value instanceof XMLGregorianCalendar) {
-					value = f.format(((XMLGregorianCalendar) value).toGregorianCalendar().getTime());
-				}
-				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			}
-		};
+      // Datumsfomat
+      final TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer() {
 
-		table.getColumnModel().getColumn(3).setCellRenderer(tableCellRenderer);
+         private static final long serialVersionUID = 1L;
+         SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy  HH:mm");
 
-		// Context Menu
-		table.addMouseListener(new CheckInTableContextMenu(table, tableModels[i], model));
+         @Override
+         public Component getTableCellRendererComponent(final JTable table, Object value, final boolean isSelected,
+               final boolean hasFocus, final int row, final int column) {
+            if (value instanceof XMLGregorianCalendar) {
+               value = f.format(((XMLGregorianCalendar) value).toGregorianCalendar().getTime());
+            }
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+         }
+      };
 
-		this.addTab(this.tabNames[i], scrollPane);
-	}
+      table.getColumnModel().getColumn(3).setCellRenderer(tableCellRenderer);
 
-	public void displayPersonSelectionDialog() {
-		CheckInSelectionValue[] values = this.model.getPersonenMitAusweis();
+      // Context Menu
+      table.addMouseListener(new CheckInTableContextMenu(table, tableModels[i], model));
 
-		CheckInSelectionValue selected = null;
+      this.addTab(this.tabNames[i], scrollPane);
+   }
 
-		if (values.length > 0) {
-			selected = (CheckInSelectionValue) JOptionPane.showInputDialog(this, "Manuele Auswahl",
-					"Auswahl nur im Notfall (wird protokolliert).", JOptionPane.WARNING_MESSAGE, null, values, values[0]);
-		} else {
-			JOptionPane.showMessageDialog(this, "Keine Ausweise vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
-		}
+   public void displayPersonSelectionDialog() {
+      final CheckInSelectionValue[] values = this.model.getPersonenMitAusweis();
 
-		if (selected != null) {
-			this.model.handleCheckinEvent(selected.getBarcode());
-		}
-	}
+      CheckInSelectionValue selected = null;
 
-	public void imageChanged(ImageChangedEvent e) {
-		this.setSelectedIndex(0);
+      if (values.length > 0) {
+         selected = (CheckInSelectionValue) JOptionPane.showInputDialog(this, "Manuele Auswahl",
+               "Auswahl nur im Notfall (wird protokolliert).", JOptionPane.WARNING_MESSAGE, null, values, values[0]);
+      } else {
+         JOptionPane.showMessageDialog(this, "Keine Ausweise vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
+      }
 
-		this.updateTabNames();
-	}
+      if (selected != null) {
+         this.model.handleCheckinEvent(selected.getBarcode());
+      }
+   }
 
-	private void initComponents() {
-		JPanel panel1 = new JPanel();
-		panel1.setLayout(new BorderLayout());
+   @Override
+   public void imageChanged(final ImageChangedEvent e) {
+      this.setSelectedIndex(0);
 
-		panel1.add(new AusweisInfoPanel(this.model), BorderLayout.CENTER);
-		panel1.add(new ShortcutbarPanel(this.model), BorderLayout.SOUTH);
+      this.updateTabNames();
+   }
 
-		this.addTab("Ausweis", panel1);
+   private void initComponents() {
+      final JPanel panel1 = new JPanel();
+      panel1.setLayout(new BorderLayout());
 
-		this.setMnemonicAt(0, KeyEvent.VK_1);
+      panel1.add(new AusweisInfoPanel(this.model), BorderLayout.CENTER);
+      panel1.add(new ShortcutbarPanel(this.model), BorderLayout.SOUTH);
 
-		this.createCheckInTablePane(1, PraesenzStatus.INNERHALB);
-		this.createCheckInTablePane(2, PraesenzStatus.AUSSERHALB);
-		this.createCheckInTablePane(3, PraesenzStatus.URLAUB);
-		this.createCheckInTablePane(4, PraesenzStatus.ANGEMELDET);
+      this.addTab("Ausweis", panel1);
 
-		this.addChangeListener(this);
-		this.model.addImageChangedListener(this);
+      this.setMnemonicAt(0, KeyEvent.VK_1);
 
-		this.updateTabNames();
-	}
+      this.createCheckInTablePane(1, PraesenzStatus.INNERHALB);
+      this.createCheckInTablePane(2, PraesenzStatus.AUSSERHALB);
+      this.createCheckInTablePane(3, PraesenzStatus.URLAUB);
+      this.createCheckInTablePane(4, PraesenzStatus.ANGEMELDET);
 
-	public void stateChanged(ChangeEvent e) {
-		int selectedIndex = this.getSelectedIndex();
+      this.addChangeListener(this);
+      this.model.addImageChangedListener(this);
 
-		if (this.tableModels[selectedIndex] != null) {
-			this.tableModels[selectedIndex].update();
-		}
+      this.updateTabNames();
+   }
 
-		this.updateTabNames();
-	}
+   @Override
+   public void stateChanged(final ChangeEvent e) {
+      final int selectedIndex = this.getSelectedIndex();
 
-	private void updateTabNames() {
-		this.setTitleAt(1, this.tabNames[1] + " (" + this.model.getCounterIn() + ")");
-		this.setTitleAt(2, this.tabNames[2] + " (" + this.model.getCounterOut() + ")");
-		this.setTitleAt(3, this.tabNames[3] + " (" + this.model.getCounterUrlaub() + ")");
-		this.setTitleAt(4, this.tabNames[4] + " (" + this.model.getCounterAngemeldet() + ")");
-	}
+      if (this.tableModels[selectedIndex] != null) {
+         this.tableModels[selectedIndex].update();
+      }
+
+      this.updateTabNames();
+   }
+
+   private void updateTabNames() {
+      this.setTitleAt(1, this.tabNames[1] + " (" + this.model.getCounterIn() + ")");
+      this.setTitleAt(2, this.tabNames[2] + " (" + this.model.getCounterOut() + ")");
+      this.setTitleAt(3, this.tabNames[3] + " (" + this.model.getCounterUrlaub() + ")");
+      this.setTitleAt(4, this.tabNames[4] + " (" + this.model.getCounterAngemeldet() + ")");
+   }
 }

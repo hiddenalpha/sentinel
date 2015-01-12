@@ -37,7 +37,7 @@ public class AusweisRendererTestIT {
       personen.add(p);
       personen.add(p);
 
-      final PrintJob j = new PdfRendererPersonenListe(personen, false, true, "HQ Kp 5/1").print();
+      final PrintJob j = new PdfRendererPersonenListe(personen, "HQ Kp 5/1").print();
       em.getTransaction().commit();
 
       em.close();
