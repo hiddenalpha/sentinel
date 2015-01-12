@@ -37,9 +37,9 @@ import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.model.PrintJob;
 import ch.infbr5.sentinel.server.model.Zone;
 import ch.infbr5.sentinel.server.model.Zutrittsregel;
-import ch.infbr5.sentinel.server.print.IdendityCardRenderer;
-import ch.infbr5.sentinel.server.print.PdfAusweisBoxInventar;
-import ch.infbr5.sentinel.server.print.PdfAusweisListe;
+import ch.infbr5.sentinel.server.print.PdfRendererIdendityCards;
+import ch.infbr5.sentinel.server.print.PdfRendererAusweisBox;
+import ch.infbr5.sentinel.server.print.PdfRendererPersonenListe;
 import ch.infbr5.sentinel.server.ws.AusweisvorlageKonfiguration;
 import ch.infbr5.sentinel.server.ws.CheckpointDetails;
 import ch.infbr5.sentinel.server.ws.ConfigurationDetails;
@@ -705,7 +705,7 @@ public class ConfigurationQueryService {
 
       final AusweisvorlageKonfiguration config = createAusweisvorlageKonfiguration();
 
-      final IdendityCardRenderer renderer = new IdendityCardRenderer(ausweise, password, config);
+      final PdfRendererIdendityCards renderer = new PdfRendererIdendityCards(ausweise, password, config);
       final PrintJob job = renderer.print();
       if (job != null) {
          // In diesem Fall hat es Funktioniert und die Ausweise wurden erstellt.
@@ -730,7 +730,7 @@ public class ConfigurationQueryService {
       final ConfigurationResponse response = new ConfigurationResponse();
 
       final List<Person> personen = getQueryHelper().getPersonen(nurMitAusweis, nachEinheit, einheitName);
-      final PdfAusweisListe ausweisList = new PdfAusweisListe(personen, nurMitAusweis, nachEinheit, einheitName);
+      final PdfRendererPersonenListe ausweisList = new PdfRendererPersonenListe(personen, nurMitAusweis, nachEinheit, einheitName);
       final PrintJob job = ausweisList.print();
       if (job != null) {
          getEntityManager().persist(job);
@@ -758,7 +758,7 @@ public class ConfigurationQueryService {
       final ConfigurationResponse response = new ConfigurationResponse();
 
       final List<Person> personen = getQueryHelper().getPersonen(true, true, einheitName);
-      final PdfAusweisBoxInventar ausweisBoxListen = new PdfAusweisBoxInventar(personen, einheitName);
+      final PdfRendererAusweisBox ausweisBoxListen = new PdfRendererAusweisBox(personen, einheitName);
       final PrintJob job = ausweisBoxListen.print();
       if (job != null) {
          getEntityManager().persist(job);

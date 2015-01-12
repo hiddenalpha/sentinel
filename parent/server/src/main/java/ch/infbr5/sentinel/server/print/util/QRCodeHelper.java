@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.server.print;
+package ch.infbr5.sentinel.server.print.util;
 
 import java.awt.image.BufferedImage;
 import java.security.MessageDigest;

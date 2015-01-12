@@ -15,6 +15,8 @@ import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Person;
+import ch.infbr5.sentinel.server.print.util.CodeHelper;
+import ch.infbr5.sentinel.server.print.util.QRCodeHelper;
 import ch.infbr5.sentinel.server.ws.AusweisvorlageKonfiguration;
 
 public class IdentityCardSingleImageRenderer {

@@ -11,7 +11,7 @@ import ch.infbr5.sentinel.server.model.PrintJob;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Phrase;
 
-public abstract class PDFRenderer {
+public abstract class PdfRenderer {
 
    public PrintJob print() {
       final byte[] data = renderPdf();

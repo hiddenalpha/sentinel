@@ -157,7 +157,7 @@ public class IdentityCardRenderer2IT {
       // config.setDefaultWasserzeichen(Files.toByteArray(new
       // File(FileHelper.FILE_AUSWEISVORLAGE_WASSERZEICHEN)));
 
-      final IdendityCardRenderer r = new IdendityCardRenderer(ausweise, "infbr5", config);
+      final PdfRendererIdendityCards r = new PdfRendererIdendityCards(ausweise, "infbr5", config);
       try {
          Files.write(r.renderPdf(), new File("C:\\tmp\\test.pdf"));
          Desktop.getDesktop().open(new File("C:\\tmp\\test.pdf"));

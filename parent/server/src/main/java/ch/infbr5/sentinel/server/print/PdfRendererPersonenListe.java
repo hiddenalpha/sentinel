@@ -20,7 +20,7 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-public class PdfAusweisListe extends PDFRenderer {
+public class PdfRendererPersonenListe extends PdfRenderer {
 
    private boolean nurMitAusweis = true;
    private boolean nachEinheit = false;
@@ -28,7 +28,7 @@ public class PdfAusweisListe extends PDFRenderer {
 
    private final List<Person> personen;
 
-   public PdfAusweisListe(final List<Person> personen, final boolean nurMitAusweis, final boolean nachEinheit,
+   public PdfRendererPersonenListe(final List<Person> personen, final boolean nurMitAusweis, final boolean nachEinheit,
          final String einheitName) {
       this.personen = personen;
       this.nurMitAusweis = nurMitAusweis;

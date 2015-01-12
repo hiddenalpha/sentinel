@@ -16,7 +16,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-public class PdfAusweisBoxInventar extends PDFRenderer {
+public class PdfRendererAusweisBox extends PdfRenderer {
 
    private static final int NOF_SLOTS_IN_BOX = 132;
 
@@ -24,7 +24,7 @@ public class PdfAusweisBoxInventar extends PDFRenderer {
 
    private final String einheitName;
 
-   public PdfAusweisBoxInventar(final List<Person> personen, final String einheitName) {
+   public PdfRendererAusweisBox(final List<Person> personen, final String einheitName) {
       this.personen = personen;
       this.einheitName = einheitName;
    }

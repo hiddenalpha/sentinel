@@ -30,7 +30,7 @@ public class PdfAusweisBoxInventarIT {
       personen.add(p);
       personen.add(p);
 
-      final PdfAusweisBoxInventar printer = new PdfAusweisBoxInventar(personen, "EinheitsNamedddddddddddddddddddddddd");
+      final PdfRendererAusweisBox printer = new PdfRendererAusweisBox(personen, "EinheitsNamedddddddddddddddddddddddd");
       final PrintJob printJob = printer.print();
       try {
          Desktop.getDesktop().open(new File("pdfs\\" + printJob.getPintJobFile() + ".pdf"));
