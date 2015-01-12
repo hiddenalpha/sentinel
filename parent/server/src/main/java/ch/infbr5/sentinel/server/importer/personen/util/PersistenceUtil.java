@@ -15,181 +15,182 @@ import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenAttribute;
 
 public class PersistenceUtil {
 
-	private static String NAME_EINHEIT_ARCHIV = "_Archiv_";
+   private static String NAME_EINHEIT_ARCHIV = "_Archiv_";
 
-	private static String NAME_EINHEIT_GAST = "GAST";
+   private static String NAME_EINHEIT_GAST = "GAST";
 
-	private EntityManager entityManager;
+   private final EntityManager entityManager;
 
-	public PersistenceUtil(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
+   public PersistenceUtil(final EntityManager entityManager) {
+      this.entityManager = entityManager;
+   }
 
-	private QueryHelper getQueryHelper() {
-		return new QueryHelper(entityManager);
-	}
+   private QueryHelper getQueryHelper() {
+      return new QueryHelper(entityManager);
+   }
 
-	/**
-	 * Gibt die Einheit _Archiv_ zurück. Falls diese nicht existiert wird sie
-	 * erzeugt.
-	 *
-	 * @return _Archiv_ Einheit
-	 */
-	public Einheit getArchivEinheit() {
-		return createEinheit(NAME_EINHEIT_ARCHIV);
-	}
+   /**
+    * Gibt die Einheit _Archiv_ zurück. Falls diese nicht existiert wird sie
+    * erzeugt.
+    *
+    * @return _Archiv_ Einheit
+    */
+   public Einheit getArchivEinheit() {
+      return createEinheit(NAME_EINHEIT_ARCHIV);
+   }
 
-	/**
-	 * Erzeugt auf jedenfall die Person.
-	 *
-	 * @param personDetails
-	 *            PersonDetails.
-	 * @param einheit
-	 *            Einheit.
-	 * @return Person.
-	 */
-	public Person createPerson(PersonDetails personDetails, Einheit einheit) {
-		return  getQueryHelper().createPerson(einheit,
-				personDetails.getAhvNr(),
-				Grad.getGrad(personDetails.getGrad()),
-				personDetails.getName(),
-				personDetails.getVorname(),
-				personDetails.getGeburtsdatum(),
-				personDetails.getFunktion());
-	}
+   /**
+    * Erzeugt auf jedenfall die Person.
+    *
+    * @param personDetails
+    *           PersonDetails.
+    * @param einheit
+    *           Einheit.
+    * @return Person.
+    */
+   public Person createPerson(final PersonDetails personDetails, final Einheit einheit) {
+      return getQueryHelper().createPerson(einheit, personDetails.getAhvNr(), Grad.getGrad(personDetails.getGrad()),
+            personDetails.getName(), personDetails.getVorname(), personDetails.getGeburtsdatum(),
+            personDetails.getFunktion());
+   }
 
+   /**
+    * Sucht die Person in der Datenbank aufgrund des Datensatzes.
+    *
+    * Zuerst wird mit der AHVNr gesucht. Falls keine Person gefunden wird, wird
+    * mit Name, Vorname und Geburtsdatum gearbeitet.
+    *
+    * @param PersonDetails
+    *           personDetaills
+    * @return Person, falls eine gefunden wurde, anderenfalls keine.
+    */
+   public Person findPerson(final PersonDetails personDetail) {
+      Person p = getQueryHelper().getPerson(personDetail.getAhvNr());
+      if (p == null) {
+         // Ich finde das nicht so schlau...?!
+         // Hier gibt es nämlich ein Match auf eine Person, welches vielleicht
+         // gar
+         // nicht die Person ist.
+         p = getQueryHelper().getPerson(personDetail.getName(), personDetail.getVorname(),
+               personDetail.getGeburtsdatum());
+      }
+      return p;
+   }
 
-	/**
-	 * Sucht die Person in der Datenbank aufgrund des Datensatzes.
-	 *
-	 * Zuerst wird mit der AHVNr gesucht. Falls keine Person gefunden wird, wird mit Name, Vorname und Geburtsdatum gearbeitet.
-	 *
-	 * @param PersonDetails personDetaills
-	 * @return Person, falls eine gefunden wurde, anderenfalls keine.
-	 */
-	public Person findPerson(PersonDetails personDetail) {
-		Person p = getQueryHelper().getPerson(personDetail.getAhvNr());
-		if (p == null) {
-			// Ich finde das nicht so schlau...?!
-			p = getQueryHelper().getPerson(personDetail.getName(), personDetail.getVorname(), personDetail.getGeburtsdatum());
-		}
-		return p;
-	}
+   public Person findPerson(final DataRow dataRow) {
+      Person p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
+      if (p == null) {
+         p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.Name),
+               dataRow.getValue(PersonenAttribute.Vorname), dataRow.getGeburtstag());
+      }
+      return p;
+   }
 
-	public Person findPerson(DataRow dataRow) {
-		Person p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
-		if (p == null) {
-			p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.Name), dataRow.getValue(PersonenAttribute.Vorname), dataRow.getGeburtstag());
-		}
-		return p;
-	}
+   /**
+    * Entfernt den gültigen Ausweis der Person, falls die Person einen hat.
+    * Ausserdem wird der Ausweis deaktiviert.
+    *
+    * @param person
+    *           Person
+    */
+   public void removeValidAusweis(final Person person) {
+      final Ausweis ausweis = person.getValidAusweis();
+      if (ausweis != null) {
+         deactivateAusweis(ausweis);
+         person.setValidAusweis(null);
+      }
+   }
 
-	/**
-	 * Entfernt den gültigen Ausweis der Person, falls die Person einen hat.
-	 * Ausserdem wird der Ausweis deaktiviert.
-	 *
-	 * @param person
-	 *            Person
-	 */
-	public void removeValidAusweis(Person person) {
-		Ausweis ausweis = person.getValidAusweis();
-		if (ausweis != null) {
-			deactivateAusweis(ausweis);
-			person.setValidAusweis(null);
-		}
-	}
+   /**
+    * Deaktiviert den Ausweis. Dannach ist der Ausweis nicht mehr gültig.
+    *
+    * @param ausweis
+    *           Ausweis
+    */
+   public void deactivateAusweis(final Ausweis ausweis) {
+      ausweis.setInvalid(true);
+      ausweis.setErstellt(true);
+      ausweis.setGueltigBis(new Date());
+   }
 
-	/**
-	 * Deaktiviert den Ausweis. Dannach ist der Ausweis nicht mehr g�ltig.
-	 *
-	 * @param ausweis
-	 *            Ausweis
-	 */
-	public void deactivateAusweis(Ausweis ausweis) {
-		ausweis.setInvalid(true);
-		ausweis.setErstellt(true);
-		ausweis.setGueltigBis(new Date());
-	}
+   /**
+    * Sucht die Einheit in der Datenbank aufgrund des Namens.
+    *
+    * @param String
+    *           Name der Einheit.
+    * @return Falls die Einheit existiert, dann die Einheit sonst null.
+    */
+   private Einheit findEinheit(final String name) {
+      return getQueryHelper().getEinheit(name);
+   }
 
-	/**
-	 * Sucht die Einheit in der Datenbank aufgrund des Namens.
-	 *
-	 * @param String
-	 *            Name der Einheit.
-	 * @return Falls die Einheit existiert, dann die Einheit sonst null.
-	 */
-	private Einheit findEinheit(String name) {
-		return getQueryHelper().getEinheit(name);
-	}
+   /**
+    * Sucht die Einheit in der Datenbank aufgrund des Namens.
+    *
+    * Falls keine Einheit gefunden wird, wird eine mit diesem Name erstellt und
+    * persistiert.
+    *
+    * @param String
+    *           Name der Einheit.
+    * @return Immer eine Einheit.
+    */
+   private Einheit createEinheit(final String name) {
+      Einheit einheit = findEinheit(name);
+      if (einheit == null) {
+         einheit = ObjectFactory.createEinheit(name);
+         entityManager.persist(einheit);
+      }
+      return einheit;
+   }
 
-	/**
-	 * Sucht die Einheit in der Datenbank aufgrund des Namens.
-	 *
-	 * Falls keine Einheit gefunden wird, wird eine mit diesem Name erstellt und
-	 * persistiert.
-	 *
-	 * @param String
-	 *            Name der Einheit.
-	 * @return Immer eine Einheit.
-	 */
-	private Einheit createEinheit(String name) {
-		Einheit einheit = findEinheit(name);
-		if (einheit == null) {
-			einheit = ObjectFactory.createEinheit(name);
-			entityManager.persist(einheit);
-		}
-		return einheit;
-	}
+   /**
+    * Pr�ft ob die Einheit mit diesem Namen existiert.
+    *
+    * @param name
+    *           Name der Einheit
+    * @return True, falls die Einheit existiert, anderenfalls false.
+    */
+   private boolean existsEinheit(final String name) {
+      final Einheit einheit = findEinheit(name);
+      return (einheit != null);
+   }
 
-	/**
-	 * Pr�ft ob die Einheit mit diesem Namen existiert.
-	 *
-	 * @param name
-	 *            Name der Einheit
-	 * @return True, falls die Einheit existiert, anderenfalls false.
-	 */
-	private boolean existsEinheit(String name) {
-		Einheit einheit = findEinheit(name);
-		return (einheit != null);
-	}
+   /**
+    * Gibt die Einheit zum Namen zur�ck. Falls die Einheit nicht existiert wird
+    * sie erzeugt.
+    *
+    * @param einheitName
+    *           Name der Einheit
+    * @param isKompletterBestand
+    *           Gibt an ob der Bestand Komplett ist. Falls ja dann wird die
+    *           Einheit definitv erzeugt, falls sie nicht existiert.
+    *           Anderenfalls wird die Gast Einheit geladen falls die Einheit
+    *           nicht existiert.
+    * @return Einheit (nie NULL).
+    */
+   public Einheit createEinheitKompletterBestand(final String einheitName, final boolean isKompletterBestand) {
+      Einheit einheit;
+      if (isKompletterBestand) {
+         einheit = createEinheit(einheitName);
+      } else {
+         if (existsEinheit(einheitName)) {
+            einheit = findEinheit(einheitName);
+         } else {
+            einheit = createEinheit(NAME_EINHEIT_GAST);
+         }
+      }
+      return einheit;
+   }
 
-	/**
-	 * Gibt die Einheit zum Namen zur�ck. Falls die Einheit nicht existiert wird
-	 * sie erzeugt.
-	 *
-	 * @param einheitName
-	 *            Name der Einheit
-	 * @param isKompletterBestand
-	 *            Gibt an ob der Bestand Komplett ist. Falls ja dann wird die
-	 *            Einheit definitv erzeugt, falls sie nicht existiert.
-	 *            Anderenfalls wird die Gast Einheit geladen falls die Einheit
-	 *            nicht existiert.
-	 * @return Einheit (nie NULL).
-	 */
-	public Einheit createEinheitKompletterBestand(String einheitName,
-			boolean isKompletterBestand) {
-		Einheit einheit;
-		if (isKompletterBestand) {
-			einheit = createEinheit(einheitName);
-		} else {
-			if (existsEinheit(einheitName)) {
-				einheit = findEinheit(einheitName);
-			} else {
-				einheit = createEinheit(NAME_EINHEIT_GAST);
-			}
-		}
-		return einheit;
-	}
-
-	public void updatePerson(Person person, PersonDetails details, boolean isKompletterBestand) {
-		person.setAhvNr(details.getAhvNr());
-		person.setName(details.getName());
-		person.setVorname(details.getVorname());
-		person.setFunktion(details.getFunktion());
-		person.setGrad(Grad.getGrad(details.getGrad()));
-		person.setGeburtsdatum(details.getGeburtsdatum());
-		Einheit einheit = createEinheitKompletterBestand(details.getEinheitText(), isKompletterBestand);
-		person.setEinheit(einheit);
-	}
+   public void updatePerson(final Person person, final PersonDetails details, final boolean isKompletterBestand) {
+      person.setAhvNr(details.getAhvNr());
+      person.setName(details.getName());
+      person.setVorname(details.getVorname());
+      person.setFunktion(details.getFunktion());
+      person.setGrad(Grad.getGrad(details.getGrad()));
+      person.setGeburtsdatum(details.getGeburtsdatum());
+      final Einheit einheit = createEinheitKompletterBestand(details.getEinheitText(), isKompletterBestand);
+      person.setEinheit(einheit);
+   }
 
 }

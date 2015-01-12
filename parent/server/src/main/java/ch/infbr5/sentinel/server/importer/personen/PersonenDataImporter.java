@@ -12,12 +12,12 @@ import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
 
+import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.importer.personen.util.DataRow;
 import ch.infbr5.sentinel.server.importer.personen.util.DtoMapper;
 import ch.infbr5.sentinel.server.importer.personen.util.PersistenceUtil;
 import ch.infbr5.sentinel.server.importer.personen.util.ValidationRules;
-import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.ws.importer.mapping.PersonenAttribute;
@@ -279,7 +279,7 @@ abstract class PersonenDataImporter {
 
       if (!isValidImportData()) {
          throw new IllegalStateException(
-               "Der Import ist nicht g�ltig daher k�nnen die Modifikatione nicht berechnet werden.");
+               "Der Import ist nicht gültig daher können die Modifikationen nicht berechnet werden.");
       }
 
       final Set<String> personenAHVNrs = new HashSet<>();
@@ -303,6 +303,8 @@ abstract class PersonenDataImporter {
          if (dataRow.isValid()) {
             final Person person = getPersistenceUtil().findPerson(dataRow);
             if (person == null) {
+               // Kann kein Ausweis nachsich ziehen, da kein Foto vorhanden
+               // ist.s
                final ModificationNewPerson mod = new ModificationNewPerson();
                mod.setPersonDetails(dataRow.createPersonDetails());
                modsNewPerson.add(mod);
@@ -312,32 +314,23 @@ abstract class PersonenDataImporter {
             } else {
                if (dataRow.hasDiffs(person)) {
 
-                  // Neuen Ausweis erstellen
+                  final List<UpdatePersonAttributeDiff> diffs = dataRow.getDiffs(person);
+
                   // Es wird nur ein neuer Ausweis ausgestellt, wenn sich
                   // Attribute unterscheiden
                   // und wenn die Person bereits einen gültigen Ausweis hatte.
-                  boolean modUpdatePersonAndNewAusweis = false;
-                  if (dataRow.wirdNeuerAusweisBenoentigt(person)) {
-                     final Ausweis oldAusweis = person.getValidAusweis();
-                     if (oldAusweis != null) {
-                        final ModificationUpdatePersonAndNewAusweis mod = new ModificationUpdatePersonAndNewAusweis();
-                        mod.setPersonDetailsOld(DtoMapper.toPersonDetails(person));
-                        mod.setPersonDetailsNew(dataRow.createPersonDetails());
-                        final List<UpdatePersonAttributeDiff> diffs = dataRow.getDiffs(person);
-                        mod.setUpdatePersonenDiffs(diffs.toArray(new UpdatePersonAttributeDiff[diffs.size()]));
-                        modsNewAusweis.add(mod);
-                        modUpdatePersonAndNewAusweis = true;
-                     }
-                  }
-
-                  if (!modUpdatePersonAndNewAusweis) {
+                  if (dataRow.wirdNeuerAusweisBenoetigt(person) && person.getValidAusweis() != null) {
+                     modsNewAusweis.add(createModificationUpdatePersonAndNewAusweis(person, dataRow, diffs));
+                  } else if (istPersonInArchivUndEsWirdEinerNeuenEinheitZugewiesenUndEsExistiertEinFoto(dataRow, person)) {
+                     modsNewAusweis.add(createModificationUpdatePersonAndNewAusweis(person, dataRow, diffs));
+                  } else {
                      final ModificationUpdatePerson mod = new ModificationUpdatePerson();
                      mod.setPersonDetailsOld(DtoMapper.toPersonDetails(person));
                      mod.setPersonDetailsNew(dataRow.createPersonDetails());
-                     final List<UpdatePersonAttributeDiff> diffs = dataRow.getDiffs(person);
                      mod.setUpdatePersonenDiffs(diffs.toArray(new UpdatePersonAttributeDiff[diffs.size()]));
                      modsUpdatePerson.add(mod);
                   }
+
                }
 
                ahvNr = person.getAhvNr();
@@ -385,6 +378,38 @@ abstract class PersonenDataImporter {
       return modifcationDto;
    }
 
+   private ModificationUpdatePersonAndNewAusweis createModificationUpdatePersonAndNewAusweis(final Person person,
+         final DataRow dataRow, final List<UpdatePersonAttributeDiff> diffs) {
+      final ModificationUpdatePersonAndNewAusweis mod = new ModificationUpdatePersonAndNewAusweis();
+      mod.setPersonDetailsOld(DtoMapper.toPersonDetails(person));
+      mod.setPersonDetailsNew(dataRow.createPersonDetails());
+      mod.setUpdatePersonenDiffs(diffs.toArray(new UpdatePersonAttributeDiff[diffs.size()]));
+      return mod;
+   }
+
+   /**
+    * Prüft ob die Person ursprünglich der ARCHIV-Einheit zugewiesen war. Prüft
+    * ob die Person nun eine neue Einheit, also nicht mehr der ARCHIV-Einheit
+    * zugewiesen ist. Prüft ob die Person ein Foto hat.
+    *
+    * Die Kombination daraus (UND) ergibt, dass ein Ausweis erstellt wird.
+    *
+    * @param dataRow
+    *           Neue Daten im DataRow.
+    * @param person
+    *           Aktuelle Personen Daten im System.
+    * @return True falls alle Bediengungen stimmen, sonst false.
+    */
+   private boolean istPersonInArchivUndEsWirdEinerNeuenEinheitZugewiesenUndEsExistiertEinFoto(final DataRow dataRow,
+         final Person person) {
+      final boolean isArchivEinheit = person.getEinheit().getName()
+            .equals(getPersistenceUtil().getArchivEinheit().getName());
+      final boolean isNewEinheitAssigned = !person.getEinheit().getName()
+            .equals(dataRow.getValue(PersonenAttribute.Einheit));
+      final boolean existsFoto = ImageStore.hasImage(person.getAhvNr());
+      return isArchivEinheit && isNewEinheitAssigned && existsFoto;
+   }
+
    public String fileHasMinimalRequirements() {
       String result = null;
       if (columns.size() < 7) {
@@ -423,7 +448,7 @@ abstract class PersonenDataImporter {
    public void importData() {
 
       if (!isValidImportData()) {
-         throw new IllegalStateException("Der Import ist nicht g�ltig.");
+         throw new IllegalStateException("Der Import ist nicht gültig.");
       }
 
       for (final ModificationNewPerson mod : modifcationDto.getModificationNewPersons()) {

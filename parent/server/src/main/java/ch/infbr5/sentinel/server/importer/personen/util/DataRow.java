@@ -114,7 +114,7 @@ public class DataRow {
     *           Alte Personendaten.
     * @return True, falls ein neuer Ausweis benoetigt wird, anderenfalls false.
     */
-   public boolean wirdNeuerAusweisBenoentigt(final Person oldPerson) {
+   public boolean wirdNeuerAusweisBenoetigt(final Person oldPerson) {
       return hasDiffs(oldPerson);
    }
 
