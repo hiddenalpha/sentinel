@@ -161,6 +161,7 @@ public class WorkflowDialog {
       panel.setPreferredSize(new Dimension(420, (int) panel.getPreferredSize().getHeight()));
 
       scrollPane = new JScrollPane(panel);
+      scrollPane.getVerticalScrollBar().setUnitIncrement(16);
       scrollPane.setPreferredSize(new Dimension(500, (int) scrollPane.getPreferredSize().getHeight()));
       scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
       scrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5), bordering));
