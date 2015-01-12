@@ -22,6 +22,7 @@
 #54 Printjobs: Beschreibung nun bei allen ausführlicher. Die Beschreibung wird nun auch
 	in den Dateinamen genommen. Somit ist vom Dateinamen her auch ersichtlich was der 
 	Inhalt ist.
+#56 Icon von Einstellung auf SENTINEL umstellen 
 
 /***************************************/
 /* 			Version 0.8.2		   	   */

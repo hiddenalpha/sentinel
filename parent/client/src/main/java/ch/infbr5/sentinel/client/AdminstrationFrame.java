@@ -16,60 +16,63 @@ import ch.infbr5.sentinel.client.gui.components.configuration.EinheitenConfigPan
 import ch.infbr5.sentinel.client.gui.components.configuration.PersonenConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.PrintConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.ZoneConfigPanel;
+import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 
 public class AdminstrationFrame extends JFrame {
 
-	public static final String FRAME_NAME = "AdministraionFrameTabbedPane";
+   public static final String FRAME_NAME = "AdministraionFrameTabbedPane";
 
-	public static final String TABBED_PANE_NAME = "AdministraionFrameTabbedPane";
+   public static final String TABBED_PANE_NAME = "AdministraionFrameTabbedPane";
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private static AdminstrationFrame instance;
+   private static AdminstrationFrame instance;
 
-	private JTabbedPane tabbedPane;
+   private JTabbedPane tabbedPane;
 
-	private AdminstrationFrame() {
-		initComponents();
-	}
+   private AdminstrationFrame() {
+      initComponents();
+   }
 
-	public static AdminstrationFrame getInstance() {
-		if (instance == null) {
-			instance = new AdminstrationFrame();
-			instance.setVisible(false);
-		}
-		return instance;
-	}
+   public static AdminstrationFrame getInstance() {
+      if (instance == null) {
+         instance = new AdminstrationFrame();
+         instance.setVisible(false);
+      }
+      return instance;
+   }
 
-	private void initComponents() {
-		setTitle("Einstellungen");
-		setName(FRAME_NAME);
-		setExtendedState(Frame.MAXIMIZED_BOTH);
+   private void initComponents() {
+      setTitle("Einstellungen");
 
-		tabbedPane = new JTabbedPane();
-		tabbedPane.setName(TABBED_PANE_NAME);
-		tabbedPane.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				JTabbedPane source = (JTabbedPane) arg0.getSource();
-				Component c = source.getSelectedComponent();
-				if (c instanceof AbstractAdminOverviewPanel) {
-					AbstractAdminOverviewPanel<?> a = (AbstractAdminOverviewPanel<?>) c;
-					a.updateModel();
-				}
-			}
-		});
+      this.setIconImage(ImageLoader.loadSentinelIcon());
+      setName(FRAME_NAME);
+      setExtendedState(Frame.MAXIMIZED_BOTH);
 
-		boolean isAdminMode = ConfigurationLocalHelper.getConfig().isAdminMode();
+      tabbedPane = new JTabbedPane();
+      tabbedPane.setName(TABBED_PANE_NAME);
+      tabbedPane.addChangeListener(new ChangeListener() {
+         @Override
+         public void stateChanged(final ChangeEvent arg0) {
+            final JTabbedPane source = (JTabbedPane) arg0.getSource();
+            final Component c = source.getSelectedComponent();
+            if (c instanceof AbstractAdminOverviewPanel) {
+               final AbstractAdminOverviewPanel<?> a = (AbstractAdminOverviewPanel<?>) c;
+               a.updateModel();
+            }
+         }
+      });
 
-		tabbedPane.addTab("Personen", new PersonenConfigPanel((JFrame) this, isAdminMode));
-		tabbedPane.addTab("Einheiten", new EinheitenConfigPanel(isAdminMode));
-		tabbedPane.addTab("Printjobs", new PrintConfigPanel(isAdminMode));
-		tabbedPane.addTab("Checkpoints", new CheckpointConfigPanel(isAdminMode));
-		tabbedPane.addTab("Zonen", new ZoneConfigPanel(isAdminMode));
-		tabbedPane.addTab("Configuration", new ConfigurationValuePanel(isAdminMode));
+      final boolean isAdminMode = ConfigurationLocalHelper.getConfig().isAdminMode();
 
-		this.setContentPane(tabbedPane);
-		pack();
-	}
+      tabbedPane.addTab("Personen", new PersonenConfigPanel(this, isAdminMode));
+      tabbedPane.addTab("Einheiten", new EinheitenConfigPanel(isAdminMode));
+      tabbedPane.addTab("Printjobs", new PrintConfigPanel(isAdminMode));
+      tabbedPane.addTab("Checkpoints", new CheckpointConfigPanel(isAdminMode));
+      tabbedPane.addTab("Zonen", new ZoneConfigPanel(isAdminMode));
+      tabbedPane.addTab("Configuration", new ConfigurationValuePanel(isAdminMode));
+
+      this.setContentPane(tabbedPane);
+      pack();
+   }
 }
