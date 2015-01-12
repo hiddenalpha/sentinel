@@ -311,6 +311,11 @@ public class SentinelQueryService {
    }
 
    @WebMethod
+   public boolean hasPersonImage(@WebParam(name = "imageId") final String imageId) {
+      return ImageStore.hasImage(imageId);
+   }
+
+   @WebMethod
    public String ping() {
       return "pong";
    }

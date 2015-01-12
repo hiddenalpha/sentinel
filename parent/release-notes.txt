@@ -23,6 +23,12 @@
 	in den Dateinamen genommen. Somit ist vom Dateinamen her auch ersichtlich was der 
 	Inhalt ist.
 #56 Icon von Einstellung auf SENTINEL umstellen 
+#1	ImageEditor: Wenn eine neue Person erfasst wird, die Daten nicht gespeichert 
+	werden, im ImageEditor gearbeitet wird und man zurückkehrt, dann sind die
+	Personendaten nicht mehr verloren. Der ImageEditor wurde mit einem Icon, Titel
+	versehen und ausserdem eingemittet. Das Konzept des Dialogs wurde nun korrekt
+	umgesetzt. Es gibt keine Probleme mit der Modalität mehr.
+	
 
 /***************************************/
 /* 			Version 0.8.2		   	   */

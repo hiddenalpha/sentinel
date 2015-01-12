@@ -20,10 +20,10 @@ public class FileHelperTest {
       Assert.assertEquals("0-79a-dfa", FileHelper.clearFilename(s));
 
       s = ".0-7_9aDFA!!";
-      Assert.assertEquals(".0-7_9adfa", FileHelper.clearFilename(s));
+      Assert.assertEquals("-0-7_9adfa", FileHelper.clearFilename(s));
 
       s = ".0-7_=ç*+9aDF{}A!!";
-      Assert.assertEquals(".0-7_9adfa", FileHelper.clearFilename(s));
+      Assert.assertEquals("-0-7_9adfa", FileHelper.clearFilename(s));
    }
 
 }

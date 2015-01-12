@@ -5,14 +5,11 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.util.EinheitDetailsClient;
@@ -42,6 +38,7 @@ import ch.infbr5.sentinel.client.wsgen.OperationResponse;
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
 import ch.infbr5.sentinel.client.wsgen.PersonDetails;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
+import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetails> {
 
@@ -144,13 +141,14 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
       private final JTextField fieldName;
       private final JTextField fieldVorname;
       private final JComboBox<EinheitDetailsClient> comboBoxEinheit;
-      private ImageIcon noFotoIcon;
-      private JLabel fotoLabel;
+
       private JButton neuerAusweisButton;
       private JButton ausweisSperrenButton;
       private AbstractAction abstractActionAusweisSperren;
       private AbstractAction abstractActionNeuerAusweis;
-      private ImageEditor imageEditor;
+
+      private JLabel fotoLabel;
+      private BufferedImage noFotoIcon;
 
       public MyDetailPanel() {
          setLayout(new MigLayout("inset 20"));
@@ -253,38 +251,31 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
          }
       }
 
-      private void openEditImagePanel() {
-         imageEditor = new ImageEditor(parentFrame);
-         imageEditor.setResizable(false);
-
-         imageEditor.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(final WindowEvent arg0) {
-               parentFrame.setEnabled(false);
-            }
-
-            @Override
-            public void windowClosed(final WindowEvent arg0) {
-               parentFrame.setEnabled(true);
-
-               if (imageEditor.getImage() != null) {
-                  data.setImage(convertBufferedImageToByte(imageEditor.getImage()));
-               } else {
-                  data.setImage(null);
-               }
-
-               setFieldValues();
-            }
-         });
-
-         // Prüften ob der Benutzer ein eigenes Bild hat und entsprechend in den
-         // imageEditor laden.
-         final BufferedImage image = ImageLoader.loadImage(data.getImageId());
-         if (image != null) {
-            imageEditor.setImage(image);
+      private BufferedImage getCurrentImage() {
+         if (data.getImage() == null) {
+            // Current Image is not edited so we try to get
+            return ImageLoader.loadImage(data.getAhvNr());
          }
+         try {
+            return ImageIO.read(new ByteArrayInputStream(data.getImage()));
+         } catch (final IOException e) {
+            return null;
+         }
+      }
 
+      private void setCurrentImage(final BufferedImage image) {
+         if (image == null) {
+            data.setImage(null);
+         } else {
+            data.setImage(convertBufferedImageToByte(image));
+         }
+      }
+
+      private void openEditImagePanel() {
+         final ImageEditorDialog imageEditor = new ImageEditorDialog(parentFrame, getCurrentImage());
          imageEditor.setVisible(true);
+         setCurrentImage(imageEditor.getImage());
+         refreshImage();
       }
 
       private List<EinheitDetailsClient> copyEinheitModel(final List<EinheitDetails> einheitDetails) {
@@ -316,7 +307,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
          combo.setEditable(false);
       }
 
-      private void refreshComboBoxEinheit() {
+      private void reloadComboBoxEinheit() {
          comboBoxEinheit.removeAllItems();
 
          final ConfigurationResponse response = ServiceHelper.getConfigurationsService().getEinheiten();
@@ -329,10 +320,14 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
       private void createFotoLabel() {
          final URL imageURL = getClass().getResource("/images/nobody.jpg");
          if (imageURL != null) {
-            noFotoIcon = new ImageIcon(imageURL);
+            try {
+               noFotoIcon = ImageIO.read(imageURL);
+            } catch (final IOException e) {
+               e.printStackTrace();
+            }
          }
 
-         fotoLabel = new JLabel(this.noFotoIcon);
+         fotoLabel = new JLabel(new ImageIcon(this.noFotoIcon));
          fotoLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(final MouseEvent arg0) {
@@ -361,47 +356,38 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 
       @Override
       public void setFieldValues() {
-         comboBoxGrad.setSelectedItem(data.getGrad());
          fieldName.setText(data.getName());
          fieldVorname.setText(data.getVorname());
+         fieldGeburtsdatum.setText(DateFormater.formatToDate(data.getGeburtsdatum()));
+         fieldFunktion.setText(data.getFunktion());
+         fieldAhvNr.setText(data.getAhvNr());
+         comboBoxGrad.setSelectedItem(data.getGrad());
 
-         refreshComboBoxEinheit();
+         reloadComboBoxEinheit();
          for (int i = 0; i < comboBoxEinheit.getItemCount(); ++i) {
             final Long comboBoxId = comboBoxEinheit.getItemAt(i).getId();
             if (comboBoxId != null && comboBoxId.equals(data.getEinheitId())) {
                comboBoxEinheit.setSelectedIndex(i);
-
                break;
             }
          }
 
-         final XMLGregorianCalendar geburtsdatum = data.getGeburtsdatum();
-         fieldGeburtsdatum.setText(geburtsdatum != null ? new SimpleDateFormat("dd.MM.yyyy").format(geburtsdatum
-               .toGregorianCalendar().getTime()) : "");
-         fieldFunktion.setText(data.getFunktion());
-         fieldAhvNr.setText(data.getAhvNr());
+         refreshImage();
+      }
 
-         if (data.getImage() != null && fotoLabel.isEnabled()) {
-            final InputStream in = new ByteArrayInputStream(data.getImage());
-            BufferedImage image;
-            try {
-               image = ImageIO.read(in);
-               final Image scaledImage = image.getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, 0);
-               final ImageIcon imageIcon = new ImageIcon(scaledImage);
-               fotoLabel.setIcon(imageIcon);
-            } catch (final IOException e) {
-               fotoLabel.setIcon(noFotoIcon);
-            }
-         } else {
-            final BufferedImage image = ImageLoader.loadImage(data.getImageId());
-            if (image != null) {
-               final Image scaledImage = image.getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, 0);
-               final ImageIcon imageIcon = new ImageIcon(scaledImage);
-               fotoLabel.setIcon(imageIcon);
-            } else {
-               fotoLabel.setIcon(noFotoIcon);
-            }
+      public void refreshImage() {
+         BufferedImage image = getCurrentImage();
+         if (image == null) {
+            image = ImageLoader.loadImage(data.getImageId());
          }
+         if (image == null) {
+            image = noFotoIcon;
+         }
+         fotoLabel.setIcon(new ImageIcon(scaleImage(image)));
+      }
+
+      private Image scaleImage(final BufferedImage image) {
+         return image.getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, 0);
       }
 
       @Override
@@ -413,7 +399,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
          fieldGeburtsdatum.setText("");
          fieldFunktion.setText("");
          fieldAhvNr.setText("");
-         fotoLabel.setIcon(noFotoIcon);
+         fotoLabel.setIcon(new ImageIcon(noFotoIcon));
       }
 
       @Override

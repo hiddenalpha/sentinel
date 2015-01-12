@@ -3,7 +3,6 @@ package ch.infbr5.sentinel.client.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -155,12 +154,7 @@ public class ApplicationFrame extends JFrame {
 
    private void run() {
       this.setVisible(true);
-      this.setIcon();
-   }
-
-   private void setIcon() {
-      final BufferedImage defaultImage = ImageLoader.loadSentinelIcon();
-      this.setIconImage(defaultImage);
+      this.setIconImage(ImageLoader.loadSentinelIcon());
    }
 
    public JTabbedPane createTabbedPane() {

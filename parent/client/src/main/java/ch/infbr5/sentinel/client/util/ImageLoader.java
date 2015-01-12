@@ -16,7 +16,7 @@ public class ImageLoader {
    private static Logger log = Logger.getLogger(ImageLoader.class);
 
    /**
-    * L�dt das Bild. Diese Methode ist optimiert. Falls der Client und Server
+    * Lädt das Bild. Diese Methode ist optimiert. Falls der Client und Server
     * auf einem System arbeiten, wird das Bild direkt aus dem Server Ordner
     * geladen und nicht über den Network Stack geschickt.
     *
@@ -37,14 +37,17 @@ public class ImageLoader {
             log.debug("Lade Bild [" + imageId + "] direkt lokal von " + path);
             return ImageIO.read(new File(path));
          } else {
-            final byte[] data = ServiceHelper.getSentinelService().getPersonImage(imageId);
-            log.debug("Lade Bild [" + imageId + "] von Server");
-            return ImageIO.read(new ByteArrayInputStream(data));
+            if (ServiceHelper.getSentinelService().hasPersonImage(imageId)) {
+               final byte[] data = ServiceHelper.getSentinelService().getPersonImage(imageId);
+               log.debug("Lade Bild [" + imageId + "] von Server");
+               return ImageIO.read(new ByteArrayInputStream(data));
+            }
          }
       } catch (final IOException e) {
          log.error(e);
-         return null;
       }
+
+      return null;
    }
 
    private static boolean isEmptyString(final String s) {
