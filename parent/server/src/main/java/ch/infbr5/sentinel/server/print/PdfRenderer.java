@@ -1,12 +1,12 @@
 package ch.infbr5.sentinel.server.print;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import ch.infbr5.sentinel.common.util.DateFormater;
 import ch.infbr5.sentinel.server.db.PdfStore;
 import ch.infbr5.sentinel.server.model.ObjectFactory;
 import ch.infbr5.sentinel.server.model.PrintJob;
+import ch.infbr5.sentinel.server.utils.FileHelper;
 
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Phrase;
@@ -36,8 +36,8 @@ public abstract class PdfRenderer {
    }
 
    private String createFilename() {
-      final long timestamp = Calendar.getInstance().getTimeInMillis();
-      return getFileName() + "_" + String.valueOf(timestamp);
+      final String time = String.valueOf(new Date().getTime());
+      return FileHelper.clearFilename(getFileName() + "_" + time);
    }
 
 }

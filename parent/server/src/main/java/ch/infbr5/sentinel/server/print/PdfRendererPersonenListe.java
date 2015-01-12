@@ -38,24 +38,28 @@ public class PdfRendererPersonenListe extends PdfRenderer {
 
    @Override
    protected String getFileName() {
-      return "ausweisListe";
+      return getBeschreibung();
    }
 
    @Override
    public String getBeschreibung() {
-      String parameter = "";
+      final StringBuffer buffer = new StringBuffer();
 
       if (nurMitAusweis) {
-         parameter += "nur Ausweise ";
+         buffer.append("Ausweisliste ");
+      } else {
+         buffer.append("Personenliste ");
       }
 
       if (nachEinheit) {
-         parameter += "nach Einheit " + einheitName + " ";
+         buffer.append("von ");
+         buffer.append(einheitName);
+         buffer.append(" ");
       } else {
-         parameter += "nach Name ";
+         buffer.append("nach Name ");
       }
 
-      return ("Ausweisliste " + parameter).trim();
+      return buffer.toString().trim();
    }
 
    @Override

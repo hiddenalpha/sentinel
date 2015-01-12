@@ -51,12 +51,12 @@ public class PdfRendererIdendityCards extends PdfRenderer {
 
    @Override
    public String getFileName() {
-      return "ausweise";
+      return getBeschreibung();
    }
 
    @Override
    protected String getBeschreibung() {
-      return "Erstellte Ausweise";
+      return "Ausweise";
    }
 
    @Override
@@ -150,7 +150,7 @@ public class PdfRendererIdendityCards extends PdfRenderer {
    }
 
    private void addEinheitenText(final Ausweis ausweis, final int offsetX, int offsetY) throws DocumentException,
-   IOException {
+         IOException {
       final BaseFont font = createBoldFont();
       final int size = 25;
       final Color color = Color.white;
@@ -187,7 +187,7 @@ public class PdfRendererIdendityCards extends PdfRenderer {
    }
 
    private void drawPersonenText(final Ausweis ausweis, final int offsetX, final int offsetY) throws DocumentException,
-   IOException {
+         IOException {
       final BaseFont fontBold = createBoldFont();
       final BaseFont fontDefault = createDefaultFont();
       final Person person = ausweis.getPerson();

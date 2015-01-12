@@ -31,7 +31,7 @@ public class PdfRendererAusweisBox extends PdfRenderer {
 
    @Override
    protected String getFileName() {
-      return "ausweisbox_"; // TODO Einheitsname
+      return getBeschreibung();
    }
 
    @Override

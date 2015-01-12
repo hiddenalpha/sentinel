@@ -19,6 +19,9 @@
 	einen druckt wird die Liste gleich aktualisiert.
 #48 Ausweise: Falls Person in der Archiv Einheit war und nun einer gültigen Einheit
 	zugwiesen wird und die Person bereits ein Foto besitzt, wird ein Ausweis generiert.
+#54 Printjobs: Beschreibung nun bei allen ausführlicher. Die Beschreibung wird nun auch
+	in den Dateinamen genommen. Somit ist vom Dateinamen her auch ersichtlich was der 
+	Inhalt ist.
 
 /***************************************/
 /* 			Version 0.8.2		   	   */

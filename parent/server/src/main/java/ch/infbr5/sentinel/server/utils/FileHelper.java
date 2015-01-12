@@ -16,6 +16,14 @@ public class FileHelper {
       return Files.toByteArray(new File(filename));
    }
 
+   public static String clearFilename(String filename) {
+      filename = filename.toLowerCase();
+      filename = filename.replace(" ", "-");
+      filename = filename.replace(".", "-");
+      filename = filename.replaceAll("[^0-9a-z-_]", "");
+      return filename;
+   }
+
    /**
     * Loescht das File sofern es existiert.
     *
