@@ -10,59 +10,62 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQueries({  @NamedQuery(name = PrintJob.GET_PRINTJOBS, query = "SELECT p FROM PrintJob p"), @NamedQuery(name = PrintJob.GET_PRINTJOB_BY_ID, query = "SELECT p FROM PrintJob p WHERE p.id = :printjobId")})
+@NamedQueries({
+   @NamedQuery(name = PrintJob.GET_PRINTJOBS, query = "SELECT p FROM PrintJob p ORDER BY p.printJobDate DESC"),
+      @NamedQuery(name = PrintJob.GET_PRINTJOB_BY_ID, query = "SELECT p FROM PrintJob p WHERE p.id = :printjobId") })
 public class PrintJob {
-	public static final String GET_PRINTJOBS = "getPrintJobs";
 
-	public static final String GET_PRINTJOB_BY_ID = "getPrintJobById";
+   public static final String GET_PRINTJOBS = "getPrintJobs";
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+   public static final String GET_PRINTJOB_BY_ID = "getPrintJobById";
 
-	private String printJobDesc;
-	private Date printJobDate;
-	private String pintJobFile;
-	private int reprints;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
 
-	public Long getId() {
-		return id;
-	}
+   private String printJobDesc;
+   private Date printJobDate;
+   private String pintJobFile;
+   private int reprints;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+   public Long getId() {
+      return id;
+   }
 
-	public String getPrintJobDesc() {
-		return printJobDesc;
-	}
+   public void setId(final Long id) {
+      this.id = id;
+   }
 
-	public void setPrintJobDesc(String printJobDesc) {
-		this.printJobDesc = printJobDesc;
-	}
+   public String getPrintJobDesc() {
+      return printJobDesc;
+   }
 
-	public Date getPrintJobDate() {
-		return printJobDate;
-	}
+   public void setPrintJobDesc(final String printJobDesc) {
+      this.printJobDesc = printJobDesc;
+   }
 
-	public void setPrintJobDate(Date printJobDate) {
-		this.printJobDate = printJobDate;
-	}
+   public Date getPrintJobDate() {
+      return printJobDate;
+   }
 
-	public String getPintJobFile() {
-		return pintJobFile;
-	}
+   public void setPrintJobDate(final Date printJobDate) {
+      this.printJobDate = printJobDate;
+   }
 
-	public void setPintJobFile(String pintJobFile) {
-		this.pintJobFile = pintJobFile;
-	}
+   public String getPintJobFile() {
+      return pintJobFile;
+   }
 
-	public int getReprints() {
-		return reprints;
-	}
+   public void setPintJobFile(final String pintJobFile) {
+      this.pintJobFile = pintJobFile;
+   }
 
-	public void setReprints(int reprints) {
-		this.reprints = reprints;
-	}
+   public int getReprints() {
+      return reprints;
+   }
+
+   public void setReprints(final int reprints) {
+      this.reprints = reprints;
+   }
 
 }

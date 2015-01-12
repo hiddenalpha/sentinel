@@ -23,20 +23,23 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
    private static final long serialVersionUID = 1L;
 
+   private MyTableModel tableModel;
+
    public PrintConfigPanel(final boolean adminMode) {
       super(adminMode);
    }
 
    @Override
    protected AbstractAdminTableModel<PrintJobDetails> getTableModel() {
-      return new MyTableModel();
+      tableModel = new MyTableModel();
+      return tableModel;
    }
 
    public class MyTableModel extends AbstractAdminTableModel<PrintJobDetails> {
 
       private static final long serialVersionUID = 1L;
 
-      private final String[] headerNames = { "Datum", "Printjob", "File" };
+      private final String[] headerNames = { "Datum", "Beschreibung", "Datei" };
 
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
@@ -121,7 +124,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
          dateiname = createField("Dateiname");
          dateiname.setEditable(false);
 
-         pdfOeffnenButton = new JButton("PDF �ffnen");
+         pdfOeffnenButton = new JButton("PDF öffnen");
          pdfOeffnenButton.addActionListener(this);
          pdfOeffnenButton.setActionCommand(CMD_BUTTON_PDF_OEFFNEN);
          this.add(SwingHelper.createLabel(""), "gap para");
@@ -204,9 +207,12 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
       public void actionPerformed(final ActionEvent e) {
          ConfigurationResponse response = null;
 
+         boolean updateData = true;
+
          if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEISE)) {
             response = ServiceHelper.getConfigurationsService().printAusweise();
             updateAusweisDruckenButtonName();
+            updateData = false;
          } else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_NAME)) {
             response = ServiceHelper.getConfigurationsService().printAusweisListe(true, false, "");
          } else if (e.getActionCommand().equals(CMD_BUTTON_DRUCKE_AUSWEIS_LISTE_NACH_EINH)) {
@@ -221,6 +227,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
             if (data != null) {
                response = ServiceHelper.getConfigurationsService().getPrintJob(data.getPrintJobId());
             }
+            updateData = false;
          }
 
          if (response != null) {
@@ -232,6 +239,10 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
                JOptionPane.showMessageDialog(null, "Keine ausstehende Daten zum Drucken.", "Keine Daten",
                      JOptionPane.WARNING_MESSAGE);
             }
+         }
+
+         if (updateData) {
+            tableModel.updateData();
          }
       }
 
