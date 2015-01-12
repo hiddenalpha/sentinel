@@ -39,7 +39,7 @@ public class WorkflowStepModification extends WorkflowStep {
 
    @Override
    public String getName() {
-      return "�nderungen";
+      return "Änderungen";
    }
 
    @Override
@@ -80,7 +80,7 @@ public class WorkflowStepModification extends WorkflowStep {
       }
 
       if (!hasMods) {
-         panel.add(new JLabel("Dieser Import bringt keine �nderungen mit sich."));
+         panel.add(new JLabel("Dieser Import bringt keine Änderungen mit sich."));
       }
 
       return panel;
@@ -163,7 +163,7 @@ public class WorkflowStepModification extends WorkflowStep {
    private JPanel createPanelModification(final ModificationUpdatePersonAndNewAusweis mod) {
       return createPanel(
             createLabel("Person aktualisieren und neuer Ausweis", mod.getPersonDetailsOld(),
-                  "<br /><b>�nderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true);
+                  "<br /><b>Änderungen</b>:<br />" + personDiff(mod)), mod, mod.isToModify(), true);
    }
 
    private JPanel createPanelModification(final ModificationUpdatePerson mod) {

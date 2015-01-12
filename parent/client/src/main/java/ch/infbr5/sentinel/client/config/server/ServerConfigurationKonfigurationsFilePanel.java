@@ -22,74 +22,78 @@ import com.google.common.io.Files;
 
 public class ServerConfigurationKonfigurationsFilePanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private JLabel lblConfigFile;
+   private JLabel lblConfigFile;
 
-	private JLabel lblConfigFilePassword;
+   private JLabel lblConfigFilePassword;
 
-	private JButton btnConfigFile;
+   private JButton btnConfigFile;
 
-	private JTextField txtConfigFilePassword;
+   private JTextField txtConfigFilePassword;
 
-	private JButton btnLoadConfig;
+   private JButton btnLoadConfig;
 
-	private String currentSelectedFilePath;
+   private String currentSelectedFilePath;
 
-	public ServerConfigurationKonfigurationsFilePanel(final ServerConfigurationKonfigurationsWertePanel valuePanel, final ServerConfigurationAusweisvorlagePanel ausweisvorlagePanel) {
-		lblConfigFile = new JLabel();
-		lblConfigFilePassword = SwingHelper.createLabel("Passwort");
-		btnLoadConfig = new JButton("Konfiguration laden");
-		btnLoadConfig.setEnabled(false);
-		btnLoadConfig.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (txtConfigFilePassword.getText() == null || txtConfigFilePassword.getText().isEmpty()) {
-					txtConfigFilePassword.setBorder(BorderFactory.createLineBorder(Color.red));
-					return;
-				} else {
-					txtConfigFilePassword.setBorder(BorderFactory.createLineBorder(Color.black));
-				}
-				File f = new File(currentSelectedFilePath);
-				byte[] data;
-				try {
-					data = Files.toByteArray(f);
-					ServerSetupInformation infoFromFile = ServiceHelper.getConfigurationsService().getServerSetupInformationFromConfigFile(data, txtConfigFilePassword.getText());
+   public ServerConfigurationKonfigurationsFilePanel(final ServerConfigurationKonfigurationsWertePanel valuePanel,
+         final ServerConfigurationAusweisvorlagePanel ausweisvorlagePanel) {
+      lblConfigFile = new JLabel();
+      lblConfigFilePassword = SwingHelper.createLabel("Passwort");
+      btnLoadConfig = new JButton("Konfiguration laden");
+      btnLoadConfig.setEnabled(false);
+      btnLoadConfig.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            if (txtConfigFilePassword.getText() == null || txtConfigFilePassword.getText().isEmpty()) {
+               txtConfigFilePassword.setBorder(BorderFactory.createLineBorder(Color.red));
+               return;
+            } else {
+               txtConfigFilePassword.setBorder(BorderFactory.createLineBorder(Color.black));
+            }
+            final File f = new File(currentSelectedFilePath);
+            byte[] data;
+            try {
+               data = Files.toByteArray(f);
+               final ServerSetupInformation infoFromFile = ServiceHelper.getConfigurationsService()
+                     .getServerSetupInformationFromConfigFile(data, txtConfigFilePassword.getText());
 
-					valuePanel.applyInfosFromFile(infoFromFile);
-					ausweisvorlagePanel.appyInfosFromFile(infoFromFile.getAusweisvorlageConfig());
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "Fehler beim laden der Konfigurationsdatei. Eventuell Passwort falsch: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-		btnConfigFile = new JButton("Datei w‰hlen");
-		btnConfigFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String filepath = new FileUpAndDownload(null).showImportConfigurationFileDialog();
-				if (filepath != null && (new File(filepath)).exists()) {
-					currentSelectedFilePath = filepath;
-					lblConfigFile.setText(new File(filepath).getName());
-					btnLoadConfig.setEnabled(true);
-				} else {
-					btnLoadConfig.setEnabled(false);
-				}
-			}
-		});
-		txtConfigFilePassword = new JTextField();
+               valuePanel.applyInfosFromFile(infoFromFile);
+               ausweisvorlagePanel.appyInfosFromFile(infoFromFile.getAusweisvorlageConfig());
+            } catch (final Exception ex) {
+               JOptionPane.showMessageDialog(null,
+                     "Fehler beim laden der Konfigurationsdatei. Eventuell Passwort falsch: " + ex.getMessage(),
+                     "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+         }
+      });
+      btnConfigFile = new JButton("Datei w√§hlen");
+      btnConfigFile.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final String filepath = new FileUpAndDownload(null).showImportConfigurationFileDialog();
+            if (filepath != null && (new File(filepath)).exists()) {
+               currentSelectedFilePath = filepath;
+               lblConfigFile.setText(new File(filepath).getName());
+               btnLoadConfig.setEnabled(true);
+            } else {
+               btnLoadConfig.setEnabled(false);
+            }
+         }
+      });
+      txtConfigFilePassword = new JTextField();
 
-		setLayout(new MigLayout());
+      setLayout(new MigLayout());
 
-		JPanel filePanel = new JPanel(new MigLayout());
-		filePanel.add(btnConfigFile, "");
-		filePanel.add(lblConfigFile, "wrap");
-		filePanel.add(lblConfigFilePassword, "");
-		filePanel.add(txtConfigFilePassword, "growx, push, wrap");
-		filePanel.add(btnLoadConfig, "spanx, align right");
-		SwingHelper.attachLabledBorder("Konfigurationsdatei laden", filePanel);
+      final JPanel filePanel = new JPanel(new MigLayout());
+      filePanel.add(btnConfigFile, "");
+      filePanel.add(lblConfigFile, "wrap");
+      filePanel.add(lblConfigFilePassword, "");
+      filePanel.add(txtConfigFilePassword, "growx, push, wrap");
+      filePanel.add(btnLoadConfig, "spanx, align right");
+      SwingHelper.attachLabledBorder("Konfigurationsdatei laden", filePanel);
 
-		add(filePanel, "growx, push, wrap");
-	}
+      add(filePanel, "growx, push, wrap");
+   }
 
 }

@@ -134,7 +134,7 @@ public class WorkflowStepMapping extends WorkflowStep {
 
    private void createLabels() {
       lblHeader1 = new JLabel("Personenattribute");
-      lblHeader2 = new JLabel("Spalten�berschriften");
+      lblHeader2 = new JLabel("Spaltenüberschriften");
       changeToBold(lblHeader1);
       changeToBold(lblHeader2);
    }
@@ -145,15 +145,15 @@ public class WorkflowStepMapping extends WorkflowStep {
 
          final JComboBox<CmbItem> cmb = new JComboBox<>();
          cmb.setActionCommand(mapping.getPersonenAttribute().value()); // Set
-                                                                       // the
-                                                                       // name
-                                                                       // of the
-                                                                       // person
-                                                                       // attribute
-                                                                       // associated
-                                                                       // with
-                                                                       // this
-                                                                       // combobox
+         // the
+         // name
+         // of the
+         // person
+         // attribute
+         // associated
+         // with
+         // this
+         // combobox
 
          final ComboBoxModel<CmbItem> model = createComboBoxModel(mapping.getColumn(), mapping.getPossibleColumns());
          cmb.setModel(model);
