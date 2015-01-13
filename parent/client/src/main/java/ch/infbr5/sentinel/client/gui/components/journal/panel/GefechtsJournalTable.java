@@ -39,6 +39,8 @@ public class GefechtsJournalTable extends JTable {
       renderer.setVerticalAlignment(DefaultTableCellRenderer.TOP);
       setDefaultRenderer(Object.class, renderer);
       setDefaultRenderer(String.class, new MultiLineCellRenderer());
+      getColumnModel().getColumn(0).setCellRenderer(new DateTimeCellRenderer());
+      getColumnModel().getColumn(5).setCellRenderer(new DateTimeCellRenderer());
 
       addMouseListener(new MouseAdapter() {
 
@@ -55,11 +57,32 @@ public class GefechtsJournalTable extends JTable {
                } else {
                   menu.add(createErledigtItem(row));
                }
+
+               menu.add(createRemoveItem(row));
+
                menu.show(table, e.getX(), e.getY());
             }
          }
 
       });
+   }
+
+   private JMenuItem createRemoveItem(final int row) {
+      final JMenuItem item = new JMenuItem("Löschen");
+      item.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final int[] selectedRows = getSelectedRows();
+            for (final int selectedRow : selectedRows) {
+               System.out.println(model.getItem(selectedRow).getWerWasWoWie());
+            }
+
+            // /final JournalGefechtsMeldung eintrag = model.getItem(row);
+            // ServiceHelper.getJournalService().remo
+            // model.fireTableDataChanged();
+         }
+      });
+      return item;
    }
 
    private JMenuItem createErledigtItem(final int row) {
@@ -98,7 +121,6 @@ public class GefechtsJournalTable extends JTable {
    }
 
    public void adjust() {
-      this.getColumnModel().getColumn(0).setCellRenderer(new DateTimeCellRenderer());
       this.getRowSorter().toggleSortOrder(0);
       this.getRowSorter().toggleSortOrder(0);
       TableColumnResizer.resizeColumnWidth(this);

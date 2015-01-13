@@ -8,7 +8,6 @@ import javax.swing.table.AbstractTableModel;
 import ch.infbr5.sentinel.client.util.PersonDetailsFormater;
 import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
-import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class GefechtsJournalModel extends AbstractTableModel {
 
@@ -47,11 +46,6 @@ public class GefechtsJournalModel extends AbstractTableModel {
    }
 
    @Override
-   public Class<?> getColumnClass(final int columnIndex) {
-      return String.class;
-   }
-
-   @Override
    public Object getValueAt(final int rowIndex, final int columnIndex) {
       final JournalGefechtsMeldung meldung = meldungen.get(rowIndex);
       if (columnIndex == 0) {
@@ -71,7 +65,7 @@ public class GefechtsJournalModel extends AbstractTableModel {
       }
       if (columnIndex == 5) {
          if (meldung.isIstErledigt()) {
-            return DateFormater.formatToDateWithTime(meldung.getZeitpunktErledigt());
+            return meldung.getZeitpunktErledigt();
          }
          return "";
       }
