@@ -1,12 +1,6 @@
 /***************************************/
  Version x.x.x
 /***************************************/
-#33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen
-#37 Entwicklung: Projekt komplett auf UTF-8 umgestellt. Fördert die
-   plattformunbhängige Entwikcklung.
-#38 Maven-Build: Entfernung der SUN-Abhängigkeiten beim WSGen (Webservice 
-   Generierung). Die Klassen sind mittlerweile im Core (JDK).
-#49 Abhängigkeiten aktualisiert: guava 18.0 junit 4.12
 #34 Personendaten Import: Slider Speed im Step Modifikationen erhöht. Der
    Scroll war langsam und unbrauchbar.
 #35 Personendaten Import: Nach dem Import erscheint eine Dialogsmeldung. Diese 
@@ -38,7 +32,15 @@
    Bild hinterlegt hat. Diese bekommt einfach das Nobody-Bild.
 #59 PrintJobs: Datum Kolone kann nun korrekt sortiert werden. In allen Einstellungs
    Tabellen ist nun eine Default-Sortierung vorgegeben.
-	
+
+Technische Verbesserungen:
+#33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen
+#37 Entwicklung: Projekt komplett auf UTF-8 umgestellt. Fördert die
+   plattformunbhängige Entwikcklung.
+#38 Maven-Build: Entfernung der SUN-Abhängigkeiten beim WSGen (Webservice 
+   Generierung). Die Klassen sind mittlerweile im Core (JDK).
+#49 Abhängigkeiten aktualisiert: guava 18.0 junit 4.12
+
 /***************************************/
  Version 0.8.2
 /***************************************/
