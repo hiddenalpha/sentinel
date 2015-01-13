@@ -33,6 +33,7 @@
 #59 PrintJobs: Datum Kolone kann nun korrekt sortiert werden. In allen Einstellungs
    Tabellen ist nun eine Default-Sortierung vorgegeben. Zudem wurden alle Tabellen
    mit einem automatischen Kolonen-Breite Tool ausgestattet.
+#63 Korrektes Icon bei manueller Auswahl.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

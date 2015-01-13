@@ -72,7 +72,7 @@ public class CheckInTabbedPanels extends JTabbedPane implements ChangeListener, 
 
       if (values.length > 0) {
          selected = (CheckInSelectionValue) JOptionPane.showInputDialog(this, "Manuele Auswahl",
-               "Auswahl nur im Notfall (wird protokolliert).", JOptionPane.WARNING_MESSAGE, null, values, values[0]);
+               "Auswahl nur im Notfall (wird protokolliert).", JOptionPane.QUESTION_MESSAGE, null, values, values[0]);
       } else {
          JOptionPane.showMessageDialog(this, "Keine Ausweise vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
       }
