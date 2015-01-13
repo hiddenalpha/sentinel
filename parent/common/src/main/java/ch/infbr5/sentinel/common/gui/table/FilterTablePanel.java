@@ -59,7 +59,7 @@ public class FilterTablePanel extends JPanel {
          }
       });
 
-      btnFilter = new JButton("Filter");
+      btnFilter = new JButton("Suchen");
       btnFilter.setFont(SwingHelper.smaller(btnFilter.getFont()));
       btnFilter.addActionListener(new ActionListener() {
 
