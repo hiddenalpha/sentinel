@@ -34,6 +34,8 @@
    Tabellen ist nun eine Default-Sortierung vorgegeben. Zudem wurden alle Tabellen
    mit einem automatischen Kolonen-Breite Tool ausgestattet.
 #63 Korrektes Icon bei manueller Auswahl.
+#46 InitialLoadHours von Journal Tabellen eliminiert. Es werden immer alle Daten geladen.
+   Entschäft wird dies dadurch, dass der Admin in Zukunft Einträge löschen kann.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -159,16 +158,12 @@ public class ApplicationFrame extends JFrame {
    public JTabbedPane createTabbedPane() {
       final JTabbedPane tabbedPane = new JTabbedPane();
 
-      final long currentTimestamp = (new Date()).getTime();
-      final long hoursInitialLoadInMillis = ConfigurationLocalHelper.getConfig().getHoursInitialLoadJournal() * 60 * 60 * 1000;
-      final long timestampSeit = currentTimestamp - hoursInitialLoadInMillis;
-
-      final List<JournalBewegungsMeldung> bewegungsMeldungen = ServiceHelper.getJournalService()
-            .getBewegungsJournalSeit(timestampSeit).getBewegungsMeldungen();
-      final List<JournalGefechtsMeldung> gefechtsMeldung = ServiceHelper.getJournalService()
-            .getGefechtsJournalSeit(timestampSeit).getGefechtsMeldungen();
-      final List<JournalSystemMeldung> systemMeldungen = ServiceHelper.getJournalService()
-            .getSystemJournalSeit(timestampSeit).getSystemMeldungen();
+      final List<JournalBewegungsMeldung> bewegungsMeldungen = ServiceHelper.getJournalService().getBewegungsJournal()
+            .getBewegungsMeldungen();
+      final List<JournalGefechtsMeldung> gefechtsMeldung = ServiceHelper.getJournalService().getGefechtsJournal()
+            .getGefechtsMeldungen();
+      final List<JournalSystemMeldung> systemMeldungen = ServiceHelper.getJournalService().getSystemJournal()
+            .getSystemMeldungen();
 
       final BewegungsJournalModel modelBewegungsJournal = new BewegungsJournalModel(bewegungsMeldungen);
       final GefechtsJournalModel modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
@@ -209,5 +204,4 @@ public class ApplicationFrame extends JFrame {
 
       return tabbedPane;
    }
-
 }

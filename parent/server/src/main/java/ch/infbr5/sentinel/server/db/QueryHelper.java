@@ -252,10 +252,8 @@ public class QueryHelper {
    }
 
    @SuppressWarnings("unchecked")
-   public List<SystemMeldung> getSystemMeldungen(final long checkpointId, final int maxResult) {
-      final Query q = em.createNamedQuery("findLogEintrag");
-      q.setParameter("checkpointId", checkpointId);
-      q.setMaxResults(maxResult);
+   public List<SystemMeldung> getSystemMeldungen() {
+      final Query q = em.createNamedQuery("findSystemMeldungen");
       return q.getResultList();
    }
 
@@ -341,6 +339,12 @@ public class QueryHelper {
    }
 
    @SuppressWarnings("unchecked")
+   public List<BewegungsMeldung> getBewegungsMeldungen() {
+      final Query q = em.createNamedQuery("findBewegungsMeldungen");
+      return q.getResultList();
+   }
+
+   @SuppressWarnings("unchecked")
    public List<BewegungsMeldung> getBewegungsMeldungenSeit(final long timeInMillis) {
       final Query q = em.createNamedQuery("findBewegungsMeldungenSeit");
       q.setParameter("timeInMillis", timeInMillis);
@@ -351,6 +355,12 @@ public class QueryHelper {
       final Query q = em.createNamedQuery("findGefechtsMeldung");
       q.setParameter("id", id);
       return (GefechtsMeldung) q.getSingleResult();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<GefechtsMeldung> getGefechtsMeldungen() {
+      final Query q = em.createNamedQuery("findGefechtsMeldungen");
+      return q.getResultList();
    }
 
    @SuppressWarnings("unchecked")

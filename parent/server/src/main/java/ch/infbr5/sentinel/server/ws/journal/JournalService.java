@@ -30,89 +30,120 @@ import com.google.common.collect.Lists;
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class JournalService {
 
-	@Resource
-	private WebServiceContext context;
+   @Resource
+   private WebServiceContext context;
 
-	private static Logger log = Logger.getLogger(JournalService.class);
+   private static Logger log = Logger.getLogger(JournalService.class);
 
-	@WebMethod
-	public void addSystemMeldung(@WebParam(name = "meldung") JournalSystemMeldung meldung) {
-		SystemMeldung record = Mapper.mapJournalSystemMeldungToSystemMeldung().apply(meldung);
-		EntityManagerHelper.getEntityManager(context).persist(record);
-	}
+   @WebMethod
+   public void addSystemMeldung(@WebParam(name = "meldung") final JournalSystemMeldung meldung) {
+      final SystemMeldung record = Mapper.mapJournalSystemMeldungToSystemMeldung().apply(meldung);
+      EntityManagerHelper.getEntityManager(context).persist(record);
+   }
 
-	@WebMethod
-	public void addGefechtsMeldung(@WebParam(name = "meldung") JournalGefechtsMeldung meldung) {
-		log.info("Neue Gefechtsmeldung am Checkpoint " + meldung.getCheckpoint().getName() + " erfasst.");
-		GefechtsMeldung record = Mapper.mapJournalGefechtsMeldungToGefechtsMeldung(getEntityManager()).apply(meldung);
-		EntityManagerHelper.getEntityManager(context).persist(record);
-	}
+   @WebMethod
+   public void addGefechtsMeldung(@WebParam(name = "meldung") final JournalGefechtsMeldung meldung) {
+      log.info("Neue Gefechtsmeldung am Checkpoint " + meldung.getCheckpoint().getName() + " erfasst.");
+      final GefechtsMeldung record = Mapper.mapJournalGefechtsMeldungToGefechtsMeldung(getEntityManager()).apply(
+            meldung);
+      EntityManagerHelper.getEntityManager(context).persist(record);
+   }
 
-	@WebMethod
-	public void updateGefechtsMeldung(@WebParam(name = "meldung") JournalGefechtsMeldung meldung) {
-		log.info("Gefechtsmeldung wird aktualisiert");
-		GefechtsMeldung gefechtsMeldung = getQueryHelper().getGefechtsMeldungen(meldung.getId());
+   @WebMethod
+   public void updateGefechtsMeldung(@WebParam(name = "meldung") final JournalGefechtsMeldung meldung) {
+      log.info("Gefechtsmeldung wird aktualisiert");
+      final GefechtsMeldung gefechtsMeldung = getQueryHelper().getGefechtsMeldungen(meldung.getId());
 
-		if (!gefechtsMeldung.isIstErledigt()) {
-			if (meldung.isIstErledigt()) {
-				gefechtsMeldung.setZeitpunktErledigt(Calendar.getInstance());
-			}
-		}
+      if (!gefechtsMeldung.isIstErledigt()) {
+         if (meldung.isIstErledigt()) {
+            gefechtsMeldung.setZeitpunktErledigt(Calendar.getInstance());
+         }
+      }
 
-		if (gefechtsMeldung.isIstErledigt()) {
-			if (!meldung.isIstErledigt()) {
-				gefechtsMeldung.setZeitpunktErledigt(null);
-			}
-		}
+      if (gefechtsMeldung.isIstErledigt()) {
+         if (!meldung.isIstErledigt()) {
+            gefechtsMeldung.setZeitpunktErledigt(null);
+         }
+      }
 
-		gefechtsMeldung.setIstErledigt(meldung.isIstErledigt());
-	}
+      gefechtsMeldung.setIstErledigt(meldung.isIstErledigt());
+   }
 
-	@WebMethod
-	public JournalResponse getSystemJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
-		List<SystemMeldung> data = getQueryHelper().getSystemMeldungenSeit(timeInMillis);
-		List<JournalSystemMeldung> eintraege = Lists.transform(data, Mapper.mapSystemMeldungToJournalSystemMeldung());
+   @WebMethod
+   public JournalResponse getSystemJournal() {
+      final List<SystemMeldung> data = getQueryHelper().getSystemMeldungen();
+      return createJournalResponseSystemMeldung(data);
+   }
 
-		JournalResponse response = new JournalResponse();
-		response.setSystemMeldungen(eintraege);
-		return response;
-	}
+   @WebMethod
+   public JournalResponse getSystemJournalSeit(@WebParam(name = "timeInMillis") final long timeInMillis) {
+      final List<SystemMeldung> data = getQueryHelper().getSystemMeldungenSeit(timeInMillis);
+      return createJournalResponseSystemMeldung(data);
+   }
 
-	@WebMethod
-	public JournalResponse getBewegungsJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
-		List<BewegungsMeldung> data = getQueryHelper().getBewegungsMeldungenSeit(timeInMillis);
-		List<JournalBewegungsMeldung> eintraege = Lists.transform(data, Mapper.mapBewegungsMeldungToJournalBewegungsMeldung());
+   @WebMethod
+   public JournalResponse getBewegungsJournal() {
+      final List<BewegungsMeldung> data = getQueryHelper().getBewegungsMeldungen();
+      return createJournalResponseBewegungsMeldung(data);
+   }
 
-		JournalResponse response = new JournalResponse();
-		response.setBewegungsMeldungen(eintraege);
-		return response;
-	}
+   @WebMethod
+   public JournalResponse getBewegungsJournalSeit(@WebParam(name = "timeInMillis") final long timeInMillis) {
+      final List<BewegungsMeldung> data = getQueryHelper().getBewegungsMeldungenSeit(timeInMillis);
+      return createJournalResponseBewegungsMeldung(data);
+   }
 
-	@WebMethod
-	public JournalResponse getGefechtsJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
-		List<GefechtsMeldung> data = getQueryHelper().getGefechtsMeldungenSeit(timeInMillis);
-		List<JournalGefechtsMeldung> eintraege = Lists.transform(data, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
+   @WebMethod
+   public JournalResponse getGefechtsJournal() {
+      final List<GefechtsMeldung> data = getQueryHelper().getGefechtsMeldungen();
+      return createJournalResponseGefechtsMeldung(data);
+   }
 
-		JournalResponse response = new JournalResponse();
-		response.setGefechtsMeldungen(eintraege);
-		return response;
-	}
+   @WebMethod
+   public JournalResponse getGefechtsJournalSeit(@WebParam(name = "timeInMillis") final long timeInMillis) {
+      final List<GefechtsMeldung> data = getQueryHelper().getGefechtsMeldungenSeit(timeInMillis);
+      return createJournalResponseGefechtsMeldung(data);
+   }
 
-	@WebMethod
-	public JournalResponse getJournalSeit(@WebParam(name = "timeInMillis") long timeInMillis) {
-		JournalResponse response = new JournalResponse();
-		response.setSystemMeldungen(this.getSystemJournalSeit(timeInMillis).getSystemMeldungen());
-		response.setGefechtsMeldungen(this.getGefechtsJournalSeit(timeInMillis).getGefechtsMeldungen());
-		response.setBewegungsMeldungen(this.getBewegungsJournalSeit(timeInMillis).getBewegungsMeldungen());
-		return response;
-	}
+   @WebMethod
+   public JournalResponse getJournalSeit(@WebParam(name = "timeInMillis") final long timeInMillis) {
+      final JournalResponse response = new JournalResponse();
+      response.setSystemMeldungen(this.getSystemJournalSeit(timeInMillis).getSystemMeldungen());
+      response.setGefechtsMeldungen(this.getGefechtsJournalSeit(timeInMillis).getGefechtsMeldungen());
+      response.setBewegungsMeldungen(this.getBewegungsJournalSeit(timeInMillis).getBewegungsMeldungen());
+      return response;
+   }
 
-	private EntityManager getEntityManager() {
-		return EntityManagerHelper.getEntityManager(context);
-	}
+   private JournalResponse createJournalResponseSystemMeldung(final List<SystemMeldung> data) {
+      final List<JournalSystemMeldung> eintraege = Lists.transform(data,
+            Mapper.mapSystemMeldungToJournalSystemMeldung());
+      final JournalResponse response = new JournalResponse();
+      response.setSystemMeldungen(eintraege);
+      return response;
+   }
 
-	private QueryHelper getQueryHelper() {
-		return new QueryHelper(getEntityManager());
-	}
+   private JournalResponse createJournalResponseBewegungsMeldung(final List<BewegungsMeldung> data) {
+      final List<JournalBewegungsMeldung> eintraege = Lists.transform(data,
+            Mapper.mapBewegungsMeldungToJournalBewegungsMeldung());
+      final JournalResponse response = new JournalResponse();
+      response.setBewegungsMeldungen(eintraege);
+      return response;
+   }
+
+   private JournalResponse createJournalResponseGefechtsMeldung(final List<GefechtsMeldung> data) {
+      final List<JournalGefechtsMeldung> eintraege = Lists.transform(data,
+            Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
+      final JournalResponse response = new JournalResponse();
+      response.setGefechtsMeldungen(eintraege);
+      return response;
+   }
+
+   private EntityManager getEntityManager() {
+      return EntityManagerHelper.getEntityManager(context);
+   }
+
+   private QueryHelper getQueryHelper() {
+      return new QueryHelper(getEntityManager());
+   }
 
 }

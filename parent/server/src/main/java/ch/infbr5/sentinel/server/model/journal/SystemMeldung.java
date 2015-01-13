@@ -5,77 +5,79 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "findSystemMeldungenSeit", query = "SELECT r FROM SystemMeldung r WHERE r.millis > :timeInMillis order by r.millis desc"), })
+@NamedQueries({
+   @NamedQuery(name = "findSystemMeldungenSeit", query = "SELECT r FROM SystemMeldung r WHERE r.millis > :timeInMillis order by r.millis desc"),
+   @NamedQuery(name = "findSystemMeldungen", query = "SELECT r FROM SystemMeldung r ORDER BY r.millis DESC") })
 public class SystemMeldung extends JournalEintrag {
 
-	private String message;
+   private String message;
 
-	private String level;
+   private String level;
 
-	private String loggerClass;
+   private String loggerClass;
 
-	private String callerClass;
+   private String callerClass;
 
-	private String callerMethod;
+   private String callerMethod;
 
-	private String callerLineNumber;
+   private String callerLineNumber;
 
-	private String callerFilename;
+   private String callerFilename;
 
-	public String getMessage() {
-		return message;
-	}
+   public String getMessage() {
+      return message;
+   }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+   public void setMessage(final String message) {
+      this.message = message;
+   }
 
-	public String getLevel() {
-		return level;
-	}
+   public String getLevel() {
+      return level;
+   }
 
-	public void setLevel(String level) {
-		this.level = level;
-	}
+   public void setLevel(final String level) {
+      this.level = level;
+   }
 
-	public String getLoggerClass() {
-		return loggerClass;
-	}
+   public String getLoggerClass() {
+      return loggerClass;
+   }
 
-	public void setLoggerClass(String loggerClass) {
-		this.loggerClass = loggerClass;
-	}
+   public void setLoggerClass(final String loggerClass) {
+      this.loggerClass = loggerClass;
+   }
 
-	public String getCallerClass() {
-		return callerClass;
-	}
+   public String getCallerClass() {
+      return callerClass;
+   }
 
-	public void setCallerClass(String callerClass) {
-		this.callerClass = callerClass;
-	}
+   public void setCallerClass(final String callerClass) {
+      this.callerClass = callerClass;
+   }
 
-	public String getCallerMethod() {
-		return callerMethod;
-	}
+   public String getCallerMethod() {
+      return callerMethod;
+   }
 
-	public void setCallerMethod(String callerMethod) {
-		this.callerMethod = callerMethod;
-	}
+   public void setCallerMethod(final String callerMethod) {
+      this.callerMethod = callerMethod;
+   }
 
-	public String getCallerLineNumber() {
-		return callerLineNumber;
-	}
+   public String getCallerLineNumber() {
+      return callerLineNumber;
+   }
 
-	public void setCallerLineNumber(String callerLineNumber) {
-		this.callerLineNumber = callerLineNumber;
-	}
+   public void setCallerLineNumber(final String callerLineNumber) {
+      this.callerLineNumber = callerLineNumber;
+   }
 
-	public String getCallerFilename() {
-		return callerFilename;
-	}
+   public String getCallerFilename() {
+      return callerFilename;
+   }
 
-	public void setCallerFilename(String callerFilename) {
-		this.callerFilename = callerFilename;
-	}
+   public void setCallerFilename(final String callerFilename) {
+      this.callerFilename = callerFilename;
+   }
 
 }

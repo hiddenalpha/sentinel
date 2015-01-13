@@ -26,8 +26,6 @@ public class ConfigurationLocalHelper {
 
    private static final String SERVER_PORT_NUMBER = "ServerPortnumber";
 
-   private static final String HOURS_INITIAL_LOAD_JOURNAL = "hoursInitialLoadJournal";
-
    private static final String CHECKPOINT_ID = "CheckpointId";
 
    private static final String ADMIN_MODE = "AdminMode";
@@ -123,22 +121,6 @@ public class ConfigurationLocalHelper {
 
    public String getEndpointAddress() {
       return "http://" + getServerHostname() + ":" + getServerPortnumber();
-   }
-
-   public int getHoursInitialLoadJournal() {
-      String hours = getPropertyValue(HOURS_INITIAL_LOAD_JOURNAL);
-      int h = 0;
-      try {
-         h = Integer.parseInt(hours);
-      } catch (final NumberFormatException e) {
-         hours = defaultProperties.getProperty(HOURS_INITIAL_LOAD_JOURNAL);
-         h = Integer.parseInt(hours);
-      }
-      return h;
-   }
-
-   public void setHoursInitialLoadJournal(final int hours) {
-      savePropertyValue(HOURS_INITIAL_LOAD_JOURNAL, String.valueOf(hours));
    }
 
    public Long getCheckpointId() {

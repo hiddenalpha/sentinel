@@ -10,32 +10,30 @@ import ch.infbr5.sentinel.server.model.Person;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name = "findBewegungsMeldung", query = "SELECT r FROM BewegungsMeldung r WHERE r.id = :id"),
-	@NamedQuery(name = "findBewegungsMeldungen", query = "SELECT r FROM BewegungsMeldung r WHERE r.checkpoint.id = :checkpointId order by r.millis desc"),
-	@NamedQuery(name = "findBewegungsMeldungenSeit", query = "SELECT r FROM BewegungsMeldung r WHERE r.millis > :timeInMillis order by r.millis desc"),
-})
-
+   @NamedQuery(name = "findBewegungsMeldung", query = "SELECT r FROM BewegungsMeldung r WHERE r.id = :id"),
+   @NamedQuery(name = "findBewegungsMeldungen", query = "SELECT r FROM BewegungsMeldung r ORDER BY r.millis DESC"),
+   @NamedQuery(name = "findBewegungsMeldungenSeit", query = "SELECT r FROM BewegungsMeldung r WHERE r.millis > :timeInMillis order by r.millis desc"), })
 public class BewegungsMeldung extends JournalEintrag {
 
-	private OperatorAktion operatorAktion;
+   private OperatorAktion operatorAktion;
 
-	@ManyToOne
-	private Person person;
+   @ManyToOne
+   private Person person;
 
-	public OperatorAktion getOperatorAktion() {
-		return operatorAktion;
-	}
+   public OperatorAktion getOperatorAktion() {
+      return operatorAktion;
+   }
 
-	public void setOperatorAktion(OperatorAktion operatorAktion) {
-		this.operatorAktion = operatorAktion;
-	}
+   public void setOperatorAktion(final OperatorAktion operatorAktion) {
+      this.operatorAktion = operatorAktion;
+   }
 
-	public Person getPerson() {
-		return person;
-	}
+   public Person getPerson() {
+      return person;
+   }
 
-	public void setPerson(Person person) {
-		this.person = person;
-	}
+   public void setPerson(final Person person) {
+      this.person = person;
+   }
 
 }
