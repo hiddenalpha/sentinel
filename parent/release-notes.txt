@@ -1,95 +1,93 @@
 /***************************************/
-/* 			Version x.x.		   	   */
+ Version x.x.x
 /***************************************/
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen
-#37 Entwicklung: Projekt komplett auf UTF-8 umgestellt. Fördert die 
-	plattformunbhängige Entwikcklung.
-#38 Maven-Build: Entfernung der SUN-Abhängigkeiten beim WSGen (Webservice
-	Generierung). Die Klassen sind mittlerweile im Core (JDK).
-#49 Abhängigkeiten aktualisiert:
-		guava 18.0
-		junit 4.12
-#34 Personendaten Import: Slider Speed im Step Modifikationen erhöht. Der Scroll
-	war langsam und unbrauchbar.
-#35 Personendaten Import: Nach dem Import erscheint eine Dialogsmeldung. Diese
-	Meldung erscheint nun mit dem korrekten Icon. Auch die Fehlermeldung.
-#51 PrintJobs: Es wurden bei den Listen überall Headers hinzugefügt. Im Header ist
-	der Inhalt definiert (bspw. Name der Einheit), Seitenzahl und Datum. 
-#55 PrintJobs: Die Liste ist nun nach Datum sortiert (neustes zuerst) und wenn man
-	einen druckt wird die Liste gleich aktualisiert.
+#37 Entwicklung: Projekt komplett auf UTF-8 umgestellt. Fördert die
+   plattformunbhängige Entwikcklung.
+#38 Maven-Build: Entfernung der SUN-Abhängigkeiten beim WSGen (Webservice 
+   Generierung). Die Klassen sind mittlerweile im Core (JDK).
+#49 Abhängigkeiten aktualisiert: guava 18.0 junit 4.12
+#34 Personendaten Import: Slider Speed im Step Modifikationen erhöht. Der
+   Scroll war langsam und unbrauchbar.
+#35 Personendaten Import: Nach dem Import erscheint eine Dialogsmeldung. Diese 
+   Meldung erscheint nun mit dem korrekten Icon. Auch die Fehlermeldung.
+#51 PrintJobs: Es wurden bei den Listen überall Headers hinzugefügt. Im Header 
+    ist der Inhalt definiert (bspw. Name der Einheit), Seitenzahl und Datum. 
+#55 PrintJobs: Die Liste ist nun nach Datum sortiert (neustes zuerst) und wenn man 
+   einen druckt wird die Liste gleich aktualisiert.
 #48 Ausweise: Falls Person in der Archiv Einheit war und nun einer gültigen Einheit
-	zugwiesen wird und die Person bereits ein Foto besitzt, wird ein Ausweis generiert.
-#54 Printjobs: Beschreibung nun bei allen ausführlicher. Die Beschreibung wird nun auch
-	in den Dateinamen genommen. Somit ist vom Dateinamen her auch ersichtlich was der 
-	Inhalt ist.
+   zugwiesen wird und die Person bereits ein Foto besitzt, wird ein Ausweis generiert.
+#54 Printjobs: Beschreibung nun bei allen ausführlicher. Die Beschreibung wird nun
+   auch in den Dateinamen genommen. Somit ist vom Dateinamen her auch ersichtlich
+   was der Inhalt ist.
 #56 Icon von Einstellung auf SENTINEL umstellen 
-#1	ImageEditor: Wenn eine neue Person erfasst wird, die Daten nicht gespeichert 
-	werden, im ImageEditor gearbeitet wird und man zurückkehrt, dann sind die
-	Personendaten nicht mehr verloren. Der ImageEditor wurde mit einem Icon, Titel
-	versehen und ausserdem eingemittet. Das Konzept des Dialogs wurde nun korrekt
-	umgesetzt. Es gibt keine Probleme mit der Modalität mehr.
+#1 ImageEditor: Wenn eine neue Person erfasst wird, die Daten nicht gespeichert 
+   werden, im ImageEditor gearbeitet wird und man zurückkehrt, dann sind die
+   Personendaten nicht mehr verloren. Der ImageEditor wurde mit einem Icon, Titel
+   versehen und ausserdem eingemittet. Das Konzept des Dialogs wurde nun korrekt
+   umgesetzt. Es gibt keine Probleme mit der Modalität mehr.
 #53 PrintJobs: Es ist nun möglich alle Ausweisboxen auf einmal zu drucken. Dafür 
-	wurde die bestehende Implementierung verwendet und die PDFs einfach zusammengefügt.
+   wurde die bestehende Implementierung verwendet und die PDFs einfach zusammengefügt.
 #58 PrintJobs: Gewisse Aktionen wie Speichern, Bearbeiten u.a. sind nicht verfügbar.
-	Die Unterklasse kann nun sagen, welche Button nicht verfügbar sind. Ausserdem
-	wurde der Delete Button implementiert. Printjobs können nun gelöscht werden. Die
-	Pdfs werden serverseitig jedoch behalten.
+   Die Unterklasse kann nun sagen, welche Button nicht verfügbar sind. Ausserdem
+   wurde der Delete Button implementiert. Printjobs können nun gelöscht werden. Die
+   Pdfs werden serverseitig jedoch behalten.
 #60 PrintJobs: Die Buttons zum Drucken wurden überarbeitet. Sie bekamen teilweise neue
-	Namen und sind auch nur aktiv, wenn man diese gebrauchen kann.
-	Zudem kann nun ein Ausweis von einer Person gedruckt werden, welche kein Personen-
-	Bild hinterlegt hat. Diese bekommt einfach das Nobody-Bild.
+   Namen und sind auch nur aktiv, wenn man diese gebrauchen kann.
+   Zudem kann nun ein Ausweis von einer Person gedruckt werden, welche kein Personen-
+   Bild hinterlegt hat. Diese bekommt einfach das Nobody-Bild.
 #59 PrintJobs: Datum Kolone kann nun korrekt sortiert werden. In allen Einstellungs
-	Tabellen ist nun eine Default-Sortierung vorgegeben.
+   Tabellen ist nun eine Default-Sortierung vorgegeben.
 	
 /***************************************/
-/* 			Version 0.8.2		   	   */
+ Version 0.8.2
 /***************************************/
 - Shutdown Hook für Client
 - Volltext Suche auf Filter Tabellen erweitert. Ein Leerschlag bedeutet, dass eine AND-Verknüpfung
   gemacht wird.
   
 /***************************************/
-/* 			Version 0.8.1		   	   */
+ Version 0.8.1
 /***************************************/
 - Beim Druck eines Ausweises ist die Dimensions des Personen Fotos für das Wasserzeichen 
-  nicht mehr relevant.
+nicht mehr relevant.
 
 /***************************************/
-/* 			Version 0.8.0			   */
+ Version 0.8.0
 /***************************************/
 - PISA Import optimiert.
--- 	Automatische Erkennung der Tabellenspalten. Erkennung zwischen Geburtsdatum,
-	Grad, AHV-Nr und anderen Text-Attributen.
---	Anzeigen der Änderungen, welche durch den Import verursacht werden. Es wird
-	zwischen "Person archivieren", "Person aktualisieren", "Person aktualisieren
-	und neuer Ausweis" und "neue Person" unterschieden.
---	Möglichkeit, dass einzelne Änderungen deaktiviert werden können.
---  Es k�nnen Excel (xls, xlsx), sowie CSV Dateien importiert werden.
+   --Automatische Erkennung der Tabellenspalten. Erkennung zwischen Geburtsdatum,
+   Grad, AHV-Nr und anderen Text-Attributen.
+   --Anzeigen der Änderungen, welche durch den Import verursacht werden. Es wird
+   zwischen "Person archivieren", "Person aktualisieren", "Person aktualisieren
+   und neuer Ausweis" und "neue Person" unterschieden.
+   --Möglichkeit, dass einzelne Änderungen deaktiviert werden können.
+   --Es können Excel (xls, xlsx), sowie CSV Dateien importiert werden.
 
 - Hauptansicht mit Sliders ausgerüstet. 
 - Hauptansicht sowie Einstellungsansicht startet im Full-Screen Modus.
 
 - Gefechtsmeldungen können erstellt werden. Die Gefechtsmeldungen können für eine
-  Person im System angelegt werden. Beim passieren des Checkpoints wird der Operator
-  über die Gefechtsmeldung informiert.
+   Person im System angelegt werden. Beim passieren des Checkpoints wird der Operator
+   über die Gefechtsmeldung informiert.
 - Systemmeldungen werden in der Hauptansicht angezeigt.
 - Bewegungsmeldungen werden erfasst und in der Hauptansicht angezeigt.
 
 - Der Sentinel-Client kann nun über das GUI in den Admin Modus oder Super Modus
-  versetzt werden.
+   versetzt werden.
  
 - Beim Starten des Sentinel Clients:
---	Falls der Client das erste Mal startet oder falls keine Verbindung zum Server
-	vorliegt, erscheint ein Dialog, in welcher man die IP-Adresse und den Port eintragen
-	kann.
---  Falls der Client das erste Mal startet oder falls keine gültige Checkpoint
-	Konfiguration vorliegt, erscheint ein Dialog, in welcher man den aktuellen Check-
-	point auswählen kann. Ausserdem kann man gleich noch IP-Cams definieren.
---  Falls der Server Inital noch nicht konfiguriert ist oder falls eine Fehlkonfiguration
-	vorliegt, erscheint ein Dialog in welchem man grundlegende Serverkonfigurations-
-	daten konfigurieren kann. (Passwörter, Ausweisvorlage-Konfiguration, IP-Cams, Inital-
-	Checkpoint-Name, Initial-Zone-Name) Mit der Möglichkeit ein zuvor exportiere
-	Konfiguration zu exportieren.
+   --Falls der Client das erste Mal startet oder falls keine Verbindung zum Server
+    vorliegt, erscheint ein Dialog, in welcher man die IP-Adresse und den Port eintragen
+    kann.
+   --Falls der Client das erste Mal startet oder falls keine gültige Checkpoint
+    Konfiguration vorliegt, erscheint ein Dialog, in welcher man den aktuellen Check-
+    point auswählen kann. Ausserdem kann man gleich noch IP-Cams definieren.
+   --Falls der Server Inital noch nicht konfiguriert ist oder falls eine Fehlkonfiguration
+    vorliegt, erscheint ein Dialog in welchem man grundlegende Serverkonfigurations-
+    daten konfigurieren kann. (Passwörter, Ausweisvorlage-Konfiguration, IP-Cams, Inital-
+    Checkpoint-Name, Initial-Zone-Name) Mit der Möglichkeit ein zuvor exportiere
+    Konfiguration zu exportieren.
 
 - Entfernung des Menüpunktes Fotos importieren.
 
@@ -97,13 +95,13 @@
   aber auch immer noch die alte Konfigurations-Ansicht unter Einstellunge zur Verfügung.
  
 - Ausweisvorlage Konfiguration: Die gesamte Ausweisvorlage kann nun konfiguriert werden.
-  Hintergrundfarbe, Anzeigen des QR-Codes, Spezialfläche auf Rückseite (+ Farbe).
-  Ausserdem kann man nun über das Konfigurations GUI ein Wasserzeichen und ein Logo
-  hinterlegen. Aktuell werden nur PNG Formate unterstützt. Die Grösse ist jedoch egal, es
-  wird skaliert (optimal sollte es wenn möglich quadratisch sein).
+   Hintergrundfarbe, Anzeigen des QR-Codes, Spezialfläche auf Rückseite (+ Farbe).
+   Ausserdem kann man nun über das Konfigurations GUI ein Wasserzeichen und ein Logo
+   hinterlegen. Aktuell werden nur PNG Formate unterstützt. Die Grösse ist jedoch egal, es
+   wird skaliert (optimal sollte es wenn möglich quadratisch sein).
 
 - Einige Bugfixes und GUI-Optimierungen.
 
 - Technische Changes:
--- Neues Modul "common" etabliert. Gemeine Codebasis für Client und Server.
--- Neues Modul "installer" etabliert. Erstellt ein Installationspaket auf Basis von izpack.
+   Neues Modul "common" etabliert. Gemeine Codebasis für Client und Server.
+   Neues Modul "installer" etabliert. Erstellt ein Installationspaket auf Basis von izpack.
