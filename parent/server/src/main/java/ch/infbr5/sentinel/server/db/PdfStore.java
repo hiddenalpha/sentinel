@@ -45,7 +45,7 @@ public class PdfStore {
 		return null;
 	}
 
-	public static boolean savaPdfFile(String name, byte[] data) {
+	public static boolean savePdfAsFile(String name, byte[] data) {
 		try {
 			if ((data != null) && (data.length > 0)) {
 

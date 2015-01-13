@@ -40,7 +40,7 @@ public class PdfRendererAusweisBox extends PdfRenderer {
    }
 
    @Override
-   protected byte[] renderPdf() {
+   public byte[] renderPdf() {
 
       if (personen.isEmpty()) {
          return null;

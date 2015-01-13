@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +108,6 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
       @Override
       public void updateBackendObject(final PersonDetails object) {
          ServiceHelper.getConfigurationsService().updatePerson(object);
-
       }
 
       @Override
@@ -317,14 +315,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
       }
 
       private void createFotoLabel() {
-         final URL imageURL = getClass().getResource("/images/nobody.jpg");
-         if (imageURL != null) {
-            try {
-               noFotoIcon = ImageIO.read(imageURL);
-            } catch (final IOException e) {
-               e.printStackTrace();
-            }
-         }
+         noFotoIcon = ch.infbr5.sentinel.common.gui.util.ImageLoader.loadNobodyImage();
 
          fotoLabel = new JLabel(new ImageIcon(this.noFotoIcon));
          fotoLabel.addMouseListener(new MouseAdapter() {

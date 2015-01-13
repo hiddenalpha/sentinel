@@ -1,6 +1,11 @@
 package ch.infbr5.sentinel.server.ws.admin;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -40,6 +45,8 @@ import ch.infbr5.sentinel.server.model.Zutrittsregel;
 import ch.infbr5.sentinel.server.print.PdfRendererAusweisBox;
 import ch.infbr5.sentinel.server.print.PdfRendererIdendityCards;
 import ch.infbr5.sentinel.server.print.PdfRendererPersonenListe;
+import ch.infbr5.sentinel.server.print.util.PdfMerge;
+import ch.infbr5.sentinel.server.utils.FileHelper;
 import ch.infbr5.sentinel.server.ws.AusweisvorlageKonfiguration;
 import ch.infbr5.sentinel.server.ws.CheckpointDetails;
 import ch.infbr5.sentinel.server.ws.ConfigurationDetails;
@@ -51,6 +58,7 @@ import ch.infbr5.sentinel.server.ws.ServerSetupInformation;
 import ch.infbr5.sentinel.server.ws.ZoneDetails;
 
 import com.google.common.collect.Lists;
+import com.lowagie.text.DocumentException;
 
 @WebService(name = "ConfigurationQueryService", targetNamespace = "http://ws.sentinel.infbr5.ch/")
 @HandlerChain(file = "/META-INF/ws-handler-chain.xml")
@@ -77,8 +85,15 @@ public class ConfigurationQueryService {
       return response;
    }
 
+   /**
+    * Speichert die Einheit. Falls keine Id gesetzt wird, wird eine neue
+    * erstellt, anderenfalls wird diese aktualisiert.
+    *
+    * @param details
+    *           Einheiten Details.
+    */
    @WebMethod
-   public void updateEinheit(@WebParam(name = "EinheitDetails") final EinheitDetails details) {
+   public void saveEinheit(@WebParam(name = "EinheitDetails") final EinheitDetails details) {
       Einheit einheit = getQueryHelper().getEinheitById(details.getId());
       if (einheit == null) {
          einheit = new Einheit();
@@ -95,12 +110,10 @@ public class ConfigurationQueryService {
 
    @WebMethod
    public boolean removeEinheit(@WebParam(name = "einheitId") final Long einheitId) {
-      if (einheitId != null && einheitId > 0) {
-         final Einheit einheit = getQueryHelper().getEinheitById(einheitId);
-         if (einheit != null) {
-            getEntityManager().remove(einheit);
-            return true;
-         }
+      final Einheit einheit = getQueryHelper().getEinheitById(einheitId);
+      if (einheit != null) {
+         getEntityManager().remove(einheit);
+         return true;
       }
       return false;
    }
@@ -678,12 +691,22 @@ public class ConfigurationQueryService {
       final PrintJobDetails[] printJobDetails = new PrintJobDetails[1];
       final ConfigurationResponse response = new ConfigurationResponse();
 
-      final PrintJob job = getQueryHelper().getPrintJobs(id).get(0);
+      final PrintJob job = getQueryHelper().getPrintJob(id);
       printJobDetails[0] = convert(job);
       printJobDetails[0].setPdf(PdfStore.loadPdf(job.getPintJobFile()));
 
       response.setPrintJobDetails(printJobDetails);
       return response;
+   }
+
+   @WebMethod
+   public boolean removePrintJob(final Long id) {
+      final PrintJob printJob = getQueryHelper().getPrintJob(id);
+      if (printJob != null) {
+         getEntityManager().remove(printJob);
+         return true;
+      }
+      return false;
    }
 
    @WebMethod
@@ -758,7 +781,32 @@ public class ConfigurationQueryService {
 
    @WebMethod
    public ConfigurationResponse printAusweisboxAlle() {
-      return null;
+      final List<InputStream> inputStreams = new ArrayList<>();
+
+      final List<Einheit> einheiten = getQueryHelper().getEinheiten();
+      for (final Einheit einheit : einheiten) {
+         final List<Person> personen = getQueryHelper().getPersonen(true, true, einheit.getName());
+         final PdfRendererAusweisBox renderer = new PdfRendererAusweisBox(personen, einheit.getName());
+         final byte[] data = renderer.renderPdf();
+         if (data != null && data.length > 0) {
+            inputStreams.add(new ByteArrayInputStream(data));
+         }
+      }
+
+      PrintJob printjob = null;
+      if (!inputStreams.isEmpty()) {
+         final String time = String.valueOf(new Date().getTime());
+         final String filename = FileHelper.clearFilename("ausweisboxen_alle" + "_" + time);
+         final ByteArrayOutputStream out = new ByteArrayOutputStream();
+         try {
+            PdfMerge.doMerge(inputStreams, out);
+            PdfStore.savePdfAsFile(filename, out.toByteArray());
+            printjob = ObjectFactory.createPrintJob("Ausweisboxen alle", filename);
+         } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+         }
+      }
+      return processJob(printjob);
    }
 
    @WebMethod

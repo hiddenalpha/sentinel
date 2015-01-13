@@ -12,9 +12,6 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class EinheitenConfigPanel extends AbstractAdminOverviewPanel<EinheitDetails> {
 
-   /**
-    *
-    */
    private static final long serialVersionUID = 1L;
 
    @Override
@@ -24,10 +21,8 @@ public class EinheitenConfigPanel extends AbstractAdminOverviewPanel<EinheitDeta
 
    public class MyTableModel extends AbstractAdminTableModel<EinheitDetails> {
 
-      /**
-       *
-       */
       private static final long serialVersionUID = 1L;
+
       private final String[] headerNames = { "Name" };
 
       @Override
@@ -39,7 +34,6 @@ public class EinheitenConfigPanel extends AbstractAdminOverviewPanel<EinheitDeta
       public EinheitDetails getNewDataRecord() {
          final EinheitDetails detail = new EinheitDetails();
          detail.setName("");
-
          return detail;
       }
 
@@ -50,7 +44,7 @@ public class EinheitenConfigPanel extends AbstractAdminOverviewPanel<EinheitDeta
 
       @Override
       public void updateBackendObject(final EinheitDetails object) {
-         ServiceHelper.getConfigurationsService().updateEinheit(object);
+         ServiceHelper.getConfigurationsService().saveEinheit(object);
       }
 
       @Override
@@ -72,9 +66,6 @@ public class EinheitenConfigPanel extends AbstractAdminOverviewPanel<EinheitDeta
 
    public class MyDetailPanel extends AbstractAdminDetailPanel<EinheitDetails> {
 
-      /**
-       *
-       */
       private static final long serialVersionUID = 1L;
       private final JTextField fieldName;
       private final JTextField fieldRgbColorGsVb;
@@ -90,9 +81,9 @@ public class EinheitenConfigPanel extends AbstractAdminOverviewPanel<EinheitDeta
          SwingHelper.addSeparator(this, "Titel");
 
          fieldName = createField("Name");
-         fieldRgbColorGsVb = createField("RGB Color Gs Vb");
-         fieldRgbColorTrpK = createField("RGB Color Trp K");
-         fieldRgbColorEinh = createField("RGB Color Einh");
+         fieldRgbColorGsVb = createField("RGB Farbe Gs Vb");
+         fieldRgbColorTrpK = createField("RGB Farbe Trp K");
+         fieldRgbColorEinh = createField("RGB Farbe Einh");
          fieldTextGsVb = createField("Text Gs Vb");
          fieldTextTrpK = createField("Text Trp K");
          fieldTextEinh = createField("Text Einh");

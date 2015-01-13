@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -14,90 +13,90 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import ch.infbr5.sentinel.client.wsgen.OperationResponseStatus;
+import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 
 public class AusweisInfoPanel extends JPanel implements CheckInChangeListener, ImageChangeListener, ActionListener {
 
-	public static final String LABEL_STATUS_TEXT = "LABEL_STATUS_TEXT";
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JLabel statusTextLabel;
-	private ImageIcon noFotoIcon;
-	private JLabel fotoLabel;
-	private CheckInModel model;
-	private Timer timer;
-	private Color defaultBackgroundColor;
+   public static final String LABEL_STATUS_TEXT = "LABEL_STATUS_TEXT";
+   /**
+    *
+    */
+   private static final long serialVersionUID = 1L;
+   private JLabel statusTextLabel;
+   private ImageIcon noFotoIcon;
+   private JLabel fotoLabel;
+   private final CheckInModel model;
+   private final Timer timer;
+   private Color defaultBackgroundColor;
 
-	public AusweisInfoPanel(CheckInModel model) {
-		super();
-		this.model = model;
-		this.initComponents();
+   public AusweisInfoPanel(final CheckInModel model) {
+      super();
+      this.model = model;
+      this.initComponents();
 
-		timer = new Timer(5000, this);
+      timer = new Timer(5000, this);
 
-	}
+   }
 
-	public void imageChanged(ImageChangedEvent e) {
-		if (this.model.getImage() != null) {
-			this.fotoLabel.setIcon(new ImageIcon(this.model.getImage()));
-			if (timer.isRunning()) {
-				timer.restart();
-			} else {
-				timer.start();
-			}
+   @Override
+   public void imageChanged(final ImageChangedEvent e) {
+      if (this.model.getImage() != null) {
+         this.fotoLabel.setIcon(new ImageIcon(this.model.getImage()));
+         if (timer.isRunning()) {
+            timer.restart();
+         } else {
+            timer.start();
+         }
 
-		} else {
-			this.fotoLabel.setIcon(this.noFotoIcon);
-			timer.stop();
-		}
-	}
+      } else {
+         this.fotoLabel.setIcon(this.noFotoIcon);
+         timer.stop();
+      }
+   }
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (timer.isRunning()) {
-			timer.stop();
-			if (model.getImage() != null) {
-				model.resetImageAndMessage();
-			}
-		}
+   @Override
+   public void actionPerformed(final ActionEvent arg0) {
+      if (timer.isRunning()) {
+         timer.stop();
+         if (model.getImage() != null) {
+            model.resetImageAndMessage();
+         }
+      }
 
-	}
+   }
 
-	private void initComponents() {
-		defaultBackgroundColor = getBackground();
-		
-		this.setLayout(new BorderLayout());
+   private void initComponents() {
+      defaultBackgroundColor = getBackground();
 
-		this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Ausweis Foto"),
-				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+      this.setLayout(new BorderLayout());
 
-		URL imageURL = AusweisInfoPanel.class.getResource("/images/nobody.jpg");
-		if (imageURL != null) {
-			this.noFotoIcon = new ImageIcon(imageURL);
-		}
+      this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Ausweis Foto"),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
-		this.fotoLabel = new JLabel(this.noFotoIcon);
-		this.add(this.fotoLabel);
+      this.noFotoIcon = new ImageIcon(ImageLoader.loadNobodyImage());
 
-		this.statusTextLabel = new JLabel(this.model.getMessageText(), SwingConstants.CENTER);
-		this.statusTextLabel.setName(LABEL_STATUS_TEXT);
-		this.add(this.statusTextLabel, BorderLayout.SOUTH);
+      this.fotoLabel = new JLabel(this.noFotoIcon);
+      this.add(this.fotoLabel);
 
-		this.model.addCheckInChangedListener(this);
-		this.model.addImageChangedListener(this);
-	}
+      this.statusTextLabel = new JLabel(this.model.getMessageText(), SwingConstants.CENTER);
+      this.statusTextLabel.setName(LABEL_STATUS_TEXT);
+      this.add(this.statusTextLabel, BorderLayout.SOUTH);
 
-	public void valueChanged(CheckInChangedEvent e) {
-		this.statusTextLabel.setText(this.model.getMessageText());
+      this.model.addCheckInChangedListener(this);
+      this.model.addImageChangedListener(this);
+   }
 
-		if (this.model.getStatus() == OperationResponseStatus.SUCESS) {
-			this.setBackground(Color.GREEN);
-		} else if (this.model.getStatus() == OperationResponseStatus.FAIL){
-			this.setBackground(Color.RED);
-		} else {
-			setBackground(defaultBackgroundColor);
-		}
-	}
+   @Override
+   public void valueChanged(final CheckInChangedEvent e) {
+      this.statusTextLabel.setText(this.model.getMessageText());
+
+      if (this.model.getStatus() == OperationResponseStatus.SUCESS) {
+         this.setBackground(Color.GREEN);
+      } else if (this.model.getStatus() == OperationResponseStatus.FAIL) {
+         this.setBackground(Color.RED);
+      } else {
+         setBackground(defaultBackgroundColor);
+      }
+   }
 
 }

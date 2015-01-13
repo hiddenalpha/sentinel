@@ -28,6 +28,16 @@
 	Personendaten nicht mehr verloren. Der ImageEditor wurde mit einem Icon, Titel
 	versehen und ausserdem eingemittet. Das Konzept des Dialogs wurde nun korrekt
 	umgesetzt. Es gibt keine Probleme mit der Modalität mehr.
+#53 PrintJobs: Es ist nun möglich alle Ausweisboxen auf einmal zu drucken. Dafür 
+	wurde die bestehende Implementierung verwendet und die PDFs einfach zusammengefügt.
+#58 PrintJobs: Gewisse Aktionen wie Speichern, Bearbeiten u.a. sind nicht verfügbar.
+	Die Unterklasse kann nun sagen, welche Button nicht verfügbar sind. Ausserdem
+	wurde der Delete Button implementiert. Printjobs können nun gelöscht werden. Die
+	Pdfs werden serverseitig jedoch behalten.
+#60 PrintJobs: Die Buttons zum Drucken wurden überarbeitet. Sie bekamen teilweise neue
+	Namen und sind auch nur aktiv, wenn man diese gebrauchen kann.
+	Zudem kann nun ein Ausweis von einer Person gedruckt werden, welche kein Personen-
+	Bild hinterlegt hat. Diese bekommt einfach das Nobody-Bild.
 	
 
 /***************************************/

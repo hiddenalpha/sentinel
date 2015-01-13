@@ -17,7 +17,7 @@ public abstract class PdfRenderer {
       final byte[] data = renderPdf();
       if (data != null && data.length > 0) {
          final String filename = createFilename();
-         PdfStore.savaPdfFile(filename, data);
+         PdfStore.savePdfAsFile(filename, data);
          return ObjectFactory.createPrintJob(getBeschreibung(), filename);
       }
       return null;

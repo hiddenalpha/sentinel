@@ -234,12 +234,7 @@ public class QueryHelper {
    public Checkpoint getCheckpoint(final Long checkpointId) {
       final Query q = em.createNamedQuery("getCheckpointById");
       q.setParameter("checkpointId", checkpointId);
-
-      try {
-         return (Checkpoint) q.getSingleResult();
-      } catch (final NoResultException e) {
-         return null;
-      }
+      return (Checkpoint) getSingleResult(q);
    }
 
    @SuppressWarnings("unchecked")
@@ -315,33 +310,22 @@ public class QueryHelper {
       return q.getResultList();
    }
 
-   @SuppressWarnings("unchecked")
-   public List<PrintJob> getPrintJobs(final Long id) {
+   public PrintJob getPrintJob(final Long id) {
       final Query q = em.createNamedQuery(PrintJob.GET_PRINTJOB_BY_ID);
       q.setParameter("printjobId", id);
-      return q.getResultList();
+      return (PrintJob) getSingleResult(q);
    }
 
    public Einheit getEinheitById(final Long einheitId) {
       final Query q = em.createNamedQuery(Einheit.GET_EINHEIT_BY_ID_VALUE);
       q.setParameter("einheitId", einheitId);
-
-      try {
-         return (Einheit) q.getSingleResult();
-      } catch (final NoResultException e) {
-         return null;
-      }
+      return (Einheit) getSingleResult(q);
    }
 
    public Einheit getEinheit(final String name) {
       final Query q = em.createNamedQuery(Einheit.GET_EINHEIT_BY_NAME);
       q.setParameter("einheitName", name);
-
-      try {
-         return (Einheit) q.getSingleResult();
-      } catch (final NoResultException e) {
-         return null;
-      }
+      return (Einheit) getSingleResult(q);
    }
 
    @SuppressWarnings("unchecked")
@@ -401,6 +385,14 @@ public class QueryHelper {
       for (final ConfigurationValue value : values) {
          value.setId(null);
          em.persist(value);
+      }
+   }
+
+   private Object getSingleResult(final Query q) {
+      try {
+         return q.getSingleResult();
+      } catch (final NoResultException e) {
+         return null;
       }
    }
 

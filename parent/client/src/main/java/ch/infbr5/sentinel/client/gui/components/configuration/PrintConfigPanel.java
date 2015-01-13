@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -75,7 +74,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
       @Override
       public void removeBackendObject(final PrintJobDetails object) {
-         // TODO Allow
+         ServiceHelper.getConfigurationsService().removePrintJob(object.getPrintJobId());
       }
 
       @Override
@@ -107,13 +106,11 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
       private static final long serialVersionUID = 1L;
 
-      private final JLabel lblAusstehendeAusweise;
-
       private final JTextField druckdatum;
       private final JTextField beschreibung;
       private final JTextField dateiname;
 
-      private final JButton pdfOeffnenButton;
+      private final JButton btnAusweiseDrucken;
 
       public MyDetailPanel() {
          setLayout(new MigLayout("inset 20"));
@@ -123,8 +120,8 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
          beschreibung = createFieldNotEditable("Beschreibung");
          dateiname = createFieldNotEditable("Dateiname");
 
-         pdfOeffnenButton = new JButton("PDF öffnen");
-         pdfOeffnenButton.addActionListener(new ActionListener() {
+         final JButton btnPdfOeffnen = new JButton("PDF öffnen");
+         btnPdfOeffnen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                if (data != null) {
@@ -135,14 +132,14 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
             }
          });
          this.add(SwingHelper.createLabel(""), "gap para");
-         this.add(pdfOeffnenButton, "span, growx");
+         this.add(btnPdfOeffnen, "span, growx");
 
          // Druckaufträge starten
          SwingHelper.addSeparator(this, "Druckauftrag starten");
 
          // Ausweise
-         addPrintSectionLabel("Ausweise");
-         addPrintSectionButton("neu erstellt", new ActionListener() {
+         btnAusweiseDrucken = new JButton("neu erstellt");
+         btnAusweiseDrucken.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                final ConfigurationResponse response = ServiceHelper.getConfigurationsService().printAusweise();
@@ -150,9 +147,9 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
                updateAusweisDruckenButtonName();
             }
          });
-         lblAusstehendeAusweise = SwingHelper.createLabel("");
+         addPrintSectionLabel("Ausweise");
+         this.add(btnAusweiseDrucken, "span, growx");
          updateAusweisDruckenButtonName();
-         this.add(lblAusstehendeAusweise);
 
          // Ausweisboxen
          addPrintSectionLabel("Ausweisboxen");
@@ -262,7 +259,13 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
 
       public void updateAusweisDruckenButtonName() {
          final int no = ServiceHelper.getConfigurationsService().anzahlAusstehendeZuDruckendeAusweise();
-         lblAusstehendeAusweise.setText("(" + no + " ausstehend)");
+         if (no > 0) {
+            btnAusweiseDrucken.setText(no + " Ausweis(e) drucken");
+            btnAusweiseDrucken.setEnabled(true);
+         } else {
+            btnAusweiseDrucken.setText("Keine ausstehende Ausweise");
+            btnAusweiseDrucken.setEnabled(false);
+         }
       }
 
       private JTextField createFieldNotEditable(final String name) {
@@ -271,10 +274,11 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
          return field;
       }
 
-      private void addPrintSectionButton(final String text, final ActionListener actionListener) {
+      private JButton addPrintSectionButton(final String text, final ActionListener actionListener) {
          final JButton button = new JButton(text);
          button.addActionListener(actionListener);
          this.add(button);
+         return button;
       }
 
       private void addPrintSectionLabel(final String text) {

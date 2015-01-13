@@ -176,12 +176,12 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
                   final int modelRow = table.convertRowIndexToModel(lastSelectedRow);
                   detailPanel.setDataRecord(model.getDataRecord(modelRow));
 
-                  editButton.setEnabled(isRowSelected());
-                  deleteButton.setEnabled(isRowSelected());
+                  editButton.setEnabled(isRowSelected() && isEditButtonAvailable());
+                  deleteButton.setEnabled(isRowSelected() && isDeleteButtonAvailable());
                }
             } else {
-               editButton.setEnabled(isRowSelected());
-               deleteButton.setEnabled(isRowSelected());
+               editButton.setEnabled(isRowSelected() && isEditButtonAvailable());
+               deleteButton.setEnabled(isRowSelected() && isDeleteButtonAvailable());
             }
          }
       };
@@ -201,11 +201,35 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
       detailPanel.setEditable(mode);
       table.setEnabled(!mode);
 
-      editButton.setEnabled(!mode);
-      newButton.setEnabled(!mode);
-      deleteButton.setEnabled(!mode);
-      saveButton.setEnabled(mode);
-      cancelButton.setEnabled(mode);
+      boolean editMode = !mode;
+      if (!isEditButtonAvailable()) {
+         editMode = false;
+      }
+      editButton.setEnabled(editMode);
+
+      boolean newMode = !mode;
+      if (!isNewButtonAvailable()) {
+         newMode = false;
+      }
+      newButton.setEnabled(newMode);
+
+      boolean deleteMode = !mode;
+      if (!isDeleteButtonAvailable()) {
+         deleteMode = false;
+      }
+      deleteButton.setEnabled(deleteMode);
+
+      boolean saveMode = mode;
+      if (!isSaveButtonAvailable()) {
+         saveMode = false;
+      }
+      saveButton.setEnabled(saveMode);
+
+      boolean cancelMode = mode;
+      if (!isCancelButtonAvailable()) {
+         cancelMode = false;
+      }
+      cancelButton.setEnabled(cancelMode);
 
       if (!isRowSelected()) {
          editButton.setEnabled(false);
@@ -240,35 +264,30 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
       newButton.setName(BUTTON_ADMINPANEL_NEW);
       newButton.addActionListener(this);
       newButton.setActionCommand(BUTTON_ADMINPANEL_NEW);
-      newButton.setVisible(isNewButtonAvailable());
       buttonPanel.add(newButton);
 
       editButton = new JButton("Bearbeiten");
       editButton.setName(BUTTON_ADMINPANEL_EDIT);
       editButton.addActionListener(this);
       editButton.setActionCommand(BUTTON_ADMINPANEL_EDIT);
-      editButton.setVisible(isEditButtonAvailable());
       buttonPanel.add(editButton);
 
       saveButton = new JButton("Speichern");
       saveButton.setName(BUTTON_ADMINPANEL_SAVE);
       saveButton.addActionListener(this);
       saveButton.setActionCommand(BUTTON_ADMINPANEL_SAVE);
-      saveButton.setVisible(isSaveButtonAvailable());
       buttonPanel.add(saveButton);
 
       deleteButton = new JButton("Löschen");
       deleteButton.setName(BUTTON_ADMINPANEL_DELETE);
       deleteButton.addActionListener(this);
       deleteButton.setActionCommand(BUTTON_ADMINPANEL_DELETE);
-      deleteButton.setVisible(isDeleteButtonAvailable());
       buttonPanel.add(deleteButton);
 
       cancelButton = new JButton("Abbrechen");
       cancelButton.setName(BUTTON_ADMINPANEL_CANCEL);
       cancelButton.addActionListener(this);
       cancelButton.setActionCommand(BUTTON_ADMINPANEL_CANCEL);
-      cancelButton.setVisible(isCancelButtonAvailable());
       buttonPanel.add(cancelButton);
    }
 

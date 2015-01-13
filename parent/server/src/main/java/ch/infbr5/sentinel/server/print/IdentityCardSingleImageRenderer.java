@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 import ch.infbr5.sentinel.common.util.ImageUtil;
 import ch.infbr5.sentinel.server.db.ImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
@@ -39,14 +40,14 @@ public class IdentityCardSingleImageRenderer {
 
    private final Einheit einheit;
 
-   private final Image imagePerson;
+   private Image imagePerson;
 
    private final String password;
 
    public IdentityCardSingleImageRenderer(final Ausweis ausweis, final String password,
          final AusweisvorlageKonfiguration config) {
       if (ausweis == null || password == null || password.isEmpty() || config == null) {
-         throw new IllegalArgumentException("Ung�ltige Parameter");
+         throw new IllegalArgumentException("Ungültige Parameter");
       }
       this.ausweis = ausweis;
       this.person = ausweis.getPerson();
@@ -54,7 +55,10 @@ public class IdentityCardSingleImageRenderer {
       this.password = password;
       this.config = config;
       this.imagePerson = ImageStore.getImage(person);
-      if (person == null || einheit == null || imagePerson == null) {
+      if (this.imagePerson == null) {
+         this.imagePerson = ImageLoader.loadNobodyImage();
+      }
+      if (person == null || einheit == null) {
          throw new IllegalArgumentException("Ungültige Parameter");
       }
 
