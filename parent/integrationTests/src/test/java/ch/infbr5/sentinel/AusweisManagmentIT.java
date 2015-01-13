@@ -20,115 +20,112 @@ import ch.infbr5.sentinel.testutils.Helper;
 
 public class AusweisManagmentIT {
 
-	private FrameFixture window;
+   private FrameFixture window;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		Helper.setupRuntime();
-	}
+   @BeforeClass
+   public static void setUpBeforeClass() throws Exception {
+      Helper.setupRuntime();
+   }
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		Helper.cleanupRuntime();
+   @AfterClass
+   public static void tearDownAfterClass() throws Exception {
+      Helper.cleanupRuntime();
 
+   }
 
-	}
+   @Before
+   public void setUp() throws Exception {
+      window = Helper.getWindow();
+      window.show(); // shows the frame to test
+   }
 
-	@Before
-	public void setUp() throws Exception {
-		window = Helper.getWindow();
-		window.show(); // shows the frame to test
-	}
+   @After
+   public void tearDown() throws Exception {
+      window.cleanUp();
+   }
 
-	@After
-	public void tearDown() throws Exception {
-		window.cleanUp();
-	}
+   public void test_LeereDatenbank_ManuellenPersonenauswahl_Warnmeldung() {
+      window.menuItem(AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG).click();
+      window.optionPane().requireWarningMessage();
+      window.dialog().button().click();
+   }
 
+   @Test
+   public void test_ConfigruationErfassen() {
+      window.menuItem(AppMenuBar.CMD_EINSTELLUNGEN).click();
 
-	public void test_LeereDatenbank_ManuellenPersonenauswahl_Warnmeldung() {
-		window.menuItem(AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG).click();
-		window.optionPane().requireWarningMessage();
-		window.dialog().button().click();
-	}
+      final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).using(window.robot);
 
-	@Test
-	public void test_ConfigruationErfassen() {
-		window.menuItem(AppMenuBar.CMD_EINSTELLUNGEN).click();
+      adminWindow.tabbedPane().selectTab("Konfiguration");
+      adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_NEW).click();
+      adminWindow.textBox("Key").enterText("AnzahlPersonen");
+      adminWindow.textBox("String Value").enterText("23");
+      adminWindow.textBox("Long Value").enterText("24");
 
-		FrameFixture adminWindow = WindowFinder.findFrame(
-				AdminstrationFrame.FRAME_NAME).using(window.robot);
+      adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_SAVE).click();
 
-		adminWindow.tabbedPane().selectTab("Configuration");
-		adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_NEW).click();
-		adminWindow.textBox("Key").enterText("AnzahlPersonen");
-		adminWindow.textBox("String Value").enterText("23");
-		adminWindow.textBox("Long Value").enterText("24");
+      // adminWindow.table().requireCellValue(row(6).column(0),
+      // "AnzahlPersonen");
+      // adminWindow.table().requireCellValue(row(6).column(1), "23");
 
-		adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_SAVE).click();
+   }
 
-		//adminWindow.table().requireCellValue(row(6).column(0), "AnzahlPersonen");
-		//adminWindow.table().requireCellValue(row(6).column(1), "23");
+   @Test
+   public void test_EinheitPersonErfassen() {
+      window.menuItem(AppMenuBar.CMD_EINSTELLUNGEN).click();
 
-	}
+      final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).using(window.robot);
 
-	@Test
-	public void test_EinheitPersonErfassen() {
-		window.menuItem(AppMenuBar.CMD_EINSTELLUNGEN).click();
+      adminWindow.tabbedPane().selectTab("Einheiten");
+      adminWindow.button(EinheitenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
+      adminWindow.textBox("Name").enterText("Test Einheit");
+      adminWindow.textBox("RGB Farbe Gs Vb").enterText("000000");
+      adminWindow.textBox("RGB Farbe Trp K").enterText("99BB11");
+      adminWindow.textBox("RGB Farbe Einh").enterText("FFFFFF");
+      adminWindow.textBox("Text Gs Vb").enterText("123");
+      adminWindow.textBox("Text Trp K").enterText("abc");
+      adminWindow.textBox("Text Einh").enterText("d");
 
-		FrameFixture adminWindow = WindowFinder.findFrame(
-				AdminstrationFrame.FRAME_NAME).using(window.robot);
+      adminWindow.button(EinheitenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
 
-		adminWindow.tabbedPane().selectTab("Einheiten");
-		adminWindow.button(EinheitenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
-		adminWindow.textBox("Name").enterText("Test Einheit");
-		adminWindow.textBox("RGB Color Gs Vb").enterText("000000");
-		adminWindow.textBox("RGB Color Trp K").enterText("99BB11");
-		adminWindow.textBox("RGB Color Einh").enterText("FFFFFF");
-		adminWindow.textBox("Text Gs Vb").enterText("123");
-		adminWindow.textBox("Text Trp K").enterText("abc");
-		adminWindow.textBox("Text Einh").enterText("d");
+      // Person erfassen (ohne Ausweis)
 
-		adminWindow.button(EinheitenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
+      adminWindow.tabbedPane().selectTab("Personen");
+      adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
+      adminWindow.textBox("Name").enterText("Muster");
+      adminWindow.textBox("Vorname").enterText("Moritz");
 
-		// Person erfassen (ohne Ausweis)
+      adminWindow.textBox("Geburtsdatum").enterText("01.01.1976");
+      adminWindow.textBox("Funktion").enterText("Test Person");
+      adminWindow.textBox("AhvNr").enterText("000.0000.9001.02");
 
-		adminWindow.tabbedPane().selectTab("Personen");
-		adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
-		adminWindow.textBox("Name").enterText("Muster");
-		adminWindow.textBox("Vorname").enterText("Moritz");
+      adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
+      adminWindow.table().requireRowCount(1);
 
-		adminWindow.textBox("Geburtsdatum").enterText("01.01.1976");
-		adminWindow.textBox("Funktion").enterText("Test Person");
-		adminWindow.textBox("AhvNr").enterText("000.0000.9001.02");
+      // Person erfassen (mit Ausweis)
 
-		adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
-		adminWindow.table().requireRowCount(1);
+      adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
+      adminWindow.textBox("Name").enterText("Beispiel");
+      adminWindow.textBox("Vorname").enterText("Ingo");
 
-		// Person erfassen (mit Ausweis)
+      adminWindow.textBox("Geburtsdatum").enterText("01.01.1976");
+      adminWindow.textBox("Funktion").enterText("Test Person");
+      adminWindow.textBox("AhvNr").enterText("000.0000.9002.01");
 
-		adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
-		adminWindow.textBox("Name").enterText("Beispiel");
-		adminWindow.textBox("Vorname").enterText("Ingo");
+      adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
 
-		adminWindow.textBox("Geburtsdatum").enterText("01.01.1976");
-		adminWindow.textBox("Funktion").enterText("Test Person");
-		adminWindow.textBox("AhvNr").enterText("000.0000.9002.01");
+      adminWindow.table().requireRowCount(2);
+      adminWindow.table().selectRows(1);
 
-		adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
+      adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_EDIT).click();
+      adminWindow.button(PersonenConfigPanel.BUTTON_NEUER_AUSWEIS).click();
+      adminWindow.dialog().button().click();
+      adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
 
-		adminWindow.table().requireRowCount(2);
-		adminWindow.table().selectRows(1);
+      window.menuItem(AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG).click();
+      window.optionPane().okButton().click();
 
-		adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_EDIT).click();
-		adminWindow.button(PersonenConfigPanel.BUTTON_NEUER_AUSWEIS).click();
-		adminWindow.dialog().button().click();
-		adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
-
-		window.menuItem(AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG).click();
-		window.optionPane().okButton().click();
-
-		window.label(AusweisInfoPanel.LABEL_STATUS_TEXT).requireText(Pattern.compile("Checkin erfolgreich.*"));
-	}
+      window.label(AusweisInfoPanel.LABEL_STATUS_TEXT).requireText(Pattern.compile("Checkin erfolgreich.*"));
+   }
 
 }
