@@ -14,6 +14,11 @@ public class EinheitenConfigPanel extends AbstractAdminOverviewPanel<EinheitDeta
 
    private static final long serialVersionUID = 1L;
 
+   public EinheitenConfigPanel() {
+      super();
+      setDefaultSort(0, true);
+   }
+
    @Override
    protected AbstractAdminTableModel<EinheitDetails> getTableModel() {
       return new MyTableModel();

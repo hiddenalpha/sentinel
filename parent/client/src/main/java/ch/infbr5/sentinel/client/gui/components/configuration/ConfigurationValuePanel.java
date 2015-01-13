@@ -14,6 +14,11 @@ public class ConfigurationValuePanel extends AbstractAdminOverviewPanel<Configur
 
    private static final long serialVersionUID = 1L;
 
+   public ConfigurationValuePanel() {
+      super();
+      setDefaultSort(0, true);
+   }
+
    @Override
    protected AbstractAdminTableModel<ConfigurationDetails> getTableModel() {
       return new MyTableModel();

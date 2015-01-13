@@ -17,6 +17,7 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.common.gui.table.FilterTablePanel;
@@ -149,6 +150,21 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
 
    protected AbstractAdminDetailPanel<T> getInstalledDetailPanel() {
       return detailPanel;
+   }
+
+   protected void addCellRenderer(final int columnIndex, final TableCellRenderer cellRenderer) {
+      getTable().getColumnModel().getColumn(columnIndex).setCellRenderer(cellRenderer);
+   }
+
+   protected void setDefaultSort(final int columnIndex, final boolean asc) {
+      getTable().getRowSorter().toggleSortOrder(columnIndex);
+      if (!asc) {
+         getTable().getRowSorter().toggleSortOrder(columnIndex);
+      }
+   }
+
+   private JTable getTable() {
+      return table;
    }
 
    private void createAndIntitializeTable() {

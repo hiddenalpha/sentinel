@@ -14,6 +14,11 @@ public class CheckpointConfigPanel extends AbstractAdminOverviewPanel<Checkpoint
 
    private static final long serialVersionUID = 1L;
 
+   public CheckpointConfigPanel() {
+      super();
+      setDefaultSort(0, true);
+   }
+
    @Override
    protected AbstractAdminTableModel<CheckpointDetails> getTableModel() {
       return new MyTableModel();

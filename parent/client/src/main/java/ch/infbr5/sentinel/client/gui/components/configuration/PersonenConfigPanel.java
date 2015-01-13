@@ -52,6 +52,7 @@ public class PersonenConfigPanel extends AbstractAdminOverviewPanel<PersonDetail
 
    public PersonenConfigPanel(final JFrame parentFrame) {
       this.parentFrame = parentFrame;
+      setDefaultSort(1, true);
    }
 
    @Override

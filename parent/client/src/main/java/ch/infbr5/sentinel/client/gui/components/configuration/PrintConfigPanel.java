@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+import ch.infbr5.sentinel.client.gui.util.DateTimeCellRenderer;
 import ch.infbr5.sentinel.client.gui.util.DesktopHelper;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
@@ -22,6 +23,12 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
    private static final long serialVersionUID = 1L;
 
    private MyTableModel tableModel;
+
+   public PrintConfigPanel() {
+      super();
+      addCellRenderer(0, new DateTimeCellRenderer());
+      setDefaultSort(0, false);
+   }
 
    @Override
    protected AbstractAdminTableModel<PrintJobDetails> getTableModel() {
@@ -58,7 +65,7 @@ public class PrintConfigPanel extends AbstractAdminOverviewPanel<PrintJobDetails
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
          if (columnIndex == 0) {
-            return DateFormater.formatToDateWithTime(getDataRecord(rowIndex).getPrintJobDate());
+            return getDataRecord(rowIndex).getPrintJobDate();
          } else if (columnIndex == 1) {
             return getDataRecord(rowIndex).getPrintJobDesc();
          } else if (columnIndex == 2) {

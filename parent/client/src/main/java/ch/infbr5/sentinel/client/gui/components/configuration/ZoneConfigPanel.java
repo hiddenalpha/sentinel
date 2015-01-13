@@ -13,10 +13,12 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class ZoneConfigPanel extends AbstractAdminOverviewPanel<ZoneDetails> {
 
-   /**
-    *
-    */
    private static final long serialVersionUID = 1L;
+
+   public ZoneConfigPanel() {
+      super();
+      setDefaultSort(0, true);
+   }
 
    @Override
    protected AbstractAdminTableModel<ZoneDetails> getTableModel() {
@@ -25,10 +27,8 @@ public class ZoneConfigPanel extends AbstractAdminOverviewPanel<ZoneDetails> {
 
    public class MyTableModel extends AbstractAdminTableModel<ZoneDetails> {
 
-      /**
-       *
-       */
       private static final long serialVersionUID = 1L;
+
       private final String[] headerNames = { "Name" };
 
       @Override
