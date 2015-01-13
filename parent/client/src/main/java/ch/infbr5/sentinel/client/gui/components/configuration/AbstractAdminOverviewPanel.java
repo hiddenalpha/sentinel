@@ -20,6 +20,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
+import ch.infbr5.sentinel.client.gui.util.TableColumnResizer;
 import ch.infbr5.sentinel.common.gui.table.FilterTablePanel;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
@@ -59,6 +60,7 @@ public abstract class AbstractAdminOverviewPanel<T> extends JPanel implements Ac
 
    public AbstractAdminOverviewPanel() {
       initComponents();
+      TableColumnResizer.resizeColumnWidth(getTable());
    }
 
    public void updateModel() {

@@ -31,7 +31,8 @@
    Zudem kann nun ein Ausweis von einer Person gedruckt werden, welche kein Personen-
    Bild hinterlegt hat. Diese bekommt einfach das Nobody-Bild.
 #59 PrintJobs: Datum Kolone kann nun korrekt sortiert werden. In allen Einstellungs
-   Tabellen ist nun eine Default-Sortierung vorgegeben.
+   Tabellen ist nun eine Default-Sortierung vorgegeben. Zudem wurden alle Tabellen
+   mit einem automatischen Kolonen-Breite Tool ausgestattet.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

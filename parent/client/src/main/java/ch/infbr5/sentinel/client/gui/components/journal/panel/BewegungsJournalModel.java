@@ -7,56 +7,55 @@ import javax.swing.table.AbstractTableModel;
 
 import ch.infbr5.sentinel.client.util.PersonDetailsFormater;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
-import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class BewegungsJournalModel extends AbstractTableModel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private String[] columnNames = {"Datum", "Checkpoint", "Name", "Aktion"};
+   private final String[] columnNames = { "Datum", "Checkpoint", "Name", "Aktion" };
 
-	private List<JournalBewegungsMeldung> meldungen;
+   private final List<JournalBewegungsMeldung> meldungen;
 
-	public BewegungsJournalModel(List<JournalBewegungsMeldung> meldungen) {
-		this.meldungen = meldungen;
-	}
+   public BewegungsJournalModel(final List<JournalBewegungsMeldung> meldungen) {
+      this.meldungen = meldungen;
+   }
 
-	@Override
-	public String getColumnName(int column) {
-		return columnNames[column];
-	}
+   @Override
+   public String getColumnName(final int column) {
+      return columnNames[column];
+   }
 
-	@Override
-	public int getRowCount() {
-		return meldungen.size();
-	}
+   @Override
+   public int getRowCount() {
+      return meldungen.size();
+   }
 
-	@Override
-	public int getColumnCount() {
-		return columnNames.length;
-	}
+   @Override
+   public int getColumnCount() {
+      return columnNames.length;
+   }
 
-	public void add(JournalBewegungsMeldung m) {
-		this.meldungen.add(0, m);
-		fireTableRowsInserted(0, 0);
-	}
+   public void add(final JournalBewegungsMeldung m) {
+      this.meldungen.add(0, m);
+      fireTableRowsInserted(0, 0);
+   }
 
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		JournalBewegungsMeldung meldung = meldungen.get(rowIndex);
-		if (columnIndex == 0) {
-			return DateFormater.formatToDateWithTime(new Date(meldung.getMillis()));
-		}
-		if (columnIndex == 1) {
-			return meldung.getCheckpoint().getName();
-		}
-		if (columnIndex == 2) {
-			return PersonDetailsFormater.getFullName(meldung.getPerson());
-		}
-		if (columnIndex == 3) {
-			return meldung.getPraesenzStatus();
-		}
-		return "na";
-	}
+   @Override
+   public Object getValueAt(final int rowIndex, final int columnIndex) {
+      final JournalBewegungsMeldung meldung = meldungen.get(rowIndex);
+      if (columnIndex == 0) {
+         return new Date(meldung.getMillis());
+      }
+      if (columnIndex == 1) {
+         return meldung.getCheckpoint().getName();
+      }
+      if (columnIndex == 2) {
+         return PersonDetailsFormater.getFullName(meldung.getPerson());
+      }
+      if (columnIndex == 3) {
+         return meldung.getPraesenzStatus();
+      }
+      return "na";
+   }
 
 }

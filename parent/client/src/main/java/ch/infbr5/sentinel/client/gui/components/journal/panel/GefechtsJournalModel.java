@@ -55,7 +55,7 @@ public class GefechtsJournalModel extends AbstractTableModel {
    public Object getValueAt(final int rowIndex, final int columnIndex) {
       final JournalGefechtsMeldung meldung = meldungen.get(rowIndex);
       if (columnIndex == 0) {
-         return DateFormater.formatToDateWithTime(new Date(meldung.getMillis()));
+         return new Date(meldung.getMillis());
       }
       if (columnIndex == 1) {
          return meldung.getCheckpoint().getName();

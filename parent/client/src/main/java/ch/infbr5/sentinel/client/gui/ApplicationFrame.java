@@ -12,7 +12,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.ApplicationFrameController;
@@ -175,9 +174,9 @@ public class ApplicationFrame extends JFrame {
       final GefechtsJournalModel modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
       final SystemJournalModel modelSystemJournal = new SystemJournalModel(systemMeldungen);
 
-      final JTable tableGefecht = new GefechtsJournalTable(modelGefechtsJournal);
-      final JTable tableBewegung = new BewegungsJournalTable(modelBewegungsJournal);
-      final JTable tableSystem = new SystemJournalTable(modelSystemJournal);
+      final GefechtsJournalTable tableGefecht = new GefechtsJournalTable(modelGefechtsJournal);
+      final BewegungsJournalTable tableBewegung = new BewegungsJournalTable(modelBewegungsJournal);
+      final SystemJournalTable tableSystem = new SystemJournalTable(modelSystemJournal);
 
       final JButton additionalButton = new JButton("Neu");
       final JFrame parentframe = this;
@@ -196,6 +195,10 @@ public class ApplicationFrame extends JFrame {
       tabbedPane.add(new FilterTablePanel(tableGefecht, additionalButton), "Gefechtsmeldungen");
       tabbedPane.add(new FilterTablePanel(tableSystem, null), "Systemmeldungen");
       tabbedPane.add(new FilterTablePanel(tableBewegung, null), "Bewegungsmeldungen");
+
+      tableGefecht.adjust();
+      tableBewegung.adjust();
+      tableSystem.adjust();
 
       checkInModel.setJournalGefechtsModel(modelGefechtsJournal);
 

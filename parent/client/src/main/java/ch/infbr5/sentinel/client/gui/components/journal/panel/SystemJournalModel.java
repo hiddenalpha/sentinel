@@ -6,59 +6,58 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
-import ch.infbr5.sentinel.common.util.DateFormater;
 
 public class SystemJournalModel extends AbstractTableModel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private String[] columnNames = {"Datum", "Checkpoint", "Level", "Nachricht"};
+   private final String[] columnNames = { "Datum", "Checkpoint", "Level", "Nachricht" };
 
-	private List<JournalSystemMeldung> meldungen;
+   private final List<JournalSystemMeldung> meldungen;
 
-	public SystemJournalModel(List<JournalSystemMeldung> meldungen) {
-		this.meldungen = meldungen;
-	}
+   public SystemJournalModel(final List<JournalSystemMeldung> meldungen) {
+      this.meldungen = meldungen;
+   }
 
-	@Override
-	public String getColumnName(int column) {
-		return columnNames[column];
-	}
+   @Override
+   public String getColumnName(final int column) {
+      return columnNames[column];
+   }
 
-	@Override
-	public int getRowCount() {
-		return meldungen.size();
-	}
+   @Override
+   public int getRowCount() {
+      return meldungen.size();
+   }
 
-	@Override
-	public int getColumnCount() {
-		return columnNames.length;
-	}
+   @Override
+   public int getColumnCount() {
+      return columnNames.length;
+   }
 
-	public void add(JournalSystemMeldung m) {
-		this.meldungen.add(0, m);
-		fireTableRowsInserted(0, 0);
-	}
+   public void add(final JournalSystemMeldung m) {
+      this.meldungen.add(0, m);
+      fireTableRowsInserted(0, 0);
+   }
 
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		JournalSystemMeldung meldung = meldungen.get(rowIndex);
-		if (columnIndex == 0) {
-			return DateFormater.formatToDateWithTime(new Date(meldung.getMillis()));
-		}
-		if (columnIndex == 1) {
-			if (meldung.getCheckpoint() == null) {
-				return "";
-			}
-			return meldung.getCheckpoint().getName();
-		}
-		if (columnIndex == 2) {
-			return meldung.getLevel();
-		}
-		if (columnIndex == 3) {
-			return meldung.getMessage();
-		}
-		return "na";
-	}
+   @Override
+   public Object getValueAt(final int rowIndex, final int columnIndex) {
+      final JournalSystemMeldung meldung = meldungen.get(rowIndex);
+      if (columnIndex == 0) {
+         return new Date(meldung.getMillis());
+      }
+      if (columnIndex == 1) {
+         if (meldung.getCheckpoint() == null) {
+            return "";
+         }
+         return meldung.getCheckpoint().getName();
+      }
+      if (columnIndex == 2) {
+         return meldung.getLevel();
+      }
+      if (columnIndex == 3) {
+         return meldung.getMessage();
+      }
+      return "na";
+   }
 
 }

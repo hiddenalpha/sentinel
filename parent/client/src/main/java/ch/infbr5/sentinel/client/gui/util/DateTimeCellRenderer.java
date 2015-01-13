@@ -16,10 +16,10 @@ public class DateTimeCellRenderer extends javax.swing.table.DefaultTableCellRend
    public Component getTableCellRendererComponent(final JTable table, Object value, final boolean isSelected,
          final boolean hasFocus, final int row, final int column) {
       if (value != null && value instanceof Date) {
-         value = DateFormater.formatToDateWithDetailTime((Date) value);
+         value = DateFormater.formatToDateWithTime((Date) value);
       }
       if (value != null && value instanceof XMLGregorianCalendar) {
-         value = DateFormater.formatToDateWithDetailTime((XMLGregorianCalendar) value);
+         value = DateFormater.formatToDateWithTime((XMLGregorianCalendar) value);
       }
       return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
    }

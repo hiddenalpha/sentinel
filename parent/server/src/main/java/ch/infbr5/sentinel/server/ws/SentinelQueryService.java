@@ -345,7 +345,7 @@ public class SentinelQueryService {
       List<JournalGefechtsMeldung> eintraege = Lists.newArrayList();
       final List<GefechtsMeldung> gefechtsMeldungen = getQueryHelper().getPersonTriggerEintraege(person);
       eintraege = Lists.transform(gefechtsMeldungen, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
-      log.info(eintraege.size() + " Trigger Eintr�ge f�r " + person.getName() + " gefunden.");
+      log.info(eintraege.size() + " Trigger Einträge für " + person.getName() + " gefunden.");
       response.setPersonTriggerEintraege(eintraege);
    }
 
