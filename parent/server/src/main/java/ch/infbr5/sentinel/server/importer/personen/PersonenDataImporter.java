@@ -12,7 +12,7 @@ import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
 
-import ch.infbr5.sentinel.server.db.ImageStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.importer.personen.util.DataRow;
 import ch.infbr5.sentinel.server.importer.personen.util.DtoMapper;
@@ -406,7 +406,7 @@ abstract class PersonenDataImporter {
             .equals(getPersistenceUtil().getArchivEinheit().getName());
       final boolean isNewEinheitAssigned = !person.getEinheit().getName()
             .equals(dataRow.getValue(PersonenAttribute.Einheit));
-      final boolean existsFoto = ImageStore.hasImage(person.getAhvNr());
+      final boolean existsFoto = PersonImageStore.hasImage(person.getAhvNr());
       return isArchivEinheit && isNewEinheitAssigned && existsFoto;
    }
 

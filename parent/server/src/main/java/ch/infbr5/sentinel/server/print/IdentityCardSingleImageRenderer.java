@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 import ch.infbr5.sentinel.common.util.ImageUtil;
-import ch.infbr5.sentinel.server.db.ImageStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Person;
@@ -54,7 +54,7 @@ public class IdentityCardSingleImageRenderer {
       this.einheit = person.getEinheit();
       this.password = password;
       this.config = config;
-      this.imagePerson = ImageStore.getImage(person);
+      this.imagePerson = PersonImageStore.getImage(person);
       if (this.imagePerson == null) {
          this.imagePerson = ImageLoader.loadNobodyImage();
       }

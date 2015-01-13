@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import ch.infbr5.sentinel.common.util.DateFormater;
-import ch.infbr5.sentinel.server.db.ImageStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Person;
 
@@ -64,7 +64,7 @@ public class PdfRendererPersonenListe extends PdfRenderer {
          for (final Person person : personen) {
             // Spalte 1 --- Foto ---
             Image imgJpeg;
-            final byte[] bild = ImageStore.loadJpegImage(person.getAhvNr());
+            final byte[] bild = PersonImageStore.loadJpegImage(person.getAhvNr());
             if (bild != null) {
                imgJpeg = new Jpeg(bild);
                table.addCell(imgJpeg);

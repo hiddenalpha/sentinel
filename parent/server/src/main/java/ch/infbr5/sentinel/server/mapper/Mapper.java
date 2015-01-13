@@ -2,7 +2,7 @@ package ch.infbr5.sentinel.server.mapper;
 
 import javax.persistence.EntityManager;
 
-import ch.infbr5.sentinel.server.db.ImageStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Checkpoint;
 import ch.infbr5.sentinel.server.model.ConfigurationValue;
@@ -172,7 +172,7 @@ public class Mapper {
 				target.setEinheitId(einheit != null ? einheit.getId() : -1);
 				target.setEinheitText(einheit != null ? einheit.getName() : "");
 
-				if (ImageStore.hasImage(source.getAhvNr())) {
+				if (PersonImageStore.hasImage(source.getAhvNr())) {
 					target.setImageId(source.getAhvNr());
 				}
 

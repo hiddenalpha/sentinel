@@ -6,7 +6,7 @@ import java.util.ListIterator;
 
 import javax.persistence.EntityManager;
 
-import ch.infbr5.sentinel.server.db.ImageStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Checkpoint;
@@ -66,7 +66,7 @@ public class CheckpointHelper {
       response.setStatus(OperationResponseStatus.SUCESS);
 
       final Person person = ausweis.getPerson();
-      if (ImageStore.hasImage(person.getAhvNr())) {
+      if (PersonImageStore.hasImage(person.getAhvNr())) {
          response.setImageId(person.getAhvNr());
       }
 
@@ -106,7 +106,7 @@ public class CheckpointHelper {
       final OperationResponse response = new OperationResponse();
       response.setMessage(status.name() + " " + person.getName()); // TODO
       response.setStatus(OperationResponseStatus.SUCESS);
-      if (ImageStore.hasImage(person.getAhvNr())) {
+      if (PersonImageStore.hasImage(person.getAhvNr())) {
          response.setImageId(person.getAhvNr());
       }
 

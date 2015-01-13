@@ -17,7 +17,7 @@ import javax.xml.ws.soap.MTOM;
 import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
-import ch.infbr5.sentinel.server.db.ImageStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.mapper.Mapper;
 import ch.infbr5.sentinel.server.model.Ausweis;
@@ -307,12 +307,12 @@ public class SentinelQueryService {
 
    @WebMethod
    public Image getPersonImage(@WebParam(name = "imageId") final String imageId) {
-      return ImageStore.getImage(imageId);
+      return PersonImageStore.getImage(imageId);
    }
 
    @WebMethod
    public boolean hasPersonImage(@WebParam(name = "imageId") final String imageId) {
-      return ImageStore.hasImage(imageId);
+      return PersonImageStore.hasImage(imageId);
    }
 
    @WebMethod

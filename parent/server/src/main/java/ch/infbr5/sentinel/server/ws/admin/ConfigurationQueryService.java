@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.ServerConfiguration;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
-import ch.infbr5.sentinel.server.db.ImageStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.PdfStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.exporter.AusweisDatenWriter;
@@ -164,7 +164,7 @@ public class ConfigurationQueryService {
       getEntityManager().persist(person);
 
       if (pd.getImage() != null) {
-         ImageStore.saveJpegImage(person.getAhvNr(), pd.getImage());
+         PersonImageStore.saveJpegImage(person.getAhvNr(), pd.getImage());
       }
    }
 
@@ -850,7 +850,7 @@ public class ConfigurationQueryService {
 
    @WebMethod
    public String getLocalImagePath() {
-      return ImageStore.getLocalImagePath();
+      return PersonImageStore.getLocalImagePath();
    }
 
    private Einheit getEinheit(final Long einheitId) {

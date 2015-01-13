@@ -10,70 +10,57 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.model.Person;
 
-public class ImageStore {
+public class PersonImageStore {
 
-   private static Logger log = Logger.getLogger(ImageStore.class);
+   private static Logger log = Logger.getLogger(PersonImageStore.class);
 
    private static final String FOLDER_NAME = "images";
+
+   public static String getLocalImagePath() {
+      return new File(FOLDER_NAME).getAbsolutePath();
+   }
 
    public static Image getImage(final Person person) {
       return getImage(person.getAhvNr());
    }
 
-   public static Image getImage(final String imageId) {
+   public static Image getImage(final String ahvNr) {
       Image image = null;
       try {
-         image = ImageIO.read(new File(ImageStore.createFilename(imageId)));
+         if (hasImage(ahvNr)) {
+            image = ImageIO.read(createFile(ahvNr));
+         }
       } catch (final IOException e) {
          log.error(e);
       }
       return image;
    }
 
-   public static ImageIcon getImageIcon(final String ahvNr, final int width, final int height) {
-      ImageIcon imageIcon = null;
-      if (ImageStore.hasImage(ahvNr)) {
-         imageIcon = new ImageIcon(ImageStore.createFilename(ahvNr));
-      }
-      return imageIcon;
-   }
-
    public static boolean hasImage(final String ahvNr) {
-      final File jpegFile = new File(ImageStore.createFilename(ahvNr));
-      return jpegFile.exists();
+      return createFile(ahvNr).exists();
    }
 
    public static byte[] loadJpegImage(final String ahvNr) {
-      // create file object
-      final File file = new File(ImageStore.createFilename(ahvNr));
-
+      final File file = createFile(ahvNr);
       if (!file.exists()) {
          return null;
       }
-
       try {
-         // create FileInputStream object
          final FileInputStream fin = new FileInputStream(file);
-
          final byte fileContent[] = new byte[(int) file.length()];
-
          fin.read(fileContent);
          fin.close();
-
          return fileContent;
-
       } catch (final FileNotFoundException e) {
          log.error("File not found" + e);
       } catch (final IOException ioe) {
          log.error("Exception while reading the file " + ioe);
       }
-
       return null;
    }
 
@@ -103,12 +90,9 @@ public class ImageStore {
             fos.write(data);
             fos.close();
          }
-
          return true;
-
       } catch (final Exception e) {
          log.error(e);
-
          return false;
       }
    }
@@ -128,8 +112,8 @@ public class ImageStore {
       return folder + ahvNr + ".jpg";
    }
 
-   public static String getLocalImagePath() {
-      return new File(FOLDER_NAME).getAbsolutePath();
+   private static File createFile(final String ahvNr) {
+      return new File(createFilename(ahvNr));
    }
 
 }
