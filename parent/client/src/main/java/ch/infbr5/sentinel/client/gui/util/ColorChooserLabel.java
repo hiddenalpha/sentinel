@@ -11,44 +11,58 @@ import javax.swing.JLabel;
 
 public class ColorChooserLabel extends JLabel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	public ColorChooserLabel() {
-		setMinimumSize(new Dimension(20, 20));
-		setOpaque(true);
-		setBorder(BorderFactory.createLineBorder(Color.black));
+   private final MouseAdapter editColor;
 
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Color selectedColor = JColorChooser.showDialog(null, "Farbauswahl", getBackground());
-				if (selectedColor != null) {
-					setBackground(selectedColor);
-				}
-			}
-		});
-	}
+   public ColorChooserLabel() {
+      setMinimumSize(new Dimension(20, 20));
+      setOpaque(true);
+      setBorder(BorderFactory.createLineBorder(Color.black));
 
-	public void setBackgroundHtmlColor(String htmlColor) {
-		if (htmlColor == null) {
-			setBackground(null);
-			return;
-		}
-		if (!htmlColor.startsWith("#")) {
-			htmlColor = "#" + htmlColor;
-		}
-		Color c = null;
-		try {
-			c = Color.decode(htmlColor);
-		} catch (NumberFormatException e) {
-			c = null;
-		}
-		setBackground(c);
-	}
+      editColor = new MouseAdapter() {
+         @Override
+         public void mouseClicked(final MouseEvent e) {
+            final Color selectedColor = JColorChooser.showDialog(null, "Farbauswahl", getBackground());
+            if (selectedColor != null) {
+               setBackground(selectedColor);
+            }
+         }
+      };
+      addMouseListener(editColor);
+   }
 
-	public String getBackgroundHtmlColor() {
-		String rgb = Integer.toHexString(getBackground().getRGB());
-		return rgb.substring(2, rgb.length());
-	}
+   @Override
+   public void setEnabled(final boolean mode) {
+      super.setEnabled(mode);
+      if (mode) {
+         removeMouseListener(editColor);
+         addMouseListener(editColor);
+      } else {
+         removeMouseListener(editColor);
+      }
+   }
+
+   public void setBackgroundHtmlColor(String htmlColor) {
+      if (htmlColor == null) {
+         setBackground(null);
+         return;
+      }
+      if (!htmlColor.startsWith("#")) {
+         htmlColor = "#" + htmlColor;
+      }
+      Color c = null;
+      try {
+         c = Color.decode(htmlColor);
+      } catch (final NumberFormatException e) {
+         c = null;
+      }
+      setBackground(c);
+   }
+
+   public String getBackgroundHtmlColor() {
+      final String rgb = Integer.toHexString(getBackground().getRGB());
+      return rgb.substring(2, rgb.length());
+   }
 
 }

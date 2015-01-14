@@ -40,6 +40,7 @@
 #42 Journal Einträge: Journal Einträge können nun durch den Admin gelöscht werden.
 #43 Alle Gräde können nun auch in Französisch und Italienisch importiert werden. Die zu
    importierende Datei kann auch Multi-Language sein.
+#66 Einheiten Farbe kann nun mit dem Label Color Chooser editiert werden.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

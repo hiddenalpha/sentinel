@@ -4,60 +4,70 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import ch.infbr5.sentinel.client.gui.util.ColorChooserLabel;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public abstract class AbstractAdminDetailPanel<T> extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	protected T data;
+   protected T data;
 
-	public void setDataRecord(T record) {
-		data = record;
-		if (data != null) {
-			setFieldValues();
-		} else {
-			clearFieldValues();
-		}
-	}
+   public void setDataRecord(final T record) {
+      data = record;
+      if (data != null) {
+         setFieldValues();
+      } else {
+         clearFieldValues();
+      }
+   }
 
-	public T getDataRecord() {
-		if (data != null) {
-			getFieldValues();
-		}
+   public T getDataRecord() {
+      if (data != null) {
+         getFieldValues();
+      }
 
-		return data;
-	}
+      return data;
+   }
 
-	protected JTextField createField(String fieldCaption) {
-		return createField(fieldCaption, "");
-	}
+   protected JTextField createField(final String fieldCaption) {
+      return createField(fieldCaption, "");
+   }
 
-	protected JTextField createField(String fieldCaption, String regex) {
-		add(SwingHelper.createLabel(fieldCaption), "gap para");
-		JTextField field = SwingHelper.createTextField(30, regex);
-		field.setName(fieldCaption);
-		add(field, "span, growx");
+   protected JTextField createField(final String fieldCaption, final String regex) {
+      add(SwingHelper.createLabel(fieldCaption), "gap para");
+      final JTextField field = SwingHelper.createTextField(30, regex);
+      field.setName(fieldCaption);
+      add(field, "span, growx");
 
-		return field;
-	}
+      return field;
+   }
 
-	protected JCheckBox createCheckbox(String fieldCaption) {
-		JCheckBox checkbox = new JCheckBox();
+   protected ColorChooserLabel createColorChooser(final String fieldCaption) {
+      add(SwingHelper.createLabel(fieldCaption), "gap para");
+      final ColorChooserLabel chooser = new ColorChooserLabel();
+      chooser.setName(fieldCaption);
+      add(chooser, "span, growx");
 
-		add(SwingHelper.createLabel(fieldCaption), "gap para");
-		checkbox = SwingHelper.createCheckBox();
-		add(checkbox, "span, growx");
+      return chooser;
+   }
 
-		return checkbox;
-	}
+   protected JCheckBox createCheckbox(final String fieldCaption) {
+      JCheckBox checkbox = new JCheckBox();
 
-	public abstract void getFieldValues();
+      add(SwingHelper.createLabel(fieldCaption), "gap para");
+      checkbox = SwingHelper.createCheckBox();
+      add(checkbox, "span, growx");
 
-	public abstract void setFieldValues();
+      return checkbox;
+   }
 
-	public abstract void clearFieldValues();
+   public abstract void getFieldValues();
 
-	public abstract void setEditable(boolean mode);
+   public abstract void setFieldValues();
+
+   public abstract void clearFieldValues();
+
+   public abstract void setEditable(boolean mode);
 
 }
