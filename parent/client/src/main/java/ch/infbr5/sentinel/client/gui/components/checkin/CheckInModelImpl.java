@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.swing.JFrame;
-
 import ch.infbr5.sentinel.client.gui.components.journal.dialog.ChangeStatusGefechtsMeldungDialog;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.GefechtsJournalModel;
 import ch.infbr5.sentinel.client.util.ImageLoader;
@@ -32,13 +30,10 @@ public class CheckInModelImpl implements CheckInModel {
    private long counterUrlaub;
    private long counterAngemeldet;
 
-   private final JFrame parent;
-
    private OperationResponseStatus status;
 
-   public CheckInModelImpl(final long checkpointId, final JFrame parent) {
+   public CheckInModelImpl(final long checkpointId) {
       this.checkpointId = checkpointId;
-      this.parent = parent;
 
       this.selectedOperation = CheckInOperation.CHECKIN;
       this.messageText = "";
@@ -207,7 +202,7 @@ public class CheckInModelImpl implements CheckInModel {
    }
 
    private void showPersonTriggerInfoPopup(final JournalGefechtsMeldung personTriggerEintrag) {
-      final ChangeStatusGefechtsMeldungDialog d = new ChangeStatusGefechtsMeldungDialog(parent, personTriggerEintrag,
+      final ChangeStatusGefechtsMeldungDialog d = new ChangeStatusGefechtsMeldungDialog(null, personTriggerEintrag,
             journalGefechtsModel);
       d.setVisible(true);
    }

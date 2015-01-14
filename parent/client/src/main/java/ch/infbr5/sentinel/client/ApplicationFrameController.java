@@ -2,103 +2,157 @@ package ch.infbr5.sentinel.client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-import org.apache.log4j.Logger;
-
+import ch.infbr5.sentinel.client.config.ConfigurationHelper;
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.config.checkpoint.CheckpointConfigurator;
 import ch.infbr5.sentinel.client.config.connection.ConnectionConfigurator;
 import ch.infbr5.sentinel.client.config.server.ServerConfigurationDialog;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
-import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
+import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.importer.PersonenImportDialog;
+import ch.infbr5.sentinel.client.gui.util.AskForPasswordDialog;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 
-public class ApplicationFrameController implements ActionListener {
-
-   private static Logger log = Logger.getLogger(ApplicationFrameController.class);
+public class ApplicationFrameController {
 
    private final ApplicationFrame appFrame;
 
-   public ApplicationFrameController(final ApplicationFrame parentFrame) {
-      this.appFrame = parentFrame;
+   public ApplicationFrameController(final String checkpointName, final Long checkpointId, final boolean adminMode,
+         final boolean superUserMode) {
+      appFrame = new ApplicationFrame(checkpointName, adminMode, superUserMode, new CheckInModelImpl(checkpointId));
+      installActionListeners();
    }
 
-   public WindowAdapter getWindowListener() {
-      return new WindowAdapter() {
+   public void show() {
+      appFrame.setVisible(true);
+   }
+
+   private void installActionListeners() {
+      appFrame.addActionListenerEinstellungen(new ActionListener() {
          @Override
-         public void windowClosing(final WindowEvent arg0) {
-            closeApplication();
+         public void actionPerformed(final ActionEvent e) {
+            AdminstrationFrame.getInstance().setVisible(true);
          }
-      };
-   }
+      });
 
-   @Override
-   public void actionPerformed(final ActionEvent e) {
-      if (!e.getActionCommand().isEmpty()) {
-
-         switch (e.getActionCommand()) {
-            case AppMenuBar.CMD_EXPORT_PERSONDATA:
-               new FileUpAndDownload(appFrame).exportPersonData();
-            break;
-
-            case AppMenuBar.CMD_IMPORT_PERSONDATA:
-               new FileUpAndDownload(appFrame).importPersonData();
-            break;
-
-            case AppMenuBar.CMD_IMPORT_PISADATA:
-               new PersonenImportDialog(appFrame).show();
-            break;
-
-            // case AppMenuBar.CMD_IMPORT_FOTO:
-            // new BulkFotoImporter(appFrame).importFotos();
-            // break;
-
-            case AppMenuBar.CMD_EINSTELLUNGEN:
-               AdminstrationFrame.getInstance().setVisible(true);
-            break;
-
-            case AppMenuBar.CMD_SERVER_EINSTELLUNG:
-               final ConnectionConfigurator config = new ConnectionConfigurator(false, false);
-               config.configureConnectionConfiguration();
-            break;
-
-            case AppMenuBar.CMD_CHECKPOINT_EINSTELLUNGEN:
-               final CheckpointConfigurator confi = new CheckpointConfigurator(false, false);
-               confi.configureCheckpointConfiguration();
-            break;
-
-            case AppMenuBar.CMD_EXPORT_CONFIG:
-               new FileUpAndDownload(appFrame).exportConfiguration();
-            break;
-
-            case AppMenuBar.CMD_IMPORT_CONFIG:
-               final ServerConfigurationDialog dialog = new ServerConfigurationDialog(appFrame, ServiceHelper
-                     .getConfigurationsService().getServerSetupInformation(), false);
-               dialog.setVisible(true);
-            break;
-
-            case AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG:
-               appFrame.displayPersonSelectionDialog();
-            break;
-
-            case AppMenuBar.CMD_EXIT:
-               closeApplication();
-            break;
-
-            default:
-               log.error("Command not handled by " + this.getClass().getName() + ": " + e.getActionCommand());
-            break;
+      appFrame.addActionListenerEnableSuperUseMode(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final String password = ConfigurationHelper.getSuperUserPassword();
+            if (new AskForPasswordDialog().askForPassword(password)) {
+               changeSuperUserMode(true);
+            }
          }
+      });
 
-      }
+      appFrame.addActionListenerDisableSuperUseMode(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            changeSuperUserMode(false);
+         }
+      });
 
+      appFrame.addActionListenerEnableAdminMode(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final String password = ConfigurationHelper.getAdminPassword();
+            if (new AskForPasswordDialog().askForPassword(password)) {
+               changeAdminMode(true);
+            }
+         }
+      });
+
+      appFrame.addActionListenerDisableAdminMode(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            changeAdminMode(false);
+         }
+      });
+
+      appFrame.addActionListenerClose(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            appFrame.dispose();
+            System.exit(0);
+         }
+      });
+
+      appFrame.addActionListenerCheckpointEinstellung(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final CheckpointConfigurator confi = new CheckpointConfigurator(false, false);
+            confi.configureCheckpointConfiguration();
+         }
+      });
+
+      appFrame.addActionListenerServerVerbindung(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final ConnectionConfigurator config = new ConnectionConfigurator(false, false);
+            config.configureConnectionConfiguration();
+         }
+      });
+
+      appFrame.addActionListenerManuelleAuswahl(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            appFrame.showManuelleCheckinAuswahl();
+         }
+      });
+
+      appFrame.addActionListenerAusweisdatenExportieren(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            new FileUpAndDownload(appFrame).exportPersonData();
+         }
+      });
+
+      appFrame.addActionListenerAusweisdatenImportieren(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            new FileUpAndDownload(appFrame).importPersonData();
+         }
+      });
+
+      appFrame.addActionListenerConfigurationExportieren(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            new FileUpAndDownload(appFrame).exportConfiguration();
+         }
+      });
+
+      appFrame.addActionListenerConfigurationImportieren(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            new PersonenImportDialog(appFrame).show();
+         }
+      });
+
+      appFrame.addActionListenerPisaDatenImportieren(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final ServerConfigurationDialog dialog = new ServerConfigurationDialog(appFrame, ServiceHelper
+                  .getConfigurationsService().getServerSetupInformation(), false);
+            dialog.setVisible(true);
+         }
+      });
    }
 
-   private void closeApplication() {
-      appFrame.dispose();
-      System.exit(0);
+   private void changeSuperUserMode(final boolean mode) {
+      ConfigurationLocalHelper.getConfig().setSuperuserMode(mode);
+      appFrame.setSuperUserMode(mode);
    }
+
+   private void changeAdminMode(final boolean mode) {
+      ConfigurationLocalHelper.getConfig().setAdminMode(mode);
+      appFrame.setAdminMode(mode);
+   }
+
+   // TODO Wird in einem anderen Task behandelt
+   // case AppMenuBar.CMD_IMPORT_FOTO:
+   // new BulkFotoImporter(appFrame).importFotos();
+   // break;
+
 }

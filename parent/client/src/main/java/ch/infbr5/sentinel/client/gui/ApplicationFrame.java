@@ -13,16 +13,13 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
-import ch.infbr5.sentinel.client.ApplicationFrameController;
-import ch.infbr5.sentinel.client.StartupHandler;
 import ch.infbr5.sentinel.client.Version;
 import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModel;
-import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInTabbedPanels;
-import ch.infbr5.sentinel.client.gui.components.ipcam.IpCamaraPane;
+import ch.infbr5.sentinel.client.gui.components.ipcam.IpCameraPane;
 import ch.infbr5.sentinel.client.gui.components.journal.dialog.NewGefechtsMeldungDialog;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.BewegungsJournalModel;
 import ch.infbr5.sentinel.client.gui.components.journal.panel.BewegungsJournalTable;
@@ -43,70 +40,118 @@ public class ApplicationFrame extends JFrame {
 
    private static final long serialVersionUID = 1L;
 
-   private IpCamaraPane myGlassPane;
-
    private AppMenuBar menuBar;
 
-   private boolean isInitialized;
-
-   private final StartupHandler startupHandler;
-
-   private final ApplicationFrameController applicationFrameController;
-
-   private CheckInModel checkInModel;
+   private final CheckInModel checkInModel;
 
    private CheckInTabbedPanels checkInTabbedPanel;
 
-   public ApplicationFrame() {
-      startupHandler = new StartupHandler();
+   private GefechtsJournalTable tableGefecht;
 
-      applicationFrameController = new ApplicationFrameController(this);
-      this.addWindowListener(applicationFrameController.getWindowListener());
+   private BewegungsJournalTable tableBewegung;
 
-      this.handleStartupProcess();
-      this.initComponents();
+   private SystemJournalTable tableSystem;
+
+   public ApplicationFrame(final String checkpointName, final boolean adminMode, final boolean superUserMode,
+         final CheckInModel checkInModel) {
+      this.checkInModel = checkInModel;
+      initComponents(checkpointName, adminMode, superUserMode);
    }
 
-   public void displayPersonSelectionDialog() {
-      checkInTabbedPanel.displayPersonSelectionDialog();
+   public void addActionListenerEinstellungen(final ActionListener listener) {
+      menuBar.addActionListenerEinstellungen(listener);
    }
 
-   private void handleStartupProcess() {
-      this.setVisible(false);
-      startupHandler.startConfig();
-      this.run();
+   public void addActionListenerEnableSuperUseMode(final ActionListener listener) {
+      menuBar.addActionListenerEnableSuperUseMode(listener);
    }
 
-   private String createTitle() {
-      return "Sentinel - " + Version.get().getVersion() + " (" + Version.get().getBuildTimestamp() + ") - "
-            + ConfigurationHelper.getCheckpointName();
+   public void addActionListenerDisableSuperUseMode(final ActionListener listener) {
+      menuBar.addActionListenerDisableSuperUseMode(listener);
    }
 
-   private void initComponents() {
+   public void addActionListenerEnableAdminMode(final ActionListener listener) {
+      menuBar.addActionListenerEnableAdminMode(listener);
+   }
 
-      if (this.isInitialized) {
-         return;
-      }
+   public void addActionListenerDisableAdminMode(final ActionListener listener) {
+      menuBar.addActionListenerDisableAdminMode(listener);
+   }
 
-      // Default
-      this.setSize(1024, 900); // Bei Klick auf kleines Fenster
-      this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Start in Max-Mode
-      this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      this.setTitle(createTitle());
+   public void addActionListenerClose(final ActionListener listener) {
+      menuBar.addActionListenerClose(listener);
+   }
 
-      checkInModel = new CheckInModelImpl(ConfigurationLocalHelper.getConfig().getCheckpointId(), this);
+   public void addActionListenerManuelleAuswahl(final ActionListener listener) {
+      menuBar.addActionListenerManuelleAuswahl(listener);
+   }
+
+   public void addActionListenerServerVerbindung(final ActionListener listener) {
+      menuBar.addActionListenerServerVerbindung(listener);
+   }
+
+   public void addActionListenerCheckpointEinstellung(final ActionListener listener) {
+      menuBar.addActionListenerCheckpointEinstellung(listener);
+   }
+
+   public void addActionListenerAusweisdatenExportieren(final ActionListener listener) {
+      menuBar.addActionListenerAusweisdatenExportieren(listener);
+   }
+
+   public void addActionListenerAusweisdatenImportieren(final ActionListener listener) {
+      menuBar.addActionListenerAusweisdatenImportieren(listener);
+   }
+
+   public void addActionListenerPisaDatenImportieren(final ActionListener listener) {
+      menuBar.addActionListenerPisaDatenImportieren(listener);
+   }
+
+   public void addActionListenerConfigurationExportieren(final ActionListener listener) {
+      menuBar.addActionListenerConfigurationExportieren(listener);
+   }
+
+   public void addActionListenerConfigurationImportieren(final ActionListener listener) {
+      menuBar.addActionListenerConfigurationImportieren(listener);
+   }
+
+   public void showManuelleCheckinAuswahl() {
+      checkInTabbedPanel.handleManuellesCheckinEvent();
+   }
+
+   public void setSuperUserMode(final boolean mode) {
+      menuBar.changeSuperUserMode(mode);
+   }
+
+   public void setAdminMode(final boolean mode) {
+      menuBar.changeAdminMode(mode);
+      tableGefecht.setAdminMode(mode);
+      tableBewegung.setAdminMode(mode);
+      tableSystem.setAdminMode(mode);
+   }
+
+   private void initComponents(final String checkpointName, final boolean adminMode, final boolean superUserMode) {
+      setSize(1024, 900);
+      setExtendedState(JFrame.MAXIMIZED_BOTH);
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setTitle(createTitle(checkpointName));
+      setIconImage(ImageLoader.loadSentinelIcon());
+
+      // Menubar
+      menuBar = new AppMenuBar(adminMode, superUserMode);
+      setJMenuBar(menuBar);
+
       checkInTabbedPanel = new CheckInTabbedPanels(checkInModel);
 
       boolean showCams = false;
       final URL[] cams = ConfigurationHelper.getIPCams();
       if (cams.length > 0) {
          showCams = true;
-         this.myGlassPane = new IpCamaraPane(60, 2, cams);
-         this.setGlassPane(this.myGlassPane);
-         this.myGlassPane.setVisible(true);
+         final IpCameraPane ipCameraPane = new IpCameraPane(60, 2, cams);
+         this.setGlassPane(ipCameraPane);
+         ipCameraPane.setVisible(true);
       }
 
-      final JTabbedPane tabbedPane = createTabbedPane();
+      final JTabbedPane tabbedPane = createTabbedPane(adminMode);
 
       // Make all Panes fully hidable
       makePanelHideable(tabbedPane);
@@ -117,7 +162,7 @@ public class ApplicationFrame extends JFrame {
       this.getContentPane().setLayout(new MigLayout("", "[fill, grow]", "[fill, grow]"));
 
       if (showCams) {
-         final IpCamaraPane ipCamaraPane = new IpCamaraPane(0, 4, cams);
+         final IpCameraPane ipCamaraPane = new IpCameraPane(0, 4, cams);
          makePanelDefaultHeight(ipCamaraPane, 400);
          makePanelHideable(ipCamaraPane);
 
@@ -130,14 +175,6 @@ public class ApplicationFrame extends JFrame {
          final JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, checkInTabbedPanel, tabbedPane);
          this.add(outerSplitPane, "");
       }
-
-      // Menubar
-      this.menuBar = new AppMenuBar(applicationFrameController, ConfigurationLocalHelper.getConfig().isAdminMode(),
-            ConfigurationLocalHelper.getConfig().isSuperuserMode());
-      setJMenuBar(this.menuBar);
-
-      // Finish
-      isInitialized = true;
    }
 
    private void makePanelHideable(final JComponent comp) {
@@ -146,16 +183,10 @@ public class ApplicationFrame extends JFrame {
    }
 
    private void makePanelDefaultHeight(final JComponent comp, final int size) {
-      // comp.setSize(new Dimension(0, 200));
       comp.setPreferredSize(new Dimension(0, size));
    }
 
-   private void run() {
-      this.setVisible(true);
-      this.setIconImage(ImageLoader.loadSentinelIcon());
-   }
-
-   public JTabbedPane createTabbedPane() {
+   private JTabbedPane createTabbedPane(final boolean adminMode) {
       final JTabbedPane tabbedPane = new JTabbedPane();
 
       final List<JournalBewegungsMeldung> bewegungsMeldungen = ServiceHelper.getJournalService().getBewegungsJournal()
@@ -169,9 +200,9 @@ public class ApplicationFrame extends JFrame {
       final GefechtsJournalModel modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
       final SystemJournalModel modelSystemJournal = new SystemJournalModel(systemMeldungen);
 
-      final GefechtsJournalTable tableGefecht = new GefechtsJournalTable(modelGefechtsJournal);
-      final BewegungsJournalTable tableBewegung = new BewegungsJournalTable(modelBewegungsJournal);
-      final SystemJournalTable tableSystem = new SystemJournalTable(modelSystemJournal);
+      tableGefecht = new GefechtsJournalTable(modelGefechtsJournal, adminMode);
+      tableBewegung = new BewegungsJournalTable(modelBewegungsJournal, adminMode);
+      tableSystem = new SystemJournalTable(modelSystemJournal, adminMode);
 
       final JButton additionalButton = new JButton("Neu");
       final JFrame parentframe = this;
@@ -204,4 +235,15 @@ public class ApplicationFrame extends JFrame {
 
       return tabbedPane;
    }
+
+   private String createTitle(final String checkpointName) {
+      final StringBuffer buffer = new StringBuffer("Sentinel - ");
+      buffer.append(Version.get().getVersion());
+      buffer.append(" (");
+      buffer.append(Version.get().getBuildTimestamp());
+      buffer.append(") - ");
+      buffer.append(checkpointName);
+      return buffer.toString();
+   }
+
 }

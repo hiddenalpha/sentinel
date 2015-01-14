@@ -44,7 +44,7 @@ public class ConnectionConfigurator {
             }
          }
          if (!success) {
-            askForServerConfiguration("Es konnte keine Verbindung zum eingetragenen Server aufgebaut werden. M�glicherweise l�uft der Server nicht oder die Verbindungsdaten sind falsch.");
+            askForServerConfiguration("Es konnte keine Verbindung zum eingetragenen Server aufgebaut werden. Möglicherweise läuft der Server nicht oder die Verbindungsdaten sind falsch.");
          }
       }
    }
@@ -97,7 +97,7 @@ public class ConnectionConfigurator {
       log.debug("Client nach Serverkonfiguration fragen.");
       final ConnectionConfigurationDialog dialog = new ConnectionConfigurationDialog(null, this, info,
             ConfigurationLocalHelper.getConfig().getServerHostname(), ConfigurationLocalHelper.getConfig()
-            .getServerPortnumber(), isConfigurationWhileStartup);
+                  .getServerPortnumber(), isConfigurationWhileStartup);
       dialog.setVisible(true);
    }
 

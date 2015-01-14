@@ -3,20 +3,40 @@ package ch.infbr5.sentinel.client.gui.components.journal.panel;
 import java.sql.Date;
 import java.util.List;
 
-import javax.swing.table.AbstractTableModel;
-
+import ch.infbr5.sentinel.client.util.ServiceHelper;
+import ch.infbr5.sentinel.client.wsgen.JournalEintrag;
+import ch.infbr5.sentinel.client.wsgen.JournalResponse;
 import ch.infbr5.sentinel.client.wsgen.JournalSystemMeldung;
 
-public class SystemJournalModel extends AbstractTableModel {
+public class SystemJournalModel extends AbstractJournalModel {
 
    private static final long serialVersionUID = 1L;
 
    private final String[] columnNames = { "Datum", "Checkpoint", "Level", "Nachricht" };
 
-   private final List<JournalSystemMeldung> meldungen;
+   private List<JournalSystemMeldung> meldungen;
+
+   private final Object lock = new Object();
 
    public SystemJournalModel(final List<JournalSystemMeldung> meldungen) {
       this.meldungen = meldungen;
+   }
+
+   @Override
+   public JournalEintrag getItem(final int row) {
+      synchronized (lock) {
+         return meldungen.get(row);
+      }
+   }
+
+   @Override
+   public void reload() {
+      synchronized (lock) {
+         final JournalResponse response = ServiceHelper.getJournalService().getSystemJournal();
+         meldungen.clear();
+         meldungen = response.getSystemMeldungen();
+      }
+      fireTableDataChanged();
    }
 
    @Override
@@ -26,7 +46,9 @@ public class SystemJournalModel extends AbstractTableModel {
 
    @Override
    public int getRowCount() {
-      return meldungen.size();
+      synchronized (lock) {
+         return meldungen.size();
+      }
    }
 
    @Override
@@ -35,13 +57,18 @@ public class SystemJournalModel extends AbstractTableModel {
    }
 
    public void add(final JournalSystemMeldung m) {
-      this.meldungen.add(0, m);
+      synchronized (lock) {
+         this.meldungen.add(0, m);
+      }
       fireTableRowsInserted(0, 0);
    }
 
    @Override
    public Object getValueAt(final int rowIndex, final int columnIndex) {
-      final JournalSystemMeldung meldung = meldungen.get(rowIndex);
+      final JournalSystemMeldung meldung;
+      synchronized (lock) {
+         meldung = meldungen.get(rowIndex);
+      }
       if (columnIndex == 0) {
          return new Date(meldung.getMillis());
       }

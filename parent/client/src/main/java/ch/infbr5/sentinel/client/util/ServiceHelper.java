@@ -16,50 +16,49 @@ import ch.infbr5.sentinel.client.wsgen.SentinelQueryServiceService;
 
 public class ServiceHelper {
 
-	private static SentinelQueryService service;
-	private static ConfigurationQueryService configuration;
-	private static JournalService journal;
-	private static PersonenImporterService personenImporter;
+   private static SentinelQueryService sentinelService;
+   private static ConfigurationQueryService configurationService;
+   private static JournalService journalService;
+   private static PersonenImporterService personenImportService;
 
-	public static ConfigurationQueryService getConfigurationsService() {
-		// not working when queryservice is not initialized with endpoint address$
+   public static ConfigurationQueryService getConfigurationsService() {
+      return configurationService;
+   }
 
-		return ServiceHelper.configuration;
-	}
+   public static JournalService getJournalService() {
+      return journalService;
+   }
 
-	public static JournalService getJournalService() {
-		// not working when queryservice is not initialized with endpoint address
+   public static SentinelQueryService getSentinelService() {
+      return sentinelService;
+   }
 
-		return ServiceHelper.journal;
-	}
+   public static PersonenImporterService getPersonenImporterService() {
+      return personenImportService;
+   }
 
-	public static SentinelQueryService getSentinelService() {
-		// not working when queryservice is not initialized with endpoint address
+   public static void setEndpointAddress(final String address) throws MalformedURLException {
+      if (ServiceHelper.sentinelService == null) {
+         ServiceHelper.sentinelService = new SentinelQueryServiceService(new URL(address + "/services?wsdl"),
+               new QName("http://ws.sentinel.infbr5.ch/", "SentinelQueryServiceService")).getSentinelQueryServicePort();
+      }
 
-		return ServiceHelper.service;
-	}
-	
-	public static PersonenImporterService getPersonenImporterService() {
-		// not working when queryservice is not initialized with endpoint address
+      if (ServiceHelper.journalService == null) {
+         ServiceHelper.journalService = new JournalServiceService(new URL(address + "/journal?wsdl"), new QName(
+               "http://ws.sentinel.infbr5.ch/", "JournalServiceService")).getJournalServicePort();
+      }
 
-		return personenImporter;
-	}
+      if (ServiceHelper.configurationService == null) {
+         ServiceHelper.configurationService = new ConfigurationQueryServiceService(new URL(address
+               + "/configurations?wsdl"),
+               new QName("http://ws.sentinel.infbr5.ch/", "ConfigurationQueryServiceService"))
+               .getConfigurationQueryServicePort();
+      }
 
-	public static void setEndpointAddress(String address) throws MalformedURLException{
-		if(ServiceHelper.service==null) {
-			ServiceHelper.service = new SentinelQueryServiceService(new URL(address + "/services?wsdl"), new QName("http://ws.sentinel.infbr5.ch/", "SentinelQueryServiceService")).getSentinelQueryServicePort();
-		}
-
-		if(ServiceHelper.journal==null) {
-			ServiceHelper.journal = new JournalServiceService(new URL(address + "/journal?wsdl"),new QName("http://ws.sentinel.infbr5.ch/", "JournalServiceService")).getJournalServicePort();
-		}
-
-		if(ServiceHelper.configuration==null) {
-			ServiceHelper.configuration = new ConfigurationQueryServiceService(new URL(address + "/configurations?wsdl"),new QName("http://ws.sentinel.infbr5.ch/", "ConfigurationQueryServiceService")).getConfigurationQueryServicePort();
-		}
-		
-		if (personenImporter == null) {
-			personenImporter = new PersonenImporterServiceService(new URL(address + "/personenImporter?wsdl"),new QName("http://ws.sentinel.infbr5.ch/", "PersonenImporterServiceService")).getPersonenImporterServicePort();
-		}
-	}
+      if (personenImportService == null) {
+         personenImportService = new PersonenImporterServiceService(new URL(address + "/personenImporter?wsdl"),
+               new QName("http://ws.sentinel.infbr5.ch/", "PersonenImporterServiceService"))
+               .getPersonenImporterServicePort();
+      }
+   }
 }

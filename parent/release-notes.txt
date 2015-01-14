@@ -37,6 +37,7 @@
 #46 InitialLoadHours von Journal Tabellen eliminiert. Es werden immer alle Daten geladen.
    Entschäft wird dies dadurch, dass der Admin in Zukunft Einträge löschen kann.
 #64 Bug beim Erstellen einer Gefechtsmeldung behoben.
+#42 Journal Einträge: Journal Einträge können nun durch den Admin gelöscht werden.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

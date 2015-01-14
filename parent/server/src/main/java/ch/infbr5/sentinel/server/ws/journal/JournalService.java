@@ -20,6 +20,7 @@ import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.mapper.Mapper;
 import ch.infbr5.sentinel.server.model.journal.BewegungsMeldung;
 import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
+import ch.infbr5.sentinel.server.model.journal.JournalEintrag;
 import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 
 import com.google.common.collect.Lists;
@@ -38,7 +39,7 @@ public class JournalService {
    @WebMethod
    public void addSystemMeldung(@WebParam(name = "meldung") final JournalSystemMeldung meldung) {
       final SystemMeldung record = Mapper.mapJournalSystemMeldungToSystemMeldung().apply(meldung);
-      EntityManagerHelper.getEntityManager(context).persist(record);
+      getEntityManager().persist(record);
    }
 
    @WebMethod
@@ -46,12 +47,20 @@ public class JournalService {
       log.info("Neue Gefechtsmeldung am Checkpoint " + meldung.getCheckpoint().getName() + " erfasst.");
       final GefechtsMeldung record = Mapper.mapJournalGefechtsMeldungToGefechtsMeldung(getEntityManager()).apply(
             meldung);
-      EntityManagerHelper.getEntityManager(context).persist(record);
+      getEntityManager().persist(record);
+   }
+
+   @WebMethod
+   public void removeJournalEintrag(final Long id) {
+      final JournalEintrag eintrag = getQueryHelper().getJournalEintrag(id);
+      if (eintrag != null) {
+         getEntityManager().remove(eintrag);
+      }
    }
 
    @WebMethod
    public void updateGefechtsMeldung(@WebParam(name = "meldung") final JournalGefechtsMeldung meldung) {
-      log.info("Gefechtsmeldung wird aktualisiert");
+      log.info("Gefechtsmeldung  wird aktualisiert");
       final GefechtsMeldung gefechtsMeldung = getQueryHelper().getGefechtsMeldungen(meldung.getId());
 
       if (!gefechtsMeldung.isIstErledigt()) {

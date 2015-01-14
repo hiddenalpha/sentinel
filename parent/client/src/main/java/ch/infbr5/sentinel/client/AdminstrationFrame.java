@@ -44,7 +44,7 @@ public class AdminstrationFrame extends JFrame {
    private void initComponents() {
       setTitle("Einstellungen");
 
-      this.setIconImage(ImageLoader.loadSentinelIcon());
+      setIconImage(ImageLoader.loadSentinelIcon());
       setName(FRAME_NAME);
       setExtendedState(Frame.MAXIMIZED_BOTH);
 

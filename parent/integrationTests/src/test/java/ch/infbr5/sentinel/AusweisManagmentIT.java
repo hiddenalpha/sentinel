@@ -11,7 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ch.infbr5.sentinel.client.AdminstrationFrame;
-import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.checkin.AusweisInfoPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.ConfigurationValuePanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.EinheitenConfigPanel;
@@ -45,14 +44,14 @@ public class AusweisManagmentIT {
    }
 
    public void test_LeereDatenbank_ManuellenPersonenauswahl_Warnmeldung() {
-      window.menuItem(AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG).click();
+      window.menuItem("Manuelle Auswahl").click();
       window.optionPane().requireWarningMessage();
       window.dialog().button().click();
    }
 
    @Test
    public void test_ConfigruationErfassen() {
-      window.menuItem(AppMenuBar.CMD_EINSTELLUNGEN).click();
+      window.menuItem("Einstellungen").click();
 
       final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).using(window.robot);
 
@@ -72,7 +71,7 @@ public class AusweisManagmentIT {
 
    @Test
    public void test_EinheitPersonErfassen() {
-      window.menuItem(AppMenuBar.CMD_EINSTELLUNGEN).click();
+      window.menuItem("Einstellungen").click();
 
       final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).using(window.robot);
 
@@ -122,7 +121,7 @@ public class AusweisManagmentIT {
       adminWindow.dialog().button().click();
       adminWindow.button(PersonenConfigPanel.BUTTON_ADMINPANEL_SAVE).click();
 
-      window.menuItem(AppMenuBar.CMD_DISPLAY_PERSON_SELECTION_DLG).click();
+      window.menuItem("Manuelle Auswahl").click();
       window.optionPane().okButton().click();
 
       window.label(AusweisInfoPanel.LABEL_STATUS_TEXT).requireText(Pattern.compile("Checkin erfolgreich.*"));

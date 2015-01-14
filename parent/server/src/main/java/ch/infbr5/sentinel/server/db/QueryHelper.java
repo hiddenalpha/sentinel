@@ -25,6 +25,7 @@ import ch.infbr5.sentinel.server.model.Zone;
 import ch.infbr5.sentinel.server.model.ZonenPraesenz;
 import ch.infbr5.sentinel.server.model.journal.BewegungsMeldung;
 import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
+import ch.infbr5.sentinel.server.model.journal.JournalEintrag;
 import ch.infbr5.sentinel.server.model.journal.SystemMeldung;
 
 public class QueryHelper {
@@ -292,7 +293,7 @@ public class QueryHelper {
    }
 
    /**
-    * Gibt ALLE Konfigurations-Werte zur�ck.
+    * Gibt ALLE Konfigurations-Werte zurück.
     *
     * @return List - Alle Konfigurationswerte
     */
@@ -324,6 +325,12 @@ public class QueryHelper {
       final Query q = em.createNamedQuery(Einheit.GET_EINHEIT_BY_NAME);
       q.setParameter("einheitName", name);
       return (Einheit) getSingleResult(q);
+   }
+
+   public JournalEintrag getJournalEintrag(final Long id) {
+      final Query q = em.createNamedQuery("findJournalEintragById");
+      q.setParameter("id", id);
+      return (JournalEintrag) getSingleResult(q);
    }
 
    @SuppressWarnings("unchecked")

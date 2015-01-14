@@ -65,7 +65,7 @@ public class CheckInTabbedPanels extends JTabbedPane implements ChangeListener, 
       this.addTab(this.tabNames[i], scrollPane);
    }
 
-   public void displayPersonSelectionDialog() {
+   public void handleManuellesCheckinEvent() {
       final CheckInSelectionValue[] values = this.model.getPersonenMitAusweis();
 
       CheckInSelectionValue selected = null;

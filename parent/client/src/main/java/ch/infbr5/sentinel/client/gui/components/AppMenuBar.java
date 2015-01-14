@@ -4,299 +4,242 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 import javax.swing.KeyStroke;
-
-import ch.infbr5.sentinel.client.config.ConfigurationHelper;
-import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 
 public class AppMenuBar extends JMenuBar {
 
-	public static final String CMD_DISPLAY_PERSON_SELECTION_DLG = "DISPLAY_PERSON_SELECTION_DLG";
-	public static final String CMD_RESET_SYSTEM = "RESET_SYSTEM";
-	public static final String CMD_EXIT = "EXIT";
-	public static final String CMD_EINSTELLUNGEN = "EINSTELLUNGEN";
-	public static final String CMD_SERVER_EINSTELLUNG = "SERVER_EINSTELLUNG";
-	public static final String CMD_EXPORT_PERSONDATA = "EXPORT_PERSONDATA";
-	public static final String CMD_IMPORT_PERSONDATA = "IMPORT_PERSONDATA";
-	public static final String CMD_EXPORT_CONFIG = "EXPORT_CONFIG";
-	public static final String CMD_IMPORT_CONFIG = "IMPORT_CONFIG";
-	//public static final String CMD_IMPORT_FOTO = "FOTO_IMPORT";
-	public static final String CMD_IMPORT_PISADATA = "IMPORT_PISADATA";
-	public static final String CMD_CHECKPOINT_EINSTELLUNGEN = "CMD_CHECKPOINT_EINSTELLUNGEN";
-	public static final String CMD_ENABLED_ADMIN_MODE = "CMD_ENABLED_ADMIN_MODE";
-	public static final String CMD_DISABLE_ADMIN_MODE = "CMD_DISABLE_ADMIN_MODE";
+   private static final long serialVersionUID = 1L;
 
-	private static final long serialVersionUID = 1L;
+   private boolean superUserMode;
+   private boolean adminMode;
 
-	private ActionListener menuListener;
+   private JMenu menuStart;
+   private JMenuItem itemEinstellungen;
+   private JMenuItem itemDisableAdmin;
+   private JMenuItem itemEnableAdmin;
+   private JMenuItem itemDisableSuperuser;
+   private JMenuItem itemEnableSuperuser;
+   private JMenuItem itemBeenden;
 
-	private boolean adminMode;
-	private boolean superUserMode;
-	private boolean adminOrSuperuserMode;
+   private JMenu menuCheckpoint;
+   private JMenuItem itemManuelleAuswahl;
+   private JMenuItem itemServerVerbindung;
+   private JMenuItem itemCheckpointEinstellungen;
 
-	private JMenu menuStart;
-	private JMenu menuCheckpoint;
-	private JMenu menuAdmin;
+   private JMenu menuAdmin;
+   private JMenuItem itemAusweisdatenExportieren;
+   private JMenuItem itemAusweisdatenImportieren;
+   private JMenuItem itemPisaDatenImport;
+   private JMenuItem itemConfiguractionImport;
+   private JMenuItem itemConfigurationExport;
 
-	private JMenuItem itemDisableAdmin;
-	private JMenuItem itemEnableAdmin;
-	private JMenuItem itemDisableSuperuser;
-	private JMenuItem itemEnableSuperuser;
-	private JMenuItem itemEinstellungen;
-	private JMenuItem itemAusweisdatenExportieren;
-	private JMenuItem itemAusweisdatenImportieren;
-	private JMenuItem itemPisaDatenImport;
-	//private JMenuItem itemFotosImport;
-	private JMenuItem itemConfiguractionImport;
-	private JMenuItem itemConfigurationExport;
-	private JMenuItem itemServerVerbindung;
-	private JMenuItem itemCheckpointEinstellungen;
+   public AppMenuBar(final boolean adminMode, final boolean superuserMode) {
+      createStartMenu();
+      createCheckpointMenu();
+      createAdminMenu();
 
-	public AppMenuBar(ActionListener startMenuListener, boolean adminMode, boolean superuserMode) {
-		super();
+      changeModes(adminMode, superuserMode);
+   }
 
-		this.menuListener = startMenuListener;
+   public void addActionListenerEinstellungen(final ActionListener listener) {
+      itemEinstellungen.addActionListener(listener);
+   }
 
-		this.adminMode = adminMode;
-		this.superUserMode = superuserMode;
+   public void addActionListenerEnableSuperUseMode(final ActionListener listener) {
+      itemEnableSuperuser.addActionListener(listener);
+   }
 
-		this.createStartMenu();
-		this.createCheckpointMenu();
-		this.createAdminMenu();
+   public void addActionListenerDisableSuperUseMode(final ActionListener listener) {
+      itemDisableSuperuser.addActionListener(listener);
+   }
 
-		configureActivation();
-	}
+   public void addActionListenerEnableAdminMode(final ActionListener listener) {
+      itemEnableAdmin.addActionListener(listener);
+   }
 
-	private void createStartMenu() {
-		menuStart = new JMenu("Start");
-		menuStart.setMnemonic(KeyEvent.VK_S);
-		menuStart.getAccessibleContext().setAccessibleDescription("Start");
-		this.add(menuStart);
+   public void addActionListenerDisableAdminMode(final ActionListener listener) {
+      itemDisableAdmin.addActionListener(listener);
+   }
 
-		itemEinstellungen = createItem("Einstellungen", CMD_EINSTELLUNGEN, KeyEvent.VK_E);
-		itemEinstellungen.addActionListener(menuListener);
-		menuStart.add(itemEinstellungen);
+   public void addActionListenerClose(final ActionListener listener) {
+      itemBeenden.addActionListener(listener);
+   }
 
-		menuStart.addSeparator();
+   public void addActionListenerManuelleAuswahl(final ActionListener listener) {
+      itemManuelleAuswahl.addActionListener(listener);
+   }
 
-		itemEnableSuperuser = createItem("Superuser Modus starten");
-		itemEnableSuperuser.addActionListener(createEnableSuperuserModeListener());
-		menuStart.add(itemEnableSuperuser);
+   public void addActionListenerServerVerbindung(final ActionListener listener) {
+      itemServerVerbindung.addActionListener(listener);
+   }
 
-		itemDisableSuperuser = createItem("Superuser Modus beenden");
-		itemDisableSuperuser.addActionListener(createDisableSuperuserModeListener());
-		menuStart.add(itemDisableSuperuser);
+   public void addActionListenerCheckpointEinstellung(final ActionListener listener) {
+      itemCheckpointEinstellungen.addActionListener(listener);
+   }
 
-		itemEnableAdmin = createItem("Admin Modus starten");
-		itemEnableAdmin.addActionListener(createEnableAdminModeListener());
-		menuStart.add(itemEnableAdmin);
+   public void addActionListenerAusweisdatenExportieren(final ActionListener listener) {
+      itemAusweisdatenExportieren.addActionListener(listener);
+   }
 
-		itemDisableAdmin = createItem("Admin Modus beenden");
-		itemDisableAdmin.addActionListener(createDisableAdminModeListener());
-		menuStart.add(itemDisableAdmin);
+   public void addActionListenerAusweisdatenImportieren(final ActionListener listener) {
+      itemAusweisdatenImportieren.addActionListener(listener);
+   }
 
-		menuStart.addSeparator();
+   public void addActionListenerPisaDatenImportieren(final ActionListener listener) {
+      itemPisaDatenImport.addActionListener(listener);
+   }
 
-		JMenuItem itemBeenden = createItem("Beenden", CMD_EXIT, KeyEvent.VK_B);
-		itemBeenden.addActionListener(menuListener);
-		menuStart.add(itemBeenden);
-	}
+   public void addActionListenerConfigurationExportieren(final ActionListener listener) {
+      itemConfigurationExport.addActionListener(listener);
+   }
 
-	private void createCheckpointMenu() {
-		menuCheckpoint = new JMenu("Checkpoint");
-		menuCheckpoint.setMnemonic(KeyEvent.VK_C);
-		menuCheckpoint.getAccessibleContext().setAccessibleDescription("Checkpoint");
-		this.add(menuCheckpoint);
+   public void addActionListenerConfigurationImportieren(final ActionListener listener) {
+      itemConfiguractionImport.addActionListener(listener);
+   }
 
-		JMenuItem menuItem = createItem("Manuelle Auswahl", CMD_DISPLAY_PERSON_SELECTION_DLG, KeyEvent.VK_F6);
-		menuItem.addActionListener(menuListener);
-		menuCheckpoint.add(menuItem);
+   private void createStartMenu() {
+      menuStart = createMenu("Start", KeyEvent.VK_S);
+      add(menuStart);
 
-		menuCheckpoint.addSeparator();
+      itemEinstellungen = createItem("Einstellungen", KeyEvent.VK_E);
+      menuStart.add(itemEinstellungen);
 
-		itemServerVerbindung = createItem("Server-Verbindung", CMD_SERVER_EINSTELLUNG);
-		itemServerVerbindung.addActionListener(menuListener);
-		menuCheckpoint.add(itemServerVerbindung);
+      menuStart.addSeparator();
 
-		itemCheckpointEinstellungen = createItem("Checkpoint-Einstellungen", CMD_CHECKPOINT_EINSTELLUNGEN);
-		itemCheckpointEinstellungen.addActionListener(menuListener);
-		menuCheckpoint.add(itemCheckpointEinstellungen);
-	}
+      itemEnableSuperuser = createItem("Superuser Modus starten");
+      menuStart.add(itemEnableSuperuser);
 
-	private void createAdminMenu() {
-		this.menuAdmin = new JMenu("Datenaustausch");
-		this.add(this.menuAdmin);
+      itemDisableSuperuser = createItem("Superuser Modus beenden");
+      menuStart.add(itemDisableSuperuser);
 
-		itemAusweisdatenExportieren = addItem("Ausweisdaten exportieren", menuAdmin, menuListener,
-				CMD_EXPORT_PERSONDATA);
-		itemAusweisdatenImportieren = addItem("Ausweisdaten importieren", menuAdmin, menuListener,
-				CMD_IMPORT_PERSONDATA);
+      itemEnableAdmin = createItem("Admin Modus starten");
+      menuStart.add(itemEnableAdmin);
 
-		this.menuAdmin.addSeparator();
+      itemDisableAdmin = createItem("Admin Modus beenden");
+      menuStart.add(itemDisableAdmin);
 
-		itemPisaDatenImport = addItem("Pisadaten importieren", menuAdmin, menuListener,
-				CMD_IMPORT_PISADATA);
+      menuStart.addSeparator();
 
-		this.menuAdmin.addSeparator();
+      itemBeenden = createItem("Beenden", KeyEvent.VK_B);
+      menuStart.add(itemBeenden);
+   }
 
-		//itemFotosImport = addItem("Fotos importieren", menuAdmin, menuListener, CMD_IMPORT_FOTO);
+   private void createCheckpointMenu() {
+      menuCheckpoint = createMenu("Checkpoint", KeyEvent.VK_C);
+      add(menuCheckpoint);
 
-		//this.menuAdmin.addSeparator();
+      itemManuelleAuswahl = createItem("Manuelle Auswahl", KeyEvent.VK_F6);
+      menuCheckpoint.add(itemManuelleAuswahl);
 
-		itemConfigurationExport = addItem("Konfiguration exportieren", menuAdmin, menuListener, CMD_EXPORT_CONFIG);
-		itemConfiguractionImport = addItem("Konfiguration importieren / bearbeiten", menuAdmin, menuListener, CMD_IMPORT_CONFIG);
+      menuCheckpoint.addSeparator();
 
-		this.menuAdmin.addSeparator();
-	}
+      itemServerVerbindung = createItem("Server-Verbindung");
+      menuCheckpoint.add(itemServerVerbindung);
 
-	private ActionListener createDisableSuperuserModeListener() {
-		return new ActionListener() {
+      itemCheckpointEinstellungen = createItem("Checkpoint-Einstellungen");
+      menuCheckpoint.add(itemCheckpointEinstellungen);
+   }
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				changeSuperUserMode(false);
-			}
-		};
-	}
+   private void createAdminMenu() {
+      menuAdmin = createMenu("Datenaustausch", KeyEvent.VK_D);
+      add(menuAdmin);
 
-	private ActionListener createEnableSuperuserModeListener() {
-		return new ActionListener() {
+      itemAusweisdatenExportieren = createItem("Ausweisdaten exportieren");
+      menuAdmin.add(itemAusweisdatenExportieren);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String password = ConfigurationHelper.getSuperUserPassword();
-				if (askForPassword(password)) {
-					changeSuperUserMode(true);
-				}
-			}
-		};
-	}
+      itemAusweisdatenImportieren = createItem("Ausweisdaten importieren");
+      menuAdmin.add(itemAusweisdatenImportieren);
 
-	private ActionListener createEnableAdminModeListener() {
-		return new ActionListener() {
+      menuAdmin.addSeparator();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String password = ConfigurationHelper.getAdminPassword();
-				if (askForPassword(password)) {
-					changeAdminMode(true);
-				}
-			}
-		};
-	}
+      itemPisaDatenImport = createItem("Pisadaten importieren");
+      menuAdmin.add(itemAusweisdatenImportieren);
 
-	private ActionListener createDisableAdminModeListener() {
-		return new ActionListener() {
+      this.menuAdmin.addSeparator();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				changeAdminMode(false);
-			}
-		};
-	}
+      itemConfigurationExport = createItem("Konfiguration exportieren");
+      menuAdmin.add(itemConfigurationExport);
 
-	private void configureActivation() {
-		adminOrSuperuserMode = adminMode || superUserMode;
+      itemConfiguractionImport = createItem("Konfiguration importieren / bearbeiten");
+      menuAdmin.add(itemConfiguractionImport);
+   }
 
-		if (adminMode) {
-			itemEnableSuperuser.setVisible(false);
-			itemDisableSuperuser.setVisible(false);
-		} else {
-			itemEnableSuperuser.setVisible(!superUserMode);
-			itemDisableSuperuser.setVisible(superUserMode);
-		}
-		itemEnableAdmin.setVisible(!adminMode);
-		itemDisableAdmin.setVisible(adminMode);
+   public void changeAdminMode(final boolean mode) {
+      changeModes(mode, superUserMode);
+   }
 
-		itemEinstellungen.setEnabled(adminOrSuperuserMode);
+   public void changeSuperUserMode(final boolean mode) {
+      changeModes(adminMode, mode);
+   }
 
-		itemAusweisdatenExportieren.setEnabled(adminOrSuperuserMode);
-		itemAusweisdatenImportieren.setEnabled(adminOrSuperuserMode);
+   private void changeModes(final boolean adminMode, final boolean superUserMode) {
+      this.adminMode = adminMode;
+      this.superUserMode = superUserMode;
+      final boolean adminOrSuperuserMode = adminMode || superUserMode;
 
-		itemPisaDatenImport.setEnabled(adminMode);
+      if (adminMode) {
+         itemEnableSuperuser.setVisible(false);
+         itemDisableSuperuser.setVisible(false);
+      } else {
+         itemEnableSuperuser.setVisible(!superUserMode);
+         itemDisableSuperuser.setVisible(superUserMode);
+      }
+      itemEnableAdmin.setVisible(!adminMode);
+      itemDisableAdmin.setVisible(adminMode);
 
-		//itemFotosImport.setEnabled(adminMode);
-		itemConfigurationExport.setEnabled(adminMode);
-		itemConfiguractionImport.setEnabled(adminMode);
+      itemEinstellungen.setEnabled(adminOrSuperuserMode);
 
-		itemServerVerbindung.setEnabled(adminOrSuperuserMode);
-		itemCheckpointEinstellungen.setEnabled(adminOrSuperuserMode);
+      itemAusweisdatenExportieren.setEnabled(adminOrSuperuserMode);
+      itemAusweisdatenImportieren.setEnabled(adminOrSuperuserMode);
 
-		menuAdmin.setEnabled(adminOrSuperuserMode);
-	}
+      itemPisaDatenImport.setEnabled(adminMode);
 
-	private void changeSuperUserMode(boolean value) {
-		superUserMode = value;
-		configureActivation();
-		ConfigurationLocalHelper.getConfig().setSuperuserMode(superUserMode);
-		revalidate();
-	}
+      itemConfigurationExport.setEnabled(adminMode);
+      itemConfiguractionImport.setEnabled(adminMode);
 
-	private void changeAdminMode(boolean value) {
-		adminMode = value;
-		configureActivation();
-		ConfigurationLocalHelper.getConfig().setAdminMode(adminMode);
-		revalidate();
-	}
+      itemServerVerbindung.setEnabled(adminOrSuperuserMode);
+      itemCheckpointEinstellungen.setEnabled(adminOrSuperuserMode);
 
-	private JMenuItem addItem(String text, JMenu menu, ActionListener listener, String cmd) {
-		JMenuItem item = new JMenuItem(text);
-		item.setActionCommand(cmd);
-		item.addActionListener(listener);
-		menu.add(item);
-		return item;
-	}
+      menuAdmin.setEnabled(adminOrSuperuserMode);
 
-	private JMenuItem createItem(String name) {
-		return createItem(name, null);
-	}
+      revalidate();
+   }
 
-	private JMenuItem createItem(String name, String actionCommand) {
-		JMenuItem item = new JMenuItem(name);
-		applyToItem(item, name, actionCommand);
-		return item;
-	}
+   private JMenu createMenu(final String name, final int keyEvent) {
+      final JMenu menu = new JMenu(name);
+      menu.setMnemonic(keyEvent);
+      menu.getAccessibleContext().setAccessibleDescription(name);
+      return menu;
+   }
 
-	private JMenuItem createItem(String name, String actionCommand, int keyEvent) {
-		JMenuItem item = new JMenuItem(name, keyEvent);
-		item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, ActionEvent.ALT_MASK));
-		applyToItem(item, name, actionCommand);
-		return item;
-	}
+   private JMenuItem createItem(final String name) {
+      return createItem(name, null);
+   }
 
-	private void applyToItem(JMenuItem item, String name, String actionCommand) {
-		item.setName(actionCommand);
-		item.getAccessibleContext().setAccessibleDescription(name);
-		item.setActionCommand(actionCommand);
-	}
+   private JMenuItem createItem(final String name, final String actionCommand) {
+      final JMenuItem item = new JMenuItem(name);
+      applyToItem(item, name);
+      return item;
+   }
 
-	private boolean askForPassword(String originalPassword) {
-		if (originalPassword == null || originalPassword.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Auf dem Server ist kein Passwort definiert.", "Fehler",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
+   private JMenuItem createItem(final String name, final int keyEvent) {
+      final JMenuItem item = new JMenuItem(name, keyEvent);
+      item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, ActionEvent.ALT_MASK));
+      applyToItem(item, name);
+      return item;
+   }
 
-		JPasswordField field = new JPasswordField();
-		JLabel txt = new JLabel("Bitte Passwort eingeben");
+   private void applyToItem(final JMenuItem item, final String name) {
+      item.getAccessibleContext().setAccessibleDescription(name);
+   }
 
-		Object[] fields = { txt, field };
-		JOptionPane.showConfirmDialog(null, fields, "Passwort", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.INFORMATION_MESSAGE);
-		String adminPassword = String.valueOf(field.getPassword());
+   // TODO Wird in einem anderen Task aufgeräumt
+   // private JMenuItem itemFotosImport;
+   // itemFotosImport.setEnabled(adminMode);
+   // itemFotosImport = addItem("Fotos importieren", menuAdmin, menuListener,
+   // CMD_IMPORT_FOTO);
 
-		if (adminPassword != null && adminPassword.equals(originalPassword)) {
-			return true;
-		} else {
-			JOptionPane.showMessageDialog(null, "Passwort stimmt nicht korrekt.", "Adminpasswort falsch",
-					JOptionPane.WARNING_MESSAGE);
-			return false;
-		}
-	}
 }

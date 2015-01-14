@@ -14,6 +14,7 @@ import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
 
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
+import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.ServerControl;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
@@ -24,94 +25,97 @@ import ch.infbr5.sentinel.server.model.Zutrittsregel;
 
 public class Helper {
 
-	private static ServerControl server;
+   private static ServerControl server;
 
-	public static void setupRuntime() {
+   public static void setupRuntime() {
 
-		writeClientProperties();
+      writeClientProperties();
 
-		server = new ServerControl(false, true);
-		server.start("127.0.0.1", "8080");
+      server = new ServerControl(false, true);
+      server.start("127.0.0.1", "8080");
 
-		// Setup Database, so kommt kein Config Dialog zu beginn
-		setupDatabase();
-	}
+      // Setup Database, so kommt kein Config Dialog zu beginn
+      setupDatabase();
+   }
 
-	private static void setupDatabase() {
+   private static void setupDatabase() {
 
-		EntityManager em = EntityManagerHelper.createEntityManager();
-		em.getTransaction().begin();
+      final EntityManager em = EntityManagerHelper.createEntityManager();
+      em.getTransaction().begin();
 
-		// Zutrittsregeln
-		Zutrittsregel regel = ObjectFactory.createZutrittsregel();
-		em.persist(regel);
+      // Zutrittsregeln
+      final Zutrittsregel regel = ObjectFactory.createZutrittsregel();
+      em.persist(regel);
 
-		List<Zutrittsregel> regeln = new ArrayList<Zutrittsregel>();
-		regeln.add(regel);
+      final List<Zutrittsregel> regeln = new ArrayList<Zutrittsregel>();
+      regeln.add(regel);
 
-		// Zone
-		Zone zone = ObjectFactory.createZone("Kommandoposten", regeln, false);
-		em.persist(zone);
+      // Zone
+      final Zone zone = ObjectFactory.createZone("Kommandoposten", regeln, false);
+      em.persist(zone);
 
-		// Checkpoint
-		List<Zone> checkInZonen = new ArrayList<Zone>();
-		checkInZonen.add(zone);
-		List<Zone> checkOutZonen = new ArrayList<Zone>();
-		Checkpoint checkpoint = ObjectFactory.createCheckpoint("Haupteingang", checkInZonen, checkOutZonen);
-		em.persist(checkpoint);
+      // Checkpoint
+      final List<Zone> checkInZonen = new ArrayList<Zone>();
+      checkInZonen.add(zone);
+      final List<Zone> checkOutZonen = new ArrayList<Zone>();
+      final Checkpoint checkpoint = ObjectFactory.createCheckpoint("Haupteingang", checkInZonen, checkOutZonen);
+      em.persist(checkpoint);
 
-		// Konfiguration
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_ADMIN, "leitnes", 0, ""));
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_SUPERUSER, "sentinel", 0, ""));
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_IDENTITY_CARD, "1nf8r5!", 0, ""));
+      // Konfiguration
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_ADMIN, "leitnes", 0, ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_SUPERUSER, "sentinel", 0, ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.PASSWORD_IDENTITY_CARD, "1nf8r5!", 0, ""));
 
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_BACKGROUND_COLOR, "#ddd", 0, ""));
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE, "#eee", 0, ""));
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE, "false", 0, ""));
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_SHOW_QR_CODE, "true", 0, ""));
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_USE_USER_LOGO, "false", 0, ""));
-		em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN, "false", 0, ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_BACKGROUND_COLOR, "#ddd", 0, ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_COLOR_AREA_BACKSIDE, "#eee", 0,
+            ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_SHOW_AREA_BACKSIDE, "false", 0,
+            ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_SHOW_QR_CODE, "true", 0, ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_USE_USER_LOGO, "false", 0, ""));
+      em.persist(ObjectFactory.createConfigurationValue(ConfigConstants.AUSWEISVORLAGE_USE_USER_WASSERZEICHEN, "false",
+            0, ""));
 
-		em.getTransaction().commit();
-		em.close();
+      em.getTransaction().commit();
+      em.close();
 
-	}
+   }
 
-	public static void cleanupRuntime() {
-		server.stop();
-		cleanupRuntimeDir();
-	}
+   public static void cleanupRuntime() {
+      server.stop();
+      cleanupRuntimeDir();
+   }
 
-	public static void cleanupRuntimeDir() {
-		new File("sentinel.properties").delete();
-		new File("derby.log").delete();
-	}
+   public static void cleanupRuntimeDir() {
+      new File("sentinel.properties").delete();
+      new File("derby.log").delete();
+   }
 
-	public static FrameFixture getWindow() {
-		ApplicationFrame frame = GuiActionRunner.execute(new GuiQuery<ApplicationFrame>() {
-			@Override
-			protected ApplicationFrame executeInEDT() {
-				return new ApplicationFrame();
-			}
-		});
-		return new FrameFixture(frame);
-	}
+   public static FrameFixture getWindow() {
+      final ApplicationFrame frame = GuiActionRunner.execute(new GuiQuery<ApplicationFrame>() {
+         @Override
+         protected ApplicationFrame executeInEDT() {
+            return new ApplicationFrame("Checkpoint Test", true, true, new CheckInModelImpl(new Long(1)));
+         }
+      });
+      return new FrameFixture(frame);
+   }
 
-	private static void writeClientProperties() {
+   private static void writeClientProperties() {
 
-		Properties applicationProps = new Properties();
-		applicationProps.setProperty("CheckpointId", "1");
-		applicationProps.setProperty("ServerHostname", "127.0.0.1");
-		applicationProps.setProperty("AdminMode", "true");
-		try {
-			FileOutputStream out;
-			out = new FileOutputStream("sentinel.properties");
-			applicationProps.store(out, "---Only for testing---");
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+      final Properties applicationProps = new Properties();
+      applicationProps.setProperty("CheckpointId", "1");
+      applicationProps.setProperty("ServerHostname", "127.0.0.1");
+      applicationProps.setProperty("AdminMode", "true");
+      try {
+         FileOutputStream out;
+         out = new FileOutputStream("sentinel.properties");
+         applicationProps.store(out, "---Only for testing---");
+         out.close();
+      } catch (final IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+   }
 
 }

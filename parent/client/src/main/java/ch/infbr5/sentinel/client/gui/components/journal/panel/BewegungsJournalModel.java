@@ -3,21 +3,35 @@ package ch.infbr5.sentinel.client.gui.components.journal.panel;
 import java.sql.Date;
 import java.util.List;
 
-import javax.swing.table.AbstractTableModel;
-
 import ch.infbr5.sentinel.client.util.PersonDetailsFormater;
+import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalBewegungsMeldung;
+import ch.infbr5.sentinel.client.wsgen.JournalEintrag;
+import ch.infbr5.sentinel.client.wsgen.JournalResponse;
 
-public class BewegungsJournalModel extends AbstractTableModel {
+public class BewegungsJournalModel extends AbstractJournalModel {
 
    private static final long serialVersionUID = 1L;
 
    private final String[] columnNames = { "Datum", "Checkpoint", "Name", "Aktion" };
 
-   private final List<JournalBewegungsMeldung> meldungen;
+   private List<JournalBewegungsMeldung> meldungen;
 
    public BewegungsJournalModel(final List<JournalBewegungsMeldung> meldungen) {
       this.meldungen = meldungen;
+   }
+
+   @Override
+   public JournalEintrag getItem(final int row) {
+      return meldungen.get(row);
+   }
+
+   @Override
+   public void reload() {
+      final JournalResponse response = ServiceHelper.getJournalService().getBewegungsJournal();
+      meldungen.clear();
+      meldungen = response.getBewegungsMeldungen();
+      fireTableDataChanged();
    }
 
    @Override

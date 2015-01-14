@@ -3,26 +3,36 @@ package ch.infbr5.sentinel.client.gui.components.journal.panel;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.table.AbstractTableModel;
-
 import ch.infbr5.sentinel.client.util.PersonDetailsFormater;
+import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;
+import ch.infbr5.sentinel.client.wsgen.JournalEintrag;
 import ch.infbr5.sentinel.client.wsgen.JournalGefechtsMeldung;
+import ch.infbr5.sentinel.client.wsgen.JournalResponse;
 
-public class GefechtsJournalModel extends AbstractTableModel {
+public class GefechtsJournalModel extends AbstractJournalModel {
 
    private static final long serialVersionUID = 1L;
 
    private final String[] columnNames = { "Datum", "Checkpoint", "Wer/Was/Wie/Wo", "Massnahmen", "Für wen?", "Erledigt" };
 
-   private final List<JournalGefechtsMeldung> meldungen;
+   private List<JournalGefechtsMeldung> meldungen;
 
    public GefechtsJournalModel(final List<JournalGefechtsMeldung> meldungen) {
       this.meldungen = meldungen;
    }
 
-   public JournalGefechtsMeldung getItem(final int row) {
+   @Override
+   public JournalEintrag getItem(final int row) {
       return meldungen.get(row);
+   }
+
+   @Override
+   public void reload() {
+      final JournalResponse response = ServiceHelper.getJournalService().getGefechtsJournal();
+      meldungen.clear();
+      meldungen = response.getGefechtsMeldungen();
+      fireTableDataChanged();
    }
 
    @Override
