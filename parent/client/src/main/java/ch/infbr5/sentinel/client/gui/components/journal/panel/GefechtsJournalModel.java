@@ -14,7 +14,7 @@ public class GefechtsJournalModel extends AbstractJournalModel {
 
    private static final long serialVersionUID = 1L;
 
-   private final String[] columnNames = { "Datum", "Checkpoint", "Wer/Was/Wie/Wo", "Massnahmen", "Für wen?", "Erledigt" };
+   private final String[] columnNames = { "Datum", "Checkpoint", "Wer/Was/Wie/Wo & Massnahmen", "Für wen?", "Erledigt" };
 
    private List<JournalGefechtsMeldung> meldungen;
 
@@ -64,16 +64,14 @@ public class GefechtsJournalModel extends AbstractJournalModel {
       if (columnIndex == 1) {
          return meldung.getCheckpoint().getName();
       }
-      if (columnIndex == 4) {
+      if (columnIndex == 3) {
          return PersonDetailsFormater.getFullName(meldung.getWeiterleitenAnPerson());
       }
       if (columnIndex == 2) {
-         return meldung.getWerWasWoWie();
+         return "Wer/Was/Wo/Wie:\r\n" + meldung.getWerWasWoWie() + "\r\n\r\nMassnahmen:\r\n" + meldung.getMassnahme()
+               + "";
       }
-      if (columnIndex == 3) {
-         return meldung.getMassnahme();
-      }
-      if (columnIndex == 5) {
+      if (columnIndex == 4) {
          if (meldung.isIstErledigt()) {
             return meldung.getZeitpunktErledigt();
          }

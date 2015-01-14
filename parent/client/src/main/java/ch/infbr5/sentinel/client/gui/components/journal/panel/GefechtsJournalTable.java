@@ -36,9 +36,9 @@ public class GefechtsJournalTable extends AbstractJournalTable {
       final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
       renderer.setVerticalAlignment(DefaultTableCellRenderer.TOP);
       setDefaultRenderer(Object.class, renderer);
-      setDefaultRenderer(String.class, new MultiLineCellRenderer());
       getColumnModel().getColumn(0).setCellRenderer(new DateTimeCellRenderer());
-      getColumnModel().getColumn(5).setCellRenderer(new DateTimeCellRenderer());
+      getColumnModel().getColumn(2).setCellRenderer(new MultiLineCellRenderer());
+      getColumnModel().getColumn(4).setCellRenderer(new DateTimeCellRenderer());
    }
 
    @Override
@@ -94,8 +94,9 @@ public class GefechtsJournalTable extends AbstractJournalTable {
    }
 
    public void adjust() {
-      setDefaultSort(0, true);
+      setDefaultSort(0, false);
       TableColumnResizer.resizeColumnWidth(this);
+      columnModel.getColumn(2).setPreferredWidth(250);
    }
 
 }

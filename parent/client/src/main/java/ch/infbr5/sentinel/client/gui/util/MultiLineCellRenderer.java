@@ -1,86 +1,99 @@
 package ch.infbr5.sentinel.client.gui.util;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 public class MultiLineCellRenderer extends JTextArea implements TableCellRenderer {
+   private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+   /** map from table to map of rows to map of column heights */
+   private final Map cellSizes = new HashMap();
 
-	private static final long serialVersionUID = 1L;
+   public MultiLineCellRenderer() {
+      setLineWrap(true);
+      setWrapStyleWord(true);
+   }
 
-	public MultiLineCellRenderer() {
-		setLineWrap(true);
-		setWrapStyleWord(true);
-		setOpaque(true);
-	}
+   @Override
+   public Component getTableCellRendererComponent(
+         //
+         final JTable table, final Object obj, final boolean isSelected, final boolean hasFocus, final int row,
+         final int column) {
+      // set the colours, etc. using the standard for that platform
+      adaptee.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
+      setForeground(adaptee.getForeground());
+      setBackground(adaptee.getBackground());
+      setBorder(adaptee.getBorder());
+      setFont(adaptee.getFont());
+      setText(adaptee.getText());
 
-	/**
-	 * Calculate the new preferred height for a given row, and sets the height
-	 * on the table.
-	 */
-	private List<List<Integer>> rowColHeight = new ArrayList<List<Integer>>();
+      // This line was very important to get it working with JDK1.4
+      final TableColumnModel columnModel = table.getColumnModel();
+      setSize(columnModel.getColumn(column).getWidth(), 100000);
+      int height_wanted = (int) getPreferredSize().getHeight();
+      addSize(table, row, column, height_wanted);
+      height_wanted = findTotalMaximumRowSize(table, row);
+      if (height_wanted != table.getRowHeight(row)) {
+         table.setRowHeight(row, height_wanted);
+      }
+      return this;
+   }
 
-	private void adjustRowHeight(JTable table, int row, int column) {
-		// The trick to get this to work properly is to set the width of the
-		// column to the
-		// textarea. The reason for this is that getPreferredSize(), without a
-		// width tries
-		// to place all the text in one line. By setting the size with the with
-		// of the column,
-		// getPreferredSize() returnes the proper height which the row should
-		// have in
-		// order to make room for the text.
-		int cWidth = table.getTableHeader().getColumnModel().getColumn(column).getWidth();
-		setSize(new Dimension(cWidth, 1000));
-		int prefH = getPreferredSize().height;
-		while (rowColHeight.size() <= row) {
-			rowColHeight.add(new ArrayList<Integer>(column));
-		}
-		List<Integer> colHeights = rowColHeight.get(row);
-		while (colHeights.size() <= column) {
-			colHeights.add(0);
-		}
-		colHeights.set(column, prefH);
-		int maxH = prefH;
-		for (Integer colHeight : colHeights) {
-			if (colHeight > maxH) {
-				maxH = colHeight;
-			}
-		}
-		if (table.getRowHeight(row) != maxH) {
-			table.setRowHeight(row, maxH);
-		}
-	}
+   private void addSize(final JTable table, final int row, final int column, final int height) {
+      Map rows = (Map) cellSizes.get(table);
+      if (rows == null) {
+         cellSizes.put(table, rows = new HashMap());
+      }
+      Map rowheights = (Map) rows.get(new Integer(row));
+      if (rowheights == null) {
+         rows.put(new Integer(row), rowheights = new HashMap());
+      }
+      rowheights.put(new Integer(column), new Integer(height));
+   }
 
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		if (isSelected) {
-			setForeground(table.getSelectionForeground());
-			setBackground(table.getSelectionBackground());
-		} else {
-			setForeground(table.getForeground());
-			setBackground(table.getBackground());
-		}
-		setFont(table.getFont());
-		if (hasFocus) {
-			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-			if (table.isCellEditable(row, column)) {
-				setForeground(UIManager.getColor("Table.focusCellForeground"));
-				setBackground(UIManager.getColor("Table.focusCellBackground"));
-			}
-		} else {
-			setBorder(new EmptyBorder(1, 2, 1, 2));
-		}
-		setText((value == null) ? "" : value.toString());
-		adjustRowHeight(table, row, column);
-		return this;
-	}
+   /**
+    * Look through all columns and get the renderer. If it is also a
+    * TextAreaRenderer, we look at the maximum height in its hash table for this
+    * row.
+    */
+   private int findTotalMaximumRowSize(final JTable table, final int row) {
+      int maximum_height = 0;
+      final Enumeration columns = table.getColumnModel().getColumns();
+      while (columns.hasMoreElements()) {
+         final TableColumn tc = (TableColumn) columns.nextElement();
+         final TableCellRenderer cellRenderer = tc.getCellRenderer();
+         if (cellRenderer instanceof MultiLineCellRenderer) {
+            final MultiLineCellRenderer tar = (MultiLineCellRenderer) cellRenderer;
+            maximum_height = Math.max(maximum_height, tar.findMaximumRowSize(table, row));
+         }
+      }
+      return maximum_height;
+   }
+
+   private int findMaximumRowSize(final JTable table, final int row) {
+      final Map rows = (Map) cellSizes.get(table);
+      if (rows == null) {
+         return 0;
+      }
+      final Map rowheights = (Map) rows.get(new Integer(row));
+      if (rowheights == null) {
+         return 0;
+      }
+      int maximum_height = 0;
+      for (final Iterator it = rowheights.entrySet().iterator(); it.hasNext();) {
+         final Map.Entry entry = (Map.Entry) it.next();
+         final int cellHeight = ((Integer) entry.getValue()).intValue();
+         maximum_height = Math.max(maximum_height, cellHeight);
+      }
+      return maximum_height;
+   }
 }
