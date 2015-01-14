@@ -37,7 +37,7 @@ public class ApplicationFrameController {
          }
       });
 
-      appFrame.addActionListenerEnableSuperUseMode(new ActionListener() {
+      appFrame.addActionListenerEnableSuperUserMode(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
             final String password = ConfigurationHelper.getSuperUserPassword();
@@ -47,7 +47,7 @@ public class ApplicationFrameController {
          }
       });
 
-      appFrame.addActionListenerDisableSuperUseMode(new ActionListener() {
+      appFrame.addActionListenerDisableSuperUserMode(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
             changeSuperUserMode(false);
@@ -126,16 +126,16 @@ public class ApplicationFrameController {
       appFrame.addActionListenerConfigurationImportieren(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
-            new PersonenImportDialog(appFrame).show();
+            final ServerConfigurationDialog dialog = new ServerConfigurationDialog(appFrame, ServiceHelper
+                  .getConfigurationsService().getServerSetupInformation(), false);
+            dialog.setVisible(true);
          }
       });
 
       appFrame.addActionListenerPisaDatenImportieren(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
-            final ServerConfigurationDialog dialog = new ServerConfigurationDialog(appFrame, ServiceHelper
-                  .getConfigurationsService().getServerSetupInformation(), false);
-            dialog.setVisible(true);
+            new PersonenImportDialog(appFrame).show();
          }
       });
    }

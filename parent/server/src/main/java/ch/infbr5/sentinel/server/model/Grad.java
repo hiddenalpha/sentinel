@@ -2,51 +2,111 @@ package ch.infbr5.sentinel.server.model;
 
 public enum Grad {
 
-	REKR("Rekr"), SDT("Sdt"), GFR("Gfr"), OBGFR("Obgfr"), KPL("Kpl"), WM("Wm"), OBWM(
-			"Obwm"), FW("Fw"), FOUR("Four"), HPTFW("Hptfw"), ADJ("Adj Uof"), STABSADJ(
-			"Stabsadj"), HPTADJ("Hptadj"), CHEFADJ("Chefadj"), LT("Lt"), OBLT(
-			"Oblt"), FACHOF("Fachof"), HPTM("Hptm"), HPTM_IGST("Hptm i Gst"), MAJ(
-			"Maj"), MAJ_IGST("Maj i Gst"), OBERSTLT("Oberstlt"), OBERSTLT_IGST(
-			"Oberstlt i Gst"), OBERST("Oberst"), OBERST_IGST("Oberst i Gst"), BR(
-			"Br"), DIV("Div"), KKDT("KKdt"), REGIERUNGSRAT("Regierungsrat"), BUNDESRAT(
-			"Bundesrat"), OHNE("-");
+   // Mannschaft
+   REKR("Rekr", "Recr", "Recl"),
+   SDT("Sdt", "Sdt", "Sdt"),
+   GFR("Gfr", "App", "App"),
+   OBGFR("Obgfr", "App chef", "App capo"),
 
-	public static Grad getGrad(String gradtext) {
+   // Unteroffiziere
+   KPL("Kpl", "Cpl", "Cpl"),
+   WM("Wm", "Sgt", "Sgt"),
+   OBWM("Obwm", "Sgt chef", "Sgt capo"),
 
-		if (gradtext != null) {
-			for (int i = 0; i < Grad.values().length; i++) {
-				Grad g = Grad.values()[i];
+   // Höhere Unteroffiziere
+   FW("Fw", "Sgtm", "Sgtm"),
+   HPTFW("Hptfw", "Sgtm chef", "Sgtm capo"),
+   FOUR("Four", "Four", "Fur"),
+   ADJ("Adj Uof", "Adj sof", "Aiut suff"),
+   STABSADJ("Stabsadj", "Adj EM", "Aiut SM"),
+   HPTADJ("Hptadj", "Adj maj", "Aiut magg"),
+   CHEFADJ("Chefadj", "Adj chef", "Aiut capo"),
 
-				// I GST muessen zu 100% uebereinstimmen
-				if (gradtext.endsWith("i Gst")) {
-					if (g.toString().equalsIgnoreCase(gradtext)) {
-						return g;
-					}
-					// sonst geht auch HPTM Asg
-				} else {
-					if (gradtext.toLowerCase().startsWith(
-							g.toString().toLowerCase())) {
-						return g;
-					}
-				}
-			}
-		}
+   // Offiziere
+   LT("Lt", "Lt", "Ten"),
+   OBLT("Oblt", "Plt", "I ten"),
+   HPTM("Hptm", "Cap", "Cap"),
+   MAJ("Maj", "Maj", "Magg"),
+   OBERSTLT("Oberstlt", "Lt col", "Ten col"),
+   OBERST("Oberst", "Col", "Col"),
 
-		return null;
-	}
+   // Offiziere im Generalstab
+   HPTM_IGST("Hptm i Gst", "Cap EMG", "Cap SMG"),
+   MAJ_IGST("Maj i Gst", "Maj EMG", "Maj SMG"),
+   OBERSTLT_IGST("Oberstlt i Gst", "Lt col EMG", "Lt col SMG"),
+   OBERST_IGST("Oberst i Gst", "Lt col EMG", "Ten col SMG"),
 
-	private String gradtext;
+   // Höhere Stabsoffiziere
+   BR("Br", "Br", "Br"),
+   DIV("Div", "Div", "Div"),
+   KKDT("KKdt", "Cdt C", "Cdt C"),
 
-	private Grad(String gradtext) {
-		this.gradtext = gradtext;
-	}
+   // Oberbefehlshaber der Armee
+   GENERAL("General", "Général", "Generale"),
 
-	public String getGradText() {
-		return this.gradtext;
-	}
+   // Andere
+   FACHOF("Fachof", "Of sup Adj", "Of sup Aiut"),
+   REGIERUNGSRAT("Regierungsrat", "conseiller", "assessore"),
+   BUNDESRAT("Bundesrat", "conseil fédéral", "consiglio federale"),
+   OHNE("-", "-", "-");
 
-	@Override
-	public String toString() {
-		return this.gradtext;
-	}
+   /**
+    * Gibt den dazugehörigen Grad zurück. Erlaubt sind De, Fr und It inputs.
+    * Case insensitive!
+    *
+    * @param bezeichnung
+    *           Bezeichnung in De, Fr oder It.
+    * @return Passender Grad falls kein Match gefunden den Grad.OHNE.
+    */
+   public static Grad getGrad(String bezeichnung) {
+      if (bezeichnung == null || bezeichnung.isEmpty()) {
+         return OHNE;
+      }
+
+      // Prüfen auf einen exact match.
+      for (final Grad g : values()) {
+         if (g.bezeichnungDe.equalsIgnoreCase(bezeichnung)) {
+            return g;
+         } else if (g.bezeichnungFr.equalsIgnoreCase(bezeichnung)) {
+            return g;
+         } else if (g.bezeichnungIt.equalsIgnoreCase(bezeichnung)) {
+            return g;
+         }
+      }
+
+      // Nun wurde noch keiner gefunden, prüfen
+      bezeichnung = bezeichnung.toLowerCase();
+      for (final Grad g : values()) {
+         if (bezeichnung.startsWith(g.bezeichnungDe.toLowerCase())) {
+            return g;
+         } else if (bezeichnung.startsWith(g.bezeichnungFr.toLowerCase())) {
+            return g;
+         } else if (bezeichnung.startsWith(g.bezeichnungIt.toLowerCase())) {
+            return g;
+         }
+      }
+
+      return OHNE;
+   }
+
+   private String bezeichnungDe;
+
+   private String bezeichnungFr;
+
+   private String bezeichnungIt;
+
+   private Grad(final String bezeichnungDe, final String bezeichnungFr, final String bezeichnungIt) {
+      this.bezeichnungDe = bezeichnungDe;
+      this.bezeichnungFr = bezeichnungFr;
+      this.bezeichnungIt = bezeichnungIt;
+   }
+
+   public String getGradText() {
+      return bezeichnungDe;
+   }
+
+   @Override
+   public String toString() {
+      return bezeichnungDe;
+   }
 }

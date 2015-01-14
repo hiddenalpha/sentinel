@@ -48,11 +48,11 @@ public class AppMenuBar extends JMenuBar {
       itemEinstellungen.addActionListener(listener);
    }
 
-   public void addActionListenerEnableSuperUseMode(final ActionListener listener) {
+   public void addActionListenerEnableSuperUserMode(final ActionListener listener) {
       itemEnableSuperuser.addActionListener(listener);
    }
 
-   public void addActionListenerDisableSuperUseMode(final ActionListener listener) {
+   public void addActionListenerDisableSuperUserMode(final ActionListener listener) {
       itemDisableSuperuser.addActionListener(listener);
    }
 
@@ -156,7 +156,7 @@ public class AppMenuBar extends JMenuBar {
       menuAdmin.addSeparator();
 
       itemPisaDatenImport = createItem("Pisadaten importieren");
-      menuAdmin.add(itemAusweisdatenImportieren);
+      menuAdmin.add(itemPisaDatenImport);
 
       this.menuAdmin.addSeparator();
 
@@ -227,6 +227,7 @@ public class AppMenuBar extends JMenuBar {
 
    private JMenuItem createItem(final String name, final int keyEvent) {
       final JMenuItem item = new JMenuItem(name, keyEvent);
+      item.setName(name);
       item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, ActionEvent.ALT_MASK));
       applyToItem(item, name);
       return item;

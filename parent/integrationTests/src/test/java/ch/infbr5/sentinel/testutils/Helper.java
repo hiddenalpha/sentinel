@@ -13,6 +13,7 @@ import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
 
+import ch.infbr5.sentinel.client.StartupHandler;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.common.config.ConfigConstants;
@@ -95,6 +96,7 @@ public class Helper {
       final ApplicationFrame frame = GuiActionRunner.execute(new GuiQuery<ApplicationFrame>() {
          @Override
          protected ApplicationFrame executeInEDT() {
+            new StartupHandler().startConfig();
             return new ApplicationFrame("Checkpoint Test", true, true, new CheckInModelImpl(new Long(1)));
          }
       });

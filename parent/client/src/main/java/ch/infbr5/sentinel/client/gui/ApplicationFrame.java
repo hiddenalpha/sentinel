@@ -62,12 +62,12 @@ public class ApplicationFrame extends JFrame {
       menuBar.addActionListenerEinstellungen(listener);
    }
 
-   public void addActionListenerEnableSuperUseMode(final ActionListener listener) {
-      menuBar.addActionListenerEnableSuperUseMode(listener);
+   public void addActionListenerEnableSuperUserMode(final ActionListener listener) {
+      menuBar.addActionListenerEnableSuperUserMode(listener);
    }
 
-   public void addActionListenerDisableSuperUseMode(final ActionListener listener) {
-      menuBar.addActionListenerDisableSuperUseMode(listener);
+   public void addActionListenerDisableSuperUserMode(final ActionListener listener) {
+      menuBar.addActionListenerDisableSuperUserMode(listener);
    }
 
    public void addActionListenerEnableAdminMode(final ActionListener listener) {

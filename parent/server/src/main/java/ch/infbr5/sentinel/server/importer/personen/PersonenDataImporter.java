@@ -198,7 +198,7 @@ abstract class PersonenDataImporter {
 
       for (int r = 0; r < dataLinesToAnalyze; r++) {
          for (int s = 0; s < dataline.length; s++) {
-            // Zur n�chsten Spalte springen, falls es keine Kolone daf�r gibt
+            // Zur nächsten Spalte springen, falls es keine Kolone daf�r gibt
             if (this.columns.size() <= s) {
                continue;
             }
@@ -268,7 +268,7 @@ abstract class PersonenDataImporter {
             }
          }
          if (!found) {
-            log.warn("Import ung�ltig: Kein Mapping f�r das Attribute " + attribute + ".");
+            log.warn("Import ungültig: Kein Mapping für das Attribute " + attribute + ".");
             return false;
          }
       }

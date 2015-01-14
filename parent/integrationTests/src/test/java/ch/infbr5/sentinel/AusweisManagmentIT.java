@@ -53,7 +53,8 @@ public class AusweisManagmentIT {
    public void test_ConfigruationErfassen() {
       window.menuItem("Einstellungen").click();
 
-      final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).using(window.robot);
+      final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).withTimeout(5000)
+            .using(window.robot);
 
       adminWindow.tabbedPane().selectTab("Konfiguration");
       adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_NEW).click();

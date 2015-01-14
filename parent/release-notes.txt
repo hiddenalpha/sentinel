@@ -38,6 +38,8 @@
    Entschäft wird dies dadurch, dass der Admin in Zukunft Einträge löschen kann.
 #64 Bug beim Erstellen einer Gefechtsmeldung behoben.
 #42 Journal Einträge: Journal Einträge können nun durch den Admin gelöscht werden.
+#43 Alle Gräde können nun auch in Französisch und Italienisch importiert werden. Die zu
+   importierende Datei kann auch Multi-Language sein.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen
