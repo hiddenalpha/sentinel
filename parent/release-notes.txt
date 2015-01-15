@@ -45,6 +45,11 @@
 #45 Es lässt sich nun pro Einheit eine Hintergrund Farbe für die Ausweise konfigurieren.
    Falls man die Farbe weglässt, wird einfach die übergeordnete Konfiguration herbei-
    gezogen, welche man im Konfigurations-Menü konfigurieren kann.
+#32 Personenbilder importieren: Der Admin kann nun Personenbilder importieren. Die Bilder
+   müssen in einem Verzeichnis sein und im Dateinamen muss die AHV Nr vorhanden sein. Es
+   darf aber auch noch Zugemüse im Dateinamen sein. Jedes Bild welches importiert wird
+   muss im Dialog akzeptiert werden und neue Bilder müssen direkt zugeschnitten werden.
+   Im Dialog wird ein Log geschrieben, damit nachvollziehbar ist, was passiert.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

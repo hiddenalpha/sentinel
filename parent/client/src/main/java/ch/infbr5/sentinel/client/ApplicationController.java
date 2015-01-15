@@ -9,7 +9,7 @@ import ch.infbr5.sentinel.client.config.checkpoint.CheckpointConfigurator;
 import ch.infbr5.sentinel.client.config.connection.ConnectionConfigurator;
 import ch.infbr5.sentinel.client.config.server.ServerConfigurationDialog;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
-import ch.infbr5.sentinel.client.gui.components.BulkFotoImporter;
+import ch.infbr5.sentinel.client.gui.components.PersonenBilderImporter;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.configuration.AdminstrationFrame;
@@ -148,7 +148,7 @@ public class ApplicationController {
       appFrame.addActionListenerPersonenbilderImport(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
-            new BulkFotoImporter(appFrame).importFotos();
+            new PersonenBilderImporter(appFrame).showDialog();
          }
       });
    }
