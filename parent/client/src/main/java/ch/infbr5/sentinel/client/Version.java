@@ -8,56 +8,53 @@ import java.util.jar.Manifest;
 
 public class Version {
 
-	private static Version v = null;
-	private String version = "DevVersion";
-	private String buildTimestamp = "DevTimestamp";
+   private static Version v = null;
 
-	public static Version get() {
-		if (v != null) {
-			return v;
-		} else {
-			v = new Version();
-		}
-		return v;
-	}
+   private String version = "DevVersion";
 
-	private Version() {
-		try {
-			URL manifestURL = Version.class
-					.getResource("/META-INF/MANIFEST.MF");
-			
-			Class<Version> clazz = Version.class;
-			String className = clazz.getSimpleName() + ".class";
-			String classPath = clazz.getResource(className).toString();
-			if (!classPath.startsWith("jar")) {
-			  // Class not from JAR
-			  return;
-			}
-			String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + 
-			    "/META-INF/MANIFEST.MF";	
+   private String buildTimestamp = "DevTimestamp";
 
-			if (manifestURL != null) {
-				InputStream is = new URL(manifestPath).openStream();
-				Manifest mf = new Manifest(is);
-				Attributes a = mf.getMainAttributes();
-				version = a.getValue("Implementation-Version");
-				buildTimestamp = a.getValue("BuildTimestamp");
-				is.close();
-			}
+   private Version() {
+      final String pathManifest = "/META-INF/MANIFEST.MF";
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+      final URL manifestURL = Version.class.getResource(pathManifest);
+      final Class<Version> clazz = Version.class;
+      final String className = clazz.getSimpleName() + ".class";
+      final String classPath = clazz.getResource(className).toString();
+      if (!classPath.startsWith("jar")) {
+         return;
+      }
+      final String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + pathManifest;
 
-	}
+      try {
+         if (manifestURL != null) {
+            final InputStream is = new URL(manifestPath).openStream();
+            final Manifest mf = new Manifest(is);
+            final Attributes a = mf.getMainAttributes();
+            version = a.getValue("Implementation-Version");
+            buildTimestamp = a.getValue("BuildTimestamp");
+            is.close();
+         }
 
-	public String getVersion() {
-		return version;
-	}
+      } catch (final IOException e) {
+         e.printStackTrace();
+      }
 
-	public String getBuildTimestamp() {
-		return buildTimestamp;
-	}
+   }
+
+   public static Version get() {
+      if (v == null) {
+         v = new Version();
+      }
+      return v;
+   }
+
+   public String getVersion() {
+      return version;
+   }
+
+   public String getBuildTimestamp() {
+      return buildTimestamp;
+   }
 
 }
