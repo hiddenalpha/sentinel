@@ -9,6 +9,7 @@ import ch.infbr5.sentinel.client.config.checkpoint.CheckpointConfigurator;
 import ch.infbr5.sentinel.client.config.connection.ConnectionConfigurator;
 import ch.infbr5.sentinel.client.config.server.ServerConfigurationDialog;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
+import ch.infbr5.sentinel.client.gui.components.BulkFotoImporter;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.configuration.AdminstrationFrame;
@@ -143,6 +144,13 @@ public class ApplicationController {
             new PersonenImportDialog(appFrame).show();
          }
       });
+
+      appFrame.addActionListenerPersonenbilderImport(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            new BulkFotoImporter(appFrame).importFotos();
+         }
+      });
    }
 
    private void changeSuperUserMode(final boolean mode) {
@@ -154,10 +162,5 @@ public class ApplicationController {
       ConfigurationLocalHelper.getConfig().setAdminMode(mode);
       appFrame.setAdminMode(mode);
    }
-
-   // TODO Wird in einem anderen Task behandelt
-   // case AppMenuBar.CMD_IMPORT_FOTO:
-   // new BulkFotoImporter(appFrame).importFotos();
-   // break;
 
 }

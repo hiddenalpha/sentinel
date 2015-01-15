@@ -1,28 +1,28 @@
 package ch.infbr5.sentinel.client.gui.components.importer;
 
-import java.awt.Frame;
+import javax.swing.JFrame;
 
 public class PersonenImportDialog {
 
-	private Frame parent;
+   private final JFrame parent;
 
-	public PersonenImportDialog(Frame parent) {
-		this.parent = parent;
-	}
+   public PersonenImportDialog(final JFrame parent) {
+      this.parent = parent;
+   }
 
-	public void show() {
-		WorkflowDialog dialog = new WorkflowDialog();
+   public void show() {
+      final WorkflowDialog dialog = new WorkflowDialog(parent);
 
-		WorkflowData data = new WorkflowData();
+      final WorkflowData data = new WorkflowData();
 
-		WorkflowInterceptor interceptor = dialog.getWorkflowInterceptor();
+      final WorkflowInterceptor interceptor = dialog.getWorkflowInterceptor();
 
-		dialog.addWorkflowStep(new WorkflowStepFile(parent, data, interceptor));
-		dialog.addWorkflowStep(new WorkflowStepMapping(parent, data, interceptor));
-		dialog.addWorkflowStep(new WorkflowStepModification(parent, data, interceptor));
-		dialog.addWorkflowStep(new WorkflowStepImport(parent, data, interceptor));
+      dialog.addWorkflowStep(new WorkflowStepFile(parent, data, interceptor));
+      dialog.addWorkflowStep(new WorkflowStepMapping(parent, data, interceptor));
+      dialog.addWorkflowStep(new WorkflowStepModification(parent, data, interceptor));
+      dialog.addWorkflowStep(new WorkflowStepImport(parent, data, interceptor));
 
-		dialog.show();
-	}
+      dialog.show();
+   }
 
 }

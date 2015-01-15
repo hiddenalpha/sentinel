@@ -20,10 +20,10 @@ import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 
 public class BulkFotoImporter {
 
-   private final Frame frame;
+   private final Frame parentFrame;
 
-   public BulkFotoImporter(final Frame parent) {
-      frame = parent;
+   public BulkFotoImporter(final Frame parentFrame) {
+      this.parentFrame = parentFrame;
    }
 
    public void importFotos() {
@@ -32,7 +32,7 @@ public class BulkFotoImporter {
       final JFileChooser fc = new JFileChooser();
       fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-      final int returnVal = fc.showOpenDialog(frame);
+      final int returnVal = fc.showOpenDialog(parentFrame);
 
       if (returnVal == JFileChooser.APPROVE_OPTION) {
          final File file = fc.getSelectedFile();
@@ -109,7 +109,8 @@ public class BulkFotoImporter {
       fieldMessage.setWrapStyleWord(true);
       scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-      JOptionPane.showMessageDialog(frame, scrollPane, "Resultat der Verarbeitung", JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showMessageDialog(parentFrame, scrollPane, "Resultat der Verarbeitung",
+            JOptionPane.INFORMATION_MESSAGE);
    }
 
 }

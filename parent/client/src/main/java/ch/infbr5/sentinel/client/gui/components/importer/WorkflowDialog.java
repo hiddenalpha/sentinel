@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,6 +47,12 @@ public class WorkflowDialog {
    private int indexCurrentWorkflowStep = 0;
 
    private JLabel currentStepUserInfoLabel;
+
+   private final JFrame parent;
+
+   public WorkflowDialog(final JFrame parent) {
+      this.parent = parent;
+   }
 
    public void addWorkflowStep(final WorkflowStep step) {
       workflowSteps.add(step);
@@ -134,7 +141,7 @@ public class WorkflowDialog {
    }
 
    public void show() {
-      dialog = new JDialog();
+      dialog = new JDialog(parent);
 
       createDialog();
       createPanelWorkflowSteps();
@@ -148,6 +155,8 @@ public class WorkflowDialog {
 
       updatePanelWorkflowSteps();
 
+      dialog.setLocationRelativeTo(null);
+      dialog.setIconImage(ch.infbr5.sentinel.common.gui.util.ImageLoader.loadSentinelIcon());
       dialog.setVisible(true);
    }
 

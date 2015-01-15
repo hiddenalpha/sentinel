@@ -105,6 +105,10 @@ public class ApplicationFrame extends JFrame {
       menuBar.addActionListenerPisaDatenImportieren(listener);
    }
 
+   public void addActionListenerPersonenbilderImport(final ActionListener listener) {
+      menuBar.addActionListenerPersonenbilderImport(listener);
+   }
+
    public void addActionListenerConfigurationExportieren(final ActionListener listener) {
       menuBar.addActionListenerConfigurationExportieren(listener);
    }
