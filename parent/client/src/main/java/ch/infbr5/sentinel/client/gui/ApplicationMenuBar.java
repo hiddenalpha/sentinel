@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.gui.components;
+package ch.infbr5.sentinel.client.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +9,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-public class AppMenuBar extends JMenuBar {
+public class ApplicationMenuBar extends JMenuBar {
 
    private static final long serialVersionUID = 1L;
 
@@ -33,10 +33,11 @@ public class AppMenuBar extends JMenuBar {
    private JMenuItem itemAusweisdatenExportieren;
    private JMenuItem itemAusweisdatenImportieren;
    private JMenuItem itemPisaDatenImport;
+   private JMenuItem itemPersonenBilderImport;
    private JMenuItem itemConfiguractionImport;
    private JMenuItem itemConfigurationExport;
 
-   public AppMenuBar(final boolean adminMode, final boolean superuserMode) {
+   public ApplicationMenuBar(final boolean adminMode, final boolean superuserMode) {
       createStartMenu();
       createCheckpointMenu();
       createAdminMenu();
@@ -90,6 +91,10 @@ public class AppMenuBar extends JMenuBar {
 
    public void addActionListenerPisaDatenImportieren(final ActionListener listener) {
       itemPisaDatenImport.addActionListener(listener);
+   }
+
+   public void addActionListenerPersonenbilderImport(final ActionListener listener) {
+      itemPersonenBilderImport.addActionListener(listener);
    }
 
    public void addActionListenerConfigurationExportieren(final ActionListener listener) {
@@ -158,7 +163,10 @@ public class AppMenuBar extends JMenuBar {
       itemPisaDatenImport = createItem("Pisadaten importieren");
       menuAdmin.add(itemPisaDatenImport);
 
-      this.menuAdmin.addSeparator();
+      itemPersonenBilderImport = createItem("Personenbilder importieren");
+      menuAdmin.add(itemPersonenBilderImport);
+
+      menuAdmin.addSeparator();
 
       itemConfigurationExport = createItem("Konfiguration exportieren");
       menuAdmin.add(itemConfigurationExport);
@@ -196,6 +204,7 @@ public class AppMenuBar extends JMenuBar {
       itemAusweisdatenImportieren.setEnabled(adminOrSuperuserMode);
 
       itemPisaDatenImport.setEnabled(adminMode);
+      itemPersonenBilderImport.setEnabled(adminMode);
 
       itemConfigurationExport.setEnabled(adminMode);
       itemConfiguractionImport.setEnabled(adminMode);
@@ -236,11 +245,5 @@ public class AppMenuBar extends JMenuBar {
    private void applyToItem(final JMenuItem item, final String name) {
       item.getAccessibleContext().setAccessibleDescription(name);
    }
-
-   // TODO Wird in einem anderen Task aufgeräumt
-   // private JMenuItem itemFotosImport;
-   // itemFotosImport.setEnabled(adminMode);
-   // itemFotosImport = addItem("Fotos importieren", menuAdmin, menuListener,
-   // CMD_IMPORT_FOTO);
 
 }

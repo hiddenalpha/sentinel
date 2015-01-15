@@ -49,7 +49,7 @@ public class Main {
             new StartupHandler().startConfig();
 
             final ConfigurationLocalHelper config = ConfigurationLocalHelper.getConfig();
-            final ApplicationFrameController controller = new ApplicationFrameController(config.getCheckpointWithName()
+            final ApplicationController controller = new ApplicationController(config.getCheckpointWithName()
                   .getName(), config.getCheckpointId(), config.isAdminMode(), config.isSuperuserMode());
             controller.show();
          }

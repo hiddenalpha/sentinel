@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client;
+package ch.infbr5.sentinel.client.gui.components.configuration;
 
 import java.awt.Component;
 import java.awt.Frame;
@@ -8,13 +8,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import ch.infbr5.sentinel.client.gui.components.configuration.AbstractAdminOverviewPanel;
-import ch.infbr5.sentinel.client.gui.components.configuration.CheckpointConfigPanel;
-import ch.infbr5.sentinel.client.gui.components.configuration.ConfigurationValuePanel;
-import ch.infbr5.sentinel.client.gui.components.configuration.EinheitenConfigPanel;
-import ch.infbr5.sentinel.client.gui.components.configuration.PersonenConfigPanel;
-import ch.infbr5.sentinel.client.gui.components.configuration.PrintConfigPanel;
-import ch.infbr5.sentinel.client.gui.components.configuration.ZoneConfigPanel;
 import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 
 public class AdminstrationFrame extends JFrame {

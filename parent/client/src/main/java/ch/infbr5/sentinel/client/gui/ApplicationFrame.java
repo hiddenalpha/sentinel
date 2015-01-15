@@ -16,7 +16,6 @@ import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.Version;
 import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
-import ch.infbr5.sentinel.client.gui.components.AppMenuBar;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModel;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInTabbedPanels;
 import ch.infbr5.sentinel.client.gui.components.ipcam.IpCameraPane;
@@ -40,7 +39,7 @@ public class ApplicationFrame extends JFrame {
 
    private static final long serialVersionUID = 1L;
 
-   private AppMenuBar menuBar;
+   private ApplicationMenuBar menuBar;
 
    private final CheckInModel checkInModel;
 
@@ -137,7 +136,7 @@ public class ApplicationFrame extends JFrame {
       setIconImage(ImageLoader.loadSentinelIcon());
 
       // Menubar
-      menuBar = new AppMenuBar(adminMode, superUserMode);
+      menuBar = new ApplicationMenuBar(adminMode, superUserMode);
       setJMenuBar(menuBar);
 
       checkInTabbedPanel = new CheckInTabbedPanels(checkInModel);

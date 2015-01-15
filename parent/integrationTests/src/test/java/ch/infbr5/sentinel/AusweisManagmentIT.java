@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import ch.infbr5.sentinel.client.AdminstrationFrame;
 import ch.infbr5.sentinel.client.gui.components.checkin.AusweisInfoPanel;
+import ch.infbr5.sentinel.client.gui.components.configuration.AdminstrationFrame;
 import ch.infbr5.sentinel.client.gui.components.configuration.ConfigurationValuePanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.EinheitenConfigPanel;
 import ch.infbr5.sentinel.client.gui.components.configuration.PersonenConfigPanel;

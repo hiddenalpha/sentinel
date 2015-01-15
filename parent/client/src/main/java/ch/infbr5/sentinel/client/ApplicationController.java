@@ -11,15 +11,16 @@ import ch.infbr5.sentinel.client.config.server.ServerConfigurationDialog;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
+import ch.infbr5.sentinel.client.gui.components.configuration.AdminstrationFrame;
 import ch.infbr5.sentinel.client.gui.components.importer.PersonenImportDialog;
 import ch.infbr5.sentinel.client.gui.util.AskForPasswordDialog;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 
-public class ApplicationFrameController {
+public class ApplicationController {
 
    private final ApplicationFrame appFrame;
 
-   public ApplicationFrameController(final String checkpointName, final Long checkpointId, final boolean adminMode,
+   public ApplicationController(final String checkpointName, final Long checkpointId, final boolean adminMode,
          final boolean superUserMode) {
       appFrame = new ApplicationFrame(checkpointName, adminMode, superUserMode, new CheckInModelImpl(checkpointId));
       installActionListeners();
