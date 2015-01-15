@@ -24,8 +24,8 @@ import org.apache.log4j.Logger;
 import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.ServerConfiguration;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
-import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.PdfStore;
+import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
 import ch.infbr5.sentinel.server.exporter.AusweisDatenWriter;
 import ch.infbr5.sentinel.server.exporter.KonfigurationsDatenWriter;
@@ -105,6 +105,7 @@ public class ConfigurationQueryService {
       einheit.setText_Einh(details.getText_Einh());
       einheit.setText_GsVb(details.getText_GsVb());
       einheit.setText_TrpK(details.getText_TrpK());
+      einheit.setRgbColor_AusweisBackground(details.getRgbColor_BackgroundAusweis());
       getEntityManager().persist(einheit);
    }
 

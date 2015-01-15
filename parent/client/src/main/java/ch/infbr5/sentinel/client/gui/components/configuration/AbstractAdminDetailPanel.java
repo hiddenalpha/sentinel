@@ -1,6 +1,12 @@
 package ch.infbr5.sentinel.client.gui.components.configuration;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -43,13 +49,33 @@ public abstract class AbstractAdminDetailPanel<T> extends JPanel {
       return field;
    }
 
-   protected ColorChooserLabel createColorChooser(final String fieldCaption) {
+   protected ColorChooserLabel createColorChooser(final String fieldCaption, final boolean withRemover) {
       add(SwingHelper.createLabel(fieldCaption), "gap para");
       final ColorChooserLabel chooser = new ColorChooserLabel();
       chooser.setName(fieldCaption);
-      add(chooser, "span, growx");
-
+      if (withRemover) {
+         add(chooser, "gap para");
+      } else {
+         add(chooser, "span, growx");
+      }
       return chooser;
+   }
+
+   protected JLabel createColorChooserRemover(final ColorChooserLabel lbl) {
+      final JLabel remover = new JLabel();
+      remover.setText("Farbe entfernen");
+      remover.setForeground(Color.blue);
+      remover.setFont(new Font("Arial", Font.ITALIC, 12));
+      remover.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseClicked(final MouseEvent e) {
+            if (remover.isEnabled()) {
+               lbl.setBackgroundHtmlColor(null);
+            }
+         }
+      });
+      add(remover, "span, growx");
+      return remover;
    }
 
    protected JCheckBox createCheckbox(final String fieldCaption) {

@@ -41,6 +41,10 @@
 #43 Alle Gräde können nun auch in Französisch und Italienisch importiert werden. Die zu
    importierende Datei kann auch Multi-Language sein.
 #66 Einheiten Farbe kann nun mit dem Label Color Chooser editiert werden.
+#68 In den Color Chooser Dialogen sind nur noch RGB Werte erlaubt.
+#45 Es lässt sich nun pro Einheit eine Hintergrund Farbe für die Ausweise konfigurieren.
+   Falls man die Farbe weglässt, wird einfach die übergeordnete Konfiguration herbei-
+   gezogen, welche man im Konfigurations-Menü konfigurieren kann.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

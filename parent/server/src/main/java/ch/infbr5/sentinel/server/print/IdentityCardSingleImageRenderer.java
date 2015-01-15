@@ -18,6 +18,7 @@ import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.print.util.CodeHelper;
 import ch.infbr5.sentinel.server.print.util.QRCodeHelper;
+import ch.infbr5.sentinel.server.utils.ColorParser;
 import ch.infbr5.sentinel.server.ws.AusweisvorlageKonfiguration;
 
 public class IdentityCardSingleImageRenderer {
@@ -44,6 +45,8 @@ public class IdentityCardSingleImageRenderer {
 
    private final String password;
 
+   private final ColorParser colorParser = new ColorParser();
+
    public IdentityCardSingleImageRenderer(final Ausweis ausweis, final String password,
          final AusweisvorlageKonfiguration config) {
       if (ausweis == null || password == null || password.isEmpty() || config == null) {
@@ -62,23 +65,10 @@ public class IdentityCardSingleImageRenderer {
          throw new IllegalArgumentException("Ungültige Parameter");
       }
 
-      // TODO Schoener machen!
-      Color c;
-      String color = config.getColorBackground();
-      try {
-         if (color == null || color.isEmpty()) {
-            c = Color.white;
-         } else if (!color.startsWith("#")) {
-            color = "#" + color;
-            c = Color.decode(color);
-         } else {
-            c = Color.decode(color);
-         }
-      } catch (final NumberFormatException e) {
-         c = Color.white;
-      }
-
-      backgroundColor = c;
+      // Lade den konfigurierten Default
+      final Color backColor = colorParser.parse(config.getColorBackground(), Color.white);
+      // Lade Einheits Spezifika - oder eben sonst mit default.
+      backgroundColor = colorParser.parse(einheit.getRgbColor_AusweisBackground(), backColor);
    }
 
    public BufferedImage createImage() {
@@ -134,7 +124,7 @@ public class IdentityCardSingleImageRenderer {
          drawQRCode();
       }
 
-      // Rueckseite - Spezial Fl�che
+      // Rueckseite - Spezial Fläche
       if (config.isShowAreaBackside()) {
          drawSpecialArea();
       }
@@ -153,7 +143,7 @@ public class IdentityCardSingleImageRenderer {
       final int yStart = imageHeight - border - padding - 100;
       final int width = 300;
 
-      // Barcode - Fl�che
+      // Barcode - Fläche
       g.setColor(Color.white);
       g.fillRect(xStart, yStart, width, height);
    }
@@ -168,54 +158,12 @@ public class IdentityCardSingleImageRenderer {
       final int height = 93;
       final int gap = 14;
 
-      // TODO Should be configurable!
-      final String defaultEinheitColor = "#000";
-      final Color defaultColor = Color.decode(defaultEinheitColor);
+      // TODO Should be configurable
+      final Color defaultColor = Color.black;
 
-      String colorGsVb = defaultEinheitColor;
-      if (einheit.getRgbColor_GsVb() != null && !einheit.getRgbColor_GsVb().isEmpty()) {
-         colorGsVb = einheit.getRgbColor_GsVb();
-         if (!colorGsVb.startsWith("#")) {
-            colorGsVb = "#" + colorGsVb;
-         }
-      }
-
-      String colorTrpK = defaultEinheitColor;
-      if (einheit.getRgbColor_TrpK() != null && !einheit.getRgbColor_TrpK().isEmpty()) {
-         colorTrpK = einheit.getRgbColor_TrpK();
-         if (!colorTrpK.startsWith("#")) {
-            colorTrpK = "#" + colorTrpK;
-         }
-      }
-
-      String colorEinh = defaultEinheitColor;
-      if (einheit.getRgbColor_Einh() != null && !einheit.getRgbColor_Einh().isEmpty()) {
-         colorEinh = einheit.getRgbColor_Einh();
-         if (!colorEinh.startsWith("#")) {
-            colorEinh = "#" + colorEinh;
-         }
-      }
-
-      Color cGsVb;
-      try {
-         cGsVb = Color.decode(colorGsVb);
-      } catch (final NumberFormatException e) {
-         cGsVb = defaultColor;
-      }
-
-      Color cTrpK;
-      try {
-         cTrpK = Color.decode(colorTrpK);
-      } catch (final NumberFormatException e) {
-         cTrpK = defaultColor;
-      }
-
-      Color cEinh;
-      try {
-         cEinh = Color.decode(colorEinh);
-      } catch (final NumberFormatException e) {
-         cEinh = defaultColor;
-      }
+      final Color cGsVb = colorParser.parse(einheit.getRgbColor_GsVb(), defaultColor);
+      final Color cTrpK = colorParser.parse(einheit.getRgbColor_TrpK(), defaultColor);
+      final Color cEinh = colorParser.parse(einheit.getRgbColor_Einh(), defaultColor);
 
       drawEinheitKasten(cGsVb, yStart + height * 0 + gap * 0);
       drawEinheitKasten(cTrpK, yStart + height * 1 + gap * 1);
@@ -238,11 +186,11 @@ public class IdentityCardSingleImageRenderer {
       // Bild - Wasserzeichen
       final Image watermark = addWasserzeichen();
 
-      // Bild - Kleine P�nktchen hinzuf�gen
+      // Bild - Kleine Pünktchen hinzufügen
       addDots(imagePerson);
 
       // Bild - Bild
-      // Aus Sicherheitsgr�nden wird hier h�he und breite dennoch mitgegeben,
+      // Aus Sicherheitsgründen wird hier höhe und breite dennoch mitgegeben,
       // dass es
       // bei falsch abgespeicherten Bildern zu keinen Problemen kommt!
       g.drawImage(imagePerson, xStart, yStart, 300, 400, null);
@@ -277,24 +225,7 @@ public class IdentityCardSingleImageRenderer {
    private void drawSpecialArea() {
       final int xStart = 540;
       final int width = 390;
-
-      Color c;
-
-      String color = config.getColorAreaBackside();
-      try {
-         if (color == null || color.isEmpty()) {
-            c = Color.white;
-         } else if (!color.startsWith("#")) {
-            color = "#" + color;
-            c = Color.decode(color);
-         } else {
-            c = Color.decode(color);
-         }
-      } catch (final NumberFormatException e) {
-         c = Color.white;
-      }
-
-      g.setColor(c);
+      g.setColor(colorParser.parse(config.getColorAreaBackside(), Color.white));
       g.fillRect(xStart, 113, width, 187);
    }
 
