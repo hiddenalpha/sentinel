@@ -53,8 +53,7 @@ public class AusweisManagmentIT {
    public void test_ConfigruationErfassen() {
       window.menuItem("Einstellungen").click();
 
-      final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).withTimeout(5000)
-            .using(window.robot);
+      final FrameFixture adminWindow = WindowFinder.findFrame(AdminstrationFrame.FRAME_NAME).using(window.robot);
 
       adminWindow.tabbedPane().selectTab("Konfiguration");
       adminWindow.button(ConfigurationValuePanel.BUTTON_ADMINPANEL_NEW).click();
@@ -79,9 +78,11 @@ public class AusweisManagmentIT {
       adminWindow.tabbedPane().selectTab("Einheiten");
       adminWindow.button(EinheitenConfigPanel.BUTTON_ADMINPANEL_NEW).click();
       adminWindow.textBox("Name").enterText("Test Einheit");
-      adminWindow.textBox("RGB Farbe Gs Vb").enterText("000000");
-      adminWindow.textBox("RGB Farbe Trp K").enterText("99BB11");
-      adminWindow.textBox("RGB Farbe Einh").enterText("FFFFFF");
+
+      // adminWindow.textBox("RGB Farbe Gs Vb").enterText("000000");
+      // adminWindow.textBox("RGB Farbe Trp K").enterText("99BB11");
+      // adminWindow.textBox("RGB Farbe Einh").enterText("FFFFFF");
+
       adminWindow.textBox("Text Gs Vb").enterText("123");
       adminWindow.textBox("Text Trp K").enterText("abc");
       adminWindow.textBox("Text Einh").enterText("d");

@@ -13,9 +13,10 @@ import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
 
+import ch.infbr5.sentinel.client.ApplicationFrameController;
 import ch.infbr5.sentinel.client.StartupHandler;
+import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
-import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.common.config.ConfigConstants;
 import ch.infbr5.sentinel.server.ServerControl;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
@@ -97,7 +98,12 @@ public class Helper {
          @Override
          protected ApplicationFrame executeInEDT() {
             new StartupHandler().startConfig();
-            return new ApplicationFrame("Checkpoint Test", true, true, new CheckInModelImpl(new Long(1)));
+
+            final ConfigurationLocalHelper config = ConfigurationLocalHelper.getConfig();
+            final ApplicationFrameController controller = new ApplicationFrameController(config.getCheckpointWithName()
+                  .getName(), config.getCheckpointId(), config.isAdminMode(), config.isSuperuserMode());
+            controller.show();
+            return controller.getFrame();
          }
       });
       return new FrameFixture(frame);

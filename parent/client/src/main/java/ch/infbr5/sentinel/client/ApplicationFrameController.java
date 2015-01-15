@@ -29,6 +29,10 @@ public class ApplicationFrameController {
       appFrame.setVisible(true);
    }
 
+   public ApplicationFrame getFrame() {
+      return appFrame;
+   }
+
    private void installActionListeners() {
       appFrame.addActionListenerEinstellungen(new ActionListener() {
          @Override
