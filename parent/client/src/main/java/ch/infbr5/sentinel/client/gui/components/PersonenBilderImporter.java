@@ -107,7 +107,8 @@ public class PersonenBilderImporter {
       final JLabel lbl = new JLabel();
       lbl.setText("<html>Nachfolgend können Personenbilder importiert werden. "
             + "Die Bilder müssen in einem <b>Verzeichnis</b> liegen und von der Dateieindung <b>jpg</b> oder <b>jpeg</b> sein. "
-            + "Damit erkennt werden kann, welches Bild zu welcher Person gehört muss die <b>AHV</b> im Dateinamen enthalten sein."
+            + "Damit erkennt werden kann, welches Bild zu welcher Person gehört muss die <b>AHV</b> im Dateinamen enthalten sein. "
+            + "Falls die AHV Nr nicht vorhanden ist, muss die Person im Dialog selektiert werden."
             + "Sie werden im Verlauf des Imports aufgefordert die Bilder zu <b>akzeptieren</b> und anschliessend <b>zuzuschneiden</b>.<br /><br />"
             + "<b>Beispiele:</b><br /> thomas-75648günter48464622gestern.jpg > 756.4848.4646.22 <br/>"
             + "thomas-756.4848.4646.22gestern.jpg > 756.4848.4646.22 <br />"
@@ -211,10 +212,8 @@ public class PersonenBilderImporter {
 
          addMessage("Datei: " + filename);
 
-         if (nrs.isEmpty()) {
-            addMessage("Datei wurde nicht import, da diese keine gültige AHV Nr enthält.");
-         } else {
-
+         PersonDetails person = null;
+         if (!nrs.isEmpty()) {
             String ahvNr = null;
             ConfigurationResponse response = null;
             for (final String nr : nrs) {
@@ -224,26 +223,33 @@ public class PersonenBilderImporter {
                   break;
                }
             }
-
-            addMessage("AHV Nr: " + ahvNr);
-
             if (ahvNr != null && response != null) {
-               final PersonDetails person = response.getPersonDetails().get(0);
-               try {
-                  // Bild laden
-                  BufferedImage newImage = ImageIO.read(file);
+               addMessage("Die AHV Nr wurde erkannt: " + ahvNr);
+               person = response.getPersonDetails().get(0);
+            } else {
+               addMessage("Es wurde keine Person mit AHV Nr " + ahvNr + "gefunden. Person muss selektiert werden..");
+            }
+         } else {
+            addMessage("Im Dateinamen wurde keine AHV Nr gefunden. Person muss selektiert werden.");
+         }
 
-                  BufferedImage oldImage = null;
-                  if (person.getImageId() == null) {
-                     oldImage = ImageLoader.loadNobodyImage();
-                  } else {
-                     oldImage = ch.infbr5.sentinel.client.util.ImageLoader.loadImage(person.getImageId());
-                  }
+         try {
+            // Bild laden
+            BufferedImage newImage = ImageIO.read(file);
 
-                  final String title = person.getGrad() + ". " + person.getName() + " " + person.getVorname();
-                  final ChoicePersonBildDialog choicer = new ChoicePersonBildDialog(parentFrame, oldImage, newImage,
-                        title);
-                  choicer.showDialog();
+            BufferedImage oldImage = null;
+            if (person == null || person.getImageId() == null) {
+               oldImage = ImageLoader.loadNobodyImage();
+            } else {
+               oldImage = ch.infbr5.sentinel.client.util.ImageLoader.loadImage(person.getImageId());
+            }
+
+            final ChoicePersonBildDialog choicer = new ChoicePersonBildDialog(parentFrame, oldImage, newImage, person);
+            choicer.showDialog();
+
+            if (!choicer.discardImage()) {
+               person = choicer.getPerson();
+               if (person != null) {
 
                   boolean holdOldImage = false;
                   if (choicer.holdingOldImage()) {
@@ -277,18 +283,21 @@ public class PersonenBilderImporter {
                         }
                      }
                   }
-
-               } catch (final IOException e) {
-                  addMessage("Die Datei wurde nicht importiert, da ein Fehler aufgetreten ist: " + e.getMessage());
+               } else {
+                  addMessage("Die Datei wurde nicht importiert. Es konnte keine Person zugewiesen werden.");
                }
-
             } else {
-               addMessage("Das Bild wurde nicht importiert da zu der gegeben AHV Nr keine Person gefunden wurde.");
+               addMessage("Die Datei wurde nicht importiert. Es wurde die Option Bild verwerfen gewählt.");
             }
 
+         } catch (final IOException e) {
+            addMessage("Die Datei wurde nicht importiert, da ein Fehler aufgetreten ist: " + e.getMessage());
          }
+
          addMessage("");
       }
+
+      addMessage("Der Import wurde abgeschlossen.");
    }
 
    public void addMessage(final String msg) {

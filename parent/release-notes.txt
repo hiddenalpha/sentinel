@@ -50,6 +50,7 @@
    darf aber auch noch Zugemüse im Dateinamen sein. Jedes Bild welches importiert wird
    muss im Dialog akzeptiert werden und neue Bilder müssen direkt zugeschnitten werden.
    Im Dialog wird ein Log geschrieben, damit nachvollziehbar ist, was passiert.
+   Falls die Person nicht erkannt werden kann, kann die Person im Dialog selektiert werden.
 
 Technische Verbesserungen:
 #33 Maven-Build: Korrekte Verwendung der Versionierungsinformationen

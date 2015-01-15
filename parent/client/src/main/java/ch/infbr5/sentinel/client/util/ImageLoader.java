@@ -34,12 +34,12 @@ public class ImageLoader {
       try {
          if (config.isLocalMode() && !isEmptyString(config.getLocalImagePath())) {
             final String path = config.getLocalImagePath() + "\\" + imageId + ".jpg";
-            log.debug("Lade Bild [" + imageId + "] direkt lokal von " + path);
+            log.trace("Lade Bild [" + imageId + "] direkt lokal von " + path);
             return ImageIO.read(new File(path));
          } else {
             if (ServiceHelper.getSentinelService().hasPersonImage(imageId)) {
                final byte[] data = ServiceHelper.getSentinelService().getPersonImage(imageId);
-               log.debug("Lade Bild [" + imageId + "] von Server");
+               log.trace("Lade Bild [" + imageId + "] von Server");
                return ImageIO.read(new ByteArrayInputStream(data));
             }
          }
