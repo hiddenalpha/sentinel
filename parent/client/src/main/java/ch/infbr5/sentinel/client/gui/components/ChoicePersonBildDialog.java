@@ -42,6 +42,12 @@ public class ChoicePersonBildDialog extends JDialog {
 
    private JLabel lblOldImage;
 
+   private JButton btnNewImage;
+
+   private JButton btnOldImage;
+
+   private JButton btnGoToNextImage;
+
    public ChoicePersonBildDialog(final JFrame parentFrame, final BufferedImage oldImage, final BufferedImage newImage,
          final PersonDetails person) {
       super(parentFrame);
@@ -82,7 +88,7 @@ public class ChoicePersonBildDialog extends JDialog {
       setModal(true);
       setLayout(new MigLayout());
 
-      final JButton btnOldImage = new JButton("Altes Bild behalten");
+      btnOldImage = new JButton("Altes Bild behalten");
       btnOldImage.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
@@ -94,7 +100,7 @@ public class ChoicePersonBildDialog extends JDialog {
          }
       });
 
-      final JButton btnNewImage = new JButton("Neues Bild verwenden");
+      btnNewImage = new JButton("Neues Bild verwenden");
       btnNewImage.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
@@ -106,7 +112,7 @@ public class ChoicePersonBildDialog extends JDialog {
          }
       });
 
-      final JButton btnGoToNextImage = new JButton("Bild verwerfen und zum nächsten Bild gehen");
+      btnGoToNextImage = new JButton("Bild verwerfen und zum nächsten Bild gehen");
       btnGoToNextImage.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
@@ -152,7 +158,10 @@ public class ChoicePersonBildDialog extends JDialog {
                }
             }
          }
+         btnGoToNextImage.setEnabled(false);
       } else {
+         btnNewImage.setEnabled(false);
+         btnOldImage.setEnabled(false);
          modelDropdownPersonen.setSelectedItem(null);
       }
 
@@ -166,7 +175,14 @@ public class ChoicePersonBildDialog extends JDialog {
                loadImage = ch.infbr5.sentinel.client.util.ImageLoader.loadImage(i.person.getAhvNr());
             }
             if (loadImage == null) {
+               btnNewImage.setEnabled(false);
+               btnOldImage.setEnabled(false);
+               btnGoToNextImage.setEnabled(true);
                loadImage = ImageLoader.loadNobodyImage();
+            } else {
+               btnGoToNextImage.setEnabled(false);
+               btnNewImage.setEnabled(true);
+               btnOldImage.setEnabled(true);
             }
             lblOldImage.setIcon(new ImageIcon(ImageUtil.scaleImage(loadImage, 200, 300)));
          }
