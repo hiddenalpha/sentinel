@@ -9,13 +9,16 @@ import ch.infbr5.sentinel.client.config.checkpoint.CheckpointConfigurator;
 import ch.infbr5.sentinel.client.config.connection.ConnectionConfigurator;
 import ch.infbr5.sentinel.client.config.server.ServerConfigurationDialog;
 import ch.infbr5.sentinel.client.gui.ApplicationFrame;
-import ch.infbr5.sentinel.client.gui.components.PersonenBilderImporter;
 import ch.infbr5.sentinel.client.gui.components.FileUpAndDownload;
+import ch.infbr5.sentinel.client.gui.components.PersonenBilderImporter;
 import ch.infbr5.sentinel.client.gui.components.checkin.CheckInModelImpl;
 import ch.infbr5.sentinel.client.gui.components.configuration.AdminstrationFrame;
 import ch.infbr5.sentinel.client.gui.components.importer.PersonenImportDialog;
+import ch.infbr5.sentinel.client.gui.info.InfoDialog;
 import ch.infbr5.sentinel.client.gui.util.AskForPasswordDialog;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
+import ch.infbr5.sentinel.client.wsgen.SystemInfo;
+import ch.infbr5.sentinel.common.system.SystemInformation;
 
 public class ApplicationController {
 
@@ -149,6 +152,25 @@ public class ApplicationController {
          @Override
          public void actionPerformed(final ActionEvent e) {
             new PersonenBilderImporter(appFrame).showDialog();
+         }
+      });
+
+      appFrame.addActionListenerInfo(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final SystemInfo infoServer = ServiceHelper.getSentinelService().getSystemInfo();
+            final SystemInfo infoClient = new SystemInfo();
+            final SystemInformation system = new SystemInformation();
+            infoClient.setJavaHome(system.getJavaHome());
+            infoClient.setJavaVendor(system.getJavaVendor());
+            infoClient.setJavaVersion(system.getJavaVersion());
+            infoClient.setSentinelVersion(Version.get().getVersion());
+            infoClient.setSentinelBuild(Version.get().getBuildTimestamp());
+            infoClient.setOsArch(system.getOsArch());
+            infoClient.setOsName(system.getOsName());
+            infoClient.setOsVersion(system.getOsVersion());
+            infoClient.setUserDir(system.getUserDir());
+            new InfoDialog(appFrame, infoClient, infoServer).showDialog();
          }
       });
    }

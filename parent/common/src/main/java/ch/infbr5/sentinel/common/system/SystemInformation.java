@@ -14,6 +14,22 @@ public class SystemInformation {
       return System.getProperty("os.arch");
    }
 
+   public String getJavaVersion() {
+      return System.getProperty("java.version");
+   }
+
+   public String getJavaVendor() {
+      return System.getProperty("java.vendor");
+   }
+
+   public String getJavaHome() {
+      return System.getProperty("java.home");
+   }
+
+   public String getUserDir() {
+      return System.getProperty("user.dir");
+   }
+
    public int getAvailableProcessors() {
       return Runtime.getRuntime().availableProcessors();
    }

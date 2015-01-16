@@ -117,6 +117,10 @@ public class ApplicationFrame extends JFrame {
       menuBar.addActionListenerConfigurationImportieren(listener);
    }
 
+   public void addActionListenerInfo(final ActionListener listener) {
+      menuBar.addActionListenerInfo(listener);
+   }
+
    public void showManuelleCheckinAuswahl() {
       checkInTabbedPanel.handleManuellesCheckinEvent();
    }
@@ -240,11 +244,9 @@ public class ApplicationFrame extends JFrame {
    }
 
    private String createTitle(final String checkpointName) {
-      final StringBuffer buffer = new StringBuffer("Sentinel - ");
+      final StringBuffer buffer = new StringBuffer("Sentinel ");
       buffer.append(Version.get().getVersion());
-      buffer.append(" (");
-      buffer.append(Version.get().getBuildTimestamp());
-      buffer.append(") - ");
+      buffer.append(" - ");
       buffer.append(checkpointName);
       return buffer.toString();
    }

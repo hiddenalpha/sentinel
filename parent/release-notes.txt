@@ -1,4 +1,13 @@
 /***************************************/
+ Version x.x.x
+/***************************************/
+#36 Info-Dialog: In der Titelleiste wurde der Buildtimestamp entfernt. Dafür
+   ist ein Info Dialog unter Start/Info verfügbar. Dieser zeigt die Version von
+   Sentinel, die eingesetzte Java-Plattform, das darunterliegende Betriebssystem
+   und das Datenverzeichnis. Alle diese Informationen werden vom Client und
+   vom Server dargestellt.
+
+/***************************************/
  Version 0.8.3
 /***************************************/
 #34 Personendaten Import: Slider Speed im Step Modifikationen erhöht. Der

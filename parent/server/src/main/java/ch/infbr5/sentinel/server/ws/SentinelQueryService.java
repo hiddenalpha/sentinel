@@ -16,6 +16,8 @@ import javax.xml.ws.soap.MTOM;
 
 import org.apache.log4j.Logger;
 
+import ch.infbr5.sentinel.common.system.SystemInformation;
+import ch.infbr5.sentinel.server.Version;
 import ch.infbr5.sentinel.server.db.EntityManagerHelper;
 import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.db.QueryHelper;
@@ -318,6 +320,22 @@ public class SentinelQueryService {
    @WebMethod
    public String ping() {
       return "pong";
+   }
+
+   @WebMethod
+   public SystemInfo getSystemInfo() {
+      final SystemInformation system = new SystemInformation();
+      final SystemInfo systemInfo = new SystemInfo();
+      systemInfo.setJavaHome(system.getJavaHome());
+      systemInfo.setJavaVendor(system.getJavaVendor());
+      systemInfo.setJavaVersion(system.getJavaVersion());
+      systemInfo.setOsArch(system.getOsArch());
+      systemInfo.setOsName(system.getOsName());
+      systemInfo.setOsVersion(system.getOsVersion());
+      systemInfo.setUserDir(system.getUserDir());
+      systemInfo.setSentinelVersion(Version.get().getVersion());
+      systemInfo.setSentinelBuild(Version.get().getBuildTimestamp());
+      return systemInfo;
    }
 
    private EntityManager getEntityManager() {

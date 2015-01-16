@@ -22,6 +22,7 @@ public class ApplicationMenuBar extends JMenuBar {
    private JMenuItem itemEnableAdmin;
    private JMenuItem itemDisableSuperuser;
    private JMenuItem itemEnableSuperuser;
+   private JMenuItem itemInfo;
    private JMenuItem itemBeenden;
 
    private JMenu menuCheckpoint;
@@ -105,6 +106,10 @@ public class ApplicationMenuBar extends JMenuBar {
       itemConfiguractionImport.addActionListener(listener);
    }
 
+   public void addActionListenerInfo(final ActionListener listener) {
+      itemInfo.addActionListener(listener);
+   }
+
    private void createStartMenu() {
       menuStart = createMenu("Start", KeyEvent.VK_S);
       add(menuStart);
@@ -127,6 +132,9 @@ public class ApplicationMenuBar extends JMenuBar {
       menuStart.add(itemDisableAdmin);
 
       menuStart.addSeparator();
+
+      itemInfo = createItem("Info");
+      menuStart.add(itemInfo);
 
       itemBeenden = createItem("Beenden", KeyEvent.VK_B);
       menuStart.add(itemBeenden);
