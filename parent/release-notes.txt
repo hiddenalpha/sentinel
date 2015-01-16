@@ -1,5 +1,5 @@
 /***************************************/
- Version x.x.x
+ Version 0.8.3
 /***************************************/
 #34 Personendaten Import: Slider Speed im Step Modifikationen erhöht. Der
    Scroll war langsam und unbrauchbar.
