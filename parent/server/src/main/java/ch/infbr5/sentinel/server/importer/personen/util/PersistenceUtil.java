@@ -108,9 +108,11 @@ public class PersistenceUtil {
     *           Ausweis
     */
    public void deactivateAusweis(final Ausweis ausweis) {
-      ausweis.setInvalid(true);
-      ausweis.setErstellt(true);
-      ausweis.setGueltigBis(new Date());
+	  if (ausweis != null) {
+         ausweis.setInvalid(true);
+         ausweis.setErstellt(true);
+         ausweis.setGueltigBis(new Date());
+	  }
    }
 
    /**
