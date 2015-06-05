@@ -56,7 +56,7 @@ public class SentinelQueryService {
       OperationResponse response;
       if (ausweis != null) {
          final Person person = ausweis.getPerson();
-         log.info("Abmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
+         log.trace("Abmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
          // Alle offenen Praesenzen schliessen
          response = getCheckpointHelper().setZonenPraesenz(person, checkpoint, PraesenzStatus.ABGEMELDET);
@@ -89,7 +89,7 @@ public class SentinelQueryService {
       OperationResponse response;
       if (ausweis != null) {
          final Person person = ausweis.getPerson();
-         log.info("Anmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
+         log.trace("Anmelden von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
          // Fuer Zone anmelden
          response = getCheckpointHelper().setZonenPraesenz(person, checkpoint, PraesenzStatus.ANGEMELDET);
@@ -128,7 +128,7 @@ public class SentinelQueryService {
 
       if (response.getStatus().equals(OperationResponseStatus.SUCESS)) {
          final Person person = qh.findAusweisByBarcode(barcode).getPerson();
-         log.info("Urlaub von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
+         log.trace("Urlaub von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
          // Trigger Objekt setzen
          setPersonTriggerEintraege(person, response);
@@ -157,7 +157,7 @@ public class SentinelQueryService {
 
       if (response.getStatus().equals(OperationResponseStatus.SUCESS)) {
          final Person person = qh.findAusweisByBarcode(barcode).getPerson();
-         log.info("Checkin von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
+         log.trace("Checkin von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
          // Trigger Objekt setzen
          setPersonTriggerEintraege(person, response);
@@ -186,7 +186,7 @@ public class SentinelQueryService {
 
       if (response.getStatus().equals(OperationResponseStatus.SUCESS)) {
          final Person person = qh.findAusweisByBarcode(barcode).getPerson();
-         log.info("Checkout von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
+         log.trace("Checkout von " + person.getName() + " bei Checkpoint " + checkpoint.getName());
 
          // Trigger Objekt setzen
          setPersonTriggerEintraege(person, response);
@@ -363,7 +363,6 @@ public class SentinelQueryService {
       List<JournalGefechtsMeldung> eintraege = Lists.newArrayList();
       final List<GefechtsMeldung> gefechtsMeldungen = getQueryHelper().getPersonTriggerEintraege(person);
       eintraege = Lists.transform(gefechtsMeldungen, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
-      log.info(eintraege.size() + " Trigger Einträge für " + person.getName() + " gefunden.");
       response.setPersonTriggerEintraege(eintraege);
    }
 
