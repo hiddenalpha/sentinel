@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class FilterTablePanel extends JPanel {
    private final JButton btnFilter;
 
    private final JButton btnReset;
+
+   private final JButton btnPrint;
 
    private final TableRowSorter<TableModel> sorter;
 
@@ -80,15 +83,31 @@ public class FilterTablePanel extends JPanel {
          }
       });
 
+      btnPrint = new JButton("Drucken");
+      btnPrint.setFont(SwingHelper.smaller(btnPrint.getFont()));
+      btnPrint.addActionListener(new ActionListener() {
+
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            try {
+               table.print();
+            } catch (final PrinterException e1) {
+               e1.printStackTrace();
+            }
+         }
+      });
+
       setLayout(new MigLayout());
       add(txtFilter, "growx, aligny center");
       if (additionalButton == null) {
          add(btnFilter);
-         add(btnReset, "wrap");
+         add(btnReset);
+         add(btnPrint, "wrap");
       } else {
          additionalButton.setFont(SwingHelper.smaller(additionalButton.getFont()));
          add(btnFilter);
          add(btnReset);
+         add(btnPrint);
          add(additionalButton, "wrap");
       }
 
