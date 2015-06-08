@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import ch.infbr5.sentinel.client.gui.startup.CheckpointSelectionValue;
 import ch.infbr5.sentinel.client.wsgen.CheckpointDetails;
 import ch.infbr5.sentinel.common.gui.util.SwingHelper;
 

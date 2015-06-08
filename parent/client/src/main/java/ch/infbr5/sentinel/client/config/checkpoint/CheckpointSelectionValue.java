@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.gui.startup;
+package ch.infbr5.sentinel.client.config.checkpoint;
 
 public class CheckpointSelectionValue {
 
