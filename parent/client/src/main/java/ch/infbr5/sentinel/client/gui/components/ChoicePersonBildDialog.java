@@ -164,27 +164,31 @@ public class ChoicePersonBildDialog extends JDialog {
          btnOldImage.setEnabled(false);
          modelDropdownPersonen.setSelectedItem(null);
       }
-
       dropdown.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
             final Object item = modelDropdownPersonen.getSelectedItem();
             BufferedImage loadImage = null;
-            if (item != null) {
-               final ComboboxPersonItem i = (ComboboxPersonItem) item;
-               loadImage = ch.infbr5.sentinel.client.util.ImageLoader.loadImage(i.person.getAhvNr());
-            }
-            if (loadImage == null) {
+            if (item == null) {
                btnNewImage.setEnabled(false);
                btnOldImage.setEnabled(false);
                btnGoToNextImage.setEnabled(true);
-               loadImage = ImageLoader.loadNobodyImage();
             } else {
-               btnGoToNextImage.setEnabled(false);
-               btnNewImage.setEnabled(true);
-               btnOldImage.setEnabled(true);
+               final ComboboxPersonItem i = (ComboboxPersonItem) item;
+               loadImage = ch.infbr5.sentinel.client.util.ImageLoader.loadImage(i.person.getAhvNr());
+
+               if (loadImage == null) {
+                  btnNewImage.setEnabled(true);
+                  btnOldImage.setEnabled(false);
+                  btnGoToNextImage.setEnabled(true);
+                  loadImage = ImageLoader.loadNobodyImage();
+               } else {
+                  btnNewImage.setEnabled(true);
+                  btnOldImage.setEnabled(true);
+                  btnGoToNextImage.setEnabled(false);
+               }
+               lblOldImage.setIcon(new ImageIcon(ImageUtil.scaleImage(loadImage, 200, 300)));
             }
-            lblOldImage.setIcon(new ImageIcon(ImageUtil.scaleImage(loadImage, 200, 300)));
          }
       });
 

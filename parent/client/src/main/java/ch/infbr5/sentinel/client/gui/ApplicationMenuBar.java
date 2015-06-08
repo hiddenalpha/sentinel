@@ -211,14 +211,14 @@ public class ApplicationMenuBar extends JMenuBar {
       itemAusweisdatenExportieren.setEnabled(adminOrSuperuserMode);
       itemAusweisdatenImportieren.setEnabled(adminOrSuperuserMode);
 
-      itemPisaDatenImport.setEnabled(adminMode);
-      itemPersonenBilderImport.setEnabled(adminMode);
+      itemPisaDatenImport.setEnabled(adminOrSuperuserMode);
+      itemPersonenBilderImport.setEnabled(adminOrSuperuserMode);
 
       itemConfigurationExport.setEnabled(adminMode);
       itemConfiguractionImport.setEnabled(adminMode);
 
-      itemServerVerbindung.setEnabled(adminOrSuperuserMode);
-      itemCheckpointEinstellungen.setEnabled(adminOrSuperuserMode);
+      itemServerVerbindung.setEnabled(adminMode);
+      itemCheckpointEinstellungen.setEnabled(adminMode);
 
       menuAdmin.setEnabled(adminOrSuperuserMode);
 
