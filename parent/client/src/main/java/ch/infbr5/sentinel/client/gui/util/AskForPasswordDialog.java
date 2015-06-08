@@ -15,11 +15,17 @@ public class AskForPasswordDialog {
    }
 
    public boolean askForPassword() {
-      if (originalPassword == null || originalPassword.isEmpty()) {
-         JOptionPane.showMessageDialog(null, "Kein Password definiert", "Fehler", JOptionPane.ERROR_MESSAGE);
-         return false;
+      if (checkRequirements()) {
+         final String password = promptPassword();
+         if (originalPassword.equals(password)) {
+            return true;
+         }
+         JOptionPane.showMessageDialog(null, "Passwort nicht korrekt.", "Passwort falsch", JOptionPane.WARNING_MESSAGE);
       }
+      return false;
+   }
 
+   private String promptPassword() {
       final JLabel label = new JLabel("Bitte Passwort eingeben");
       final JPasswordField passwordField = new JPasswordField();
       passwordField.addAncestorListener(new RequestFocusListener());
@@ -28,13 +34,15 @@ public class AskForPasswordDialog {
       JOptionPane.showConfirmDialog(null, fields, "Passwort", JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.INFORMATION_MESSAGE);
 
-      final String password = String.valueOf(passwordField.getPassword());
+      return String.valueOf(passwordField.getPassword());
+   }
 
-      if (!originalPassword.equals(password)) {
-         JOptionPane.showMessageDialog(null, "Passwort nicht korrekt.", "Passwort falsch", JOptionPane.WARNING_MESSAGE);
+   private boolean checkRequirements() {
+      if (originalPassword == null || originalPassword.isEmpty()) {
+         JOptionPane.showMessageDialog(null, "Kein Password definiert", "Fehler", JOptionPane.ERROR_MESSAGE);
          return false;
       }
-      return false;
+      return true;
    }
 
 }
