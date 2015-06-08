@@ -14,10 +14,9 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 
-import org.apache.log4j.Logger;
-
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.wsgen.JournalEintrag;
+import ch.infbr5.sentinel.client.wsgen.LongArray;
 
 public abstract class AbstractJournalTable extends JTable {
 
@@ -80,22 +79,23 @@ public abstract class AbstractJournalTable extends JTable {
       getColumnModel().getColumn(columnIndex).setCellRenderer(renderer);
    }
 
-   private static Logger log = Logger.getLogger(AbstractJournalTable.class);
-
    protected JMenuItem createRemoveItem() {
       final JMenuItem item = new JMenuItem("Löschen");
       item.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
             final int[] selectedRows = getSelectedRows();
+
             if (selectedRows.length > 0) {
+               final LongArray ids = new LongArray();
+               for (final int selectedRow : selectedRows) {
+                  ids.getItem().add(model.getItem(selectedRow).getId());
+               }
+
                final int answer = JOptionPane.showConfirmDialog(null, "Wollen Sie die Daten endgültig löschen?",
                      "Daten löschen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                if (answer == JOptionPane.YES_OPTION) {
-                  for (final int selectedRow : selectedRows) {
-                     final JournalEintrag eintrag = model.getItem(selectedRow);
-                     ServiceHelper.getJournalService().removeJournalEintrag(eintrag.getId());
-                  }
+                  ServiceHelper.getJournalService().removeJournalEintrage(ids);
                   model.reload();
                }
             }

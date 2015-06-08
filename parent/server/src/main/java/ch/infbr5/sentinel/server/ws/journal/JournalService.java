@@ -59,6 +59,13 @@ public class JournalService {
    }
 
    @WebMethod
+   public void removeJournalEintrage(final Long[] ids) {
+      for (final Long id : ids) {
+         removeJournalEintrag(id);
+      }
+   }
+
+   @WebMethod
    public void updateGefechtsMeldung(@WebParam(name = "meldung") final JournalGefechtsMeldung meldung) {
       log.info("Gefechtsmeldung  wird aktualisiert");
       final GefechtsMeldung gefechtsMeldung = getQueryHelper().getGefechtsMeldungen(meldung.getId());
