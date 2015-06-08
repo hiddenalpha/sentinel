@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
@@ -17,6 +16,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import ch.infbr5.sentinel.client.wsgen.PraesenzStatus;
+import ch.infbr5.sentinel.common.gui.table.FilterTablePanel;
 
 public class CheckInTabbedPanels extends JTabbedPane implements ChangeListener, ImageChangeListener {
 
@@ -35,10 +35,10 @@ public class CheckInTabbedPanels extends JTabbedPane implements ChangeListener, 
    }
 
    private void createCheckInTablePane(final int i, final PraesenzStatus status) {
-      final JScrollPane scrollPane = new JScrollPane();
+      // final JScrollPane scrollPane = new JScrollPane();
       this.tableModels[i] = new CheckInTableModel(status, model);
       final JTable table = new JTable();
-      scrollPane.setViewportView(table);
+      // scrollPane.setViewportView(table);
       table.setModel(this.tableModels[i]);
 
       // Datumsfomat
@@ -62,7 +62,7 @@ public class CheckInTabbedPanels extends JTabbedPane implements ChangeListener, 
       // Context Menu
       table.addMouseListener(new CheckInTableContextMenu(table, tableModels[i], model));
 
-      this.addTab(this.tabNames[i], scrollPane);
+      this.addTab(this.tabNames[i], new FilterTablePanel(table, null));
    }
 
    public void handleManuellesCheckinEvent() {
