@@ -49,8 +49,7 @@ public class ApplicationController {
       appFrame.addActionListenerEnableSuperUserMode(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
-            final String password = ConfigurationHelper.getSuperUserPassword();
-            if (new AskForPasswordDialog().askForPassword(password)) {
+            if (new AskForPasswordDialog(ConfigurationHelper.getSuperUserPassword()).askForPassword()) {
                changeSuperUserMode(true);
             }
          }
@@ -66,8 +65,7 @@ public class ApplicationController {
       appFrame.addActionListenerEnableAdminMode(new ActionListener() {
          @Override
          public void actionPerformed(final ActionEvent e) {
-            final String password = ConfigurationHelper.getAdminPassword();
-            if (new AskForPasswordDialog().askForPassword(password)) {
+            if (new AskForPasswordDialog(ConfigurationHelper.getAdminPassword()).askForPassword()) {
                changeAdminMode(true);
             }
          }
