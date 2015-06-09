@@ -244,7 +244,7 @@ public class PersonenBilderImporter {
             if (person == null || person.getImageId() == null) {
                oldImage = ImageLoader.loadNobodyImage();
             } else {
-               oldImage = ch.infbr5.sentinel.client.util.ImageLoader.loadImage(person.getImageId());
+               oldImage = ch.infbr5.sentinel.client.image.ImageLoader.loadImage(person.getImageId());
             }
 
             final ChoicePersonBildDialog choicer = new ChoicePersonBildDialog(parentFrame, oldImage, newImage, person);

@@ -59,6 +59,26 @@ public class JournalService {
    }
 
    @WebMethod
+   public void removeAllGefechtsMeldungen() {
+      removeAllMeldungen("GefechtsMeldung");
+   }
+
+   @WebMethod
+   public void removeAllSystemMeldungen() {
+      removeAllMeldungen("SystemMeldung");
+   }
+
+   @WebMethod
+   public void removeAllBewegungsMeldungen() {
+      removeAllMeldungen("BewegungsMeldung");
+   }
+
+   private void removeAllMeldungen(final String type) {
+      final int count = getEntityManager().createQuery("DELETE FROM " + type).executeUpdate();
+      log.trace("Alle " + type + " gelöscht " + count + ".");
+   }
+
+   @WebMethod
    public void removeJournalEintrage(final Long[] ids) {
       for (final Long id : ids) {
          removeJournalEintrag(id);

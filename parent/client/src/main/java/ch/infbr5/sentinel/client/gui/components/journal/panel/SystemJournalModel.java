@@ -87,4 +87,11 @@ public class SystemJournalModel extends AbstractJournalModel {
       return "na";
    }
 
+   @Override
+   public void removeAll() {
+      ServiceHelper.getJournalService().removeAllSystemMeldungen();
+      meldungen.clear();
+      fireTableDataChanged();
+   }
+
 }

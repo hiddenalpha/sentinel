@@ -175,7 +175,7 @@ public class ChoicePersonBildDialog extends JDialog {
                btnGoToNextImage.setEnabled(true);
             } else {
                final ComboboxPersonItem i = (ComboboxPersonItem) item;
-               loadImage = ch.infbr5.sentinel.client.util.ImageLoader.loadImage(i.person.getAhvNr());
+               loadImage = ch.infbr5.sentinel.client.image.ImageLoader.loadImage(i.person.getAhvNr());
 
                if (loadImage == null) {
                   btnNewImage.setEnabled(true);

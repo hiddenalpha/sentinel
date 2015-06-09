@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ch.infbr5.sentinel.client.util.ImageCropper;
+import ch.infbr5.sentinel.client.image.ImageCropper;
 import ch.infbr5.sentinel.common.gui.util.ImageLoader;
 
 public class ImageEditorDialog extends javax.swing.JDialog {

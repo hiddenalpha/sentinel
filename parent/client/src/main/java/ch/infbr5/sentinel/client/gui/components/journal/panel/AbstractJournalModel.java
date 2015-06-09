@@ -12,4 +12,6 @@ public abstract class AbstractJournalModel extends AbstractTableModel {
 
    public abstract void reload();
 
+   public abstract void removeAll();
+
 }

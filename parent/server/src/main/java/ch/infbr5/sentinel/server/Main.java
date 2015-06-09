@@ -80,6 +80,9 @@ public class Main {
          frame.show();
       }
 
+      for (int i = 1; i < 50000; i++)
+         log.warn("message " + i);
+
       // warten bis Server beendet ist
       while (sentinelServer.isRunning()) {
          try {

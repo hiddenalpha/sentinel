@@ -3,6 +3,8 @@
 /***************************************/
 - Das Löschen von Journal-Einträgen wie Bewegeungsmeldungen, Gefechtsmeldungen und
   Systemmeldungen wurde optimiert. Es sollte nun um ein Vielfaches schneller gehen.
+  Maximal können 200 selektiert werden um diese zu löschen. Sonst muss man weniger
+  selektieren. Oder auf die neue Funktion "Alle löschen" klicken.
 - Foto-Import Fehler elminiert. Falls für eine bestehende Person kein Foto vorhanden
   war konnte der Import nicht duchgeführt werden. Funktioniert nun.
 - #72 Unnötige Systemmeldungen eliminiert.

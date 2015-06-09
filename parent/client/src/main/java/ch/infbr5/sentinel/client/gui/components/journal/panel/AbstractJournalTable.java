@@ -20,6 +20,8 @@ import ch.infbr5.sentinel.client.wsgen.LongArray;
 
 public abstract class AbstractJournalTable extends JTable {
 
+   private static final int MAX_REMOVE_NUMBER = 200;
+
    private static final long serialVersionUID = 1L;
 
    private final AbstractJournalModel model;
@@ -52,6 +54,7 @@ public abstract class AbstractJournalTable extends JTable {
                }
                if (adminModus) {
                   menu.add(createRemoveItem());
+                  menu.add(createRemoveAllItem());
                }
                menu.show(table, e.getX(), e.getY());
             }
@@ -85,19 +88,45 @@ public abstract class AbstractJournalTable extends JTable {
          @Override
          public void actionPerformed(final ActionEvent e) {
             final int[] selectedRows = getSelectedRows();
-
             if (selectedRows.length > 0) {
-               final LongArray ids = new LongArray();
-               for (final int selectedRow : selectedRows) {
-                  ids.getItem().add(model.getItem(selectedRow).getId());
-               }
+               if (selectedRows.length <= MAX_REMOVE_NUMBER) {
+                  final LongArray ids = new LongArray();
+                  for (final int selectedRow : selectedRows) {
+                     ids.getItem().add(model.getItem(selectedRow).getId());
+                  }
 
-               final int answer = JOptionPane.showConfirmDialog(null, "Wollen Sie die Daten endgültig löschen?",
-                     "Daten löschen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-               if (answer == JOptionPane.YES_OPTION) {
-                  ServiceHelper.getJournalService().removeJournalEintrage(ids);
-                  model.reload();
+                  final int answer = JOptionPane.showConfirmDialog(null,
+                        "Wollen Sie die selektierten Daten endgültig löschen?", "Daten löschen",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                  if (answer == JOptionPane.YES_OPTION) {
+                     ServiceHelper.getJournalService().removeJournalEintrage(ids);
+                     model.reload();
+                  }
+               } else {
+                  JOptionPane
+                        .showMessageDialog(
+                              null,
+                              "Es können nicht mehr als "
+                                    + MAX_REMOVE_NUMBER
+                                    + " Meldungen auf einmal gelöscht werden. Selektieren Sie weniger Einträge oder löschen Sie alle.",
+                              "Zu viele Einträge selektiert", JOptionPane.WARNING_MESSAGE);
                }
+            }
+         }
+      });
+      return item;
+   }
+
+   protected JMenuItem createRemoveAllItem() {
+      final JMenuItem item = new JMenuItem("Alle Löschen");
+      item.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final int answer = JOptionPane.showConfirmDialog(null,
+                  "Wollen Sie ALLE Einträge in dieser Tabelle endgültig löschen?", "Daten löschen",
+                  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (answer == JOptionPane.YES_OPTION) {
+               model.removeAll();
             }
          }
       });

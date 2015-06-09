@@ -90,4 +90,11 @@ public class GefechtsJournalModel extends AbstractJournalModel {
       }
    }
 
+   @Override
+   public void removeAll() {
+      ServiceHelper.getJournalService().removeAllGefechtsMeldungen();
+      meldungen.clear();
+      fireTableDataChanged();
+   }
+
 }

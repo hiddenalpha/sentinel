@@ -72,4 +72,11 @@ public class BewegungsJournalModel extends AbstractJournalModel {
       return "na";
    }
 
+   @Override
+   public void removeAll() {
+      ServiceHelper.getJournalService().removeAllBewegungsMeldungen();
+      meldungen.clear();
+      fireTableDataChanged();
+   }
+
 }

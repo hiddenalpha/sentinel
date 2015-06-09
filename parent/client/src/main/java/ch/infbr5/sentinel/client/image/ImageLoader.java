@@ -1,4 +1,4 @@
-package ch.infbr5.sentinel.client.util;
+package ch.infbr5.sentinel.client.image;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
+import ch.infbr5.sentinel.client.util.ServiceHelper;
 
 public class ImageLoader {
 
@@ -25,14 +26,14 @@ public class ImageLoader {
     * @return BufferedImage Das Bild der Person oder null.
     */
    public static BufferedImage loadImage(final String imageId) {
-      if (isEmptyString(imageId)) {
+      if (isEmpty(imageId)) {
          return null;
       }
 
       final ConfigurationLocalHelper config = ConfigurationLocalHelper.getConfig();
 
       try {
-         if (config.isLocalMode() && !isEmptyString(config.getLocalImagePath())) {
+         if (config.isLocalMode() && !isEmpty(config.getLocalImagePath())) {
             final String path = config.getLocalImagePath() + "\\" + imageId + ".jpg";
             log.trace("Lade Bild [" + imageId + "] direkt lokal von " + path);
             return ImageIO.read(new File(path));
@@ -50,7 +51,7 @@ public class ImageLoader {
       return null;
    }
 
-   private static boolean isEmptyString(final String s) {
+   private static boolean isEmpty(final String s) {
       return s == null || s.isEmpty();
    }
 }

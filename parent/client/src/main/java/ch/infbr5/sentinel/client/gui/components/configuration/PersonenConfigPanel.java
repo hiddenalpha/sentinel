@@ -27,8 +27,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+import ch.infbr5.sentinel.client.image.ImageLoader;
 import ch.infbr5.sentinel.client.util.EinheitDetailsClient;
-import ch.infbr5.sentinel.client.util.ImageLoader;
 import ch.infbr5.sentinel.client.util.ServiceHelper;
 import ch.infbr5.sentinel.client.util.XMLGregorianCalendarConverter;
 import ch.infbr5.sentinel.client.wsgen.ConfigurationResponse;
