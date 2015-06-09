@@ -21,8 +21,7 @@ public class Main {
       // log4j
       final InputStream inputStream = Main.class.getResourceAsStream(LOG4J_PROPERTIES_PRD);
       if (inputStream == null) {
-         System.out.println("WARNING: Could not open configuration file");
-         System.out.println("WARNING: Logging not configured");
+         System.out.println("WARNING: Could not open configuration file, logging not configured");
       } else {
          PropertyConfigurator.configure(inputStream);
       }
@@ -34,7 +33,7 @@ public class Main {
       Runtime.getRuntime().addShutdownHook(new Thread() {
          @Override
          public void run() {
-            log.info("Client ist beendet.");
+            log.info("Client wurde beendet");
          }
       });
 
@@ -49,8 +48,9 @@ public class Main {
             new StartupHandler().startConfig();
 
             final ConfigurationLocalHelper config = ConfigurationLocalHelper.getConfig();
-            final ApplicationController controller = new ApplicationController(config.getCheckpointWithName()
-                  .getName(), config.getCheckpointId(), config.isAdminMode(), config.isSuperuserMode());
+            final ApplicationController controller = new ApplicationController(
+                  config.getCheckpointWithName().getName(), config.getCheckpointId(), config.isAdminMode(), config
+                        .isSuperuserMode());
             controller.show();
          }
       });

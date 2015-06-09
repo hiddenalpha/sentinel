@@ -90,7 +90,7 @@ public class ImageEditorDialog extends javax.swing.JDialog {
 
    private AbstractAction getAbstractActionNewImage() {
       if (abstractActionNewImage == null) {
-         abstractActionNewImage = new AbstractAction("Bild laden", null) {
+         abstractActionNewImage = new AbstractAction("Bild öffnen", null) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -132,7 +132,7 @@ public class ImageEditorDialog extends javax.swing.JDialog {
 
    private AbstractAction getAbstractActionSave() {
       if (abstractActionSave == null) {
-         abstractActionSave = new AbstractAction("OK", null) {
+         abstractActionSave = new AbstractAction("Bild übernehmen", null) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -141,7 +141,6 @@ public class ImageEditorDialog extends javax.swing.JDialog {
             }
          };
       }
-
       return abstractActionSave;
    }
 
@@ -158,7 +157,6 @@ public class ImageEditorDialog extends javax.swing.JDialog {
             @Override
             public void actionPerformed(final ActionEvent evt) {
                image = rotateImage90(image);
-
                initCropper(image);
             }
          };
@@ -169,7 +167,7 @@ public class ImageEditorDialog extends javax.swing.JDialog {
 
    private AbstractAction getAbstractActionCutter() {
       if (abstractActionCutter == null) {
-         abstractActionCutter = new AbstractAction("Ausschneiden", null) {
+         abstractActionCutter = new AbstractAction("Zuschneiden", null) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -189,7 +187,6 @@ public class ImageEditorDialog extends javax.swing.JDialog {
          final FileFilter jpgFilter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
          fileChooser.setFileFilter(jpgFilter);
       }
-
       return fileChooser;
    }
 
@@ -212,59 +209,43 @@ public class ImageEditorDialog extends javax.swing.JDialog {
          saveCancelPanel = new JPanel();
          saveCancelPanel.add(getImageCancelButton());
          saveCancelPanel.add(getImageSaveButton());
-
          imageSaveButton.setEnabled(false);
       }
-
       return saveCancelPanel;
    }
 
    private JButton getImageRotateButton() {
       if (imageRotateButton == null) {
-         imageRotateButton = new JButton();
-         imageRotateButton.setText("Drehen");
-         imageRotateButton.setAction(getAbstractActionRotateImage());
+         imageRotateButton = new JButton(getAbstractActionRotateImage());
       }
-
       return imageRotateButton;
    }
 
    private JButton getImageLadenButton() {
       if (imageLadenButton == null) {
-         imageLadenButton = new JButton();
-         imageLadenButton.setText("Neu");
-         imageLadenButton.setAction(getAbstractActionNewImage());
+         imageLadenButton = new JButton(getAbstractActionNewImage());
       }
-
       return imageLadenButton;
    }
 
    private JButton getImageCutButton() {
       if (imageCutButton == null) {
-         imageCutButton = new JButton();
-         imageCutButton.setText("Zuschneiden");
-         imageCutButton.setAction(getAbstractActionCutter());
+         imageCutButton = new JButton(getAbstractActionCutter());
       }
-
       return imageCutButton;
    }
 
    private JButton getImageSaveButton() {
       if (imageSaveButton == null) {
-         imageSaveButton = new JButton("OK");
-
-         imageSaveButton.setAction(getAbstractActionSave());
+         imageSaveButton = new JButton(getAbstractActionSave());
       }
-
       return imageSaveButton;
    }
 
    private JButton getImageCancelButton() {
       if (imageCancelButton == null) {
-         imageCancelButton = new JButton("Abbrechen");
-         imageCancelButton.setAction(getAbstractActionCancel());
+         imageCancelButton = new JButton(getAbstractActionCancel());
       }
-
       return imageCancelButton;
    }
 
@@ -274,7 +255,6 @@ public class ImageEditorDialog extends javax.swing.JDialog {
          final BorderLayout imageEditorPanelLayout = new BorderLayout();
          imageEditorPanel.setLayout(imageEditorPanelLayout);
       }
-
       return imageEditorPanel;
    }
 

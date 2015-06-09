@@ -163,9 +163,6 @@ public class ImageCropper extends JLayeredPane {
 
    private void createBackgroundPanel() {
       this.background = new JPanel(true) {
-         /**
-			 *
-			 */
          private static final long serialVersionUID = 1L;
 
          @Override
@@ -179,9 +176,6 @@ public class ImageCropper extends JLayeredPane {
 
    private void createResizePanel(final InnerListener listener) {
       this.resizePanel = new JPanel(true) {
-         /**
-			 *
-			 */
          private static final long serialVersionUID = 1L;
 
          @Override
@@ -204,9 +198,6 @@ public class ImageCropper extends JLayeredPane {
 
    private void createCroppingPanel(final InnerListener listener) {
       this.croppingPanel = new JPanel(true) {
-         /**
-			 *
-			 */
          private static final long serialVersionUID = 1L;
 
          @Override
