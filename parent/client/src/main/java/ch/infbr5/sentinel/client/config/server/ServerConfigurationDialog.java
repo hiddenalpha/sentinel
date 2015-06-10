@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
@@ -39,7 +41,7 @@ public class ServerConfigurationDialog extends JDialog {
       setModal(true);
       setTitle("Server Konfiguration");
       setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-      setResizable(false);
+      setResizable(true);
       addWindowListener(new WindowAdapter() {
          @Override
          public void windowClosing(final WindowEvent e) {
@@ -88,18 +90,24 @@ public class ServerConfigurationDialog extends JDialog {
          }
       });
 
-      setLayout(new MigLayout());
+      // setLayout(new MigLayout());
 
       tabbedPane.addTab("Konfigurationswerte", configWertePanel);
       tabbedPane.addTab("Ausweisvorlage", configAusweisvorlagePanel);
       tabbedPane.addTab("Datei laden", configFilePanel);
 
-      add(tabbedPane, "push, span, growx, wrap, growy");
-      add(btnSave, "tag ok, span, split");
-      add(btnCancel, "tag cancel");
+      final JPanel pane = new JPanel(new MigLayout());
+      pane.add(tabbedPane, "push, span, growx, wrap, growy");
+      pane.add(btnSave, "tag ok, span, split");
+      pane.add(btnCancel, "tag cancel");
+
+      final JScrollPane paneScroll = new JScrollPane();
+      paneScroll.add(pane);
+      paneScroll.setViewportView(pane);
+
+      add(paneScroll);
       setSize(500, 700);
       // pack();
       setLocationRelativeTo(null);
    }
-
 }

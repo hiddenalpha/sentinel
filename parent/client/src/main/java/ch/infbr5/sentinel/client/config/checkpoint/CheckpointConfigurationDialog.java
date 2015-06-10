@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import net.miginfocom.swing.MigLayout;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
@@ -32,7 +34,7 @@ public class CheckpointConfigurationDialog extends JDialog {
       setModal(true);
       setTitle("Checkpoint konfigurieren");
       setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-      setResizable(false);
+      setResizable(true);
       addWindowListener(new WindowAdapter() {
          @Override
          public void windowClosing(final WindowEvent e) {
@@ -83,11 +85,17 @@ public class CheckpointConfigurationDialog extends JDialog {
          }
       });
 
-      setLayout(new MigLayout());
-      add(panel, "push, span, growx, wrap");
-      add(btnSave, "tag ok, span, split");
-      add(btnCancel, "tag cancel");
-      setSize(500, 420);
+      final JPanel pane = new JPanel(new MigLayout());
+
+      pane.add(panel, "push, span, growx, wrap");
+      pane.add(btnSave, "tag ok, span, split");
+      pane.add(btnCancel, "tag cancel");
+
+      final JScrollPane paneScroll = new JScrollPane();
+      paneScroll.add(pane);
+      paneScroll.setViewportView(pane);
+      add(paneScroll);
+      setSize(550, 500);
       setLocationRelativeTo(null);
    }
 
