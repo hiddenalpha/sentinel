@@ -1,5 +1,5 @@
 /***************************************/
- Version x.x.x
+ Version 1.0.0
 /***************************************/
 - Das Löschen von Journal-Einträgen wie Bewegeungsmeldungen, Gefechtsmeldungen und
   Systemmeldungen wurde optimiert. Es sollte nun um ein Vielfaches schneller gehen.

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>ch.infbr5.sentinel</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.8.3</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>installer</artifactId>
