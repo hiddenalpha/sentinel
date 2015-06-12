@@ -51,6 +51,12 @@ public class ApplicationFrame extends JFrame {
 
    private SystemJournalTable tableSystem;
 
+   private BewegungsJournalModel modelBewegungsJournal;
+
+   private GefechtsJournalModel modelGefechtsJournal;
+
+   private SystemJournalModel modelSystemJournal;
+
    public ApplicationFrame(final String checkpointName, final boolean adminMode, final boolean superUserMode,
          final CheckInModel checkInModel) {
       this.checkInModel = checkInModel;
@@ -91,6 +97,10 @@ public class ApplicationFrame extends JFrame {
 
    public void addActionListenerCheckpointEinstellung(final ActionListener listener) {
       menuBar.addActionListenerCheckpointEinstellung(listener);
+   }
+
+   public void addActionListenerCleanUp(final ActionListener listener) {
+      menuBar.addActionListenerCleanUp(listener);
    }
 
    public void addActionListenerAusweisdatenExportieren(final ActionListener listener) {
@@ -203,9 +213,9 @@ public class ApplicationFrame extends JFrame {
       final List<JournalSystemMeldung> systemMeldungen = ServiceHelper.getJournalService().getSystemJournal()
             .getSystemMeldungen();
 
-      final BewegungsJournalModel modelBewegungsJournal = new BewegungsJournalModel(bewegungsMeldungen);
-      final GefechtsJournalModel modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
-      final SystemJournalModel modelSystemJournal = new SystemJournalModel(systemMeldungen);
+      modelBewegungsJournal = new BewegungsJournalModel(bewegungsMeldungen);
+      modelGefechtsJournal = new GefechtsJournalModel(gefechtsMeldung);
+      modelSystemJournal = new SystemJournalModel(systemMeldungen);
 
       tableGefecht = new GefechtsJournalTable(modelGefechtsJournal, adminMode);
       tableBewegung = new BewegungsJournalTable(modelBewegungsJournal, adminMode);
@@ -241,6 +251,12 @@ public class ApplicationFrame extends JFrame {
       poller.startKeepUpdated();
 
       return tabbedPane;
+   }
+
+   public void refreshJournal() {
+      modelBewegungsJournal.reload();
+      modelGefechtsJournal.reload();
+      modelSystemJournal.reload();
    }
 
    private String createTitle(final String checkpointName) {

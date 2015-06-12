@@ -276,6 +276,17 @@ public class SentinelQueryService {
       return response;
    }
 
+   /**
+    * Räumt auf. Alle Zonendaten und alle Meldungen werden gelösch.t
+    */
+   @WebMethod
+   public void cleanUp() {
+      int count = getEntityManager().createQuery("DELETE FROM JournalEintrag").executeUpdate();
+      log.trace(count + " Journaleinträge gelöscht");
+      count = getEntityManager().createQuery("DELETE FROM ZonenPraesenz").executeUpdate();
+      log.trace(count + " Zonenpräsenzen gelöscht");
+   }
+
    @WebMethod
    public OperationResponse getPersonenStatusListe(@WebParam(name = "zoneId") final long zoneId,
          @WebParam(name = "status") final PraesenzStatus status) {

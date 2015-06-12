@@ -29,6 +29,7 @@ public class ApplicationMenuBar extends JMenuBar {
    private JMenuItem itemManuelleAuswahl;
    private JMenuItem itemServerVerbindung;
    private JMenuItem itemCheckpointEinstellungen;
+   private JMenuItem itemCleanUp;
 
    private JMenu menuAdmin;
    private JMenuItem itemAusweisdatenExportieren;
@@ -80,6 +81,10 @@ public class ApplicationMenuBar extends JMenuBar {
 
    public void addActionListenerCheckpointEinstellung(final ActionListener listener) {
       itemCheckpointEinstellungen.addActionListener(listener);
+   }
+
+   public void addActionListenerCleanUp(final ActionListener listener) {
+      itemCleanUp.addActionListener(listener);
    }
 
    public void addActionListenerAusweisdatenExportieren(final ActionListener listener) {
@@ -154,6 +159,11 @@ public class ApplicationMenuBar extends JMenuBar {
 
       itemCheckpointEinstellungen = createItem("Checkpoint-Einstellungen");
       menuCheckpoint.add(itemCheckpointEinstellungen);
+
+      menuCheckpoint.addSeparator();
+
+      itemCleanUp = createItem("Daten aufräumen");
+      menuCheckpoint.add(itemCleanUp);
    }
 
    private void createAdminMenu() {
@@ -219,6 +229,7 @@ public class ApplicationMenuBar extends JMenuBar {
 
       itemServerVerbindung.setEnabled(adminMode);
       itemCheckpointEinstellungen.setEnabled(adminMode);
+      itemCleanUp.setEnabled(adminMode);
 
       menuAdmin.setEnabled(adminOrSuperuserMode);
 

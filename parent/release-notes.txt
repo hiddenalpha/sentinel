@@ -1,4 +1,10 @@
 /***************************************/
+ Version x.x.x
+/***************************************/
+- Daten aufräumen. Mittels eines Button können alle  Journaleinträge sowie Zonen-
+  präsenzen gelöscht werden.
+
+/***************************************/
  Version 1.0.0
 /***************************************/
 - Das Löschen von Journal-Einträgen wie Bewegeungsmeldungen, Gefechtsmeldungen und

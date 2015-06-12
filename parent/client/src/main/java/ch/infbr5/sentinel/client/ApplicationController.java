@@ -3,6 +3,8 @@ package ch.infbr5.sentinel.client;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
+
 import ch.infbr5.sentinel.client.config.ConfigurationHelper;
 import ch.infbr5.sentinel.client.config.ConfigurationLocalHelper;
 import ch.infbr5.sentinel.client.config.checkpoint.CheckpointConfigurator;
@@ -106,6 +108,20 @@ public class ApplicationController {
          @Override
          public void actionPerformed(final ActionEvent e) {
             appFrame.showManuelleCheckinAuswahl();
+         }
+      });
+
+      appFrame.addActionListenerCleanUp(new ActionListener() {
+
+         @Override
+         public void actionPerformed(final ActionEvent e) {
+            final int answer = JOptionPane.showConfirmDialog(appFrame,
+                  "Wollen Sie die Daten wirklich aufräumen? Es werden alle Zonendaten und Journaleinträge gelöscht.",
+                  "Daten aufräumen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (answer == JOptionPane.YES_OPTION) {
+               ServiceHelper.getSentinelService().cleanUp();
+               appFrame.refreshJournal();
+            }
          }
       });
 
