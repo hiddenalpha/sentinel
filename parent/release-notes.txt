@@ -1,5 +1,5 @@
 /***************************************/
- Version x.x.x
+ Version 1.1.0
 /***************************************/
 - Daten aufräumen. Mittels eines Button können alle  Journaleinträge sowie Zonen-
   präsenzen gelöscht werden.
