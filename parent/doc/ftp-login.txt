@@ -1,4 +1,0 @@
-
-* FTP-Server: ftp.freefly.ch
-* FTP-User: infbr5@freefly.ch
-* FTP-Passwort: InfBr52015
