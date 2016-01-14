@@ -55,35 +55,18 @@ public class PersistenceUtil {
    }
 
    /**
-    * Sucht die Person in der Datenbank aufgrund des Datensatzes.
-    *
-    * Zuerst wird mit der AHVNr gesucht. Falls keine Person gefunden wird, wird
-    * mit Name, Vorname und Geburtsdatum gearbeitet.
+    * Search a person with the given AHV-Nr.
     *
     * @param PersonDetails
-    *           personDetaills
-    * @return Person, falls eine gefunden wurde, anderenfalls keine.
+    *           personDetails
+    * @return Person or null.
     */
    public Person findPerson(final PersonDetails personDetail) {
-      Person p = getQueryHelper().getPerson(personDetail.getAhvNr());
-      if (p == null) {
-         // Ich finde das nicht so schlau...?!
-         // Hier gibt es nämlich ein Match auf eine Person, welches vielleicht
-         // gar
-         // nicht die Person ist.
-         p = getQueryHelper().getPerson(personDetail.getName(), personDetail.getVorname(),
-               personDetail.getGeburtsdatum());
-      }
-      return p;
+      return getQueryHelper().getPerson(personDetail.getAhvNr());
    }
 
    public Person findPerson(final DataRow dataRow) {
-      Person p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
-      if (p == null) {
-         p = getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.Name),
-               dataRow.getValue(PersonenAttribute.Vorname), dataRow.getGeburtstag());
-      }
-      return p;
+      return getQueryHelper().getPerson(dataRow.getValue(PersonenAttribute.AHVNr));
    }
 
    /**
@@ -108,11 +91,11 @@ public class PersistenceUtil {
     *           Ausweis
     */
    public void deactivateAusweis(final Ausweis ausweis) {
-	  if (ausweis != null) {
+      if (ausweis != null) {
          ausweis.setInvalid(true);
          ausweis.setErstellt(true);
          ausweis.setGueltigBis(new Date());
-	  }
+      }
    }
 
    /**

@@ -175,18 +175,6 @@ public class QueryHelper {
       }
    }
 
-   public Person getPerson(final String name, final String vorname, final Calendar geb) {
-      final Query q = em.createNamedQuery(Person.GET_PERSON_BY_NAME_AND_DATE);
-      q.setParameter("personName", name);
-      q.setParameter("personVorname", vorname);
-      q.setParameter("personGeburtsdatum", geb);
-      try {
-         return (Person) q.getSingleResult();
-      } catch (final NoResultException e) {
-         return null;
-      }
-   }
-
    public void removeAllPersonData() {
       // --- Personen und Ausweise loeschen ---
       Query q = em.createNamedQuery(Person.GET_PERSONEN_VALUE);

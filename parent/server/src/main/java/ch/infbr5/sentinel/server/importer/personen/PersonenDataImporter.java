@@ -79,7 +79,7 @@ abstract class PersonenDataImporter {
    abstract String[] getFirstDataLine();
 
    /**
-    * Gibt die n�chste Datenzeile zur�ck. Nachdem getFirstDataLine aufgerufen
+    * Gibt die nächste Datenzeile zur�ck. Nachdem getFirstDataLine aufgerufen
     * wurde. Schliesst die Datei erst wieder nachdem die letzte Zeile erreicht
     * wurde.
     *
@@ -93,7 +93,7 @@ abstract class PersonenDataImporter {
    abstract void forceClose();
 
    /**
-    * Gibt die Anzahl Daten Zeilen zur�ck.
+    * Gibt die Anzahl Daten Zeilen zurück.
     *
     * @return Anzahl Daten Zeilen.
     */
@@ -128,7 +128,7 @@ abstract class PersonenDataImporter {
    }
 
    /**
-    * Evaluiert die Spalten�berschriften zu den Personenattributen.
+    * Evaluiert die Spaltenüberschriften zu den Personenattributen.
     *
     * @return Column Mapping.
     */
@@ -175,12 +175,12 @@ abstract class PersonenDataImporter {
    }
 
    /**
-    * Berechnet die m�glichen Spalten f�r das entsprechende Attribute. Es wertet
-    * die ersten 10 Datens�tze aus.
+    * Berechnet die möglichen Spalten für das entsprechende Attribute. Es wertet
+    * die ersten 10 Datensätze aus.
     *
     * @param attribute
     *           Attribut
-    * @return M�gliche Spalten.
+    * @return Mögliche Spalten.
     */
    private List<PersonenImportColumn> calculatePossibleColumns(final PersonenAttribute attribute) {
       final List<PersonenImportColumn> columnProduct = new ArrayList<>();
@@ -249,10 +249,10 @@ abstract class PersonenDataImporter {
    }
 
    /**
-    * Pr�ft ob der Import g�ltig ist. Er ist g�ltig wenn f�rr jedes
+    * Prüft ob der Import gültig ist. Er ist gültig wenn für jedes
     * Personenattribut ein Spaltenmapping existiert.
     *
-    * @return True falls g�ltig, anderenfalls false.
+    * @return True falls gültig, anderenfalls false.
     */
    public boolean isValidImportData() {
       if (fileHasMinimalRequirements() != null) {
@@ -442,7 +442,7 @@ abstract class PersonenDataImporter {
    }
 
    /**
-    * Import die Daten. Darf nur ausgef�hrt werden wenn isValidImportData() true
+    * Import die Daten. Darf nur ausgeführt werden wenn isValidImportData() true
     * ist.
     */
    public void importData() {
