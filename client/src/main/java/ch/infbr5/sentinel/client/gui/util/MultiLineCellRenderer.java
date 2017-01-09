@@ -67,9 +67,9 @@ public class MultiLineCellRenderer extends JTextArea implements TableCellRendere
     */
    private int findTotalMaximumRowSize(final JTable table, final int row) {
       int maximum_height = 0;
-      final Enumeration columns = table.getColumnModel().getColumns();
+      final Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
       while (columns.hasMoreElements()) {
-         final TableColumn tc = (TableColumn) columns.nextElement();
+         final TableColumn tc = columns.nextElement();
          final TableCellRenderer cellRenderer = tc.getCellRenderer();
          if (cellRenderer instanceof MultiLineCellRenderer) {
             final MultiLineCellRenderer tar = (MultiLineCellRenderer) cellRenderer;

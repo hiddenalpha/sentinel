@@ -2,7 +2,7 @@ package ch.infbr5.sentinel.server;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -58,7 +58,7 @@ public class CommandLineReader {
 	}
 
 	private static CommandLineParser createParser() {
-		return new GnuParser();
+		return new DefaultParser();
 	}
 
 	private static Options createOptions() {
