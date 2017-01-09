@@ -1,7 +1,10 @@
 package ch.infbr5.sentinel.server;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.ws.Endpoint;
 
@@ -39,13 +42,13 @@ public class ServerControl {
 	}
 
 	public void start(String ip, String port) {
-		this.startDerby();
-		this.startWebServices(ip, port);
+		startDerby();
+		startWebServices(ip, port);
 	}
 
 	public void stop() {
-		this.stopDerby();
-		this.stopWebServces();
+		stopDerby();
+		stopWebServces();
 		running = false;
 	}
 
@@ -56,29 +59,34 @@ public class ServerControl {
 	private void startDerby() {
 		try {
 			InetAddress localhost = InetAddress.getLoopbackAddress();
-			this.databaseServer = new NetworkServerControl(localhost, DB_PORT, DB_USER, DB_PW);
-			this.databaseServer.start(null);
+			databaseServer = new NetworkServerControl(localhost, DB_PORT, DB_USER, DB_PW);
+			databaseServer.start(null);
 		} catch (Exception e) {
 			log.error(e);
 		}
 
 	}
 
-	private void startWebServices(String ipAddress, String port) {
-		try {
-			publishEndpoint(ipAddress, port, "services", new SentinelQueryService());
-			publishEndpoint(ipAddress, port, "configuration", new ConfigurationQueryService());
-			publishEndpoint(ipAddress, port, "journal", new JournalService());
-			publishEndpoint(ipAddress, port, "personenImporter", new PersonenImporterService());
-		} catch (Exception e) {
-			log.error(e);
-		}
-	}
+   private void startWebServices(String ipAddress, String port) {
+      Map<String, Object> services = new HashMap<>();
+      services.put("services", new SentinelQueryService());
+      services.put("configuration", new ConfigurationQueryService());
+      services.put("journal", new JournalService());
+      services.put("personenImporter", new PersonenImporterService());
+
+      try {
+         for (Entry<String, Object> service : services.entrySet()) {
+            publishEndpoint(ipAddress, port, service.getKey(), service.getValue());
+         }
+      } catch (Exception e) {
+         log.error(e);
+      }
+   }
 
 	private void stopDerby() {
 		try {
 			EntityManagerHelper.close();
-			this.databaseServer.shutdown();
+			databaseServer.shutdown();
 		} catch (Exception e) {
 			log.error(e);
 		}
@@ -95,7 +103,15 @@ public class ServerControl {
 	}
 
 	private void publishEndpoint(String ipAddress, String port, String endpointName, Object implementator) {
-		endpoints.add(Endpoint.publish(createEndpointUrl(ipAddress, port, endpointName), implementator));
+	   String endpointUrl = createEndpointUrl(ipAddress, port, endpointName);
+	   log.debug("Publish endpoint " + endpointName + " under " + endpointUrl);
+	   try {
+	      endpoints.add(Endpoint.publish(endpointUrl, implementator));
+	   } catch (RuntimeException e)  {
+	      e.printStackTrace();
+	      throw e;
+	   }
+		
 	}
 
 	private String createEndpointUrl(String ipAddress, String port, String endpointName) {

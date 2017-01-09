@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 
@@ -380,8 +381,8 @@ public class QueryHelper {
    }
 
    public void removeAllConfiguration() {
-      final Query query = em.createNamedQuery(ConfigurationValue.QUERY_ALL_CONFIGURATION);
-      for (final ConfigurationValue value : (List<ConfigurationValue>) query.getResultList()) {
+      final TypedQuery<ConfigurationValue> query = em.createNamedQuery(ConfigurationValue.QUERY_ALL_CONFIGURATION, ConfigurationValue.class);
+      for (ConfigurationValue value : query.getResultList()) {
          em.remove(value);
       }
    }
