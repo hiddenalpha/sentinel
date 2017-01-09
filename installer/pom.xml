@@ -292,7 +292,7 @@
 
 
 	<properties>
-		<izpack.version>5.0.0-rc2</izpack.version>
+		<izpack.version>5.0.10</izpack.version>
 		<izpack.staging>${project.build.directory}/staging</izpack.staging>
 		
 		<installationdisk>${project.build.directory}/installation-disk</installationdisk>

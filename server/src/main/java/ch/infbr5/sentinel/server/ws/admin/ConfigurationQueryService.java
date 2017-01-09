@@ -58,7 +58,7 @@ import ch.infbr5.sentinel.server.ws.ServerSetupInformation;
 import ch.infbr5.sentinel.server.ws.ZoneDetails;
 
 import com.google.common.collect.Lists;
-import com.lowagie.text.DocumentException;
+import com.itextpdf.text.DocumentException;
 
 @WebService(name = "ConfigurationQueryService", targetNamespace = "http://ws.sentinel.infbr5.ch/")
 @HandlerChain(file = "/META-INF/ws-handler-chain.xml")

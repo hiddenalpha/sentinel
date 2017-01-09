@@ -9,16 +9,16 @@ import ch.infbr5.sentinel.server.db.PersonImageStore;
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Person;
 
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Image;
-import com.lowagie.text.Jpeg;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Jpeg;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class PdfRendererPersonenListe extends PdfRenderer {
 
@@ -51,8 +51,8 @@ public class PdfRendererPersonenListe extends PdfRenderer {
       final Document document = new Document();
       final ByteArrayOutputStream out = new ByteArrayOutputStream();
       try {
-         PdfWriter.getInstance(document, out);
-         document.setHeader(createHeader());
+         PdfWriter writer = PdfWriter.getInstance(document, out);
+         writer.setPageEvent(createHeader());
          document.open();
 
          // Tabellen Layout

@@ -1,6 +1,5 @@
 package ch.infbr5.sentinel.server.print;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,23 +8,24 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.Barcode39;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import ch.infbr5.sentinel.server.model.Ausweis;
 import ch.infbr5.sentinel.server.model.Einheit;
 import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.print.util.BarCodeHelper;
 import ch.infbr5.sentinel.server.print.util.CodeHelper;
 import ch.infbr5.sentinel.server.ws.AusweisvorlageKonfiguration;
-
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.Barcode39;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfRendererIdendityCards extends PdfRenderer {
 
@@ -137,7 +137,7 @@ public class PdfRendererIdendityCards extends PdfRenderer {
       code39.setCode(ausweis.getBarcode());
       code39.setAltText(BarCodeHelper.createBarCodeText(ausweis));
       final Image image39 = code39.createImageWithBarcode(pdfContentByte, null, null);
-      pdfContentByte.setColorFill(Color.black);
+      pdfContentByte.setColorFill(BaseColor.BLACK);
       pdfContentByte.addImage(image39, image39.getWidth(), 0, 0, image39.getHeight(), offsetX + 21.5f, offsetY + 16);
    }
 
@@ -153,7 +153,7 @@ public class PdfRendererIdendityCards extends PdfRenderer {
          IOException {
       final BaseFont font = createBoldFont();
       final int size = 25;
-      final Color color = Color.white;
+      final BaseColor color = BaseColor.WHITE;
       final Einheit einheit = ausweis.getPerson().getEinheit();
       final float x = offsetX + 129.5f;
       offsetY += 173;
@@ -167,7 +167,7 @@ public class PdfRendererIdendityCards extends PdfRenderer {
    }
 
    private void addText(final BaseFont font, final int size, final String text, final float x, final float y,
-         final Color color) {
+         final BaseColor color) {
       pdfContentByte.setColorFill(color);
       pdfContentByte.beginText();
       pdfContentByte.setFontAndSize(font, size);
@@ -191,7 +191,7 @@ public class PdfRendererIdendityCards extends PdfRenderer {
       final BaseFont fontBold = createBoldFont();
       final BaseFont fontDefault = createDefaultFont();
       final Person person = ausweis.getPerson();
-      final Color color = Color.black;
+      final BaseColor color = BaseColor.BLACK;
       final float x = offsetX + 15.5f;
 
       if (person.getGrad() != null) {

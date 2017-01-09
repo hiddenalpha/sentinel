@@ -3,9 +3,9 @@ package ch.infbr5.sentinel.server.print.util;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 
-import ch.infbr5.sentinel.server.model.Ausweis;
+import com.itextpdf.text.pdf.Barcode39;
 
-import com.lowagie.text.pdf.Barcode39;
+import ch.infbr5.sentinel.server.model.Ausweis;
 
 public class BarCodeHelper {
 

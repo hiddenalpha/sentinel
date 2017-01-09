@@ -8,12 +8,14 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.jfree.util.Log;
+import org.apache.log4j.Logger;
 
 import com.google.common.io.Files;
 import com.thoughtworks.xstream.XStream;
 
 public abstract class ZipDatenReader {
+   
+   private static final Logger LOGGER = Logger.getLogger(ZipDatenReader.class); 
 
 	private String tmpId;
 
@@ -96,7 +98,7 @@ public abstract class ZipDatenReader {
 				return null;
 			}
 		} catch (IOException e) {
-			Log.error(e);
+		   LOGGER.error(e);
 			return null;
 		}
 	}
@@ -113,7 +115,7 @@ public abstract class ZipDatenReader {
 					try {
 						Files.copy(k, new File(pathDestination + File.separator + k.getName()));
 					} catch (IOException e) {
-						Log.error(e);
+					   LOGGER.error(e);
 						throw new IllegalStateException("Konnte Datei nicht kopierenn " + e.getMessage());
 					}
 				}
@@ -127,7 +129,7 @@ public abstract class ZipDatenReader {
 			try {
 				Files.copy(f, new File(pathDestination));
 			} catch (IOException e) {
-				Log.error(e);
+				LOGGER.error(e);
 				throw new IllegalStateException("Konnte Datei nicht kopierenn " + e.getMessage());
 			}
 		}

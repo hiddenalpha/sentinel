@@ -3,7 +3,7 @@ package ch.infbr5.sentinel.server;
 import java.io.File;
 import java.io.IOException;
 
-import org.jfree.util.Log;
+import org.apache.log4j.Logger;
 
 import ch.infbr5.sentinel.server.utils.FileHelper;
 
@@ -12,8 +12,10 @@ import com.google.common.io.Files;
 
 public class ServerConfiguration {
 
+   private static final Logger LOGGER = Logger.getLogger(ServerConfiguration.class);
+   
 	// Default Values
-	public static final String IP_ADDRESS = "0.0.0.0";
+	public static final String IP_ADDRESS = "localhost";
 
 	public static final String PORT = "8080";
 
@@ -88,7 +90,7 @@ public class ServerConfiguration {
 			try {
 				Files.write(data, getFileUserLogo());
 			} catch (IOException e) {
-				Log.error(e);
+			   LOGGER.error(e);
 			}
 		}
 	}
@@ -98,7 +100,7 @@ public class ServerConfiguration {
 			try {
 				Files.write(data, getFileUserWasserzeichen());
 			} catch (IOException e) {
-				Log.error(e);
+			   LOGGER.error(e);
 			}
 		}
 	}

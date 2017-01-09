@@ -8,8 +8,13 @@ import ch.infbr5.sentinel.server.model.ObjectFactory;
 import ch.infbr5.sentinel.server.model.PrintJob;
 import ch.infbr5.sentinel.server.utils.FileHelper;
 
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Phrase;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public abstract class PdfRenderer {
 
@@ -30,9 +35,7 @@ public abstract class PdfRenderer {
    protected abstract String getBeschreibung();
 
    protected HeaderFooter createHeader() {
-      final Phrase before = new Phrase(getBeschreibung() + ", Seite ");
-      final Phrase after = new Phrase(", " + DateFormater.formatToDate(new Date()));
-      return new HeaderFooter(before, after);
+      return new HeaderFooter(getBeschreibung());
    }
 
    private String createFilename() {
@@ -40,4 +43,26 @@ public abstract class PdfRenderer {
       return FileHelper.clearFilename(getFileName() + "_" + time);
    }
 
+   private static class HeaderFooter extends PdfPageEventHelper {
+      private String beschreibung;
+      public HeaderFooter(String beschreibung) {this.beschreibung = beschreibung;}
+      @Override
+      public void onEndPage(PdfWriter writer, Document document) {
+         final Phrase after = new Phrase(", " + DateFormater.formatToDate(new Date()));
+         PdfContentByte cb = writer.getDirectContent();
+         ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, after,
+             (document.right() - document.left()) / 2 + document.leftMargin(),
+             document.top() + 10, 0);
+      }
+      
+      @Override
+      public void onStartPage(PdfWriter writer, Document document) {
+         final Phrase before = new Phrase(beschreibung + ", Seite ");
+         PdfContentByte cb = writer.getDirectContent();
+         ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, before,
+             (document.right() - document.left()) / 2 + document.leftMargin(),
+             document.top() + 10, 0);
+      }
+  }
+   
 }

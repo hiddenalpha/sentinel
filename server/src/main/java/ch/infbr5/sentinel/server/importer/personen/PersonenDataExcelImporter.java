@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -47,7 +48,7 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 	}
 
 	private String[] createArrayHeader(Row row) {
-		// Celliterator überspringt empty cells!!! Darum zwei Implementationen! Aber die Erste Zeil muss einfach bündig und komplett sein.
+		// Celliterator Ã¼berspringt empty cells!!! Darum zwei Implementationen! Aber die Erste Zeil muss einfach bÃ¼ndig und komplett sein.
 		List<String> headers = new ArrayList<>();
 		if (row == null) {
 			return null;
@@ -55,7 +56,7 @@ class PersonenDataExcelImporter extends PersonenDataImporter {
 		Iterator<Cell> cellIterator = row.cellIterator();
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-			if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+			if (cell.getCellTypeEnum() == CellType.NUMERIC) {
 				if (HSSFDateUtil.isCellDateFormatted(cell)) {
 					Date date = cell.getDateCellValue();
 					headers.add(new SimpleDateFormat("dd.MM.yyyy").format(date));

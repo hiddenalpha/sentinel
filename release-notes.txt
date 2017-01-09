@@ -1,4 +1,17 @@
 /***************************************/
+ Version x
+/***************************************/
+Migration Notes:
+- Java muss auf Version 8 erhöht werden.
+- Default IP des Servers auf localhost geändert. Mit Java 8 wurde in das JAXWS Api
+für die Wildcard IP Adresse 0.0.0.0 ein Bug eingeführt. Der Server kann mit Java 8
+nicht auf allen Netzwerkkarten gleichzeitig höhren. Man muss diese beim Server Start
+mit dem Startparamter nun definieren, ansonsten wird der default "localhost" gewählt.
+  
+Technisches:
+- Best Practices for Maven Module Naming
+
+/***************************************/
  Version 1.1.0
 /***************************************/
 - Daten aufräumen. Mittels eines Button können alle  Journaleinträge sowie Zonen-
