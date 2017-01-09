@@ -118,7 +118,7 @@ public class Mapper {
             target.setCheckpoint(mapCheckpointToCheckpointDetails().apply(source.getCheckpoint()));
             target.setMillis(source.getMillis());
             if (source.getPerson() != null) {
-               target.setPerson(mapPersonToPersonDetails().apply(source.getPerson()));
+               target.setPerson(mapToPersonDetails(source.getPerson()));
             }
             target.setPraesenzStatus(source.getOperatorAktion().name());
             return target;
@@ -126,64 +126,50 @@ public class Mapper {
       };
    }
 
-   public static Function<GefechtsMeldung, JournalGefechtsMeldung> mapGefechtsMeldungToJournalGefechtsMeldung() {
-      return new Function<GefechtsMeldung, JournalGefechtsMeldung>() {
-
-         @Override
-         public JournalGefechtsMeldung apply(final GefechtsMeldung source) {
-            final JournalGefechtsMeldung target = new JournalGefechtsMeldung();
-            target.setId(source.getId());
-            target.setCheckpoint(mapCheckpointToCheckpointDetails().apply(source.getCheckpoint()));
-            target.setMillis(source.getMillis());
-            target.setIstErledigt(source.isIstErledigt());
-            target.setMassnahme(source.getMassnahme());
-            target.setWerWasWoWie(source.getWerWasWoWie());
-            target.setZeitpunktErledigt(source.getZeitpunktErledigt());
-            target.setZeitpunktMeldungsEingang(source.getZeitpunktMeldungsEingang());
-            if (source.getWeiterleitenAnPerson() != null) {
-               target.setWeiterleitenAnPerson(mapPersonToPersonDetails().apply(source.getWeiterleitenAnPerson()));
-            }
-            return target;
-         }
-      };
+   public static JournalGefechtsMeldung mapToJournalGefechtsMeldung(final GefechtsMeldung gefechtsMeldung) {
+      final JournalGefechtsMeldung meldung = new JournalGefechtsMeldung();
+      meldung.setId(gefechtsMeldung.getId());
+      meldung.setCheckpoint(mapCheckpointToCheckpointDetails().apply(gefechtsMeldung.getCheckpoint()));
+      meldung.setMillis(gefechtsMeldung.getMillis());
+      meldung.setIstErledigt(gefechtsMeldung.isIstErledigt());
+      meldung.setMassnahme(gefechtsMeldung.getMassnahme());
+      meldung.setWerWasWoWie(gefechtsMeldung.getWerWasWoWie());
+      meldung.setZeitpunktErledigt(gefechtsMeldung.getZeitpunktErledigt());
+      meldung.setZeitpunktMeldungsEingang(gefechtsMeldung.getZeitpunktMeldungsEingang());
+      if (gefechtsMeldung.getWeiterleitenAnPerson() != null) {
+         meldung.setWeiterleitenAnPerson(mapToPersonDetails(gefechtsMeldung.getWeiterleitenAnPerson()));
+      }
+      return meldung;
    }
+   
+   public static PersonDetails mapToPersonDetails(final Person person) {
+      final PersonDetails personDetails = new PersonDetails();
+      personDetails.setId(person.getId());
+      personDetails.setAhvNr(person.getAhvNr());
+      personDetails.setName(person.getName());
+      personDetails.setVorname(person.getVorname());
 
-   public static Function<Person, PersonDetails> mapPersonToPersonDetails() {
+      if (person.getValidAusweis() != null) {
+         personDetails.setBarcode(person.getValidAusweis().getBarcode());
+      }
 
-      return new Function<Person, PersonDetails>() {
+      final Grad grad = person.getGrad();
+      personDetails.setGrad(grad != null ? grad.getGradText() : "");
 
-         @Override
-         public PersonDetails apply(final Person source) {
-            final PersonDetails target = new PersonDetails();
-            target.setId(source.getId());
-            target.setAhvNr(source.getAhvNr());
-            target.setName(source.getName());
-            target.setVorname(source.getVorname());
+      personDetails.setFunktion(person.getFunktion());
+      personDetails.setGeburtsdatum(person.getGeburtsdatum());
 
-            if (source.getValidAusweis() != null) {
-               target.setBarcode(source.getValidAusweis().getBarcode());
-            }
+      final Einheit einheit = person.getEinheit();
+      personDetails.setEinheitId(einheit != null ? einheit.getId() : -1);
+      personDetails.setEinheitText(einheit != null ? einheit.getName() : "");
 
-            final Grad grad = source.getGrad();
-            target.setGrad(grad != null ? grad.getGradText() : "");
+      if (PersonImageStore.hasImage(person.getAhvNr())) {
+         personDetails.setImageId(person.getAhvNr());
+      }
 
-            target.setFunktion(source.getFunktion());
-            target.setGeburtsdatum(source.getGeburtsdatum());
-
-            final Einheit einheit = source.getEinheit();
-            target.setEinheitId(einheit != null ? einheit.getId() : -1);
-            target.setEinheitText(einheit != null ? einheit.getName() : "");
-
-            if (PersonImageStore.hasImage(source.getAhvNr())) {
-               target.setImageId(source.getAhvNr());
-            }
-
-            return target;
-         }
-      };
-
+      return personDetails;
    }
-
+   
    public static Function<PersonDetails, Person> mapPersonDetailsToPerson() {
 
       return new Function<PersonDetails, Person>() {
@@ -239,25 +225,20 @@ public class Mapper {
       };
    }
 
-   public static Function<Einheit, EinheitDetails> mapEinheitToEinheitDetails() {
-      return new Function<Einheit, EinheitDetails>() {
-         @Override
-         public EinheitDetails apply(final Einheit source) {
-            final EinheitDetails target = new EinheitDetails();
-            target.setId(source.getId());
-            target.setName(source.getName());
-            target.setRgbColor_GsVb(source.getRgbColor_GsVb());
-            target.setRgbColor_TrpK(source.getRgbColor_TrpK());
-            target.setRgbColor_Einh(source.getRgbColor_Einh());
-            target.setText_GsVb(source.getText_GsVb());
-            target.setText_TrpK(source.getText_TrpK());
-            target.setText_Einh(source.getText_Einh());
-            target.setRgbColor_BackgroundAusweis(source.getRgbColor_AusweisBackground());
-            return target;
-         }
-      };
+   public static EinheitDetails mapToEinheitDetails(Einheit einheit) {
+      final EinheitDetails target = new EinheitDetails();
+      target.setId(einheit.getId());
+      target.setName(einheit.getName());
+      target.setRgbColor_GsVb(einheit.getRgbColor_GsVb());
+      target.setRgbColor_TrpK(einheit.getRgbColor_TrpK());
+      target.setRgbColor_Einh(einheit.getRgbColor_Einh());
+      target.setText_GsVb(einheit.getText_GsVb());
+      target.setText_TrpK(einheit.getText_TrpK());
+      target.setText_Einh(einheit.getText_Einh());
+      target.setRgbColor_BackgroundAusweis(einheit.getRgbColor_AusweisBackground());
+      return target;
    }
-
+   
    public static Function<EinheitDetails, Einheit> mapEinheitDetailsToEinheit() {
       return new Function<EinheitDetails, Einheit>() {
          @Override

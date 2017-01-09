@@ -3,6 +3,7 @@ package ch.infbr5.sentinel.server.ws;
 import java.awt.Image;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
@@ -30,10 +31,7 @@ import ch.infbr5.sentinel.server.model.Person;
 import ch.infbr5.sentinel.server.model.PraesenzStatus;
 import ch.infbr5.sentinel.server.model.ZonenPraesenz;
 import ch.infbr5.sentinel.server.model.journal.BewegungsMeldung;
-import ch.infbr5.sentinel.server.model.journal.GefechtsMeldung;
 import ch.infbr5.sentinel.server.ws.journal.JournalGefechtsMeldung;
-
-import com.google.common.collect.Lists;
 
 @MTOM
 @WebService(name = "SentinelQueryService", targetNamespace = "http://ws.sentinel.infbr5.ch/")
@@ -238,7 +236,7 @@ public class SentinelQueryService {
       final PersonDetails[] details = new PersonDetails[personen.size()];
       int i = 0;
       for (final Person p : personen) {
-         details[i++] = Mapper.mapPersonToPersonDetails().apply(p);
+         details[i++] = Mapper.mapToPersonDetails(p);
       }
       final OperationResponse response = new OperationResponse();
       response.setPersonDetails(details);
@@ -361,20 +359,11 @@ public class SentinelQueryService {
       return new CheckpointHelper(getEntityManager());
    }
 
-   /**
-    * Setzt auf dem Response eine Gefechtsmeldung, falls f�r die gegebene Person
-    * eine unerledigte vorhanden ist.
-    *
-    * @param person
-    *           Person.
-    * @param response
-    *           Response-Objekt an den Client.
-    */
    private void setPersonTriggerEintraege(final Person person, final OperationResponse response) {
-      List<JournalGefechtsMeldung> eintraege = Lists.newArrayList();
-      final List<GefechtsMeldung> gefechtsMeldungen = getQueryHelper().getPersonTriggerEintraege(person);
-      eintraege = Lists.transform(gefechtsMeldungen, Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
-      response.setPersonTriggerEintraege(eintraege);
+      List<JournalGefechtsMeldung> meldungen  = getQueryHelper().getPersonTriggerEintraege(person).stream()
+         .map(Mapper::mapToJournalGefechtsMeldung)
+         .collect(Collectors.toList());
+      response.setPersonTriggerEintraege(meldungen);
    }
 
    private void persistBewegungsMeldung(final Checkpoint checkpoint, final OperatorAktion aktion, final Person person) {

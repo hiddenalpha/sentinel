@@ -2,6 +2,7 @@ package ch.infbr5.sentinel.server.ws.journal;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
@@ -167,8 +168,10 @@ public class JournalService {
    }
 
    private JournalResponse createJournalResponseGefechtsMeldung(final List<GefechtsMeldung> data) {
-      final List<JournalGefechtsMeldung> eintraege = Lists.transform(data,
-            Mapper.mapGefechtsMeldungToJournalGefechtsMeldung());
+      final List<JournalGefechtsMeldung> eintraege = data.stream()
+         .map(Mapper::mapToJournalGefechtsMeldung)
+         .collect(Collectors.toList());
+      
       final JournalResponse response = new JournalResponse();
       response.setGefechtsMeldungen(eintraege);
       return response;

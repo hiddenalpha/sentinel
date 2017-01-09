@@ -24,19 +24,17 @@ public class ObjectFactory {
 	}
 
 	public static Checkpoint createCheckpoint(String name, List<Zone> checkInZonen, List<Zone> checkOutZonen) {
-		Checkpoint c = new Checkpoint();
-		c.setName(name);
-		c.setCheckInZonen(checkInZonen);
-		c.setCheckOutZonen(checkOutZonen);
-
-		return c;
+		Checkpoint checkpoint = new Checkpoint();
+		checkpoint.setName(name);
+		checkpoint.setCheckInZonen(checkInZonen);
+		checkpoint.setCheckOutZonen(checkOutZonen);
+		return checkpoint;
 	}
 
 	public static Einheit createEinheit(String name) {
-		Einheit e = new Einheit();
-		e.setName(name);
-
-		return e;
+		Einheit einheit = new Einheit();
+		einheit.setName(name);
+		return einheit;
 	}
 
 	public static Person createPerson(Einheit einheit, String ahvNr, Grad grad, String name, String vorname,
@@ -49,7 +47,6 @@ public class ObjectFactory {
 		person.setGeburtsdatum(geburtsdatum);
 		person.setFunktion(funktion);
 		person.setEinheit(einheit);
-
 		return person;
 	}
 
@@ -71,12 +68,12 @@ public class ObjectFactory {
 	}
 
 	public static Zone createZone(String name, List<Zutrittsregel> regeln, boolean undOpRegeln) {
-		Zone z = new Zone();
-		z.setName(name);
-		z.setRegeln(regeln);
-		z.setUndOpRegeln(undOpRegeln);
+		Zone zone = new Zone();
+		zone.setName(name);
+		zone.setRegeln(regeln);
+		zone.setUndOpRegeln(undOpRegeln);
 
-		return z;
+		return zone;
 	}
 
 	public static Zutrittsregel createZutrittsregel() {

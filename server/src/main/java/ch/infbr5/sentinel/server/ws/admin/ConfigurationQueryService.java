@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
@@ -70,28 +71,17 @@ public class ConfigurationQueryService {
    @Resource
    private WebServiceContext context;
 
-   /**
-    * Gibt alle Einheiten zurück.
-    *
-    * @return Alle Einheiten.
-    */
    @WebMethod
    public ConfigurationResponse getEinheiten() {
-      final List<Einheit> einheiten = getQueryHelper().getEinheiten();
-      final List<EinheitDetails> einheitenDetails = Lists.transform(einheiten, Mapper.mapEinheitToEinheitDetails());
+      List<EinheitDetails> einheitenDetails = getQueryHelper().getEinheiten().stream()
+            .map(Mapper::mapToEinheitDetails)
+            .collect(Collectors.toList());
 
       final ConfigurationResponse response = new ConfigurationResponse();
       response.setEinheitDetails(einheitenDetails);
       return response;
    }
 
-   /**
-    * Speichert die Einheit. Falls keine Id gesetzt wird, wird eine neue
-    * erstellt, anderenfalls wird diese aktualisiert.
-    *
-    * @param details
-    *           Einheiten Details.
-    */
    @WebMethod
    public void saveEinheit(@WebParam(name = "EinheitDetails") final EinheitDetails details) {
       Einheit einheit = getQueryHelper().getEinheitById(details.getId());
@@ -121,8 +111,9 @@ public class ConfigurationQueryService {
 
    @WebMethod
    public ConfigurationResponse getPersonen() {
-      final List<Person> personen = getQueryHelper().getPersonen();
-      final List<PersonDetails> personenDetails = Lists.transform(personen, Mapper.mapPersonToPersonDetails());
+      List<PersonDetails> personenDetails = getQueryHelper().getPersonen().stream()
+         .map(Mapper::mapToPersonDetails)
+         .collect(Collectors.toList());
 
       final ConfigurationResponse response = new ConfigurationResponse();
       response.setPersonDetails(personenDetails);
@@ -135,7 +126,7 @@ public class ConfigurationQueryService {
 
       final Person person = getQueryHelper().getPerson(ahvNr);
       if (person != null) {
-         final PersonDetails personDetail = Mapper.mapPersonToPersonDetails().apply(person);
+         final PersonDetails personDetail = Mapper.mapToPersonDetails(person);
          personenDetails.add(personDetail);
       }
 
@@ -378,9 +369,7 @@ public class ConfigurationQueryService {
    @WebMethod
    public void setIPCams(final IPCams ipcams) {
       final List<ConfigurationValue> values = getQueryHelper().findConfigurationValue(ConfigConstants.URL_IPCAM_ALL);
-      for (final ConfigurationValue v : values) {
-         getEntityManager().remove(v);
-      }
+      values.forEach(value -> getEntityManager().remove(value));
       int i = 1;
       for (final String url : ipcams.getCams()) {
          final ConfigurationValue v = new ConfigurationValue();
