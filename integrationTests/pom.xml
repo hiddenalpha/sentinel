@@ -41,6 +41,13 @@
 			<version>1.3.2</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- TODO explain -->
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>rt</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
