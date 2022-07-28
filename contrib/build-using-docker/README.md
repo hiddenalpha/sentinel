@@ -1,7 +1,6 @@
 
-Showcase how to build and install
-=================================
-
+Showcase how to build
+=====================
 
 ## Setup variable to reduce annoying repetitions
 
@@ -28,6 +27,8 @@ sudo docker run --rm -i "${IMG:?}" sh -c 'true && cd dist && tar c *.tgz' | tar 
 
 
 ## Explore created image
+
+Just in case we need to dig around in the built image.
 
 ```sh
 sudo docker run --rm -ti "${IMG:?}" sh

@@ -25,7 +25,7 @@ RUN true \
     && cp -t dist/. common/target/sentinel-common-*.jar \
     && cp -t dist/. server/target/sentinel-server-*-jar-with-dependencies.jar \
     && cp -t dist/. server/target/sentinel-server-*.jar \
-    && cp -t dist/. wsdl/target/sentinel-wsdl-1.0.0-20-g2c07cd1.jar \
+    && cp -t dist/. wsdl/target/sentinel-wsdl-*.jar \
     && (cd dist && tar --owner=0 --group=0 -cz *.jar) > dist/sentinel-jars.tgz \
     && (cd /mvnrepo && tar --owner=0 --group=0 -cz *) > dist/mvnrepo.tgz \
     && find /work -not -wholename '/work/dist/*' -delete \
