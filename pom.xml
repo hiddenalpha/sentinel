@@ -1,99 +1,99 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>ch.infbr5.sentinel</groupId>
-	<artifactId>sentinel-parent</artifactId>
-	<version>1.1.0</version>
+  <groupId>ch.infbr5.sentinel</groupId>
+  <artifactId>sentinel-parent</artifactId>
+  <version>1.1.0</version>
 
-	<packaging>pom</packaging>
+  <packaging>pom</packaging>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<dep.com-sun-xml-ws-rt.version>2.3.5</dep.com-sun-xml-ws-rt.version>
-		<dep.javax-annotation.version>1.3.2</dep.javax-annotation.version>
-		<dep.javax-jws.version>1.1</dep.javax-jws.version>
-		<dep.javax-xml-bind.version>2.3.1</dep.javax-xml-bind.version>
-		<dep.javax-xml-ws.version>2.3.1</dep.javax-xml-ws.version>
-		<dep.openjpa.version>2.4.3</dep.openjpa.version>
-	</properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <dep.com-sun-xml-ws-rt.version>2.3.5</dep.com-sun-xml-ws-rt.version>
+    <dep.javax-annotation.version>1.3.2</dep.javax-annotation.version>
+    <dep.javax-jws.version>1.1</dep.javax-jws.version>
+    <dep.javax-xml-bind.version>2.3.1</dep.javax-xml-bind.version>
+    <dep.javax-xml-ws.version>2.3.1</dep.javax-xml-ws.version>
+    <dep.openjpa.version>2.4.3</dep.openjpa.version>
+  </properties>
 
-	<modules>
-		<module>common</module>
-		<module>client</module>
-		<module>server</module>
-		<module>wsdl</module>
-		<module>integrationTests</module>
-		<module>installer</module>
-	</modules>
+  <modules>
+    <module>common</module>
+    <module>client</module>
+    <module>server</module>
+    <module>wsdl</module>
+    <module>integrationTests</module>
+    <module>installer</module>
+  </modules>
 
-	<prerequisites>
-		<maven>2.2.1</maven>
-	</prerequisites>
+  <prerequisites>
+    <maven>2.2.1</maven>
+  </prerequisites>
 
-	<dependencyManagement>
-		<dependencies>
+  <dependencyManagement>
+    <dependencies>
 
-			<dependency>
-				<groupId>com.sun.xml.ws</groupId>
-				<artifactId>rt</artifactId>
-				<version>${dep.com-sun-xml-ws-rt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.annotation</groupId>
-				<artifactId>javax.annotation-api</artifactId>
-				<version>${dep.javax-annotation.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.jws</groupId>
-				<artifactId>javax.jws-api</artifactId>
-				<version>${dep.javax-jws.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.xml.bind</groupId>
-				<artifactId>jaxb-api</artifactId>
-				<version>${dep.javax-xml-bind.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.xml.ws</groupId>
-				<artifactId>jaxws-api</artifactId>
-				<version>${dep.javax-xml-ws.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>rt</artifactId>
+        <version>${dep.com-sun-xml-ws-rt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>${dep.javax-annotation.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.jws</groupId>
+        <artifactId>javax.jws-api</artifactId>
+        <version>${dep.javax-jws.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${dep.javax-xml-bind.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.ws</groupId>
+        <artifactId>jaxws-api</artifactId>
+        <version>${dep.javax-xml-ws.version}</version>
+      </dependency>
 
-		</dependencies>
-	</dependencyManagement>
+    </dependencies>
+  </dependencyManagement>
 
-	<build>
-		<pluginManagement>
-			<plugins>
+  <build>
+    <pluginManagement>
+      <plugins>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.0</version>
-				</plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.0</version>
+        </plugin>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12.4</version>
-				</plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.12.4</version>
+        </plugin>
 
-			</plugins>
-		</pluginManagement>
+      </plugins>
+    </pluginManagement>
 
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
 
-		</plugins>
-	</build>
+    </plugins>
+  </build>
 
 </project>
