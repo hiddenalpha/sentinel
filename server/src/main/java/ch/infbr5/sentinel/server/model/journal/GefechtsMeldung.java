@@ -10,7 +10,7 @@ import javax.persistence.NamedQuery;
 import ch.infbr5.sentinel.server.model.Person;
 
 /**
- * Modellierung gem�ss Gefechtsjournal.
+ * Modellierung gemaess Gefechtsjournal.
  *
  * @author Alex
  */

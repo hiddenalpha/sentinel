@@ -16,7 +16,7 @@
 		<dep.javax-jws.version>1.1</dep.javax-jws.version>
 		<dep.javax-xml-bind.version>2.3.1</dep.javax-xml-bind.version>
 		<dep.javax-xml-ws.version>2.3.1</dep.javax-xml-ws.version>
-		<dep.openjpa.version>2.3.1</dep.openjpa.version>
+		<dep.openjpa.version>2.4.3</dep.openjpa.version>
 	</properties>
 
 	<modules>
