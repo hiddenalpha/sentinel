@@ -9,6 +9,7 @@
 		<version>1.1.0</version>
 	</parent>
 
+	<artifactId>sentinel-server</artifactId>
 
 	<dependencies>
 
@@ -40,7 +41,7 @@
 		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa-all</artifactId>
-			<version>2.4.2</version>
+			<version>${dep.openjpa.version}</version>
 		</dependency>
 
 		<dependency>
@@ -160,6 +161,34 @@
 		<plugins>
 
 			<plugin>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa-maven-plugin</artifactId>
+				<version>${dep.openjpa.version}</version>
+				<configuration>
+					<includes>ch/inf/infbr5/sentinel/server/model/**/*.class</includes>
+					<addDefaultConstructor>true</addDefaultConstructor>
+					<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>enhancer</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>enhance</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.openjpa</groupId>
+						<artifactId>openjpa</artifactId>
+						<!-- set the version to be the same as the level in your runtime -->
+						<version>${dep.openjpa.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
@@ -268,15 +297,9 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											openjpa-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.2,)
-										</versionRange>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>openjpa-maven-plugin</artifactId>
+										<versionRange>[1.2,)</versionRange>
 										<goals>
 											<goal>enhance</goal>
 										</goals>
@@ -287,15 +310,9 @@
 								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.jvnet.jax-ws-commons
-										</groupId>
-										<artifactId>
-											jaxws-maven-plugin
-										</artifactId>
-										<versionRange>
-											[2.3,)
-										</versionRange>
+										<groupId>org.jvnet.jax-ws-commons</groupId>
+										<artifactId>jaxws-maven-plugin</artifactId>
+										<versionRange>[2.3,)</versionRange>
 										<goals>
 											<goal>wsgen</goal>
 										</goals>
@@ -306,15 +323,9 @@
 								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.apache.openjpa
-										</groupId>
-										<artifactId>
-											openjpa-maven-plugin
-										</artifactId>
-										<versionRange>
-											[2.2.0-SNAPSHOT,)
-										</versionRange>
+										<groupId>org.apache.openjpa</groupId>
+										<artifactId>openjpa-maven-plugin</artifactId>
+										<versionRange>[2.2.0-SNAPSHOT,)</versionRange>
 										<goals>
 											<goal>enhance</goal>
 										</goals>
@@ -330,11 +341,6 @@
 			</plugins>
 		</pluginManagement>
 
-
 	</build>
 
-
-
-
-	<artifactId>sentinel-server</artifactId>
 </project>

@@ -20,12 +20,7 @@ RUN true \
     && mvn ${MVN_OPTS:?} versions:set -DgenerateBackupPoms=false -DnewVersion="$(git describe --tags)" \
     && mvn ${MVN_OPTS:?} -pl client -am clean install \
     && mkdir dist \
-    && cp -t dist/. client/target/sentinel-client-*-jar-with-dependencies.jar \
-    && cp -t dist/. client/target/sentinel-client-*.jar \
-    && cp -t dist/. common/target/sentinel-common-*.jar \
-    && cp -t dist/. server/target/sentinel-server-*-jar-with-dependencies.jar \
-    && cp -t dist/. server/target/sentinel-server-*.jar \
-    && cp -t dist/. wsdl/target/sentinel-wsdl-*.jar \
+    && find client common server wsdl -wholename '*/target/*sentinel-*.jar' -exec cp -t dist/. {} + \
     && (cd dist && tar --owner=0 --group=0 -cz *.jar) > dist/sentinel-jars.tgz \
     && (cd /mvnrepo && tar --owner=0 --group=0 -cz *) > dist/mvnrepo.tgz \
     && find /work -not -wholename '/work/dist/*' -delete \
@@ -38,5 +33,5 @@ USER 1000:1000
 
 # run for max 10 hrs. Because this container is not meant to stay running
 # forever.
-CMD ["sleep 36000"]
+CMD ["sleep", "36000"]
 

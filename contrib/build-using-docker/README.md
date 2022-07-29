@@ -19,7 +19,7 @@ curl -sSL https://github.com/hiddenalpha/sentinel/raw/master/contrib/build-using
 ## Grab distribution archives
 
 Most probably we wanna get the distribution archive. We can copy it out the
-dockerimage to our host using:
+dockerimage to our current working dir using:
 
 ```sh
 sudo docker run --rm -i "${IMG:?}" sh -c 'true && cd dist && tar c *.tgz' | tar x
@@ -33,9 +33,4 @@ Just in case we need to dig around in the built image.
 ```sh
 sudo docker run --rm -ti "${IMG:?}" sh
 ```
-
-
-## TODO remove those notes
-
-mvn -pl client -am clean verify
 
