@@ -162,10 +162,10 @@ public class GefechtsMeldungPanel extends JPanel {
 
 	public String errorMessage() {
 		if (Strings.isNullOrEmpty(txtAreaWerWasWieWo.getText())) {
-			return "Wer/Was/Wie/Wo muss ausfgefüllt sein.";
+			return "Wer/Was/Wie/Wo muss ausfgefÃ¼llt sein.";
 		}
 		if (Strings.isNullOrEmpty(txtAreaMassnahmen.getText())) {
-			return "Massnahmen muss ausgefüllt sein.";
+			return "Massnahmen muss ausgefÃ¼llt sein.";
 		}
 		return null;
 	}
