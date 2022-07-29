@@ -33,7 +33,7 @@ public class KonfigurationsDatenWriter {
 		File fileZip = new File(EXPORT_FILENAME_ZIP);
 
 		try {
-			// Lösche eventuell bestehendes File
+			// LÃ¶sche eventuell bestehendes File
 			FileHelper.removeFile(fileZip);
 
 			// Objekte mittels XStream in ByteStream schreiben
