@@ -29,7 +29,7 @@ RUN true \
         "build/share/${PROJNAME:?}/cp-external" \
     && find client common server wsdl -wholename '*/target/*sentinel-*.jar' -not -name '*jar-with-dependencies*' -exec cp -t build/share/${PROJNAME:?}/cp/. {} + \
     && cp -rt build/share/doc/${PROJNAME:?}/. *.txt *.md doc/* \
-    && find client/target/dependency -type f -exec cp -t build/share/${PROJNAME:?}/cp-externalt/. {} + \
+    && find client/target/dependency -type f -exec cp -t build/share/${PROJNAME:?}/cp-external/. {} + \
     && (cd build && tar --owner=0 --group=0 -cz share) > dist/sentinel-${VERSION:?}.tgz \
     && (cd "/var/tmp/mvnrepo" && tar --owner=0 --group=0 -cz *) > dist/sentinel-mvnrepo-${VERSION:?}.tgz \
     && find /work -not -wholename '/work/dist/*' -delete \
