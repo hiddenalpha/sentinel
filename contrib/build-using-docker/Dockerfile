@@ -41,7 +41,7 @@ RUN true \
     && (cd "/var/tmp/mvnrepo" && tar --owner=0 --group=0 -cz *) > dist/sentinel-mvnrepo-${VERSION:?}.tgz \
     # install (just for convenience to have a reference installation for testing/debugging/etc)
     && mkdir -p "/opt/sentinel-${VERSION:?}" \
-    && tar -C "/opt/sentinel-${VERSION:?}" -xf dist/sentinel-${VERSION:?}.tgz \
+    && tar -f dist/sentinel-${VERSION:?}.tgz -C "/opt/sentinel-${VERSION:?}" -x \
     && ln -s "/opt/sentinel-${VERSION:?}" "/opt/sentinel" \
     # Cleanup
     && find /work -not -wholename '/work/dist/*' -delete \
