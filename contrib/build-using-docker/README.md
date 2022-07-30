@@ -34,3 +34,24 @@ Just in case we need to dig around in the built image.
 sudo docker run --rm -ti "${IMG:?}" sh
 ```
 
+
+## Host from image
+
+As a goodie the app also gets installed inside the dockerfile. So in theory we
+could host the app from there.
+
+WARN: This example created temporary instances! For production use make sure
+you mount the required data directories from a persistent storage to prevent
+data loss over restarts.
+
+Server:
+```sh
+sudo docker run --rm -ti -p 8080:8080 -e DISPLAY -v "/tmp/.X11-unix:/tmp/.X11-unix:ro" "${IMG:?}" sh -c sentinel-server
+```
+
+Client:
+```sh
+sudo docker run --rm -ti --net host -e DISPLAY -v "/tmp/.X11-unix:/tmp/.X11-unix:ro" "${IMG:?}" sh -c sentinel-server
+```
+
+

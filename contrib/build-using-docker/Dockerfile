@@ -4,7 +4,7 @@ FROM $PARENT_IMAGE
 
 ARG GIT_TAG="master"
 ARG REPO_URL="https://github.com/hiddenalpha/sentinel.git"
-ARG PKGS_TO_ADD="curl=7.83.1-r2 git=2.36.2-r0 openjdk8-jre=8.322.06-r0 maven=3.8.5-r0 tar"
+ARG PKGS_TO_ADD="curl=7.83.1-r2 fontconfig=2.14.0-r0 git=2.36.2-r0 openjdk11-jre=11.0.15_p10-r1 maven=3.8.5-r0 tar"
 ARG PKGS_TO_DEL="curl git maven tar"
 
 WORKDIR /work
@@ -25,7 +25,7 @@ RUN true \
     && export MAVEN_OPTS="--add-opens=java.base/java.lang=ALL-UNNAMED" \
     # make
     && mvn -Dmaven.repo.local=/var/tmp/mvnrepo -pl client -am clean install \
-    && mvn -Dmaven.repo.local=/var/tmp/mvnrepo -pl client -am dependency:copy-dependencies -DexcludeGroupIds=ch.infbr5.sentinel \
+    && mvn -Dmaven.repo.local=/var/tmp/mvnrepo -pl client,server -am dependency:copy-dependencies -DexcludeGroupIds=ch.infbr5.sentinel \
     && mkdir build dist && mkdir -p \
         "build/bin" \
         "build/share/doc/${PROJNAME:?}" \
@@ -35,7 +35,7 @@ RUN true \
     && cp contrib/build-using-docker/sentinel-client build/bin/. \
     && find client common server wsdl -wholename '*/target/*sentinel-*.jar' -not -name '*jar-with-dependencies*' -exec cp -t build/share/${PROJNAME:?}/cp/. {} + \
     && cp -rt build/share/doc/${PROJNAME:?}/. *.txt *.md doc/* \
-    && find client/target/dependency -type f -exec cp -t build/share/${PROJNAME:?}/cp-external/. {} + \
+    && find */target/dependency -type f -exec cp -t build/share/${PROJNAME:?}/cp-external/. {} + \
     && chmod 0755 build/bin/* \
     && (cd build && tar --owner=0 --group=0 -cz *) > dist/sentinel-${VERSION:?}.tgz \
     && (cd "/var/tmp/mvnrepo" && tar --owner=0 --group=0 -cz *) > dist/sentinel-mvnrepo-${VERSION:?}.tgz \
@@ -43,7 +43,7 @@ RUN true \
     && mkdir -p "/opt/sentinel-${VERSION:?}" \
     && tar -f dist/sentinel-${VERSION:?}.tgz -C "/opt/sentinel-${VERSION:?}" -x \
     && ln -s "/opt/sentinel-${VERSION:?}" "/opt/sentinel" \
-    # Cleanup
+#    # Cleanup
     && find /work -not -wholename '/work/dist/*' -delete \
     && find /work -exec chown 1000:1000 {} + \
     && $PKGDEL $PKGS_TO_DEL \
