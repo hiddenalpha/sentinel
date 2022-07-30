@@ -37,9 +37,9 @@ RUN true \
     && cp -rt build/share/doc/${PROJNAME:?}/. *.txt *.md doc/* \
     && find client/target/dependency -type f -exec cp -t build/share/${PROJNAME:?}/cp-external/. {} + \
     && chmod 0755 build/bin/* \
-    && (cd build && tar --owner=0 --group=0 -cz share) > dist/sentinel-${VERSION:?}.tgz \
+    && (cd build && tar --owner=0 --group=0 -cz *) > dist/sentinel-${VERSION:?}.tgz \
     && (cd "/var/tmp/mvnrepo" && tar --owner=0 --group=0 -cz *) > dist/sentinel-mvnrepo-${VERSION:?}.tgz \
-    # install (just for convenience to have a reference installation for testing/debugging/etc)
+    # install (just as an example to have a reference for testing/debugging/etc)
     && mkdir -p "/opt/sentinel-${VERSION:?}" \
     && tar -f dist/sentinel-${VERSION:?}.tgz -C "/opt/sentinel-${VERSION:?}" -x \
     && ln -s "/opt/sentinel-${VERSION:?}" "/opt/sentinel" \
