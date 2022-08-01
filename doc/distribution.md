@@ -53,6 +53,9 @@ You don't care about maintenance? Here you go :)
 WARN: Make sure client and server have their own working directory. DO NOT USE
       THE SAME DIRECTORY! They will override each others config and log files!
 
+End of Quick-n-dirty-Install-Instruction. Below follows the documentation about
+the archive structure.
+
 
 ## share/sentinel/cp/
 
