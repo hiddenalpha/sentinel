@@ -35,6 +35,7 @@ You don't care about maintenance? Here you go :)
 5. Start the server (usually handy to have this command ready in a starter
    script somewhere).
    ```sh
+   cd your/servers/working/directory
    java -cp "/opt/sentinel/share/sentinel/cp:/opt/sentinel/share/sentinel/cp-external" ch.infbr5.sentinel.server.Main
    ```
    (for windows we have to replace the colon by a semi-colon to separete the
@@ -43,10 +44,14 @@ You don't care about maintenance? Here you go :)
 6. Start the client application (usually handy to have this command ready in a
    starter script somewhre).
    ```sh
+   cd your/clients/working/directory
    java -cp "/opt/sentinel/share/sentinel/cp:/opt/sentinel/share/sentinel/cp-external" ch.infbr5.sentinel.client.Main
    ```
    (for windows we have to replace the colon by a semi-colon to separete the
    paths)
+
+WARN: Make sure client and server have their own working directory. DO NOT USE
+      THE SAME DIRECTORY! They will override each others config and log files!
 
 
 ## share/sentinel/cp/
