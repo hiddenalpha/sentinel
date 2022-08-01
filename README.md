@@ -8,8 +8,18 @@ Releases gibts unter [Downloads][L_UPSTREAM_DOWNLOADS].
 Wo die upstream releases zum Download geblieben sind weiss ich nicht. Ich krieg
 da jedenfalls nur eine HTTP 404 Response. Deshalb hats in diesem Fork hier
 unter [Releases](https://github.com/hiddenalpha/sentinel/releases) nun auch ein
-paar Bundles.
+paar Bundles ("Assets" aufklappen).
 
+
+## Build
+
+Der einfachste Weg sentinel zu
+[bauen](https://en.wikipedia.org/wiki/Software_build) ist IMHO via docker. Dazu
+gibts unter [contrib/build-using-docker/][L_DOCKER_BUILD_README] eine
+Anleitung.
+
+
+[L_DOCKER_BUILD_README]: https://github.com/hiddenalpha/sentinel/blob/master/contrib/build-using-docker/README.md
 [L_PERNI_SENTINEL]: https://bitbucket.org/perni/sentinel.git
 [L_UPSTREAM_DOWNLOADS]: https://bitbucket.org/perni/ch.infbr5.sentienl/downloads
 

@@ -50,6 +50,7 @@ RUN true \
     && $PKGCLEAN \
     && true
 
+ENV HOME "/work"
 ENV PATH "/opt/sentinel/bin:$PATH"
 
 USER 1000:1000
