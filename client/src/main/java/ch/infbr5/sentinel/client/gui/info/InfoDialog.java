@@ -50,13 +50,13 @@ public class InfoDialog extends JDialog {
 
       add(new JLabel(new ImageIcon(ImageLoader.loadSentinelIcon())), "w 25%");
       final JLabel lbl = new JLabel(
-            "<html><b>Sentinel</b> wird von der Infanteriebrigade 5 (InfBr5) entwickelt. <br /><br />Informationen sind verfügbar unter <a href=\"https://bitbucket.org/perni/ch.infbr5.sentienl\">https://bitbucket.org/perni/ch.infbr5.sentienl</a></html>");
+            "<html><b>Sentinel</b> wird von der Infanteriebrigade 5 (InfBr5) entwickelt. <br /><br />Informationen sind verfügbar unter <a href=\"https://github.com/hiddenalpha/sentinel/blob/master/README.md\">http://github.com/hiddenalpha/sentinel/</a></html>");
       lbl.setCursor(new Cursor(Cursor.HAND_CURSOR));
       lbl.addMouseListener(new MouseAdapter() {
          @Override
          public void mouseClicked(final MouseEvent e) {
             try {
-               Desktop.getDesktop().browse(new URI("https://bitbucket.org/perni/ch.infbr5.sentienl"));
+               Desktop.getDesktop().browse(new URI("https://github.com/hiddenalpha/sentinel/blob/master/README.md"));
             } catch (URISyntaxException | IOException ex) {
                ex.printStackTrace();
             }
