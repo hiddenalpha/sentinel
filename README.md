@@ -24,8 +24,8 @@ Anleitung.
 Siehe auch [doc/distribution.md][L_INSTALL_INSTRUCTIONS].
 
 
-[L_DOCKER_BUILD_README]: https://github.com/hiddenalpha/sentinel/blob/master/contrib/build-using-docker/README.md
-[L_INSTALL_INSTRUCTIONS]: https://github.com/hiddenalpha/sentinel/blob/master/doc/distribution.md
+[L_DOCKER_BUILD_README]: contrib/build-using-docker/README.md
+[L_INSTALL_INSTRUCTIONS]: doc/distribution.md
 [L_PERNI_SENTINEL]: https://bitbucket.org/perni/sentinel.git
 [L_UPSTREAM_DOWNLOADS]: https://bitbucket.org/perni/ch.infbr5.sentienl/downloads
 

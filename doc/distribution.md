@@ -33,9 +33,9 @@ Misc documentation for sentinel.
 
 
 
-[L_BUILD]: https://github.com/hiddenalpha/sentinel/blob/master/contrib/build-using-docker/README.md
+[L_BUILD]: ../contrib/build-using-docker/README.md
 [L_HIER]: https://www.man7.org/linux/man-pages/man7/hier.7.html
-[L_INSTALL_DIRTY]: https://github.com/hiddenalpha/sentinel/blob/wip-InstallHintInReadme/doc/shut-up-and-just-install-it.md
+[L_INSTALL_DIRTY]: shut-up-and-just-install-it.md
 [L_RELEASE]: https://github.com/hiddenalpha/sentinel/releases
 [L_REPOLINK]: https://github.com/hiddenalpha/sentinel.git
 [L_TAR]: https://en.wikipedia.org/wiki/Tar_%28file_format%29
