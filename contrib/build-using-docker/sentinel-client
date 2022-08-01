@@ -1,0 +1,6 @@
+
+mkdir -p /work/client
+cd /work/client
+
+java -cp "/opt/sentinel/share/sentinel/cp/*:/opt/sentinel/share/sentinel/cp-external/*" ch.infbr5.sentinel.client.Main
+
