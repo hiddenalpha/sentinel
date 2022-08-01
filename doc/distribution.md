@@ -67,9 +67,9 @@ Misc documentation for sentinel.
 
 ## Links
 
-L_BUILD: https://github.com/hiddenalpha/sentinel/blob/master/contrib/build-using-docker/README.md
-L_HIER: https://www.man7.org/linux/man-pages/man7/hier.7.html
-L_RELEASE: https://github.com/hiddenalpha/sentinel/releases
-L_REPOLINK: https://github.com/hiddenalpha/sentinel.git
-L_TAR: https://en.wikipedia.org/wiki/Tar_%28file_format%29
+[L_BUILD]: https://github.com/hiddenalpha/sentinel/blob/master/contrib/build-using-docker/README.md
+[L_HIER]: https://www.man7.org/linux/man-pages/man7/hier.7.html
+[L_RELEASE]: https://github.com/hiddenalpha/sentinel/releases
+[L_REPOLINK]: https://github.com/hiddenalpha/sentinel.git
+[L_TAR]: https://en.wikipedia.org/wiki/Tar_%28file_format%29
 
