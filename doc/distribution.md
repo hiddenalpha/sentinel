@@ -75,7 +75,6 @@ shorthand.
 Misc documentation for sentinel.
 
 
-## Links
 
 [L_BUILD]: https://github.com/hiddenalpha/sentinel/blob/master/contrib/build-using-docker/README.md
 [L_HIER]: https://www.man7.org/linux/man-pages/man7/hier.7.html
