@@ -45,3 +45,8 @@ WARN: Make sure client and server have their own working directory. DO NOT USE
 End of Quick-n-dirty-Install-Instruction. Below follows the documentation about
 the archive structure.
 
+
+
+[L_BUILD]: ../contrib/build-using-docker/README.md
+[L_RELEASE]: https://github.com/hiddenalpha/sentinel/releases
+
