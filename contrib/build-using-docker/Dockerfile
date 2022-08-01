@@ -4,7 +4,7 @@ FROM $PARENT_IMAGE
 
 ARG GIT_TAG="master"
 ARG REPO_URL="https://github.com/hiddenalpha/sentinel.git"
-ARG PKGS_TO_ADD="curl=7.83.1-r2 fontconfig=2.14.0-r0 git=2.36.2-r0 openjdk11-jre=11.0.15_p10-r1 maven=3.8.5-r0 tar"
+ARG PKGS_TO_ADD="curl=7.83.1-r2 fontconfig=2.14.0-r0 git=2.36.2-r0 openjdk11-jre=11.0.16_p8-r0 maven=3.8.5-r0 tar"
 ARG PKGS_TO_DEL="curl git maven tar"
 
 WORKDIR /work
