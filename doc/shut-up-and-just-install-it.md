@@ -52,9 +52,6 @@ You don't care about maintenance? Here you go :)
    (for windows we have to replace the colon by a semi-colon to separete the
    paths)
 
-End of Quick-n-dirty-Install-Instruction. Below follows the documentation about
-the archive structure.
-
 
 
 [L_BUILD]: ../contrib/build-using-docker/README.md
