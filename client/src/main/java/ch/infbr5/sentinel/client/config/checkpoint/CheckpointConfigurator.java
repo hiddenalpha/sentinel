@@ -29,7 +29,7 @@ public class CheckpointConfigurator {
       loadCheckpoints();
 
       if (!isConfigurationWhileStartup) {
-         askForCheckpointConfiguration("Nach dem diese Einstellungen ge�ndert wurden, starten Sie den Sentiel Client neu.");
+         askForCheckpointConfiguration("Nach dem diese Einstellungen geändert wurden, starten Sie den Sentiel Client neu.");
          return;
       }
 
@@ -42,7 +42,7 @@ public class CheckpointConfigurator {
       }
 
       if (isFirstConfiguration) {
-         askForCheckpointConfiguration("Dies ist eine Erstkonfiguration. Wählen Sie den Checkpoint aus und konfigurieren Sie allf�llige Kameras.");
+         askForCheckpointConfiguration("Dies ist eine Erstkonfiguration. Wählen Sie den Checkpoint aus und konfigurieren Sie allfällige Kameras.");
          isFirstConfiguration = false;
       } else {
          if (!hasValidConfiguration()) {

@@ -46,12 +46,14 @@ data loss over restarts.
 
 Server:
 ```sh
-sudo docker run --rm -ti -p 8080:8080 -e DISPLAY -v "/tmp/.X11-unix:/tmp/.X11-unix:ro" "${IMG:?}" sh -c sentinel-server
+sudo mkdir -p /var/opt/sentinel/work
+sudo chown 1000:1000 /var/opt/sentinel/work
+sudo docker run --name sentinel-container --rm -ti -p 127.0.0.1:8080:8080 -e DISPLAY -v "/tmp/.X11-unix:/tmp/.X11-unix:ro" -v "/var/opt/sentinel/work:/work:rw" "${IMG:?}" sh -c sentinel-server
 ```
 
 Client:
 ```sh
-sudo docker run --rm -ti --net host -e DISPLAY -v "/tmp/.X11-unix:/tmp/.X11-unix:ro" "${IMG:?}" sh -c sentinel-server
+sudo docker exec -ti -e DISPLAY sentinel-container sh -c sentinel-client
 ```
 
 
