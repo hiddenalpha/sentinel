@@ -7,8 +7,8 @@ with a structure based on the [standard filesystem hierarchy][L_HIER]. This
 document gives some additional notes about what is placed where in the
 distribution archive. This document talks about a compiled release. Basically
 it is the result we get after it is built with docker and we "Grab distribution
-archives". If you're searching for source code instead your search could start
-at [sentinel.git][L_REPOLINK].
+archives" (see [contrib/build-using-docker/][L_BUILD]). If you're searching for
+source code instead your search could start at [sentinel.git][L_REPOLINK].
 
 
 ## Shut up and just install the damn thing
