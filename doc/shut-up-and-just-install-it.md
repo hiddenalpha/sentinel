@@ -16,31 +16,36 @@ You don't care about maintenance? Here you go :)
    tar -f your-sentinel.tgz -C /opt/sentinel -x
    ```
 
-4. Ensure a JRE (java runtime environment) is installed on your system. This
+4. Create data directories (replace *1000* by the user sentinel will run with)
+   ```sh
+   sudo mkdir -p /var/opt/sentinel/server /var/opt/sentinel/client
+   sudo chown 1000:1000 /var/opt/sentinel/server /var/opt/sentinel/client
+   ```
+   WARN: Make sure client and server have their own working directory. DO NOT
+   USE THE SAME DIRECTORY! They will override each others config and log files!
+
+5. Ensure a JRE (java runtime environment) is installed on your system. This
    docuemnt is NOT a tutorial about how to install java on 1000 different
    systems. So consult the java and OS documentation about how to install
    regular software.
 
-5. Start the server (usually handy to have this command ready in a starter
+6. Start the server (usually handy to have this command ready in a starter
    script somewhere).
    ```sh
-   cd your/servers/working/directory
+   cd /var/opt/sentinel/server
    java -cp "/opt/sentinel/share/sentinel/cp:/opt/sentinel/share/sentinel/cp-external" ch.infbr5.sentinel.server.Main
    ```
    (for windows we have to replace the colon by a semi-colon to separete the
    paths)
 
-6. Start the client application (usually handy to have this command ready in a
+7. Start the client application (usually handy to have this command ready in a
    starter script somewhre).
    ```sh
-   cd your/clients/working/directory
+   cd /var/opt/sentinel/client
    java -cp "/opt/sentinel/share/sentinel/cp:/opt/sentinel/share/sentinel/cp-external" ch.infbr5.sentinel.client.Main
    ```
    (for windows we have to replace the colon by a semi-colon to separete the
    paths)
-
-WARN: Make sure client and server have their own working directory. DO NOT USE
-      THE SAME DIRECTORY! They will override each others config and log files!
 
 End of Quick-n-dirty-Install-Instruction. Below follows the documentation about
 the archive structure.
